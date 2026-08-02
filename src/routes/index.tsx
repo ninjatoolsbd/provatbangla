@@ -8,14 +8,19 @@ import { BreakingTicker } from "@/components/breaking-ticker";
 import { LatestPosts } from "@/components/latest-posts";
 import { Reveal } from "@/components/reveal";
 import {
-  GridCard,
-  LeadCard,
-  ListRow,
-  SectionHeading,
-  SplitLead,
-  ThumbRow,
-} from "@/components/news-cards";
-import { articles, byCategory, categories, categoryName } from "@/lib/news-data";
+  ArchiveCalendar,
+  BarHeading,
+  DistrictSearch,
+  EpaperCard,
+  LatestPopularTabs,
+  OpinionColumn,
+  PhotoGallery,
+  PollWidget,
+  SocialFollow,
+  VideoStrip,
+} from "@/components/home-widgets";
+import { GridCard, LeadCard, SplitLead, ThumbRow } from "@/components/news-cards";
+import { articles, byCategory } from "@/lib/news-data";
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 
@@ -40,13 +45,26 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+function AdSlot({ h = "h-24", label = "বিজ্ঞাপন" }: { h?: string; label?: string }) {
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground",
+        h,
+      )}
+    >
+      {label}
+    </div>
+  );
+}
+
 function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
   const [tab, setTab] = useState<"video" | "photo">("video");
   const list = tab === "video" ? video : photo;
 
   return (
     <div className="border border-border bg-card">
-      <div className="flex items-center gap-6 border-b border-border px-3">
+      <div className="flex border-b border-border">
         {(
           [
             ["video", "ভিডিও স্টোরি"],
@@ -57,10 +75,10 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
             key={key}
             onClick={() => setTab(key)}
             className={cn(
-              "-mb-px border-b-2 py-2.5 font-display text-[17px] font-bold transition-all duration-300",
+              "flex-1 py-2.5 font-display text-[15px] font-bold transition-colors",
               tab === key
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {label}
@@ -97,36 +115,77 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
   );
 }
 
+/** Text-only headline list used inside section blocks (kalbela right rails). */
+function TextList({ items }: { items: Article[] }) {
+  return (
+    <ul className="divide-y divide-border border-t border-border">
+      {items.map((a) => (
+        <li key={a.id}>
+          <Link
+            to="/news/$id"
+            params={{ id: String(a.id) }}
+            className="group block py-2.5 transition-transform duration-300 hover:translate-x-1"
+          >
+            <span className="line-clamp-2 font-display text-[15px] leading-snug font-bold transition-colors group-hover:text-primary">
+              {a.kicker && <span className="text-primary">{a.kicker} / </span>}
+              {a.title}
+            </span>
+            <span className="mt-1 block text-[11px] text-muted-foreground">{a.time}</span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Take n unique articles starting at offset; top up from the full pool without repeats. */
+function pick(list: Article[], n: number, offset = 0): Article[] {
+  const seen = new Set<number>();
+  const out: Article[] = [];
+  const push = (a?: Article) => {
+    if (a && !seen.has(a.id) && out.length < n) {
+      seen.add(a.id);
+      out.push(a);
+    }
+  };
+  list.slice(offset).forEach(push);
+  list.slice(0, offset).forEach(push);
+  articles.forEach(push);
+  return out;
+}
+
+
 function Home() {
   const national = byCategory("jatiyo");
-  const lead = national[0];
-  const crime = byCategory("apradh");
+  const politics = byCategory("rajniti");
+  const around = byCategory("sarabangla");
   const world = byCategory("antorjatik");
-  
-  const popular = [...articles].slice(10, 15);
-  const midLead = world[1] ?? articles[3];
-  const midList = [crime[0], world[0], national[3], world[1], national[4]].filter(
-    Boolean,
-  ) as Article[];
-  const sub = [crime[0], national[2], national[1], national[3], national[4], crime[1]].filter(
-    Boolean,
-  ) as Article[];
+  const sports = byCategory("khela");
+  const ent = byCategory("binodon");
+  const econ = byCategory("arthonity");
+  const crime = byCategory("apradh");
+  const opinion = byCategory("motamot");
+
+  const lead = national[0]!;
+  const heroSub = pick(articles, 3, 1);
+  const heroMid = pick(articles, 2, 5);
+  const heroThumbs = pick(articles, 4, 7);
+  const strip = pick(articles, 4, 12);
+  const latest = pick(articles, 10, 0);
+  const popular = pick(articles, 10, 6);
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-
       <BreakingTicker />
 
-
-      <main className="mx-auto max-w-[1240px] px-4 py-6">
-        <LatestPosts />
-        <section className="grid gap-6 lg:grid-cols-12 lg:divide-x lg:divide-border">
-          {/* left: hero + 6 cards */}
-          <div className="min-w-0 lg:col-span-5 lg:pr-6 xl:col-span-6">
-            {lead && <SplitLead article={lead} />}
-            <div className="mt-5 grid gap-x-5 gap-y-6 sm:grid-cols-3">
-              {sub.map((a, i) => (
+      <main className="mx-auto max-w-[1240px] px-4 py-5">
+        {/* ================= HERO ================= */}
+        <section className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+          <div className="min-w-0 lg:col-span-6 lg:pr-5">
+            <SplitLead article={lead} />
+            <div className="mt-4 grid gap-x-4 gap-y-5 sm:grid-cols-3">
+              {heroSub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a} compact />
                 </Reveal>
@@ -134,97 +193,226 @@ function Home() {
             </div>
           </div>
 
-          {/* middle: photo lead + thumb list */}
-          <div className="min-w-0 lg:col-span-4 lg:pr-6 xl:col-span-3">
-            {midLead && (
-              <article className="group">
-                <Link
-                  to="/news/$id"
-                  params={{ id: String(midLead.id) }}
-                  className="block overflow-hidden"
-                >
-                  <img
-                    src={midLead.image}
-                    alt={midLead.title}
-                    className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-                  />
-                </Link>
-                <Link to="/news/$id" params={{ id: String(midLead.id) }}>
-                  <h2 className="mt-2.5 border-b border-border pb-3 font-display text-[21px] leading-snug font-bold transition-colors group-hover:text-primary">
-                    {midLead.title}
-                  </h2>
-                </Link>
-              </article>
-            )}
-            <div>
-              {midList.map((a, i) => (
-                <Reveal key={a.id} delay={i * 60}>
+          <div className="min-w-0 lg:col-span-3 lg:px-5">
+            <div className="space-y-4">
+              {heroMid.map((a) => (
+                <article key={a.id} className="group">
+                  <Link
+                    to="/news/$id"
+                    params={{ id: String(a.id) }}
+                    className="block overflow-hidden"
+                  >
+                    <img
+                      src={a.image}
+                      alt={a.title}
+                      className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
+                      loading="lazy"
+                    />
+                  </Link>
+                  <Link to="/news/$id" params={{ id: String(a.id) }}>
+                    <h3 className="mt-2 font-display text-[17px] leading-snug font-bold transition-colors group-hover:text-primary">
+                      {a.title}
+                    </h3>
+                  </Link>
+                </article>
+              ))}
+            </div>
+            <div className="mt-3">
+              {heroThumbs.map((a, i) => (
+                <Reveal key={a.id} delay={i * 50}>
                   <ThumbRow article={a} />
                 </Reveal>
               ))}
             </div>
           </div>
 
-          {/* right: story tabs + ad */}
-          <div className="min-w-0 lg:col-span-3">
-            <StoryTabs video={articles.slice(0, 5)} photo={articles.slice(5, 10)} />
-            <div className="mt-5 flex h-64 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
-              বিজ্ঞাপন
+          <div className="min-w-0 lg:col-span-3 lg:pl-5">
+            <StoryTabs video={pick(articles, 5, 0)} photo={pick(articles, 5, 5)} />
+            <div className="mt-4">
+              <AdSlot h="h-60" />
             </div>
           </div>
         </section>
 
-        <div className="my-8 flex h-24 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
-          বিজ্ঞাপন
+        <div className="my-6">
+          <AdSlot />
         </div>
 
-        <section className="grid gap-8 lg:grid-cols-12">
-          <div className="min-w-0 lg:col-span-9">
-            <SectionHeading title={categoryName("apradh")} slug="apradh" />
-            <div className="grid gap-6 lg:grid-cols-12">
-              <div className="lg:col-span-5">{crime[0] && <LeadCard article={crime[0]} />}</div>
-              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:col-span-7">
-                {crime.slice(1).map((a, i) => (
-                  <Reveal key={a.id} delay={i * 70}>
-                    <GridCard article={a} compact />
-                  </Reveal>
-                ))}
-              </div>
-            </div>
+        {/* ================= VIDEO STRIP ================= */}
+        <VideoStrip items={pick(articles, 8, 3)} />
+
+        {/* ============ OPINION | POLL | LATEST TABS ============ */}
+        <section className="mt-8 grid gap-6 lg:grid-cols-3">
+          <OpinionColumn items={opinion.length ? opinion : pick(articles, 3, 2)} />
+          <PollWidget cover={pick(articles, 1, 9)[0]} />
+          <div>
+            <BarHeading title="সর্বশেষ / জনপ্রিয়" />
+            <LatestPopularTabs latest={latest} popular={popular} />
           </div>
-          <div className="min-w-0 border-t border-border pt-4 lg:col-span-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
-            <SectionHeading title="সর্বাধিক পঠিত" />
-            {popular.map((a, i) => (
-              <Reveal key={a.id} delay={i * 50}>
-                <ListRow article={a} index={i} />
+        </section>
+
+        {/* ================= READER FAVOURITES ================= */}
+        <section className="mt-8 border border-border p-4">
+          <BarHeading title="পাঠকপ্রিয়" />
+          <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+            {strip.map((a, i) => (
+              <Reveal key={a.id} delay={i * 60}>
+                <GridCard article={a} compact />
               </Reveal>
             ))}
           </div>
         </section>
 
-        {categories
-          .filter((c) => !["jatiyo", "apradh"].includes(c.slug))
-          .map((c, ci) => {
-            const list = byCategory(c.slug);
-            if (list.length === 0) return null;
-            return (
-              <section
-                key={c.slug}
-                className={cn("mt-10 -mx-4 px-4 py-6", ci % 2 === 1 && "bg-secondary/60")}
-              >
-                <SectionHeading title={c.name} slug={c.slug} />
-                <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {list.slice(0, 4).map((a, i) => (
-                    <Reveal key={a.id} delay={i * 70}>
+        {/* ================= LIVE DB POSTS ================= */}
+        <div className="mt-8">
+          <LatestPosts />
+        </div>
+
+        {/* ================= জাতীয় ================= */}
+        <section className="mt-8">
+          <BarHeading title="জাতীয়" slug="jatiyo" />
+          <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+            <div className="min-w-0 lg:col-span-5 lg:pr-5">
+              <LeadCard article={national[0]!} />
+            </div>
+            <div className="min-w-0 lg:col-span-4 lg:px-5">
+              {pick(national, 3, 1).map((a, i) => (
+                <Reveal key={a.id} delay={i * 60}>
+                  <ThumbRow article={a} />
+                </Reveal>
+              ))}
+            </div>
+            <div className="min-w-0 lg:col-span-3 lg:pl-5">
+              <TextList items={pick(articles, 5, 4)} />
+            </div>
+          </div>
+        </section>
+
+        {/* ================= রাজনীতি ================= */}
+        <section className="mt-8 -mx-4 bg-secondary/60 px-4 py-6">
+          <BarHeading title="রাজনীতি" slug="rajniti" />
+          <div className="grid gap-5 lg:grid-cols-12">
+            <div className="min-w-0 lg:col-span-4">
+              <LeadCard article={politics[0]!} />
+            </div>
+            <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
+              {pick(politics, 6, 1).map((a, i) => (
+                <Reveal key={`${a.id}-${i}`} delay={i * 60}>
+                  <GridCard article={a} compact />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================= অর্থনীতি ================= */}
+        <section className="mt-8">
+          <BarHeading title="অর্থনীতি" slug="arthonity" />
+          <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+            <div className="min-w-0 lg:col-span-7 lg:pr-5">
+              <LeadCard article={econ[0] ?? articles[3]!} />
+            </div>
+            <div className="min-w-0 lg:col-span-5 lg:pl-5">
+              <TextList items={econ.length > 1 ? econ.slice(1) : pick(articles, 4, 8)} />
+            </div>
+          </div>
+        </section>
+
+        {/* ================= সারাবাংলা + district ================= */}
+        <section className="mt-8">
+          <BarHeading title="সারাবাংলা" slug="sarabangla" />
+          <div className="grid gap-5 lg:grid-cols-12">
+            <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-9 lg:grid-cols-4">
+              {pick(around.length ? around : articles, 8).map((a, i) => (
+                <Reveal key={`${a.id}-${i}`} delay={i * 50}>
+                  <GridCard article={a} compact />
+                </Reveal>
+              ))}
+            </div>
+            <div className="min-w-0 space-y-4 lg:col-span-3">
+              <DistrictSearch />
+              <AdSlot h="h-52" />
+            </div>
+          </div>
+        </section>
+
+        {/* ================= বিশ্ব + e-paper/calendar ================= */}
+        <section className="mt-8 -mx-4 bg-secondary/60 px-4 py-6">
+          <BarHeading title="আন্তর্জাতিক" slug="antorjatik" />
+          <div className="grid gap-5 lg:grid-cols-12">
+            <div className="min-w-0 lg:col-span-9">
+              <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+                <div className="min-w-0 lg:col-span-5 lg:pr-5">
+                  <LeadCard article={world[0] ?? articles[6]!} />
+                </div>
+                <div className="min-w-0 lg:col-span-7 lg:pl-5">
+                  {pick(world.length ? world : articles, 4, 1).map((a, i) => (
+                    <Reveal key={`${a.id}-${i}`} delay={i * 50}>
+                      <ThumbRow article={a} />
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="min-w-0 space-y-4 lg:col-span-3">
+              <EpaperCard cover={pick(articles, 1, 11)[0]} />
+              <ArchiveCalendar />
+            </div>
+          </div>
+        </section>
+
+        {/* ================= বিনোদন ================= */}
+        <section className="mt-8">
+          <BarHeading title="বিনোদন" slug="binodon" />
+          <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+            {pick(ent.length ? ent : articles, 4, 2).map((a, i) => (
+              <Reveal key={`${a.id}-${i}`} delay={i * 60}>
+                <GridCard article={a} compact />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* ================= খেলা + social ================= */}
+        <section className="mt-8">
+          <BarHeading title="খেলা" slug="khela" />
+          <div className="grid gap-5 lg:grid-cols-12">
+            <div className="min-w-0 lg:col-span-9">
+              <div className="grid gap-5 lg:grid-cols-12">
+                <div className="min-w-0 lg:col-span-6">
+                  <LeadCard article={sports[0] ?? articles[9]!} />
+                </div>
+                <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-6">
+                  {pick(sports.length ? sports : articles, 4, 1).map((a, i) => (
+                    <Reveal key={`${a.id}-${i}`} delay={i * 60}>
                       <GridCard article={a} compact />
                     </Reveal>
                   ))}
                 </div>
-              </section>
-            );
-          })}
+              </div>
+            </div>
+            <div className="min-w-0 space-y-4 lg:col-span-3">
+              <SocialFollow />
+              <AdSlot h="h-52" />
+            </div>
+          </div>
+        </section>
 
+        {/* ================= অপরাধ ================= */}
+        <section className="mt-8">
+          <BarHeading title="অপরাধ" slug="apradh" />
+          <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+            {pick(crime.length ? crime : articles, 4).map((a, i) => (
+              <Reveal key={`${a.id}-${i}`} delay={i * 60}>
+                <GridCard article={a} compact />
+              </Reveal>
+            ))}
+          </div>
+        </section>
       </main>
+
+      {/* ================= PHOTO GALLERY (dark) ================= */}
+      <PhotoGallery items={pick(articles, 6, 4)} />
 
       <SiteFooter />
     </div>
