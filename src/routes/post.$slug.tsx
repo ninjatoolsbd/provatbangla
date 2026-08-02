@@ -15,10 +15,10 @@ export const Route = createFileRoute("/post/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "সংবাদটি পাওয়া যায়নি — কালবেলা" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "সংবাদটি পাওয়া যায়নি — প্রভাতবাংলা" }, { name: "robots", content: "noindex" }] };
     }
     const p = loaderData.post;
-    const title = p.seo_title || `${p.title} — কালবেলা`;
+    const title = p.seo_title || `${p.title} — প্রভাতবাংলা`;
     const desc = (p.seo_description || p.excerpt).slice(0, 155);
     return {
       meta: [

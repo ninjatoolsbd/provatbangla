@@ -27,9 +27,9 @@ import { fetchAllPostsForAdmin, slugify, banglaDateTime, type Post } from "@/lib
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "নিউজ লিখুন — কালবেলা অ্যাডমিন" },
+      { title: "নিউজ লিখুন — প্রভাতবাংলা অ্যাডমিন" },
       { name: "description", content: "AI রিরাইট সহ নিউজ লেখা ও প্রকাশের অ্যাডমিন প্যানেল।" },
-      { property: "og:title", content: "নিউজ লিখুন — কালবেলা অ্যাডমিন" },
+      { property: "og:title", content: "নিউজ লিখুন — প্রভাতবাংলা অ্যাডমিন" },
       { property: "og:description", content: "AI রিরাইট সহ নিউজ লেখা ও প্রকাশ।" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

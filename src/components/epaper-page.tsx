@@ -15,7 +15,7 @@ export function EpaperPage({ pageNo, label, date = "২ আগস্ট ২০�
   return (
     <img
       src={epaperPageImage(pageNo)}
-      alt={`কালবেলা ই-পেপার — পৃষ্ঠা ${pageNo}, ${label}, ${date}`}
+      alt={`প্রভাতবাংলা ই-পেপার — পৃষ্ঠা ${pageNo}, ${label}, ${date}`}
       loading="lazy"
       className={`aspect-[3/4] w-full bg-[#f7f4ec] object-cover object-top shadow-inner ${className}`}
     />

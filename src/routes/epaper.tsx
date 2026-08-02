@@ -17,13 +17,13 @@ const bn = (n: number | string) =>
 export const Route = createFileRoute("/epaper")({
   head: () => ({
     meta: [
-      { title: "কালবেলা ই-পেপার — আজকের পত্রিকার সব পাতা" },
+      { title: "প্রভাতবাংলা ই-পেপার — আজকের পত্রিকার সব পাতা" },
       {
         name: "description",
         content:
-          "কালবেলা ই-পেপারে আজকের ছাপা পত্রিকার প্রথম পাতা থেকে শেষ পাতা পর্যন্ত সব পৃষ্ঠা পড়ুন। (ডেমো)",
+          "প্রভাতবাংলা ই-পেপারে আজকের ছাপা পত্রিকার প্রথম পাতা থেকে শেষ পাতা পর্যন্ত সব পৃষ্ঠা পড়ুন। (ডেমো)",
       },
-      { property: "og:title", content: "কালবেলা ই-পেপার" },
+      { property: "og:title", content: "প্রভাতবাংলা ই-পেপার" },
       { property: "og:description", content: "আজকের ছাপা পত্রিকার সব পাতা এক জায়গায়।" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -42,7 +42,7 @@ function EpaperRoutePage() {
       <SiteHeader />
       <main className="mx-auto max-w-[1240px] px-4 py-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-primary pb-2">
-          <h1 className="font-display text-2xl font-extrabold">কালবেলা ই-পেপার</h1>
+          <h1 className="font-display text-2xl font-extrabold">প্রভাতবাংলা ই-পেপার</h1>
           <span className="text-sm text-muted-foreground">২ আগস্ট ২০২৬, রোববার</span>
         </div>
 

@@ -14,12 +14,12 @@ export const Route = createFileRoute("/news/$id")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "সংবাদটি পাওয়া যায়নি — কালবেলা" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "সংবাদটি পাওয়া যায়নি — প্রভাতবাংলা" }, { name: "robots", content: "noindex" }] };
     }
     const { article } = loaderData;
     return {
       meta: [
-        { title: `${article.title} — কালবেলা` },
+        { title: `${article.title} — প্রভাতবাংলা` },
         { name: "description", content: article.excerpt.slice(0, 155) },
         { property: "og:title", content: article.title },
         { property: "og:description", content: article.excerpt.slice(0, 155) },
