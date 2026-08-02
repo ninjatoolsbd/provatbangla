@@ -45,7 +45,7 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
   const list = tab === "video" ? video : photo;
 
   return (
-    <div className="border border-border">
+    <div className="border border-border bg-card">
       <div className="flex items-center gap-6 border-b border-border px-3">
         {(
           [
@@ -67,27 +67,27 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
           </button>
         ))}
       </div>
-      <div className="flex gap-2 overflow-x-auto p-3">
-        {list.map((a) => (
+      <div className="flex flex-col gap-3 p-3">
+        {list.slice(0, 4).map((a) => (
           <Link
             key={a.id}
             to="/news/$id"
             params={{ id: String(a.id) }}
-            className="group relative block w-[190px] shrink-0 overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+            className="group relative block overflow-hidden"
           >
             <img
               src={a.image}
               alt={a.title}
-              className="aspect-[9/14] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
               loading="lazy"
             />
-            <span className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+            <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
             {tab === "video" && (
-              <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
-                <Play className="size-5 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
+              <span className="absolute top-1/2 left-1/2 grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
+                <Play className="size-4 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
               </span>
             )}
-            <span className="absolute right-2 bottom-2 left-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
+            <span className="absolute right-3 bottom-2 left-3 line-clamp-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
               {a.title}
             </span>
           </Link>
