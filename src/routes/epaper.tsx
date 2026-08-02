@@ -82,11 +82,9 @@ function EpaperPage() {
               </div>
             </div>
             <div className="border border-border bg-card p-3">
-              <img
-                src={img}
-                alt={`কালবেলা ই-পেপার ${page.label}`}
-                className="mx-auto aspect-[3/4] w-full max-w-[720px] object-cover"
-              />
+              <div className="mx-auto w-full max-w-[720px]">
+                <EpaperPage pageNo={page.no} label={page.label} />
+              </div>
             </div>
           </div>
         </div>
