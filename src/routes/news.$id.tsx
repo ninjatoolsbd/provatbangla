@@ -83,7 +83,7 @@ function NewsPage() {
 
             <div className="mt-6 space-y-4 text-[17px] leading-[1.9] text-foreground/90">
               <p className="font-semibold">{article.excerpt}</p>
-              {article.body.map((p, i) => (
+              {article.body.map((p: string, i: number) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
