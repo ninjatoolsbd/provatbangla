@@ -310,7 +310,7 @@ export function EpaperCard({ cover }: { cover?: Article | undefined }) {
       </div>
       <div className="p-3">
         <img
-          src={cover?.image ?? "https://picsum.photos/seed/kbepaper/600/800"}
+          src="https://epaper.kalbela.com/2026/08/02/2nd-Edition/pages/page01.jpg"
           alt="আজকের ই-পেপার"
           className="aspect-[3/4] w-full border border-border object-cover"
           loading="lazy"
