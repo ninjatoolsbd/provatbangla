@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BreakingTicker } from "@/components/breaking-ticker";
+import { Reveal } from "@/components/reveal";
 import {
   GridCard,
   LeadCard,
@@ -55,7 +56,7 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
             key={key}
             onClick={() => setTab(key)}
             className={cn(
-              "-mb-px border-b-2 py-2.5 font-display text-[17px] font-bold",
+              "-mb-px border-b-2 py-2.5 font-display text-[17px] font-bold transition-all duration-300",
               tab === key
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground",
@@ -71,18 +72,18 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
             key={a.id}
             to="/news/$id"
             params={{ id: String(a.id) }}
-            className="group relative block w-[190px] shrink-0 overflow-hidden"
+            className="group relative block w-[190px] shrink-0 overflow-hidden transition-transform duration-300 hover:-translate-y-1"
           >
             <img
               src={a.image}
               alt={a.title}
-              className="aspect-[9/14] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="aspect-[9/14] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
               loading="lazy"
             />
             <span className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
             {tab === "video" && (
               <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
-                <Play className="size-5 fill-primary text-primary" />
+                <Play className="size-5 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
               </span>
             )}
             <span className="absolute right-2 bottom-2 left-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
@@ -123,8 +124,10 @@ function Home() {
           <div className="lg:col-span-5 xl:col-span-6">
             {lead && <SplitLead article={lead} />}
             <div className="mt-5 grid gap-5 sm:grid-cols-3">
-              {sub.map((a) => (
-                <GridCard key={a.id} article={a} compact />
+              {sub.map((a, i) => (
+                <Reveal key={a.id} delay={i * 60}>
+                  <GridCard article={a} compact />
+                </Reveal>
               ))}
             </div>
           </div>
@@ -141,19 +144,21 @@ function Home() {
                   <img
                     src={midLead.image}
                     alt={midLead.title}
-                    className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
                   />
                 </Link>
                 <Link to="/news/$id" params={{ id: String(midLead.id) }}>
-                  <h2 className="mt-2.5 border-b border-border pb-3 font-display text-[21px] leading-snug font-bold group-hover:text-primary">
+                  <h2 className="mt-2.5 border-b border-border pb-3 font-display text-[21px] leading-snug font-bold transition-colors group-hover:text-primary">
                     {midLead.title}
                   </h2>
                 </Link>
               </article>
             )}
             <div>
-              {midList.map((a) => (
-                <ThumbRow key={a.id} article={a} />
+              {midList.map((a, i) => (
+                <Reveal key={a.id} delay={i * 60}>
+                  <ThumbRow article={a} />
+                </Reveal>
               ))}
             </div>
           </div>
@@ -177,8 +182,10 @@ function Home() {
             <div className="grid gap-6 lg:grid-cols-12">
               <div className="lg:col-span-5">{crime[0] && <LeadCard article={crime[0]} />}</div>
               <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
-                {crime.slice(1).map((a) => (
-                  <GridCard key={a.id} article={a} compact />
+                {crime.slice(1).map((a, i) => (
+                  <Reveal key={a.id} delay={i * 70}>
+                    <GridCard article={a} compact />
+                  </Reveal>
                 ))}
               </div>
             </div>
@@ -186,7 +193,9 @@ function Home() {
           <div className="lg:col-span-3">
             <SectionHeading title="সর্বাধিক পঠিত" />
             {popular.map((a, i) => (
-              <ListRow key={a.id} article={a} index={i} />
+              <Reveal key={a.id} delay={i * 50}>
+                <ListRow article={a} index={i} />
+              </Reveal>
             ))}
           </div>
         </section>
@@ -200,8 +209,10 @@ function Home() {
               <section key={c.slug} className="mt-10">
                 <SectionHeading title={c.name} slug={c.slug} />
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                  {list.slice(0, 4).map((a) => (
-                    <GridCard key={a.id} article={a} compact />
+                  {list.slice(0, 4).map((a, i) => (
+                    <Reveal key={a.id} delay={i * 70}>
+                      <GridCard article={a} compact />
+                    </Reveal>
                   ))}
                 </div>
               </section>
