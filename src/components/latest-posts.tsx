@@ -53,7 +53,7 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                 <p className="mt-1 text-xs text-muted-foreground">
                   {categoryName(p.category)} · {banglaDateTime(p.published_at ?? p.created_at)}
                 </p>
-                {p.excerpt && i === 0 && data.length < 4 && (
+                {p.excerpt && featured && (
                   <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                     {p.excerpt}
                   </p>
@@ -61,7 +61,8 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
               </div>
             </article>
           </Reveal>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
