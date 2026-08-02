@@ -15,12 +15,20 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="mt-8">
+    <section className="mb-8">
       <SectionHeading title="সর্বশেষ প্রকাশিত" />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {data.map((p, i) => (
-          <Reveal key={p.id} delay={i * 60}>
-            <article className="group">
+      <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        {data.map((p, i) => {
+          const featured = i === 0 && data.length < 4;
+          return (
+          <Reveal
+            key={p.id}
+            delay={i * 60}
+            className={featured ? "sm:col-span-2 lg:col-span-4" : ""}
+          >
+            <article className={featured ? "group grid gap-4 sm:grid-cols-2" : "group"}>
+
+
               {p.image_url && (
                 <Link
                   to="/post/$slug"
@@ -35,18 +43,26 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                   />
                 </Link>
               )}
-              <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                <h3 className="mt-2.5 font-display text-[17px] leading-[1.4] font-bold transition-colors group-hover:text-primary">
-                  {p.kicker && <span className="text-primary">{p.kicker} / </span>}
-                  {p.title}
-                </h3>
-              </Link>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {categoryName(p.category)} · {banglaDateTime(p.published_at ?? p.created_at)}
-              </p>
+              <div>
+                <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                  <h3 className="font-display text-[17px] leading-[1.4] font-bold transition-colors group-hover:text-primary sm:mt-0">
+                    {p.kicker && <span className="text-primary">{p.kicker} / </span>}
+                    {p.title}
+                  </h3>
+                </Link>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {categoryName(p.category)} · {banglaDateTime(p.published_at ?? p.created_at)}
+                </p>
+                {p.excerpt && featured && (
+                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                    {p.excerpt}
+                  </p>
+                )}
+              </div>
             </article>
           </Reveal>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

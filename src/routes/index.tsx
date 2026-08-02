@@ -45,7 +45,7 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
   const list = tab === "video" ? video : photo;
 
   return (
-    <div className="border border-border">
+    <div className="border border-border bg-card">
       <div className="flex items-center gap-6 border-b border-border px-3">
         {(
           [
@@ -67,27 +67,27 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
           </button>
         ))}
       </div>
-      <div className="flex gap-2 overflow-x-auto p-3">
-        {list.map((a) => (
+      <div className="flex flex-col gap-3 p-3">
+        {list.slice(0, 4).map((a) => (
           <Link
             key={a.id}
             to="/news/$id"
             params={{ id: String(a.id) }}
-            className="group relative block w-[190px] shrink-0 overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+            className="group relative block overflow-hidden"
           >
             <img
               src={a.image}
               alt={a.title}
-              className="aspect-[9/14] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
               loading="lazy"
             />
-            <span className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+            <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
             {tab === "video" && (
-              <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
-                <Play className="size-5 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
+              <span className="absolute top-1/2 left-1/2 grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
+                <Play className="size-4 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
               </span>
             )}
-            <span className="absolute right-2 bottom-2 left-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
+            <span className="absolute right-3 bottom-2 left-3 line-clamp-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
               {a.title}
             </span>
           </Link>
@@ -119,14 +119,13 @@ function Home() {
       <BreakingTicker />
 
 
-      <main className="mx-auto max-w-[1240px] px-4 py-5">
+      <main className="mx-auto max-w-[1240px] px-4 py-6">
         <LatestPosts />
-        <section className="grid gap-6 lg:grid-cols-12">
-
+        <section className="grid gap-6 lg:grid-cols-12 lg:divide-x lg:divide-border">
           {/* left: hero + 6 cards */}
-          <div className="lg:col-span-5 xl:col-span-6">
+          <div className="min-w-0 lg:col-span-5 lg:pr-6 xl:col-span-6">
             {lead && <SplitLead article={lead} />}
-            <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            <div className="mt-5 grid gap-x-5 gap-y-6 sm:grid-cols-3">
               {sub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a} compact />
@@ -136,7 +135,7 @@ function Home() {
           </div>
 
           {/* middle: photo lead + thumb list */}
-          <div className="lg:col-span-4 xl:col-span-3">
+          <div className="min-w-0 lg:col-span-4 lg:pr-6 xl:col-span-3">
             {midLead && (
               <article className="group">
                 <Link
@@ -167,24 +166,24 @@ function Home() {
           </div>
 
           {/* right: story tabs + ad */}
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <StoryTabs video={articles.slice(0, 5)} photo={articles.slice(5, 10)} />
-            <div className="mt-5 flex h-64 items-center justify-center bg-secondary text-xs text-muted-foreground">
+            <div className="mt-5 flex h-64 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
               বিজ্ঞাপন
             </div>
           </div>
         </section>
 
-        <div className="my-8 flex h-24 items-center justify-center bg-secondary text-xs text-muted-foreground">
+        <div className="my-8 flex h-24 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
           বিজ্ঞাপন
         </div>
 
         <section className="grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-9">
+          <div className="min-w-0 lg:col-span-9">
             <SectionHeading title={categoryName("apradh")} slug="apradh" />
             <div className="grid gap-6 lg:grid-cols-12">
               <div className="lg:col-span-5">{crime[0] && <LeadCard article={crime[0]} />}</div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:col-span-7">
                 {crime.slice(1).map((a, i) => (
                   <Reveal key={a.id} delay={i * 70}>
                     <GridCard article={a} compact />
@@ -193,7 +192,7 @@ function Home() {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-3">
+          <div className="min-w-0 border-t border-border pt-4 lg:col-span-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
             <SectionHeading title="সর্বাধিক পঠিত" />
             {popular.map((a, i) => (
               <Reveal key={a.id} delay={i * 50}>
@@ -205,13 +204,16 @@ function Home() {
 
         {categories
           .filter((c) => !["jatiyo", "apradh"].includes(c.slug))
-          .map((c) => {
+          .map((c, ci) => {
             const list = byCategory(c.slug);
             if (list.length === 0) return null;
             return (
-              <section key={c.slug} className="mt-10">
+              <section
+                key={c.slug}
+                className={cn("mt-10 -mx-4 px-4 py-6", ci % 2 === 1 && "bg-secondary/60")}
+              >
                 <SectionHeading title={c.name} slug={c.slug} />
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
                   {list.slice(0, 4).map((a, i) => (
                     <Reveal key={a.id} delay={i * 70}>
                       <GridCard article={a} compact />
@@ -221,6 +223,7 @@ function Home() {
               </section>
             );
           })}
+
       </main>
 
       <SiteFooter />

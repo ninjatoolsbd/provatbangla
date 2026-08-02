@@ -28,26 +28,25 @@ function Kicker({ article }: { article: Article }) {
 /** Big story: image on the left, headline + excerpt on the right (kalbela hero). */
 export function SplitLead({ article }: { article: Article }) {
   return (
-    <article className="group kb-lift grid gap-4 border border-border bg-card p-3 sm:grid-cols-2">
+    <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
         <img
           src={article.image}
           alt={article.title}
-          className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
+          className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           loading="eager"
         />
       </ArticleLink>
-      <div>
-        <ArticleLink article={article}>
-          <h2 className="font-display text-[26px] leading-[1.35] font-bold transition-colors group-hover:text-primary">
-            <Kicker article={article} />
-            {article.title}
-          </h2>
-        </ArticleLink>
-        <p className="mt-2 line-clamp-5 text-[15px] leading-relaxed text-muted-foreground">
-          {article.excerpt}
-        </p>
-      </div>
+      <ArticleLink article={article}>
+        <h2 className="mt-3 font-display text-[30px] leading-[1.3] font-bold transition-colors group-hover:text-primary">
+          <Kicker article={article} />
+          {article.title}
+        </h2>
+      </ArticleLink>
+      <p className="mt-2 line-clamp-3 text-[15px] leading-relaxed text-muted-foreground">
+        {article.excerpt}
+      </p>
+      <div className="mt-3 h-px w-full bg-border" />
     </article>
   );
 }
