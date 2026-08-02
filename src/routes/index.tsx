@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { EpaperSection } from "@/components/epaper-section";
 import { BreakingTicker } from "@/components/breaking-ticker";
 import { LatestPosts } from "@/components/latest-posts";
 import { Reveal } from "@/components/reveal";
@@ -410,6 +411,8 @@ function Home() {
           </div>
         </section>
       </main>
+
+      <EpaperSection />
 
       {/* ================= PHOTO GALLERY (dark) ================= */}
       <PhotoGallery items={pick(articles, 6, 4)} />

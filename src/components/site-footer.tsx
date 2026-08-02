@@ -1,56 +1,131 @@
 import { Link } from "@tanstack/react-router";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 
 import { categories } from "@/lib/news-data";
 
+const socials = [
+  { Icon: Facebook, label: "Facebook" },
+  { Icon: Youtube, label: "YouTube" },
+  { Icon: Instagram, label: "Instagram" },
+  { Icon: Linkedin, label: "LinkedIn" },
+];
+
+const extraLinks = [
+  "আমাদের সম্পর্কে",
+  "যোগাযোগ",
+  "বিজ্ঞাপন",
+  "গোপনীয়তা নীতি",
+  "শর্তাবলি",
+  "আর্কাইভ",
+];
+
 export function SiteFooter() {
   return (
-    <footer className="mt-12 bg-ink text-ink-foreground">
-      <div className="mx-auto max-w-[1200px] px-4 py-10">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div>
-            <span className="font-display text-3xl font-extrabold">কালবেলা</span>
-            <p className="mt-3 text-sm text-ink-muted">
-              এটি একটি ডেমো সংবাদমাধ্যম। এখানে প্রকাশিত সব সংবাদ, ছবি ও নাম কেবল উদাহরণ
-              হিসেবে ব্যবহৃত হয়েছে।
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-3 text-sm font-bold">বিভাগ</h3>
-            <ul className="space-y-2 text-sm text-ink-muted">
-              {categories.slice(0, 6).map((c) => (
-                <li key={c.slug}>
-                  <Link to="/category/$slug" params={{ slug: c.slug }} className="hover:text-ink-foreground">
-                    {c.name}
+    <footer className="mt-10">
+      {/* top strip: category link cloud */}
+      <div className="bg-primary text-primary-foreground">
+        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 py-3 text-sm font-semibold">
+          {categories.map((c) => (
+            <Link
+              key={c.slug}
+              to="/category/$slug"
+              params={{ slug: c.slug }}
+              className="transition-opacity hover:opacity-75"
+            >
+              {c.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* main dark footer */}
+      <div className="bg-ink text-ink-foreground">
+        <div className="mx-auto max-w-[1240px] px-4 py-9">
+          <div className="grid gap-8 md:grid-cols-12">
+            {/* brand + editor info */}
+            <div className="md:col-span-4">
+              <Link to="/" className="font-display text-3xl font-extrabold">
+                কালবেলা
+              </Link>
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                সম্পাদক ও প্রকাশক: <span className="text-ink-foreground">ডেমো সম্পাদক</span>
+                <br />
+                ব্যবস্থাপনা সম্পাদক: ডেমো ব্যবস্থাপক
+                <br />
+                প্রকাশনায়: কালবেলা ডেমো মিডিয়া লিমিটেড
+              </p>
+              <div className="mt-4 flex gap-2">
+                {socials.map(({ Icon, label }) => (
+                  <a
+                    key={label}
+                    href="#"
+                    aria-label={label}
+                    className="flex size-9 items-center justify-center border border-white/15 transition-colors hover:bg-primary"
+                  >
+                    <Icon className="size-4" />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* contact */}
+            <div className="md:col-span-4">
+              <h3 className="mb-3 border-b border-white/10 pb-2 font-display text-base font-bold">
+                যোগাযোগ
+              </h3>
+              <ul className="space-y-2.5 text-sm text-ink-muted">
+                <li className="flex gap-2">
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
+                  বার্তাকক্ষ ও বাণিজ্যিক কার্যালয়: বাড়ি ৩৯১, রোড ২৯, নিউ ডিওএইচএস, মহাখালী, ঢাকা ১২০৬
+                </li>
+                <li className="flex gap-2">
+                  <Phone className="mt-0.5 size-4 shrink-0 text-primary" />
+                  ফোন: ০২-৫৫০০০০০০, ০১৭০০-০০০০০০
+                </li>
+                <li className="flex gap-2">
+                  <Mail className="mt-0.5 size-4 shrink-0 text-primary" />
+                  ইমেইল: news@demo-kalbela.test · ad@demo-kalbela.test
+                </li>
+              </ul>
+            </div>
+
+            {/* other links + epaper */}
+            <div className="md:col-span-4">
+              <h3 className="mb-3 border-b border-white/10 pb-2 font-display text-base font-bold">
+                অন্যান্য
+              </h3>
+              <ul className="grid grid-cols-2 gap-y-2 text-sm text-ink-muted">
+                {extraLinks.map((l) => (
+                  <li key={l}>
+                    <a href="#" className="transition-colors hover:text-ink-foreground">
+                      {l}
+                    </a>
+                  </li>
+                ))}
+                <li>
+                  <Link to="/epaper" className="transition-colors hover:text-ink-foreground">
+                    ই-পেপার
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-3 text-sm font-bold">আরও</h3>
-            <ul className="space-y-2 text-sm text-ink-muted">
-              {categories.slice(6).map((c) => (
-                <li key={c.slug}>
-                  <Link to="/category/$slug" params={{ slug: c.slug }} className="hover:text-ink-foreground">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="mb-3 text-sm font-bold">যোগাযোগ</h3>
-            <p className="text-sm text-ink-muted">
-              বার্তাকক্ষ: ঢাকা, বাংলাদেশ
-              <br />
-              ইমেইল: news@demo-kalbela.test
-              <br />
-              ফোন: ০২-৫৫০০০০০০
-            </p>
+              </ul>
+              <Link
+                to="/epaper"
+                className="mt-4 inline-block bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                আজকের ই-পেপার পড়ুন
+              </Link>
+            </div>
           </div>
         </div>
-        <div className="mt-8 border-t border-white/10 pt-5 text-xs text-ink-muted">
-          © ২০২৬ কালবেলা ডেমো। সর্বস্বত্ব সংরক্ষিত।
+
+        {/* bottom bar */}
+        <div className="border-t border-white/10">
+          <div className="mx-auto flex max-w-[1240px] flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-ink-muted md:flex-row">
+            <span>© ২০২৬ কালবেলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span>
+              এটি একটি ডেমো সংবাদমাধ্যম — সব সংবাদ, ছবি ও নাম কেবল উদাহরণ হিসেবে ব্যবহৃত।
+            </span>
+          </div>
         </div>
       </div>
     </footer>
