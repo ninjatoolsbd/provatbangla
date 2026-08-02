@@ -100,7 +100,7 @@ function Home() {
   const lead = national[0];
   const crime = byCategory("apradh");
   const world = byCategory("antorjatik");
-  const latest = articles.slice(0, 10);
+  
   const popular = [...articles].slice(10, 15);
   const midLead = world[1] ?? articles[3];
   const midList = [crime[0], world[0], national[3], world[1], national[4]].filter(
