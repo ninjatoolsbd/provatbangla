@@ -3,6 +3,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GridCard, LeadCard, SectionHeading } from "@/components/news-cards";
+import { LatestPosts } from "@/components/latest-posts";
 import { byCategory, categories, categoryName } from "@/lib/news-data";
 
 export const Route = createFileRoute("/category/$slug")({
