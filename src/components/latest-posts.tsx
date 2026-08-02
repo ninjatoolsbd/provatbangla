@@ -18,20 +18,16 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
     <section className="mb-8">
       <SectionHeading title="সর্বশেষ প্রকাশিত" />
       <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-        {data.map((p, i) => (
+        {data.map((p, i) => {
+          const featured = i === 0 && data.length < 4;
+          return (
           <Reveal
             key={p.id}
             delay={i * 60}
-            className={i === 0 && data.length < 4 ? "sm:col-span-2" : ""}
+            className={featured ? "sm:col-span-2 lg:col-span-4" : ""}
           >
+            <article className={featured ? "group grid gap-4 sm:grid-cols-2" : "group"}>
 
-            <article
-              className={
-                i === 0 && data.length < 4
-                  ? "group grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"
-                  : "group"
-              }
-            >
 
               {p.image_url && (
                 <Link
