@@ -101,8 +101,8 @@ export function BreakingTicker() {
                 to="/news/$id"
                 params={{ id: String(a.id) }}
                 className={cn(
-                  "text-sm font-semibold transition-colors hover:text-primary",
-                  i % items.length === 0 && pulse && "text-primary",
+                  "kb-underline text-sm font-semibold transition-colors hover:text-primary",
+                  i % items.length === 0 && pulse && "kb-headline-in text-primary",
                 )}
               >
                 {a.title}
@@ -116,7 +116,7 @@ export function BreakingTicker() {
           onClick={() => setPaused((v) => !v)}
           aria-label={paused ? "টিকার চালু করুন" : "টিকার থামান"}
           aria-pressed={paused}
-          className="shrink-0 rounded-full border border-border bg-background p-1.5 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="shrink-0 rounded-full border border-border bg-background p-1.5 text-muted-foreground transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary active:scale-95"
         >
           {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
         </button>

@@ -29,7 +29,7 @@ export function SiteHeader() {
 
         <Link to="/" className="flex shrink-0 flex-col items-center leading-none">
           <span className="text-[9px] tracking-[0.2em] text-muted-foreground">দৈনিক</span>
-          <span className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-[2.6rem]">
+          <span className="font-display text-3xl font-extrabold tracking-tight text-foreground transition-transform duration-300 hover:scale-[1.03] sm:text-[2.6rem]">
             কাল<span className="text-primary">বেলা</span>
           </span>
           <span className="mt-0.5 text-[8px] tracking-[0.3em] text-muted-foreground">
@@ -41,7 +41,7 @@ export function SiteHeader() {
           {utility.map((u) => (
             <span
               key={u.label}
-              className="flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-foreground/80 hover:text-primary"
+              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-foreground/80 transition-colors hover:text-primary"
             >
               <u.icon className="size-4 text-muted-foreground" />
               {u.label}
@@ -51,14 +51,14 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-3 xl:ml-0">
           <button
-            className="rounded-full border border-border p-2 hover:text-primary"
+            className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
             aria-label="অনুসন্ধান"
           >
             <Search className="size-4" />
           </button>
-          <button className="relative rounded-full border border-border p-2" aria-label="নোটিফিকেশন">
+          <button className="relative rounded-full border border-border p-2 transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary" aria-label="নোটিফিকেশন">
             <Bell className="size-4" />
-            <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
+            <span className="kb-live-dot absolute top-1 right-1 size-2 rounded-full bg-primary text-primary" />
           </button>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function SiteHeader() {
         <div className="mx-auto hidden max-w-[1240px] items-center justify-center gap-1 px-4 lg:flex">
           <Link
             to="/"
-            className="flex items-center px-3 py-2.5 text-[15px] font-bold hover:text-primary"
+            className="flex items-center px-3 py-2.5 text-[15px] font-bold transition-transform duration-300 hover:scale-110 hover:text-primary"
             activeOptions={{ exact: true }}
             activeProps={{ className: "text-primary" }}
             aria-label="প্রচ্ছদ"
@@ -79,7 +79,7 @@ export function SiteHeader() {
               key={c.slug}
               to="/category/$slug"
               params={{ slug: c.slug }}
-              className="px-3 py-2.5 text-[15px] font-bold whitespace-nowrap hover:text-primary"
+              className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary"
               activeProps={{ className: "text-primary" }}
             >
               {c.name}
@@ -89,7 +89,7 @@ export function SiteHeader() {
         </div>
 
         {open && (
-          <div className="grid grid-cols-2 gap-px bg-border lg:hidden">
+          <div className="kb-slide-down grid grid-cols-2 gap-px bg-border lg:hidden">
             <Link
               to="/"
               onClick={() => setOpen(false)}
