@@ -24,9 +24,10 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
           <Reveal
             key={p.id}
             delay={i * 60}
-            className={featured ? "sm:col-span-2 lg:col-span-4" : ""}
+            className={featured ? "sm:col-span-2" : ""}
           >
-            <article className={featured ? "group grid gap-4 sm:grid-cols-2" : "group"}>
+            <article className="group">
+
 
 
               {p.image_url && (
