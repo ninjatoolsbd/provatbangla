@@ -68,7 +68,7 @@ function AdminPage() {
   const [versions, setVersions] = useState<Version[]>([]);
 
   useEffect(() => {
-    if (!loading && !isAdmin) void navigate({ to: "/auth" });
+    if (!loading && !isAdmin) void navigate({ to: "/auth", search: { mode: "login" } });
   }, [loading, isAdmin, navigate]);
 
   const postsQuery = useQuery({
