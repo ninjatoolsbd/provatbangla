@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { rewriteNews } from "@/lib/news.functions";
+import { generateNews, rewriteNews } from "@/lib/news.functions";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify, banglaDateTime, type Post } from "@/lib/posts";
 
@@ -53,6 +53,16 @@ function AdminPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const rewrite = useServerFn(rewriteNews);
+  const generate = useServerFn(generateNews);
+
+  const [genPrompt, setGenPrompt] = useState("");
+  const [genDetails, setGenDetails] = useState("");
+  const [genCategory, setGenCategory] = useState("jatiyo");
+  const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
+  const [genImage, setGenImage] = useState(true);
+  const [genAutoPublish, setGenAutoPublish] = useState(true);
+  const [genProvider, setGenProvider] = useState("auto");
+
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
