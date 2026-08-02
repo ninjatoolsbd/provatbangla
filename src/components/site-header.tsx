@@ -1,81 +1,100 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X } from "lucide-react";
+import { Bell, BookOpen, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
 import { useState } from "react";
 
 import { banglaDate, categories } from "@/lib/news-data";
+
+const utility = [
+  { icon: Newspaper, label: "আজকের পত্রিকা" },
+  { icon: BookOpen, label: "ই-পেপার" },
+  { icon: Newspaper, label: "ম্যাগাজিন" },
+  { icon: BookOpen, label: "আর্কাইভ" },
+  { icon: Share2, label: "সোশ্যাল মিডিয়া" },
+  { icon: Languages, label: "বাংলা কনভার্টার" },
+];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="border-b border-border bg-background">
-      <div className="border-b border-border bg-secondary">
-        <div className="mx-auto flex h-9 max-w-[1200px] items-center justify-between px-4 text-xs text-muted-foreground">
-          <span>{banglaDate}</span>
-          <div className="hidden gap-4 sm:flex">
-            <Link to="/category/$slug" params={{ slug: "motamot" }} className="hover:text-primary">
-              মতামত
-            </Link>
-            <span>ই-পেপার</span>
-            <span>আর্কাইভ</span>
-            <span>যোগাযোগ</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4">
+    <header className="sticky top-0 z-40 bg-background shadow-[0_1px_0_0_var(--border)]">
+      <div className="mx-auto flex max-w-[1240px] items-center gap-6 px-4 py-3">
         <button
-          className="rounded-md border border-border p-2 lg:hidden"
+          className="p-1 lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="মেনু"
         >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex flex-col items-center leading-none">
-          <span className="font-display text-4xl font-extrabold tracking-tight text-primary sm:text-5xl">
-            কালবেলা
+        <Link to="/" className="flex shrink-0 flex-col items-center leading-none">
+          <span className="text-[9px] tracking-[0.2em] text-muted-foreground">দৈনিক</span>
+          <span className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-[2.6rem]">
+            কাল<span className="text-primary">বেলা</span>
           </span>
-          <span className="mt-1 text-[10px] tracking-[0.35em] text-muted-foreground">
-            DEMO NEWS
+          <span className="mt-0.5 text-[8px] tracking-[0.3em] text-muted-foreground">
+            সত্যের সন্ধানে
           </span>
         </Link>
 
-        <div className="hidden h-16 w-[420px] items-center justify-center rounded-md bg-secondary text-xs text-muted-foreground lg:flex">
-          বিজ্ঞাপন
-        </div>
+        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
+          {utility.map((u) => (
+            <span
+              key={u.label}
+              className="flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-foreground/80 hover:text-primary"
+            >
+              <u.icon className="size-4 text-muted-foreground" />
+              {u.label}
+            </span>
+          ))}
+        </nav>
 
-        <button className="rounded-md border border-border p-2" aria-label="অনুসন্ধান">
-          <Search className="size-5" />
-        </button>
+        <div className="ml-auto flex items-center gap-3 xl:ml-0">
+          <button
+            className="rounded-full border border-border p-2 hover:text-primary"
+            aria-label="অনুসন্ধান"
+          >
+            <Search className="size-4" />
+          </button>
+          <button className="relative rounded-full border border-border p-2" aria-label="নোটিফিকেশন">
+            <Bell className="size-4" />
+            <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
+          </button>
+        </div>
       </div>
 
-      <nav className="bg-primary text-primary-foreground">
-        <div className="mx-auto hidden max-w-[1200px] items-center gap-1 overflow-x-auto px-4 lg:flex">
+      <div className="border-y border-border">
+        <div className="mx-auto hidden max-w-[1240px] items-center justify-center gap-1 px-4 lg:flex">
           <Link
             to="/"
-            className="px-3 py-2.5 text-sm font-semibold whitespace-nowrap hover:bg-primary-hover"
+            className="flex items-center px-3 py-2.5 text-[15px] font-bold hover:text-primary"
             activeOptions={{ exact: true }}
-            activeProps={{ className: "bg-primary-hover" }}
+            activeProps={{ className: "text-primary" }}
+            aria-label="প্রচ্ছদ"
           >
-            প্রচ্ছদ
+            <Home className="size-[18px]" />
           </Link>
           {categories.map((c) => (
             <Link
               key={c.slug}
               to="/category/$slug"
               params={{ slug: c.slug }}
-              className="px-3 py-2.5 text-sm font-semibold whitespace-nowrap hover:bg-primary-hover"
-              activeProps={{ className: "bg-primary-hover" }}
+              className="px-3 py-2.5 text-[15px] font-bold whitespace-nowrap hover:text-primary"
+              activeProps={{ className: "text-primary" }}
             >
               {c.name}
             </Link>
           ))}
+          <span className="ml-2 hidden text-xs text-muted-foreground 2xl:inline">{banglaDate}</span>
         </div>
 
         {open && (
-          <div className="grid grid-cols-2 gap-px bg-primary-hover lg:hidden">
-            <Link to="/" onClick={() => setOpen(false)} className="bg-primary px-4 py-2.5 text-sm font-semibold">
+          <div className="grid grid-cols-2 gap-px bg-border lg:hidden">
+            <Link
+              to="/"
+              onClick={() => setOpen(false)}
+              className="bg-background px-4 py-2.5 text-sm font-bold"
+            >
               প্রচ্ছদ
             </Link>
             {categories.map((c) => (
@@ -84,14 +103,14 @@ export function SiteHeader() {
                 to="/category/$slug"
                 params={{ slug: c.slug }}
                 onClick={() => setOpen(false)}
-                className="bg-primary px-4 py-2.5 text-sm font-semibold"
+                className="bg-background px-4 py-2.5 text-sm font-bold"
               >
                 {c.name}
               </Link>
             ))}
           </div>
         )}
-      </nav>
+      </div>
     </header>
   );
 }
