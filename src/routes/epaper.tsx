@@ -5,7 +5,8 @@ import { Download, Printer } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { epaperPages } from "@/components/epaper-section";
-import { articles } from "@/lib/news-data";
+import { EpaperPage } from "@/components/epaper-page";
+
 
 const bn = (n: number | string) =>
   String(n)
