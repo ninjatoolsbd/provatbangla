@@ -119,14 +119,13 @@ function Home() {
       <BreakingTicker />
 
 
-      <main className="mx-auto max-w-[1240px] px-4 py-5">
+      <main className="mx-auto max-w-[1240px] px-4 py-6">
         <LatestPosts />
-        <section className="grid gap-6 lg:grid-cols-12">
-
+        <section className="grid gap-6 lg:grid-cols-12 lg:divide-x lg:divide-border">
           {/* left: hero + 6 cards */}
-          <div className="lg:col-span-5 xl:col-span-6">
+          <div className="min-w-0 lg:col-span-5 lg:pr-6 xl:col-span-6">
             {lead && <SplitLead article={lead} />}
-            <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            <div className="mt-5 grid gap-x-5 gap-y-6 sm:grid-cols-3">
               {sub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a} compact />
@@ -136,7 +135,7 @@ function Home() {
           </div>
 
           {/* middle: photo lead + thumb list */}
-          <div className="lg:col-span-4 xl:col-span-3">
+          <div className="min-w-0 lg:col-span-4 lg:pr-6 xl:col-span-3">
             {midLead && (
               <article className="group">
                 <Link
@@ -167,13 +166,14 @@ function Home() {
           </div>
 
           {/* right: story tabs + ad */}
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <StoryTabs video={articles.slice(0, 5)} photo={articles.slice(5, 10)} />
-            <div className="mt-5 flex h-64 items-center justify-center bg-secondary text-xs text-muted-foreground">
+            <div className="mt-5 flex h-64 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
               বিজ্ঞাপন
             </div>
           </div>
         </section>
+
 
         <div className="my-8 flex h-24 items-center justify-center bg-secondary text-xs text-muted-foreground">
           বিজ্ঞাপন
