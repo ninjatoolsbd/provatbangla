@@ -120,7 +120,9 @@ function Home() {
 
 
       <main className="mx-auto max-w-[1240px] px-4 py-5">
+        <LatestPosts />
         <section className="grid gap-6 lg:grid-cols-12">
+
           {/* left: hero + 6 cards */}
           <div className="lg:col-span-5 xl:col-span-6">
             {lead && <SplitLead article={lead} />}
