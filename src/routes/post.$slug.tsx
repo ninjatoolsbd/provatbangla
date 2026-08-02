@@ -1,0 +1,96 @@
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { categoryName } from "@/lib/news-data";
+import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
+import { createServerClient } from "@/lib/public-posts.functions";
+
+export const Route = createFileRoute("/post/$slug")({
+  loader: async ({ params }) => {
+    const post = await createServerClient({ data: { slug: params.slug } });
+    if (!post) throw notFound();
+    return { post: post as Post };
+  },
+  head: ({ loaderData }) => {
+    if (!loaderData) {
+      return { meta: [{ title: "সংবাদটি পাওয়া যায়নি — কালবেলা" }, { name: "robots", content: "noindex" }] };
+    }
+    const p = loaderData.post;
+    const title = p.seo_title || `${p.title} — কালবেলা`;
+    const desc = (p.seo_description || p.excerpt).slice(0, 155);
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: p.title },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(p.image_url?.startsWith("https://")
+          ? [
+              { property: "og:image", content: p.image_url },
+              { name: "twitter:image", content: p.image_url },
+            ]
+          : []),
+      ],
+    };
+  },
+  component: PostPage,
+});
+
+function PostPage() {
+  const { post } = Route.useLoaderData();
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <main className="mx-auto max-w-[900px] px-4 py-6">
+        <nav className="mb-4 text-xs text-muted-foreground">
+          <Link to="/" className="hover:text-primary">
+            প্রচ্ছদ
+          </Link>
+          <span className="mx-2">/</span>
+          <Link
+            to="/category/$slug"
+            params={{ slug: post.category }}
+            className="hover:text-primary"
+          >
+            {categoryName(post.category)}
+          </Link>
+        </nav>
+
+        <article>
+          <h1 className="font-display text-3xl leading-tight font-bold sm:text-4xl">
+            {post.kicker && <span className="block text-lg text-primary">{post.kicker}</span>}
+            {post.title}
+          </h1>
+          <div className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+            <span className="font-semibold text-primary">{categoryName(post.category)}</span>
+            <span>•</span>
+            <span>{post.author_name}</span>
+            <span>•</span>
+            <span>{banglaDateTime(post.published_at ?? post.created_at)}</span>
+          </div>
+
+          {post.image_url && (
+            <img
+              src={post.image_url}
+              alt={post.title}
+              className="mt-5 aspect-[16/9] w-full object-cover"
+            />
+          )}
+
+          <div className="mt-6 space-y-4 text-[17px] leading-[1.9] text-foreground/90">
+            <p className="font-semibold">{post.excerpt}</p>
+            {paragraphs(post.content).map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+        </article>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
