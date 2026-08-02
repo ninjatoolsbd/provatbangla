@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
+import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const PostSlugRoute = PostSlugRouteImport.update({
   path: '/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNewsImageSplatRoute = ApiPublicNewsImageSplatRouteImport.update({
+  id: '/api/public/news-image/$',
+  path: '/api/public/news-image/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,13 +79,27 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id' | '/post/$slug'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/category/$slug'
+    | '/news/$id'
+    | '/post/$slug'
+    | '/api/public/news-image/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id' | '/post/$slug'
+  to:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/category/$slug'
+    | '/news/$id'
+    | '/post/$slug'
+    | '/api/public/news-image/$'
   id:
     | '__root__'
     | '/'
@@ -86,6 +108,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/api/public/news-image/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -95,6 +118,7 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
   PostSlugRoute: typeof PostSlugRoute
+  ApiPublicNewsImageSplatRoute: typeof ApiPublicNewsImageSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/news-image/$': {
+      id: '/api/public/news-image/$'
+      path: '/api/public/news-image/$'
+      fullPath: '/api/public/news-image/$'
+      preLoaderRoute: typeof ApiPublicNewsImageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -151,17 +182,8 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
   PostSlugRoute: PostSlugRoute,
+  ApiPublicNewsImageSplatRoute: ApiPublicNewsImageSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
