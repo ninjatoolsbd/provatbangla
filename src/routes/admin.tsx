@@ -252,6 +252,110 @@ function AdminPage() {
           </div>
         </div>
 
+        <section className="mb-8 border-2 border-primary/30 bg-secondary/30 p-4">
+          <h2 className="mb-3 flex items-center gap-2 font-display text-[18px] font-bold text-primary">
+            <Sparkles className="size-4" /> AI দিয়ে নতুন নিউজ বানান
+          </h2>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="genPrompt">নিউজ প্রম্পট</Label>
+              <Input
+                id="genPrompt"
+                value={genPrompt}
+                onChange={(e) => setGenPrompt(e.target.value)}
+                placeholder="যেমন: ঢাকায় মেট্রোরেলের নতুন রুট উদ্বোধন"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="genDetails">অতিরিক্ত বিবরণ (ঐচ্ছিক)</Label>
+              <Textarea
+                id="genDetails"
+                rows={4}
+                value={genDetails}
+                onChange={(e) => setGenDetails(e.target.value)}
+                placeholder="তারিখ, স্থান, ব্যক্তি, সংখ্যা — যা যা খবরে থাকা দরকার"
+              />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="space-y-2">
+                <Label>ক্যাটাগরি</Label>
+                <Select value={genCategory} onValueChange={setGenCategory}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((c) => (
+                      <SelectItem key={c.slug} value={c.slug}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>ধরন</Label>
+                <Select value={genTone} onValueChange={(v) => setGenTone(v as typeof genTone)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="news">সংবাদ</SelectItem>
+                    <SelectItem value="analysis">বিশ্লেষণ</SelectItem>
+                    <SelectItem value="short">সংক্ষিপ্ত</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>AI প্রোভাইডার</Label>
+                <Select value={genProvider} onValueChange={setGenProvider}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">অটো (ফলব্যাকসহ)</SelectItem>
+                    <SelectItem value="lovable">Lovable AI</SelectItem>
+                    <SelectItem value="groq">Groq</SelectItem>
+                    <SelectItem value="cerebras">Cerebras</SelectItem>
+                    <SelectItem value="gemini">Gemini</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-5">
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-[hsl(var(--primary))]"
+                  checked={genImage}
+                  onChange={(e) => setGenImage(e.target.checked)}
+                />
+                AI ছবি তৈরি করো
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-[hsl(var(--primary))]"
+                  checked={genAutoPublish}
+                  onChange={(e) => setGenAutoPublish(e.target.checked)}
+                />
+                অটো পাবলিশ
+              </label>
+              <Button
+                onClick={() => generateMutation.mutate()}
+                disabled={genPrompt.trim().length < 3 || generateMutation.isPending}
+              >
+                {generateMutation.isPending ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 size-4" />
+                )}
+                নিউজ জেনারেট করুন
+              </Button>
+            </div>
+          </div>
+        </section>
+
+
         <div className="grid gap-8 lg:grid-cols-12">
           <section className="space-y-4 lg:col-span-8">
             <div className="space-y-2">
