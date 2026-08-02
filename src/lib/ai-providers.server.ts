@@ -71,8 +71,9 @@ export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
   json?: boolean;
-  preferred?: ProviderName;
+  preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
+
   const json = args.json ?? false;
   const lovableKey = process.env["LOVABLE_API_KEY"];
   const groqKey = process.env["GROQ_API_KEY"];
