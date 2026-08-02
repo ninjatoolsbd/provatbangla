@@ -22,8 +22,9 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
           <Reveal
             key={p.id}
             delay={i * 60}
-            className={i === 0 && data.length < 4 ? "sm:col-span-2" : undefined}
+            className={i === 0 && data.length < 4 ? "sm:col-span-2" : ""}
           >
+
             <article
               className={
                 i === 0 && data.length < 4
