@@ -5,11 +5,11 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
-import { createServerClient } from "@/lib/public-posts.functions";
+import { getPublishedPost } from "@/lib/public-posts.functions";
 
 export const Route = createFileRoute("/post/$slug")({
   loader: async ({ params }) => {
-    const post = await createServerClient({ data: { slug: params.slug } });
+    const post = await getPublishedPost({ data: { slug: params.slug } });
     if (!post) throw notFound();
     return { post: post as Post };
   },
