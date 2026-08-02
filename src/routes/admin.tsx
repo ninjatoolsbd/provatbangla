@@ -99,6 +99,45 @@ function AdminPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const generateMutation = useMutation({
+    mutationFn: async () =>
+      generate({
+        data: {
+          prompt: genPrompt,
+          details: genDetails,
+          category: genCategory,
+          tone: genTone,
+          withImage: genImage,
+          autoPublish: genAutoPublish,
+          provider: genProvider as "auto" | "lovable" | "groq" | "cerebras" | "gemini",
+        },
+      }),
+    onSuccess: (res) => {
+      setEditingId(null);
+      setTitle(res.article.title);
+      setKicker(res.article.kicker ?? "");
+      setCategory(genCategory);
+      setImageUrl(res.imageUrl ?? "");
+      setExcerpt(res.article.excerpt);
+      setContent(res.article.content);
+      setSeoTitle(res.article.seo_title ?? "");
+      setSeoDesc(res.article.seo_description ?? "");
+      setVersions([]);
+      void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+      void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
+      toast.success(
+        res.postId
+          ? `নিউজ তৈরি ও লাইভ হয়েছে (${res.provider})`
+          : `নিউজ তৈরি হয়েছে (${res.provider}) — নিচে এডিট করে পাবলিশ করুন`,
+      );
+      if (!res.imageUrl && genImage) toast.warning("ছবি তৈরি করা যায়নি, লিংক দিয়ে দিন।");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
+
   function applyVersion(v: Version) {
     setTitle(v.title);
     setExcerpt(v.excerpt);
