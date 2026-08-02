@@ -29,13 +29,13 @@ export const Route = createFileRoute("/epaper")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: EpaperPage,
+  component: EpaperRoutePage,
 });
 
-function EpaperPage() {
+function EpaperRoutePage() {
   const [active, setActive] = useState(0);
   const page = epaperPages[active]!;
-  const img = articles[(active + 3) % articles.length]?.image ?? "";
+
 
   return (
     <div className="min-h-screen bg-background">
