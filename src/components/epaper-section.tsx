@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Newspaper } from "lucide-react";
 
-import { articles } from "@/lib/news-data";
+import { EpaperPage } from "@/components/epaper-page";
+
 
 const bn = (n: number | string) =>
   String(n)
