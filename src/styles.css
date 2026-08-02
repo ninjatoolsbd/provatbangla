@@ -178,3 +178,111 @@
   mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
 }
 
+/* ---------- motion system ---------- */
+
+.kb-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kb-reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* animated underline that wipes in on hover (headlines, nav) */
+@utility kb-underline {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .kb-underline,
+.kb-underline:hover {
+  background-size: 100% 2px;
+}
+
+/* subtle card lift */
+@utility kb-lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+}
+
+.kb-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px -18px color-mix(in oklab, var(--foreground) 45%, transparent);
+}
+
+@keyframes kb-ping-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  80%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@utility kb-live-dot {
+  position: relative;
+}
+
+.kb-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: kb-ping-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes kb-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility kb-slide-down {
+  animation: kb-slide-down 0.3s ease-out both;
+}
+
+@keyframes kb-headline-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility kb-headline-in {
+  animation: kb-headline-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .kb-live-dot::after,
+  .marquee {
+    animation: none;
+  }
+}
+
