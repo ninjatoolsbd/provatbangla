@@ -1,3 +1,5 @@
+import { kbImage } from "@/lib/kb-images";
+
 export type Category = { slug: string; name: string };
 
 export const categories: Category[] = [
@@ -99,7 +101,7 @@ export const articles: Article[] = raw.map((a) => ({
     a.excerpt ??
     `${a.title} নিয়ে সংশ্লিষ্টদের সঙ্গে কথা বলে জানা গেছে, বিষয়টি গুরুত্বের সঙ্গে দেখা হচ্ছে। বিস্তারিত প্রতিবেদনে থাকছে ঘটনার পটভূমি, প্রতিক্রিয়া ও পরবর্তী করণীয়।`,
   body: bodyOf(a.title, categoryName(a.category)),
-  image: `https://picsum.photos/seed/kb${a.id}/1200/750`,
+  image: kbImage(a.id),
 }));
 
 export function categoryName(slug: string): string {
