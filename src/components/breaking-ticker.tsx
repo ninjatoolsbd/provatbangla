@@ -64,6 +64,7 @@ export function BreakingTicker() {
       if (!running.current) return;
       const next = pool[cursor.current % pool.length];
       cursor.current += 1;
+      if (!next) return;
       setItems((prev) => {
         if (prev[0]?.id === next.id) return prev;
         return [next, ...prev.filter((a) => a.id !== next.id)].slice(0, VISIBLE);
