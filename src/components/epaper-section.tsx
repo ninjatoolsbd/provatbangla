@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Newspaper } from "lucide-react";
 
-import { articles } from "@/lib/news-data";
+import { EpaperPage } from "@/components/epaper-page";
+
 
 const bn = (n: number | string) =>
   String(n)
@@ -43,12 +44,9 @@ export function EpaperSection() {
           <div className="min-w-0 lg:col-span-4">
             <Link to="/epaper" className="group block border border-border bg-card p-2">
               <div className="relative overflow-hidden">
-                <img
-                  src={articles[0]?.image ?? "https://picsum.photos/seed/kbep/600/800"}
-                  alt="কালবেলা আজকের ই-পেপার প্রথম পাতা"
-                  className="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  loading="lazy"
-                />
+                <div className="transition-transform duration-500 group-hover:scale-[1.03]">
+                  <EpaperPage pageNo={1} label="প্রথম পাতা" date={today} />
+                </div>
                 <span className="absolute left-0 top-0 bg-primary px-2 py-1 text-[11px] font-bold text-primary-foreground">
                   আজকের প্রথম পাতা
                 </span>
@@ -76,18 +74,13 @@ export function EpaperSection() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {epaperPages.map((p, i) => (
+              {epaperPages.map((p) => (
                 <Link
                   key={p.no}
                   to="/epaper"
                   className="group border border-border bg-card p-1.5 transition-shadow hover:shadow-md"
                 >
-                  <img
-                    src={articles[(i + 3) % articles.length]?.image ?? ""}
-                    alt={`ই-পেপার ${p.label}`}
-                    className="aspect-[3/4] w-full object-cover"
-                    loading="lazy"
-                  />
+                  <EpaperPage pageNo={p.no} label={p.label} date={today} />
                   <span className="mt-1.5 block text-center text-[11px] font-semibold group-hover:text-primary">
                     পৃষ্ঠা {bn(p.no)} · {p.label}
                   </span>

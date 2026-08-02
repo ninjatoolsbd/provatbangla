@@ -5,7 +5,8 @@ import { Download, Printer } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { epaperPages } from "@/components/epaper-section";
-import { articles } from "@/lib/news-data";
+import { EpaperPage } from "@/components/epaper-page";
+
 
 const bn = (n: number | string) =>
   String(n)
@@ -28,13 +29,13 @@ export const Route = createFileRoute("/epaper")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: EpaperPage,
+  component: EpaperRoutePage,
 });
 
-function EpaperPage() {
+function EpaperRoutePage() {
   const [active, setActive] = useState(0);
   const page = epaperPages[active]!;
-  const img = articles[(active + 3) % articles.length]?.image ?? "";
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,11 +83,9 @@ function EpaperPage() {
               </div>
             </div>
             <div className="border border-border bg-card p-3">
-              <img
-                src={img}
-                alt={`কালবেলা ই-পেপার ${page.label}`}
-                className="mx-auto aspect-[3/4] w-full max-w-[720px] object-cover"
-              />
+              <div className="mx-auto w-full max-w-[720px]">
+                <EpaperPage pageNo={page.no} label={page.label} />
+              </div>
             </div>
           </div>
         </div>
