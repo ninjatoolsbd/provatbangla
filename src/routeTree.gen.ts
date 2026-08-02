@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
+import { Route as PostSlugRouteImport } from './routes/post.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const NewsIdRoute = NewsIdRouteImport.update({
   path: '/news/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PostSlugRoute = PostSlugRouteImport.update({
+  id: '/post/$slug',
+  path: '/post/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
+  '/post/$slug': typeof PostSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
+  '/post/$slug': typeof PostSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
+  '/post/$slug': typeof PostSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id'
+  fullPaths:
+    '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id' | '/post/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id'
+  to: '/' | '/admin' | '/auth' | '/category/$slug' | '/news/$id' | '/post/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/category/$slug'
+    | '/news/$id'
+    | '/post/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
+  PostSlugRoute: typeof PostSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/post/$slug': {
+      id: '/post/$slug'
+      path: '/post/$slug'
+      fullPath: '/post/$slug'
+      preLoaderRoute: typeof PostSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
+  PostSlugRoute: PostSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
