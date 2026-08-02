@@ -174,17 +174,16 @@ function Home() {
           </div>
         </section>
 
-
-        <div className="my-8 flex h-24 items-center justify-center bg-secondary text-xs text-muted-foreground">
+        <div className="my-8 flex h-24 items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
           বিজ্ঞাপন
         </div>
 
         <section className="grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-9">
+          <div className="min-w-0 lg:col-span-9">
             <SectionHeading title={categoryName("apradh")} slug="apradh" />
             <div className="grid gap-6 lg:grid-cols-12">
               <div className="lg:col-span-5">{crime[0] && <LeadCard article={crime[0]} />}</div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+              <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:col-span-7">
                 {crime.slice(1).map((a, i) => (
                   <Reveal key={a.id} delay={i * 70}>
                     <GridCard article={a} compact />
@@ -193,7 +192,7 @@ function Home() {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-3">
+          <div className="min-w-0 border-t border-border pt-4 lg:col-span-3 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
             <SectionHeading title="সর্বাধিক পঠিত" />
             {popular.map((a, i) => (
               <Reveal key={a.id} delay={i * 50}>
@@ -205,13 +204,16 @@ function Home() {
 
         {categories
           .filter((c) => !["jatiyo", "apradh"].includes(c.slug))
-          .map((c) => {
+          .map((c, ci) => {
             const list = byCategory(c.slug);
             if (list.length === 0) return null;
             return (
-              <section key={c.slug} className="mt-10">
+              <section
+                key={c.slug}
+                className={cn("mt-10 -mx-4 px-4 py-6", ci % 2 === 1 && "bg-secondary/60")}
+              >
                 <SectionHeading title={c.name} slug={c.slug} />
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
                   {list.slice(0, 4).map((a, i) => (
                     <Reveal key={a.id} delay={i * 70}>
                       <GridCard article={a} compact />
@@ -221,6 +223,7 @@ function Home() {
               </section>
             );
           })}
+
       </main>
 
       <SiteFooter />
