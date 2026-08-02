@@ -21,7 +21,7 @@ export function EpaperPage({ pageNo, label, date = "২ আগস্ট ২০�
 
   return (
     <div
-      className={`aspect-[3/4] w-full overflow-hidden bg-[#f7f4ec] p-[3%] text-foreground shadow-inner ${className}`}
+      className={`aspect-[3/4] w-full overflow-hidden bg-[#f7f4ec] p-[3%] text-foreground shadow-inner [container-type:inline-size] ${className}`}
     >
       {/* masthead */}
       <div className="border-b-4 border-double border-foreground/70 pb-[1.5%] text-center">
