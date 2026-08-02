@@ -74,18 +74,13 @@ export function EpaperSection() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {epaperPages.map((p, i) => (
+              {epaperPages.map((p) => (
                 <Link
                   key={p.no}
                   to="/epaper"
                   className="group border border-border bg-card p-1.5 transition-shadow hover:shadow-md"
                 >
-                  <img
-                    src={articles[(i + 3) % articles.length]?.image ?? ""}
-                    alt={`ই-পেপার ${p.label}`}
-                    className="aspect-[3/4] w-full object-cover"
-                    loading="lazy"
-                  />
+                  <EpaperPage pageNo={p.no} label={p.label} date={today} />
                   <span className="mt-1.5 block text-center text-[11px] font-semibold group-hover:text-primary">
                     পৃষ্ঠা {bn(p.no)} · {p.label}
                   </span>
