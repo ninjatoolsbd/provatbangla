@@ -138,11 +138,22 @@ function TextList({ items }: { items: Article[] }) {
   );
 }
 
+/** Take n unique articles starting at offset; top up from the full pool without repeats. */
 function pick(list: Article[], n: number, offset = 0): Article[] {
+  const seen = new Set<number>();
   const out: Article[] = [];
-  for (let i = 0; i < n; i++) out.push(list[(offset + i) % list.length]!);
+  const push = (a?: Article) => {
+    if (a && !seen.has(a.id) && out.length < n) {
+      seen.add(a.id);
+      out.push(a);
+    }
+  };
+  list.slice(offset).forEach(push);
+  list.slice(0, offset).forEach(push);
+  articles.forEach(push);
   return out;
 }
+
 
 function Home() {
   const national = byCategory("jatiyo");
