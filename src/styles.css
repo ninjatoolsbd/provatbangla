@@ -157,5 +157,24 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
   }
 }
+
+@keyframes kb-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility marquee {
+  animation: kb-marquee 45s linear infinite;
+}
+
+@utility marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+}
+
