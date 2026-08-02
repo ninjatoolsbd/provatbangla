@@ -30,7 +30,7 @@ export function SiteHeader() {
         <Link to="/" className="flex shrink-0 flex-col items-center leading-none">
           <span className="text-[9px] tracking-[0.2em] text-muted-foreground">দৈনিক</span>
           <span className="font-display text-3xl font-extrabold tracking-tight text-foreground transition-transform duration-300 hover:scale-[1.03] sm:text-[2.6rem]">
-            কাল<span className="text-primary">বেলা</span>
+            প্রভাত<span className="text-primary">বাংলা</span>
           </span>
           <span className="mt-0.5 text-[8px] tracking-[0.3em] text-muted-foreground">
             সত্যের সন্ধানে
