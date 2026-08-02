@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { BreakingTicker } from "@/components/breaking-ticker";
 import {
   GridCard,
   LeadCard,
@@ -99,7 +100,7 @@ function Home() {
   const lead = national[0];
   const crime = byCategory("apradh");
   const world = byCategory("antorjatik");
-  const latest = articles.slice(0, 10);
+  
   const popular = [...articles].slice(10, 15);
   const midLead = world[1] ?? articles[3];
   const midList = [crime[0], world[0], national[3], world[1], national[4]].filter(
@@ -113,27 +114,8 @@ function Home() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <div className="border-b border-border bg-secondary">
-        <div className="mx-auto flex max-w-[1240px] items-center gap-3 px-4 py-2">
-          <span className="shrink-0 bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
-            সর্বশেষ
-          </span>
-          <div className="marquee-mask relative flex-1 overflow-hidden">
-            <div className="marquee flex gap-8 whitespace-nowrap">
-              {[...latest, ...latest].map((a, i) => (
-                <Link
-                  key={`${a.id}-${i}`}
-                  to="/news/$id"
-                  params={{ id: String(a.id) }}
-                  className="text-sm font-semibold hover:text-primary"
-                >
-                  {a.title}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <BreakingTicker />
+
 
       <main className="mx-auto max-w-[1240px] px-4 py-5">
         <section className="grid gap-6 lg:grid-cols-12">
