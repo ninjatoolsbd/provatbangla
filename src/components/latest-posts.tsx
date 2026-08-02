@@ -19,7 +19,11 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
       <SectionHeading title="সর্বশেষ প্রকাশিত" />
       <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((p, i) => (
-          <Reveal key={p.id} delay={i * 60}>
+          <Reveal
+            key={p.id}
+            delay={i * 60}
+            className={i === 0 && data.length < 4 ? "sm:col-span-2" : undefined}
+          >
             <article
               className={
                 i === 0 && data.length < 4
@@ -27,6 +31,7 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                   : "group"
               }
             >
+
               {p.image_url && (
                 <Link
                   to="/post/$slug"
