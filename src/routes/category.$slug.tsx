@@ -36,7 +36,9 @@ function CategoryPage() {
       <SiteHeader />
       <main className="mx-auto max-w-[1200px] px-4 py-6">
         <SectionHeading title={categoryName(slug)} />
+        <LatestPosts category={slug} />
         <div className="grid gap-6 lg:grid-cols-12">
+
           <div className="lg:col-span-7">{lead && <LeadCard article={lead} />}</div>
           <div className="grid gap-5 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
             {rest.slice(0, 2).map((a) => (
