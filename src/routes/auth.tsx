@@ -15,10 +15,10 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "অ্যাডমিন লগইন — কালবেলা" },
-      { name: "description", content: "কালবেলা সম্পাদকীয় প্যানেলে প্রবেশ করুন।" },
-      { property: "og:title", content: "অ্যাডমিন লগইন — কালবেলা" },
-      { property: "og:description", content: "কালবেলা সম্পাদকীয় প্যানেলে প্রবেশ করুন।" },
+      { title: "অ্যাডমিন লগইন — প্রভাতবাংলা" },
+      { name: "description", content: "প্রভাতবাংলা সম্পাদকীয় প্যানেলে প্রবেশ করুন।" },
+      { property: "og:title", content: "অ্যাডমিন লগইন — প্রভাতবাংলা" },
+      { property: "og:description", content: "প্রভাতবাংলা সম্পাদকীয় প্যানেলে প্রবেশ করুন।" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },

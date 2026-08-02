@@ -28,7 +28,7 @@ export function EpaperSection() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-primary pb-2">
           <div className="flex items-center gap-2">
             <Newspaper className="size-5 text-primary" />
-            <h2 className="font-display text-xl font-extrabold">কালবেলা ই-পেপার</h2>
+            <h2 className="font-display text-xl font-extrabold">প্রভাতবাংলা ই-পেপার</h2>
             <span className="text-xs text-muted-foreground">{today}</span>
           </div>
           <Link

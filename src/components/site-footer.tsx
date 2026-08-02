@@ -45,14 +45,14 @@ export function SiteFooter() {
             {/* brand + editor info */}
             <div className="md:col-span-4">
               <Link to="/" className="font-display text-3xl font-extrabold">
-                কালবেলা
+                প্রভাতবাংলা
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
                 সম্পাদক ও প্রকাশক: <span className="text-ink-foreground">ডেমো সম্পাদক</span>
                 <br />
                 ব্যবস্থাপনা সম্পাদক: ডেমো ব্যবস্থাপক
                 <br />
-                প্রকাশনায়: কালবেলা ডেমো মিডিয়া লিমিটেড
+                প্রকাশনায়: প্রভাতবাংলা ডেমো মিডিয়া লিমিটেড
               </p>
               <div className="mt-4 flex gap-2">
                 {socials.map(({ Icon, label }) => (
@@ -121,7 +121,7 @@ export function SiteFooter() {
         {/* bottom bar */}
         <div className="border-t border-white/10">
           <div className="mx-auto flex max-w-[1240px] flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-ink-muted md:flex-row">
-            <span>© ২০২৬ কালবেলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span>© ২০২৬ প্রভাতবাংলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
             <span>
               এটি একটি ডেমো সংবাদমাধ্যম — সব সংবাদ, ছবি ও নাম কেবল উদাহরণ হিসেবে ব্যবহৃত।
             </span>

@@ -16,9 +16,9 @@ export const Route = createFileRoute("/category/$slug")({
     const name = categoryName(params.slug);
     return {
       meta: [
-        { title: `${name} — কালবেলা` },
+        { title: `${name} — প্রভাতবাংলা` },
         { name: "description", content: `${name} বিভাগের সর্বশেষ বাংলা সংবাদ ও প্রতিবেদন।` },
-        { property: "og:title", content: `${name} — কালবেলা` },
+        { property: "og:title", content: `${name} — প্রভাতবাংলা` },
         { property: "og:description", content: `${name} বিভাগের সর্বশেষ খবর।` },
       ],
     };

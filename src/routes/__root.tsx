@@ -79,13 +79,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "কালবেলা — বাংলা সংবাদ পোর্টাল (ডেমো)" },
+      { title: "প্রভাতবাংলা — বাংলা সংবাদ পোর্টাল (ডেমো)" },
       {
         name: "description",
         content: "জাতীয়, রাজনীতি, খেলা, বিনোদন ও আন্তর্জাতিক সর্বশেষ বাংলা সংবাদ।",
       },
-      { name: "author", content: "কালবেলা ডেমো" },
-      { property: "og:title", content: "কালবেলা — বাংলা সংবাদ পোর্টাল" },
+      { name: "author", content: "প্রভাতবাংলা ডেমো" },
+      { property: "og:title", content: "প্রভাতবাংলা — বাংলা সংবাদ পোর্টাল" },
       {
         property: "og:description",
         content: "বাংলাদেশ ও বিশ্বের সর্বশেষ খবর এক জায়গায়।",
