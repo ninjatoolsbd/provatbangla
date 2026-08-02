@@ -154,7 +154,7 @@ export function OpinionColumn({ items }: { items: Article[] }) {
 }
 
 /* ---------- online poll ---------- */
-export function PollWidget({ cover }: { cover?: Article }) {
+export function PollWidget({ cover }: { cover?: Article | undefined }) {
   const options = ["হ্যাঁ", "না", "মন্তব্য নেই"];
   const [picked, setPicked] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
@@ -301,7 +301,7 @@ export function DistrictSearch() {
 }
 
 /* ---------- e-paper card ---------- */
-export function EpaperCard({ cover }: { cover?: Article }) {
+export function EpaperCard({ cover }: { cover?: Article | undefined }) {
   return (
     <div className="border border-border bg-card">
       <div className="flex items-center justify-between bg-primary px-3 py-2 text-primary-foreground">
