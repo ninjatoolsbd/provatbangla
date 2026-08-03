@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAdsRouteImport } from './routes/admin/ads'
 import { Route as AdminBreakingRouteImport } from './routes/admin/breaking'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminEpaperRouteImport } from './routes/admin/epaper'
@@ -50,6 +51,11 @@ const EpaperRoute = EpaperRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdsRoute = AdminAdsRouteImport.update({
+  id: '/ads',
+  path: '/ads',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBreakingRoute = AdminBreakingRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/epaper'
+    | '/admin/ads'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/epaper'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/epaper'
+    | '/admin/ads'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/epaper'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/epaper'
+    | '/admin/ads'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/epaper'
@@ -276,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ads': {
+      id: '/admin/ads'
+      path: '/ads'
+      fullPath: '/admin/ads'
+      preLoaderRoute: typeof AdminAdsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/breaking': {
@@ -366,6 +385,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAdsRoute: typeof AdminAdsRoute
   AdminBreakingRoute: typeof AdminBreakingRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminEpaperRoute: typeof AdminEpaperRoute
@@ -377,6 +397,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdsRoute: AdminAdsRoute,
   AdminBreakingRoute: AdminBreakingRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminEpaperRoute: AdminEpaperRoute,
