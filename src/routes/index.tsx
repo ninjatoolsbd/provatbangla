@@ -168,7 +168,7 @@ function Home() {
   const opinion = byCategory("motamot");
 
   const lead = national[0]!;
-  const heroSub = pick(articles, 3, 1);
+  const heroSub = pick(articles, 6, 1);
   const heroMid = pick(articles, 2, 5);
   const heroThumbs = pick(articles, 4, 7);
   const strip = pick(articles, 4, 12);
@@ -186,7 +186,7 @@ function Home() {
 
           <div className="min-w-0 lg:col-span-6 lg:pr-5">
             <SplitLead article={lead} />
-            <div className="mt-4 grid gap-x-4 gap-y-5 sm:grid-cols-3">
+            <div className="mt-4 grid gap-x-4 gap-y-5 border-t border-border pt-4 sm:grid-cols-3">
               {heroSub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a} compact />
