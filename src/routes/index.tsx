@@ -243,18 +243,11 @@ function Home() {
           <AdSlot />
         </div>
 
-        {/* ================= VIDEO STRIP ================= */}
-        <VideoStrip items={pick(articles, 8, 3)} />
-
-        {/* ============ OPINION | POLL | LATEST TABS ============ */}
-        <section className="mt-5 grid gap-6 border border-border bg-card p-4 lg:grid-cols-3">
-          <OpinionColumn items={opinion.length ? opinion : pick(articles, 3, 2)} />
-          <PollWidget cover={pick(articles, 1, 9)[0]} />
-          <div>
-            <BarHeading title="সর্বশেষ / জনপ্রিয়" />
-            <LatestPopularTabs latest={latest} popular={popular} />
-          </div>
+        {/* ================= এক ক্লিকে বিভাগের খবর ================= */}
+        <section>
+          <DivisionMap />
         </section>
+
 
         {/* ================= READER FAVOURITES ================= */}
         <section className="mt-5 border border-border bg-card p-4">
@@ -341,10 +334,19 @@ function Home() {
           </div>
         </section>
 
-        {/* ================= এক ক্লিকে বিভাগের খবর ================= */}
-        <section className="mt-5">
-          <DivisionMap />
+        {/* ================= VIDEO STRIP ================= */}
+        <VideoStrip items={pick(articles, 8, 3)} />
+
+        {/* ============ OPINION | POLL | LATEST TABS ============ */}
+        <section className="mt-5 grid gap-6 border border-border bg-card p-4 lg:grid-cols-3">
+          <OpinionColumn items={opinion.length ? opinion : pick(articles, 3, 2)} />
+          <PollWidget cover={pick(articles, 1, 9)[0]} />
+          <div>
+            <BarHeading title="সর্বশেষ / জনপ্রিয়" />
+            <LatestPopularTabs latest={latest} popular={popular} />
+          </div>
         </section>
+
 
         {/* ================= বিশ্ব + e-paper/calendar ================= */}
         <section className="mt-5 border border-border bg-card p-4">
