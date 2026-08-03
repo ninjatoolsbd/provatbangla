@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireSupabaseAuth } from "@/integrations/my-supabase/auth-middleware";
 
 export const rewriteNews = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
