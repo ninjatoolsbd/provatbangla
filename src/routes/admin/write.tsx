@@ -52,6 +52,7 @@ type Version = {
 function WritePage() {
   const { id } = Route.useSearch();
   const queryClient = useQueryClient();
+  const auth = useAuth();
   const rewrite = useServerFn(rewriteNews);
   const generate = useServerFn(generateNews);
 
