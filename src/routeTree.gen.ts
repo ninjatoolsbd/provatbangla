@@ -17,6 +17,7 @@ import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
+import { Route as ApiPublicR2SplatRouteImport } from './routes/api/public/r2.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const ApiPublicNewsImageSplatRoute = ApiPublicNewsImageSplatRouteImport.update({
   path: '/api/public/news-image/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicR2SplatRoute = ApiPublicR2SplatRouteImport.update({
+  id: '/api/public/r2/$',
+  path: '/api/public/r2/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
+  '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
+  '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
+  '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/api/public/news-image/$'
+    | '/api/public/r2/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/api/public/news-image/$'
+    | '/api/public/r2/$'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/api/public/news-image/$'
+    | '/api/public/r2/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   NewsIdRoute: typeof NewsIdRoute
   PostSlugRoute: typeof PostSlugRoute
   ApiPublicNewsImageSplatRoute: typeof ApiPublicNewsImageSplatRoute
+  ApiPublicR2SplatRoute: typeof ApiPublicR2SplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNewsImageSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/r2/$': {
+      id: '/api/public/r2/$'
+      path: '/api/public/r2/$'
+      fullPath: '/api/public/r2/$'
+      preLoaderRoute: typeof ApiPublicR2SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIdRoute: NewsIdRoute,
   PostSlugRoute: PostSlugRoute,
   ApiPublicNewsImageSplatRoute: ApiPublicNewsImageSplatRoute,
+  ApiPublicR2SplatRoute: ApiPublicR2SplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
