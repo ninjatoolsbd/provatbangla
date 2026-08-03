@@ -134,6 +134,7 @@ export function categoryName(slug: string): string {
 }
 
 export function byCategory(slug: string): Article[] {
+  if (slug === "sorboshesh") return articles;
   return articles.filter((a) => a.category === slug);
 }
 
