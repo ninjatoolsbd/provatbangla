@@ -50,8 +50,20 @@ function useTableCount(table: string) {
 }
 
 function Overview() {
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
   const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
+
+  async function refreshAll() {
+    setRefreshing(true);
+    try {
+      await queryClient.refetchQueries({ type: "active" });
+    } finally {
+      setRefreshing(false);
+    }
+  }
+
   const all = posts.data ?? [];
   const totals = counts.data ?? {
     total: all.length,
