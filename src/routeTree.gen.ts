@@ -19,6 +19,7 @@ import { Route as AdminBreakingRouteImport } from './routes/admin/breaking'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
 import { Route as AdminEpaperRouteImport } from './routes/admin/epaper'
+import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
 import { Route as AdminPollsRouteImport } from './routes/admin/polls'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
@@ -78,6 +79,11 @@ const AdminCommentsRoute = AdminCommentsRouteImport.update({
 const AdminEpaperRoute = AdminEpaperRouteImport.update({
   id: '/epaper',
   path: '/epaper',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPollsRoute = AdminPollsRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
+    | '/admin/messages'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
+    | '/admin/messages'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
+    | '/admin/messages'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
@@ -349,6 +361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEpaperRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/polls': {
       id: '/admin/polls'
       path: '/polls'
@@ -428,6 +447,7 @@ interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
   AdminEpaperRoute: typeof AdminEpaperRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
   AdminPollsRoute: typeof AdminPollsRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -442,6 +462,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommentsRoute: AdminCommentsRoute,
   AdminEpaperRoute: AdminEpaperRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
   AdminPollsRoute: AdminPollsRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
