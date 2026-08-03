@@ -49,7 +49,7 @@ type Version = {
 };
 
 function AdminPage() {
-  const { isAdmin, loading, email } = useAuth();
+  const { isAdmin, loading, email, userId } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const rewrite = useServerFn(rewriteNews);
@@ -78,8 +78,9 @@ function AdminPage() {
   const [versions, setVersions] = useState<Version[]>([]);
 
   useEffect(() => {
-    if (!loading && !isAdmin) void navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, isAdmin, navigate]);
+    if (!loading && !isAdmin && !userId) void navigate({ to: "/auth", search: { mode: "login" } });
+  }, [loading, isAdmin, userId, navigate]);
+
 
   const postsQuery = useQuery({
     queryKey: ["admin-posts"],
@@ -228,7 +229,33 @@ function AdminPage() {
       </div>
     );
   }
-  if (!isAdmin) return null;
+  if (!isAdmin) {
+    if (!userId) return null;
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <main className="mx-auto max-w-md px-4 py-16 text-center">
+          <h1 className="font-display text-xl font-bold">প্রবেশাধিকার নেই</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            আপনি <span className="font-medium">{email}</span> দিয়ে লগইন করেছেন, কিন্তু এই
+            অ্যাকাউন্টে অ্যাডমিন অনুমতি নেই।
+          </p>
+          <button
+            type="button"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              void navigate({ to: "/auth", search: { mode: "login" } });
+            }}
+            className="mt-5 bg-primary px-4 py-2 text-sm text-primary-foreground"
+          >
+            অন্য অ্যাকাউন্টে লগইন করুন
+          </button>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
 
   const canRewrite = title.trim().length > 0 && content.trim().length > 20;
 
