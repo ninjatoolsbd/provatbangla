@@ -49,7 +49,7 @@ type Version = {
 };
 
 function AdminPage() {
-  const { isAdmin, loading, email } = useAuth();
+  const { isAdmin, loading, email, userId } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const rewrite = useServerFn(rewriteNews);
