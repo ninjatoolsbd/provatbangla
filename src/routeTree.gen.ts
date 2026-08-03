@@ -13,6 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EpaperRouteImport } from './routes/epaper'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as AdminPostsRouteImport } from './routes/admin/posts'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminWriteRouteImport } from './routes/admin/write'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
@@ -38,6 +43,31 @@ const EpaperRoute = EpaperRouteImport.update({
   id: '/epaper',
   path: '/epaper',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPostsRoute = AdminPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWriteRoute = AdminWriteRouteImport.update({
+  id: '/write',
+  path: '/write',
+  getParentRoute: () => AdminRoute,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
@@ -67,35 +97,49 @@ const ApiPublicR2SplatRoute = ApiPublicR2SplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/posts': typeof AdminPostsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -106,20 +150,29 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/epaper'
+    | '/admin/categories'
+    | '/admin/posts'
+    | '/admin/settings'
+    | '/admin/write'
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/admin/'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/auth'
     | '/epaper'
+    | '/admin/categories'
+    | '/admin/posts'
+    | '/admin/settings'
+    | '/admin/write'
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/admin'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   id:
@@ -128,16 +181,21 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/epaper'
+    | '/admin/categories'
+    | '/admin/posts'
+    | '/admin/settings'
+    | '/admin/write'
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/admin/'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   EpaperRoute: typeof EpaperRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -177,6 +235,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EpaperRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/posts': {
+      id: '/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/write': {
+      id: '/admin/write'
+      path: '/write'
+      fullPath: '/admin/write'
+      preLoaderRoute: typeof AdminWriteRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -215,9 +308,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminPostsRoute: typeof AdminPostsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminWriteRoute: typeof AdminWriteRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminPostsRoute: AdminPostsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminWriteRoute: AdminWriteRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   EpaperRoute: EpaperRoute,
   CategorySlugRoute: CategorySlugRoute,
