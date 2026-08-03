@@ -134,4 +134,7 @@ export const kalbelaImages: string[] = [
   "https://www.kalbela.com/assets/news_photos/2026/08/02/image_314890_1785670782.webp",
 ];
 
-export const kbImage = (seed: number) => kalbelaImages[Math.abs(seed) % kalbelaImages.length]!;
+// www.kalbela.com blocks hotlinking (403), so demo photos are served from a
+// stable placeholder source keyed by the same seed.
+export const kbImage = (seed: number) =>
+  `https://picsum.photos/seed/pb-${Math.abs(seed) % 500}/900/540`;
