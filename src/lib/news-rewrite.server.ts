@@ -1,7 +1,6 @@
-import { generateText, Output, NoObjectGeneratedError } from "ai";
 import { z } from "zod";
 
-import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { generateTextWithFallback } from "./ai-providers.server";
 
 export const RewriteInput = z.object({
   title: z.string().min(1),
@@ -14,12 +13,12 @@ export const RewriteInput = z.object({
 export const RewriteSchema = z.object({
   versions: z.array(
     z.object({
-      label: z.string(),
-      title: z.string(),
-      excerpt: z.string(),
-      content: z.string(),
-      seo_title: z.string(),
-      seo_description: z.string(),
+      label: z.string().default("ভার্সন"),
+      title: z.string().min(1),
+      excerpt: z.string().default(""),
+      content: z.string().min(1),
+      seo_title: z.string().default(""),
+      seo_description: z.string().default(""),
     }),
   ),
 });
@@ -33,21 +32,24 @@ const toneHint: Record<string, string> = {
 };
 
 export async function runRewrite(data: z.infer<typeof RewriteInput>): Promise<RewriteResult> {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) throw new Error("AI কনফিগারেশন পাওয়া যায়নি।");
-
-  const gateway = createLovableAiGatewayProvider(key);
+  const system = [
+    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক।",
+    "সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে, কোনো ব্যাখ্যা বা মার্কডাউন ছাড়া।",
+  ].join(" ");
 
   const prompt = [
-    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। নিচের খবরটি সম্পূর্ণ নতুন করে লিখো।",
+    "নিচের খবরটি সম্পূর্ণ নতুন করে লিখো।",
     "নিয়ম:",
     "- ভাষা অবশ্যই বাংলা, সাবলীল ও পেশাদার সাংবাদিকতার মান অনুযায়ী।",
     "- মূল তথ্য, সংখ্যা, নাম ও উদ্ধৃতি অপরিবর্তিত রাখো; নতুন তথ্য বানিয়ো না।",
     `- ${toneHint[data.tone]}।`,
-    "- SEO-বান্ধব করো: শিরোনামে মূল কীওয়ার্ড থাকবে, seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
+    "- SEO-বান্ধব করো: seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
     "- excerpt হবে ২-৩ বাক্যের সারসংক্ষেপ।",
-    "- content-এ অনুচ্ছেদগুলো ফাঁকা লাইন দিয়ে আলাদা করো, কোনো মার্কডাউন চিহ্ন ব্যবহার করো না।",
+    "- content-এ অনুচ্ছেদগুলো ফাঁকা লাইন দিয়ে আলাদা করো, কোনো মার্কডাউন চিহ্ন নয়।",
     `- ঠিক ${data.variants}টি আলাদা ভার্সন দাও, প্রতিটির label আলাদা (যেমন "ভার্সন ১")।`,
+    "",
+    "শুধু এই JSON কাঠামোয় উত্তর দাও:",
+    '{"versions":[{"label":"","title":"","excerpt":"","content":"","seo_title":"","seo_description":""}]}',
     "",
     `বিভাগ: ${data.category}`,
     `মূল শিরোনাম: ${data.title}`,
@@ -55,21 +57,21 @@ export async function runRewrite(data: z.infer<typeof RewriteInput>): Promise<Re
     data.content,
   ].join("\n");
 
+  const { text } = await generateTextWithFallback({ system, prompt, json: true });
+
+  let parsed: RewriteResult;
   try {
-    const { output } = await generateText({
-      model: gateway("google/gemini-3.5-flash"),
-      output: Output.object({ schema: RewriteSchema }),
-      prompt,
-    });
-    return { versions: output.versions.slice(0, data.variants) };
-  } catch (error) {
-    if (NoObjectGeneratedError.isInstance(error)) {
-      throw new Error("AI রিরাইট সম্পন্ন করা যায়নি, আবার চেষ্টা করুন।");
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    if (message.includes("429")) throw new Error("অনেক বেশি অনুরোধ — একটু পরে চেষ্টা করুন।");
-    if (message.includes("402"))
-      throw new Error("AI ক্রেডিট শেষ — Cloud সেটিংসে ক্রেডিট যোগ করুন।");
-    throw new Error(message);
+    const raw = JSON.parse(text) as unknown;
+    const normalized =
+      Array.isArray(raw) ? { versions: raw } : (raw as { versions?: unknown });
+    parsed = RewriteSchema.parse(normalized);
+  } catch {
+    throw new Error("AI সঠিক ফরম্যাটে উত্তর দেয়নি, আবার চেষ্টা করুন।");
   }
+
+  if (parsed.versions.length === 0) {
+    throw new Error("AI রিরাইট সম্পন্ন করা যায়নি, আবার চেষ্টা করুন।");
+  }
+
+  return { versions: parsed.versions.slice(0, data.variants) };
 }
