@@ -49,20 +49,47 @@ function useTableCount(table: string) {
   return q.data ?? 0;
 }
 
+const AUTO_KEY = "admin-auto-refresh";
+const AUTO_INTERVAL_MS = 3 * 60 * 1000;
+
 function Overview() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
   const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
 
-  async function refreshAll() {
+  const refreshAll = useCallback(async () => {
     setRefreshing(true);
     try {
       await queryClient.refetchQueries({ type: "active" });
+      setLastRefreshed(new Date());
     } finally {
       setRefreshing(false);
     }
+  }, [queryClient]);
+
+  useEffect(() => {
+    setAutoRefresh(window.localStorage.getItem(AUTO_KEY) === "1");
+  }, []);
+
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const id = window.setInterval(() => {
+      void refreshAll();
+    }, AUTO_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [autoRefresh, refreshAll]);
+
+  function toggleAuto() {
+    setAutoRefresh((prev) => {
+      const next = !prev;
+      window.localStorage.setItem(AUTO_KEY, next ? "1" : "0");
+      return next;
+    });
   }
+
 
   const all = posts.data ?? [];
   const totals = counts.data ?? {
