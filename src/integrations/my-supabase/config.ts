@@ -4,8 +4,23 @@
 declare const __MY_SUPABASE_URL__: string | undefined;
 declare const __MY_SUPABASE_PUBLISHABLE_KEY__: string | undefined;
 
-function pick(injected: string | undefined, viteKey: string, nodeKey: string): string {
+declare global {
+  interface Window {
+    __MY_SUPABASE_CONFIG__?: {
+      url?: string;
+      publishableKey?: string;
+    };
+  }
+}
+
+function pick(
+  injected: string | undefined,
+  runtimeValue: string | undefined,
+  viteKey: string,
+  nodeKey: string,
+): string {
   if (injected) return injected;
+  if (runtimeValue) return runtimeValue;
   const fromVite = (import.meta.env as Record<string, string | undefined>)[viteKey];
   if (fromVite) return fromVite;
   if (typeof process !== "undefined" && process.env?.[nodeKey]) return process.env[nodeKey] as string;
@@ -14,12 +29,14 @@ function pick(injected: string | undefined, viteKey: string, nodeKey: string): s
 
 export const MY_SUPABASE_URL = pick(
   typeof __MY_SUPABASE_URL__ !== "undefined" ? __MY_SUPABASE_URL__ : undefined,
+  typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.url : undefined,
   "VITE_MY_SUPABASE_URL",
   "MY_SUPABASE_URL",
 );
 
 export const MY_SUPABASE_PUBLISHABLE_KEY = pick(
   typeof __MY_SUPABASE_PUBLISHABLE_KEY__ !== "undefined" ? __MY_SUPABASE_PUBLISHABLE_KEY__ : undefined,
+  typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.publishableKey : undefined,
   "VITE_MY_SUPABASE_PUBLISHABLE_KEY",
   "MY_SUPABASE_PUBLISHABLE_KEY",
 );

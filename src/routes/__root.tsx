@@ -76,7 +76,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  head: () => {
+    const runtimeSupabaseConfig = {
+      url: typeof process !== "undefined" ? process.env?.["MY_SUPABASE_URL"] ?? "" : "",
+      publishableKey:
+        typeof process !== "undefined"
+          ? process.env?.["MY_SUPABASE_PUBLISHABLE_KEY"] ?? ""
+          : "",
+    };
+
+    return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -105,7 +114,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
-  }),
+    scripts:
+      runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
+        ? [
+            {
+              children: `window.__MY_SUPABASE_CONFIG__=${JSON.stringify(runtimeSupabaseConfig).replaceAll("<", "\\u003c")}`,
+            },
+          ]
+        : [],
+    };
+  },
 
   shellComponent: RootShell,
   component: RootComponent,
