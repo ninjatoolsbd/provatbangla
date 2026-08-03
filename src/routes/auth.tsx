@@ -46,14 +46,11 @@ function AuthPage() {
     setBusy(true);
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success("অ্যাকাউন্ট তৈরি হয়েছে। এখন লগইন করুন।");
-        setIsSignup(false);
+        toast.success("অ্যাকাউন্ট তৈরি হয়েছে।");
+        if (data.session) void navigate({ to: "/admin" });
+        else setIsSignup(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
