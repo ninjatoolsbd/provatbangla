@@ -202,13 +202,33 @@ function WritePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-[22px] font-bold text-primary">নিউজ লিখুন</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-[22px] font-bold text-primary">নিউজ লিখুন</h1>
+        <div className="flex border-2 border-primary/30">
+          <button
+            type="button"
+            onClick={() => setMode("manual")}
+            className={`px-4 py-2 text-sm font-bold ${mode === "manual" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
+          >
+            নিজে লিখুন
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("ai")}
+            className={`px-4 py-2 text-sm font-bold ${mode === "ai" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
+          >
+            AI দিয়ে লিখুন
+          </button>
+        </div>
+      </div>
 
+      {mode === "ai" && (
       <section className="border-2 border-primary/30 bg-secondary/30 p-4">
         <h2 className="mb-3 flex items-center gap-2 font-display text-[18px] font-bold text-primary">
           <Sparkles className="size-4" /> AI দিয়ে নতুন নিউজ বানান
         </h2>
         <div className="space-y-3">
+
           <div className="space-y-2">
             <Label htmlFor="genPrompt">নিউজ প্রম্পট</Label>
             <Input
