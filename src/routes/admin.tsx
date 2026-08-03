@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/my-supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { generateNews, rewriteNews } from "@/lib/news.functions";
 import { categories } from "@/lib/news-data";
