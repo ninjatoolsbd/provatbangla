@@ -95,6 +95,29 @@ const raw: Array<Omit<Article, "body" | "image" | "excerpt"> & { excerpt?: strin
 
   { id: 1201, title: "নগর পরিকল্পনায় নদী কেন বারবার উপেক্ষিত", category: "shilpo-sahitto", author: "ড. আনিসুর রহমান", location: "ঢাকা", time: "৩ ঘণ্টা আগে" },
   { id: 1202, title: "তরুণদের কর্মসংস্থান: সুযোগ ও সংকট", category: "shilpo-sahitto", author: "শারমিন আক্তার", location: "ঢাকা", time: "৯ ঘণ্টা আগে" },
+  { id: 1203, title: "বইমেলায় তরুণ লেখকদের ভিড়, বাড়ছে কবিতার পাঠক", category: "shilpo-sahitto", author: "সাহিত্য ডেস্ক", location: "ঢাকা", time: "৫ ঘণ্টা আগে" },
+  { id: 1204, title: "চিত্রকর্ম প্রদর্শনীতে উঠে এলো নদীভাঙনের গল্প", category: "shilpo-sahitto", author: "সংস্কৃতি প্রতিবেদক", location: "ঢাকা", time: "৭ ঘণ্টা আগে" },
+
+  { id: 1301, title: "৪৭তম বিসিএসের আবেদনের সময় বাড়ল", kicker: "চাকরির খবর", category: "chakri", author: "নিজস্ব প্রতিবেদক", location: "ঢাকা", time: "৩০ মিনিট আগে" },
+  { id: 1302, title: "প্রাথমিক বিদ্যালয়ে ২৫ হাজার শিক্ষক নিয়োগের বিজ্ঞপ্তি", category: "chakri", author: "শিক্ষা প্রতিবেদক", location: "ঢাকা", time: "২ ঘণ্টা আগে" },
+  { id: 1303, title: "ব্যাংকে ১২০০ পদে নিয়োগ, আবেদন অনলাইনে", category: "chakri", author: "নিজস্ব প্রতিবেদক", location: "ঢাকা", time: "৫ ঘণ্টা আগে" },
+  { id: 1304, title: "বেসরকারি খাতে বাড়ছে দক্ষ জনবলের চাহিদা", category: "chakri", author: "নিজস্ব প্রতিবেদক", location: "ঢাকা", time: "৮ ঘণ্টা আগে" },
+
+  { id: 1401, title: "শীতে ত্বকের যত্নে ঘরোয়া পাঁচ উপায়", category: "jibonjapon", author: "লাইফস্টাইল ডেস্ক", location: "ঢাকা", time: "১ ঘণ্টা আগে" },
+  { id: 1402, title: "প্রতিদিন হাঁটার অভ্যাস বদলে দিতে পারে যেসব অভ্যাস", category: "jibonjapon", author: "লাইফস্টাইল ডেস্ক", location: "ঢাকা", time: "৬ ঘণ্টা আগে" },
+
+  { id: 1501, title: "চলনবিলে পানি কমতেই শুরু শুঁটকি তৈরির ব্যস্ততা", kicker: "চলনবিল", category: "cholonbil", author: "উপজেলা প্রতিনিধি", location: "সিংড়া, নাটোর", time: "৪৫ মিনিট আগে" },
+  { id: 1502, title: "চলনবিলের সরিষা খেতে মধু সংগ্রহে ব্যস্ত চাষিরা", category: "cholonbil", author: "জেলা প্রতিনিধি", location: "নাটোর", time: "৩ ঘণ্টা আগে" },
+  { id: 1503, title: "বিলের মাঝে সড়ক, বদলে যাচ্ছে চলনবিলের যোগাযোগ", category: "cholonbil", author: "জেলা প্রতিনিধি", location: "পাবনা", time: "৬ ঘণ্টা আগে" },
+  { id: 1504, title: "চলনবিলে দেশীয় মাছের সংকট, হুমকিতে জেলে পরিবার", category: "cholonbil", author: "উপজেলা প্রতিনিধি", location: "সিরাজগঞ্জ", time: "৯ ঘণ্টা আগে" },
+
+  { id: 1601, title: "ভিডিও: রাজধানীর যানজট নিরসনে নতুন উদ্যোগ", category: "video", author: "ভিডিও ডেস্ক", location: "ঢাকা", time: "২০ মিনিট আগে" },
+  { id: 1602, title: "ভিডিও: মাঠে ফিরেই ঝলক দেখালেন তরুণ ক্রিকেটার", category: "video", author: "ভিডিও ডেস্ক", location: "মিরপুর", time: "২ ঘণ্টা আগে" },
+  { id: 1603, title: "ভিডিও: চলনবিলের সকাল, ক্যামেরার চোখে", category: "video", author: "ভিডিও ডেস্ক", location: "নাটোর", time: "৪ ঘণ্টা আগে" },
+  { id: 1604, title: "ভিডিও: বইমেলার শেষ দিনে পাঠকের ঢল", category: "video", author: "ভিডিও ডেস্ক", location: "ঢাকা", time: "৭ ঘণ্টা আগে" },
+
+  { id: 1701, title: "আবহাওয়ার পূর্বাভাস: আগামী তিন দিন বৃষ্টির সম্ভাবনা", category: "onnanno", author: "নিজস্ব প্রতিবেদক", location: "ঢাকা", time: "৫০ মিনিট আগে" },
+  { id: 1702, title: "ধর্মীয় উৎসব ঘিরে বাড়তি নিরাপত্তা ব্যবস্থা", category: "onnanno", author: "নিজস্ব প্রতিবেদক", location: "ঢাকা", time: "৫ ঘণ্টা আগে" },
 ];
 
 export const articles: Article[] = raw.map((a) => ({
