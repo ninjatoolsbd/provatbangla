@@ -77,7 +77,7 @@ export function AdBanner({
   variant?: "leaderboard" | "box" | "skyscraper";
   className?: string;
 }) {
-  const ad = demoAds[Math.abs(index) % demoAds.length];
+  const ad = demoAds[Math.abs(index) % demoAds.length]!;
   const vertical = variant === "skyscraper";
 
   return (
