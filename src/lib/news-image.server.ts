@@ -74,12 +74,19 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
 
     const bytes = base64ToBytes(b64);
     const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
+
+    // Prefer Cloudflare R2 when configured, fall back to backend storage.
+    const { uploadToR2 } = await import("@/lib/r2.server");
+    const r2Url = await uploadToR2(`news/${path}`, bytes, "image/png");
+    if (r2Url) return r2Url;
+
     const { error } = await supabaseAdmin.storage
       .from(BUCKET)
       .upload(path, bytes, { contentType: "image/png", upsert: false });
     if (error) return null;
 
     return `/api/public/news-image/${path}`;
+
   } catch {
     return null;
   }
