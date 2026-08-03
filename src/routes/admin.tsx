@@ -78,8 +78,9 @@ function AdminPage() {
   const [versions, setVersions] = useState<Version[]>([]);
 
   useEffect(() => {
-    if (!loading && !isAdmin) void navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, isAdmin, navigate]);
+    if (!loading && !isAdmin && !userId) void navigate({ to: "/auth", search: { mode: "login" } });
+  }, [loading, isAdmin, userId, navigate]);
+
 
   const postsQuery = useQuery({
     queryKey: ["admin-posts"],
