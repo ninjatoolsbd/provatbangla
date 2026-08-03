@@ -40,6 +40,7 @@ function Overview() {
         <h1 className="font-display text-[22px] font-bold text-primary">ওভারভিউ</h1>
         <Link
           to="/admin/write"
+          search={{ id: undefined }}
           className="bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
         >
           নতুন নিউজ লিখুন
