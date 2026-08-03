@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
 import { useState } from "react";
 
-import { banglaDate, categories } from "@/lib/news-data";
+import { categories } from "@/lib/news-data";
 
 const utility = [
   { icon: Newspaper, label: "আজকের পত্রিকা" },
