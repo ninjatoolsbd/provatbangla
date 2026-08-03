@@ -34,7 +34,7 @@ function CategoriesPage() {
         order={{ column: "sort_order", ascending: true }}
         fields={[
           { name: "name", label: "নাম (বাংলা)", type: "text" },
-          { name: "slug", label: "স্লাগ (ইংরেজি)", type: "text", placeholder: "jatiyo" },
+          { name: "slug", label: "স্লাগ (ইংরেজি)", type: "text", placeholder: "bangladesh" },
           { name: "sort_order", label: "ক্রম", type: "number", defaultValue: 0 },
           { name: "is_active", label: "সক্রিয়", type: "checkbox", defaultValue: true },
         ]}
