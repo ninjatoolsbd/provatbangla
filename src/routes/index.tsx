@@ -21,6 +21,7 @@ import {
   VideoStrip,
 } from "@/components/home-widgets";
 import { DivisionMap } from "@/components/division-map";
+import { AdBanner } from "@/components/ad-banner";
 import { GridCard, LeadCard, SplitLead, ThumbRow } from "@/components/news-cards";
 import { articles, byCategory } from "@/lib/news-data";
 import type { Article } from "@/lib/news-data";
@@ -46,19 +47,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
-
-function AdSlot({ h = "h-24", label = "বিজ্ঞাপন" }: { h?: string; label?: string }) {
-  return (
-    <div
-      className={cn(
-        "flex items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground",
-        h,
-      )}
-    >
-      {label}
-    </div>
-  );
-}
 
 function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
   const [tab, setTab] = useState<"video" | "photo">("video");
@@ -234,13 +222,13 @@ function Home() {
           <div className="min-w-0 lg:col-span-3 lg:pl-5">
             <StoryTabs video={pick(articles, 5, 0)} photo={pick(articles, 5, 5)} />
             <div className="mt-4">
-              <AdSlot h="h-[600px]" />
+              <AdBanner index={2} variant="skyscraper" className="h-[600px]" />
             </div>
           </div>
         </section>
 
         <div className="my-6">
-          <AdSlot />
+          <AdBanner index={0} className="h-24" />
         </div>
 
         {/* ================= এক ক্লিকে বিভাগের খবর ================= */}
@@ -329,7 +317,7 @@ function Home() {
             </div>
             <div className="min-w-0 space-y-4 lg:col-span-3">
               <DistrictSearch />
-              <AdSlot h="h-52" />
+              <AdBanner index={4} variant="box" className="h-52" />
             </div>
           </div>
         </section>
@@ -405,7 +393,7 @@ function Home() {
             </div>
             <div className="min-w-0 space-y-4 lg:col-span-3">
               <SocialFollow />
-              <AdSlot h="h-52" />
+              <AdBanner index={5} variant="box" className="h-52" />
             </div>
           </div>
         </section>
