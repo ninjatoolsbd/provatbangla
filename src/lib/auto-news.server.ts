@@ -88,10 +88,19 @@ async function rewrite(article: { title: string; body: string }, fallbackCategor
   } satisfies Rewritten;
 }
 
-/** এক রাউন্ড অটো-সিঙ্ক চালায়। */
-export async function runAutoSync(options: { sourceId?: string; limit?: number } = {}) {
+/** এক রাউন্ড অটো-সিঙ্ক চালায়। dryRun হলে কিছুই সেভ হয় না, শুধু প্রিভিউ ফেরত আসে। */
+export async function runAutoSync(
+  options: { sourceId?: string; limit?: number; dryRun?: boolean } = {},
+) {
   const cfg = await settings();
-  const result: AutoRunResult = { created: 0, skipped: 0, failed: 0, details: [] };
+  const dryRun = options.dryRun === true;
+  const result: AutoRunResult = {
+    created: 0,
+    skipped: 0,
+    failed: 0,
+    details: [],
+    ...(dryRun ? { dryRun: true, previews: [] as AutoPreview[] } : {}),
+  };
 
   if (cfg["auto_enabled"] === "false" && !options.sourceId) {
     return { ...result, details: [{ title: "অটোমেশন", status: "disabled" }] };
@@ -150,7 +159,7 @@ export async function runAutoSync(options: { sourceId?: string; limit?: number }
 
         const news = await rewrite({ title, body }, source.category === "auto" ? "bangladesh" : source.category);
 
-        const sourceImage = article.image ?? item.image;
+        const sourceImage = article.image ?? item.image ?? null;
         const imageUrl = sourceImage
           ? await processSourceImage({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
           : null;
@@ -158,6 +167,27 @@ export async function runAutoSync(options: { sourceId?: string; limit?: number }
         const credit = withCredit
           ? `\n\nসূত্র: ${source.name} (${sourceHost(source.site_url)})`
           : "";
+
+        if (dryRun) {
+          result.previews?.push({
+            sourceId: source.id,
+            sourceName: source.name,
+            sourceUrl: item.url,
+            sourceTitle: title,
+            title: news.title,
+            kicker: news.kicker,
+            excerpt: news.excerpt,
+            content: news.content + credit,
+            seo_title: news.seo_title,
+            seo_description: news.seo_description,
+            category: news.category,
+            imageUrl,
+            sourceImage,
+          });
+          result.created += 1;
+          result.details.push({ title: news.title, status: "preview" });
+          continue;
+        }
 
         const { data: inserted, error } = await admin
           .from("posts")
@@ -190,25 +220,72 @@ export async function runAutoSync(options: { sourceId?: string; limit?: number }
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
         result.failed += 1;
-        await admin.from("auto_items").insert({
-          source_id: source.id,
-          source_url: item.url,
-          source_title: item.title,
-          status: "failed",
-          message: message.slice(0, 400),
-        });
+        if (!dryRun) {
+          await admin.from("auto_items").insert({
+            source_id: source.id,
+            source_url: item.url,
+            source_title: item.title,
+            status: "failed",
+            message: message.slice(0, 400),
+          });
+        }
         result.details.push({ title: item.title || item.url, status: "failed", message });
       }
     }
 
-    await admin
-      .from("auto_sources")
-      .update({
-        last_run_at: new Date().toISOString(),
-        last_status: `${result.created} নতুন, ${result.failed} ব্যর্থ`,
-      })
-      .eq("id", source.id);
+    if (!dryRun) {
+      await admin
+        .from("auto_sources")
+        .update({
+          last_run_at: new Date().toISOString(),
+          last_status: `${result.created} নতুন, ${result.failed} ব্যর্থ`,
+        })
+        .eq("id", source.id);
+    }
   }
 
   return result;
+}
+
+/** ড্রাই-রানে দেখা একটি প্রিভিউ (সম্পাদনা শেষে) সাইটে সেভ করে। */
+export async function publishPreview(preview: AutoPreview & { status?: "draft" | "published" }) {
+  const cfg = await settings();
+  const status =
+    preview.status ?? (cfg["auto_mode"] === "publish" ? "published" : "draft");
+
+  const { data: existing } = await admin
+    .from("auto_items")
+    .select("id")
+    .eq("source_url", preview.sourceUrl)
+    .maybeSingle();
+  if (existing) return { status: "skipped" as const };
+
+  const { data: inserted, error } = await admin
+    .from("posts")
+    .insert({
+      title: preview.title,
+      slug: slugify(preview.title),
+      kicker: preview.kicker || null,
+      category: preview.category,
+      image_url: preview.imageUrl,
+      excerpt: preview.excerpt,
+      content: preview.content,
+      seo_title: preview.seo_title || null,
+      seo_description: preview.seo_description || null,
+      status,
+      published_at: status === "published" ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+
+  await admin.from("auto_items").insert({
+    source_id: preview.sourceId,
+    source_url: preview.sourceUrl,
+    source_title: preview.sourceTitle,
+    post_id: inserted.id,
+    status,
+  });
+
+  return { status };
 }
