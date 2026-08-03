@@ -233,7 +233,7 @@ function Home() {
           <div className="min-w-0 lg:col-span-3 lg:pl-5">
             <StoryTabs video={pick(articles, 5, 0)} photo={pick(articles, 5, 5)} />
             <div className="mt-4">
-              <AdSlot h="h-60" />
+              <AdSlot h="h-[600px]" />
             </div>
           </div>
         </section>
