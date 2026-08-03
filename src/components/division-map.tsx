@@ -71,9 +71,9 @@ export function DivisionMap({ pool = allArticles }: { pool?: Article[] }) {
                   onMouseLeave={() => setHover(null)}
                   className={cn(
                     "cursor-pointer transition-all duration-300",
+                    "stroke-card",
                     on ? "fill-primary" : "fill-primary/70 hover:fill-primary",
                   )}
-                  stroke="hsl(var(--card))"
                   strokeWidth={on ? 3 : 1.5}
                   vectorEffect="non-scaling-stroke"
                 />
