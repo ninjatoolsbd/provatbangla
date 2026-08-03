@@ -6,6 +6,7 @@ import {
   LogOut,
   PenSquare,
   Settings,
+  Users,
   Home,
 } from "lucide-react";
 
@@ -24,14 +25,15 @@ import {
 import { supabase } from "@/integrations/my-supabase/client";
 
 const items = [
-  { title: "ড্যাশবোর্ড", url: "/admin", icon: Gauge },
-  { title: "নিউজ লিখুন", url: "/admin/write", icon: PenSquare },
-  { title: "সব নিউজ", url: "/admin/posts", icon: FileText },
-  { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree },
-  { title: "সেটিংস", url: "/admin/settings", icon: Settings },
+  { title: "ড্যাশবোর্ড", url: "/admin", icon: Gauge, adminOnly: false },
+  { title: "নিউজ লিখুন", url: "/admin/write", icon: PenSquare, adminOnly: false },
+  { title: "সব নিউজ", url: "/admin/posts", icon: FileText, adminOnly: false },
+  { title: "ইউজার ও অথর", url: "/admin/users", icon: Users, adminOnly: true },
+  { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree, adminOnly: true },
+  { title: "সেটিংস", url: "/admin/settings", icon: Settings, adminOnly: true },
 ];
 
-export function AdminSidebar({ email }: { email: string | null }) {
+export function AdminSidebar({ email, isAdmin = true }: { email: string | null; isAdmin?: boolean }) {
   const navigate = useNavigate();
   const path = useRouterState({ select: (r) => r.location.pathname });
 
@@ -47,16 +49,18 @@ export function AdminSidebar({ email }: { email: string | null }) {
           <SidebarGroupLabel>ম্যানেজমেন্ট</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={path === item.url}>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items
+                .filter((item) => isAdmin || !item.adminOnly)
+                .map((item) => (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild isActive={path === item.url}>
+                      <Link to={item.url} className="flex items-center gap-2">
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
