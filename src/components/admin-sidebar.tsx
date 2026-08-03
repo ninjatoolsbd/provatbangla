@@ -67,25 +67,36 @@ export function AdminSidebar({ email, isAdmin = true }: { email: string | null; 
         </span>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>ম্যানেজমেন্ট</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items
-                .filter((item) => isAdmin || !item.adminOnly)
-                .map((item) => (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={path === item.url}>
-                      <Link to={item.url} className="flex items-center gap-2">
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {(
+          [
+            ["কনটেন্ট", contentItems],
+            ["পাঠক ও বিজ্ঞাপন", engageItems],
+            ["সিস্টেম", systemItems],
+          ] as const
+        ).map(([label, group]) => {
+          const visible = group.filter((item) => isAdmin || !item.adminOnly);
+          if (visible.length === 0) return null;
+          return (
+            <SidebarGroup key={label}>
+              <SidebarGroupLabel>{label}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {visible.map((item) => (
+                    <SidebarMenuItem key={item.url}>
+                      <SidebarMenuButton asChild isActive={path === item.url}>
+                        <Link to={item.url} className="flex items-center gap-2">
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          );
+        })}
+
         <SidebarGroup>
           <SidebarGroupLabel>সাইট</SidebarGroupLabel>
           <SidebarGroupContent>
