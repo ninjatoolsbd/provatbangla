@@ -197,8 +197,8 @@ export function ResourceManager({
         )}
         <div className="divide-y divide-border">
           {rows.map((row) => (
-            <div key={String(row.id)} className="px-4 py-3">
-              {editingId === row.id ? (
+            <div key={String(row['id'])} className="px-4 py-3">
+              {editingId === row['id'] ? (
                 <div className="space-y-3">
                   <div className="grid gap-3 sm:grid-cols-2">
                     {fields.map((f) => renderField(f, editForm, setEditForm))}
@@ -208,7 +208,7 @@ export function ResourceManager({
                       type="button"
                       disabled={update.isPending}
                       onClick={() =>
-                        update.mutate({ id: String(row.id), values: editForm })
+                        update.mutate({ id: String(row['id']), values: editForm })
                       }
                       className="bg-primary px-3 py-1.5 text-xs text-primary-foreground"
                     >
@@ -238,7 +238,7 @@ export function ResourceManager({
                         const next: Row = {};
                         for (const f of fields) next[f.name] = row[f.name];
                         setEditForm(next);
-                        setEditingId(String(row.id));
+                        setEditingId(String(row['id']));
                       }}
                       className="text-xs text-primary hover:underline"
                     >
@@ -247,7 +247,7 @@ export function ResourceManager({
                     <button
                       type="button"
                       onClick={() => {
-                        if (confirm("মুছে ফেলবেন?")) remove.mutate(String(row.id));
+                        if (confirm("মুছে ফেলবেন?")) remove.mutate(String(row['id']));
                       }}
                       className="text-muted-foreground hover:text-destructive"
                       aria-label="ডিলিট"
