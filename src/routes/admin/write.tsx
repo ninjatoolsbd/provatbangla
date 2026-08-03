@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/my-supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { generateNews, rewriteNews } from "@/lib/news.functions";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
@@ -185,7 +186,12 @@ function WritePage() {
       }
       const { data, error } = await supabase
         .from("posts")
-        .insert({ ...payload, slug: slugify(title) })
+        .insert({
+          ...payload,
+          slug: slugify(title),
+          author_id: auth.userId,
+          ...(auth.email ? { author_name: auth.email.split("@")[0] } : {}),
+        })
         .select("id")
         .single();
       if (error) throw error;
