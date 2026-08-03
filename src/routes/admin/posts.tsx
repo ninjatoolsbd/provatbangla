@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,13 @@ import {
 import { supabase } from "@/integrations/my-supabase/client";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
+import { regeneratePostImage } from "@/lib/post-image.functions";
+
+/** Placeholder/irrelevant images that should be replaced by topic-relevant AI photos. */
+function needsRelevantImage(url: string | null | undefined) {
+  if (!url) return true;
+  return url.includes("picsum.photos") || url.includes("/ai-images/");
+}
 
 export const Route = createFileRoute("/admin/posts")({
   head: () => ({
@@ -36,6 +43,8 @@ function PostsPage() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [cat, setCat] = useState("all");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null);
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
@@ -45,6 +54,44 @@ function PostsPage() {
       (cat === "all" || p.category === cat) &&
       p.title.toLowerCase().includes(q.trim().toLowerCase()),
   );
+
+  const regenImage = useMutation({
+    mutationFn: async (id: string) => {
+      setBusyId(id);
+      return regeneratePostImage({ data: { postId: id } });
+    },
+    onSuccess: () => {
+      toast.success("নতুন প্রাসঙ্গিক ছবি যোগ হয়েছে");
+      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+      void qc.invalidateQueries({ queryKey: ["published-posts"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+    onSettled: () => setBusyId(null),
+  });
+
+  const pending = (postsQuery.data ?? []).filter((p) => needsRelevantImage(p.image_url));
+
+  async function runBulk() {
+    if (pending.length === 0) return;
+    setBulk({ done: 0, total: pending.length });
+    let failed = 0;
+    for (let i = 0; i < pending.length; i++) {
+      try {
+        await regeneratePostImage({ data: { postId: pending[i].id } });
+      } catch {
+        failed += 1;
+        if (failed >= 3) {
+          toast.error("AI ছবি বানানো থামানো হলো — ক্রেডিট/কোটা শেষ মনে হচ্ছে।");
+          break;
+        }
+      }
+      setBulk({ done: i + 1, total: pending.length });
+    }
+    setBulk(null);
+    void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+    void qc.invalidateQueries({ queryKey: ["published-posts"] });
+    toast.success("ছবি আপডেট শেষ");
+  }
 
   const toggle = useMutation({
     mutationFn: async (p: { id: string; status: string }) => {
@@ -81,7 +128,23 @@ function PostsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-[22px] font-bold text-primary">সব নিউজ</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-[22px] font-bold text-primary">সব নিউজ</h1>
+        <button
+          onClick={() => void runBulk()}
+          disabled={bulk !== null || pending.length === 0}
+          className="flex items-center gap-2 border border-border px-3 py-1.5 text-xs font-semibold text-primary disabled:opacity-50"
+        >
+          {bulk ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            <ImagePlus className="size-3.5" />
+          )}
+          {bulk
+            ? `ছবি বানানো হচ্ছে ${bulk.done}/${bulk.total}`
+            : `অপ্রাসঙ্গিক ছবি ঠিক করুন (${pending.length})`}
+        </button>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Input placeholder="টাইটেল খুঁজুন..." value={q} onChange={(e) => setQ(e.target.value)} />
@@ -147,6 +210,18 @@ function PostsPage() {
                 দেখুন
               </Link>
             )}
+            <button
+              onClick={() => regenImage.mutate(p.id)}
+              disabled={busyId === p.id}
+              className="flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+            >
+              {busyId === p.id ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <ImagePlus className="size-3.5" />
+              )}
+              ছবি বানান
+            </button>
             <button
               onClick={() => del.mutate(p.id)}
               aria-label="মুছুন"
