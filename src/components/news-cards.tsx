@@ -28,28 +28,30 @@ function Kicker({ article }: { article: Article }) {
 /** Big story: image on the left, headline + excerpt on the right (kalbela hero). */
 export function SplitLead({ article }: { article: Article }) {
   return (
-    <article className="group">
+    <article className="group grid gap-4 sm:grid-cols-[1.15fr_1fr]">
       <ArticleLink article={article} className="block overflow-hidden">
         <img
           src={article.image}
           alt={article.title}
-          className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+          className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           loading="eager"
         />
       </ArticleLink>
-      <ArticleLink article={article}>
-        <h2 className="mt-3 font-display text-[30px] leading-[1.3] font-bold transition-colors group-hover:text-primary">
-          <Kicker article={article} />
-          {article.title}
-        </h2>
-      </ArticleLink>
-      <p className="mt-2 line-clamp-3 text-[15px] leading-relaxed text-muted-foreground">
-        {article.excerpt}
-      </p>
-      <div className="mt-3 h-px w-full bg-border" />
+      <div className="min-w-0">
+        <ArticleLink article={article}>
+          <h2 className="font-display text-[26px] leading-[1.35] font-bold transition-colors group-hover:text-primary sm:text-[30px]">
+            <Kicker article={article} />
+            {article.title}
+          </h2>
+        </ArticleLink>
+        <p className="mt-3 line-clamp-5 text-[15px] leading-relaxed text-muted-foreground">
+          {article.excerpt}
+        </p>
+      </div>
     </article>
   );
 }
+
 
 export function LeadCard({ article }: { article: Article }) {
   return (
