@@ -104,13 +104,35 @@ function AuthPage() {
           </Button>
         </form>
 
-        <button
-          type="button"
-          onClick={() => setIsSignup((v) => !v)}
-          className="mt-4 text-sm text-primary hover:underline"
-        >
-          {isSignup ? "অ্যাকাউন্ট আছে? লগইন করুন" : "অ্যাকাউন্ট নেই? সাইন আপ করুন"}
-        </button>
+        <div className="mt-4 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => setIsSignup((v) => !v)}
+            className="text-sm text-primary hover:underline"
+          >
+            {isSignup ? "অ্যাকাউন্ট আছে? লগইন করুন" : "অ্যাকাউন্ট নেই? সাইন আপ করুন"}
+          </button>
+          {!isSignup && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (!email) {
+                  toast.error("আগে ইমেইল লিখুন");
+                  return;
+                }
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                  redirectTo: `${window.location.origin}/auth?mode=login`,
+                });
+                if (error) toast.error(error.message);
+                else toast.success("পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে।");
+              }}
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              পাসওয়ার্ড ভুলে গেছেন?
+            </button>
+          )}
+        </div>
+
       </main>
       <SiteFooter />
     </div>
