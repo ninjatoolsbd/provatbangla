@@ -44,13 +44,14 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                   />
                 </Link>
               )}
-              <div>
+              <div className={p.image_url ? "mt-3" : ""}>
                 <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                  <h3 className="font-display text-[17px] leading-[1.4] font-bold transition-colors group-hover:text-primary sm:mt-0">
+                  <h3 className="font-display text-[17px] leading-[1.45] font-bold transition-colors group-hover:text-primary">
                     {p.kicker && <span className="text-primary">{p.kicker} / </span>}
                     {p.title}
                   </h3>
                 </Link>
+
                 <p className="mt-1 text-xs text-muted-foreground">
                   {categoryName(p.category)} · {banglaDateTime(p.published_at ?? p.created_at)}
                 </p>
