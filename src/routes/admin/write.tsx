@@ -54,7 +54,9 @@ function WritePage() {
   const rewrite = useServerFn(rewriteNews);
   const generate = useServerFn(generateNews);
 
+  const [mode, setMode] = useState<"manual" | "ai">("manual");
   const [genPrompt, setGenPrompt] = useState("");
+
   const [genDetails, setGenDetails] = useState("");
   const [genCategory, setGenCategory] = useState("jatiyo");
   const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
