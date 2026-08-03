@@ -13,7 +13,7 @@ export type Row = Record<string, any>;
 export async function listRows(
   table: string,
   order: { column: string; ascending?: boolean } = { column: "created_at", ascending: false },
-  limit = 200,
+  limit = 2000,
 ): Promise<Row[]> {
   const { data, error } = await db
     .from(table)
@@ -23,6 +23,14 @@ export async function listRows(
   if (error) throw error;
   return data ?? [];
 }
+
+/** Exact row count for a table without pulling rows. */
+export async function countRows(table: string): Promise<number> {
+  const { count, error } = await db.from(table).select("id", { count: "exact", head: true });
+  if (error) throw error;
+  return count ?? 0;
+}
+
 
 export async function insertRow(table: string, values: Row) {
   const { error } = await db.from(table).insert(values);
