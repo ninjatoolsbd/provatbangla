@@ -13,6 +13,7 @@ import {
   PenSquare,
   Radio,
   Settings,
+  Upload,
   Users,
   Home,
 } from "lucide-react";
@@ -38,6 +39,7 @@ const contentItems = [
   { title: "ব্রেকিং নিউজ", url: "/admin/breaking", icon: Radio, adminOnly: true },
   { title: "ই-পেপার", url: "/admin/epaper", icon: Newspaper, adminOnly: true },
   { title: "মিডিয়া লাইব্রেরি", url: "/admin/media", icon: Image, adminOnly: false },
+  { title: "বাল্ক ইমপোর্ট", url: "/admin/import", icon: Upload, adminOnly: true },
 ];
 
 const engageItems = [
