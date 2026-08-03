@@ -125,7 +125,7 @@ export function VideoStrip({ items }: { items: Article[] }) {
 export function OpinionColumn({ items }: { items: Article[] }) {
   return (
     <div>
-      <BarHeading title="মতামত" slug="motamot" />
+      <BarHeading title="শিল্প ও সাহিত্য" slug="shilpo-sahitto" />
       <div className="divide-y divide-border border-t border-border">
         {items.slice(0, 3).map((a) => (
           <Link
@@ -264,7 +264,7 @@ export function LatestPopularTabs({
         ))}
       </ul>
       <div className="border-t border-border p-2 text-center">
-        <Link to="/category/$slug" params={{ slug: "jatiyo" }} className="text-xs font-bold text-primary">
+        <Link to="/category/$slug" params={{ slug: "bangladesh" }} className="text-xs font-bold text-primary">
           আরও পড়ুন →
         </Link>
       </div>

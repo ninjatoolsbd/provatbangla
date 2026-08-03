@@ -5,7 +5,7 @@ import { generateTextWithFallback } from "./ai-providers.server";
 export const RewriteInput = z.object({
   title: z.string().min(1),
   content: z.string().min(1),
-  category: z.string().default("jatiyo"),
+  category: z.string().default("bangladesh"),
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   variants: z.number().int().min(1).max(3).default(1),
 });
