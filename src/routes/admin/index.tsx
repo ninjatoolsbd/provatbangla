@@ -128,7 +128,28 @@ function Overview() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-[22px] font-bold text-primary">ওভারভিউ</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {lastRefreshed && (
+            <span className="text-xs text-muted-foreground">
+              সর্বশেষ আপডেট: {lastRefreshed.toLocaleTimeString("bn-BD")}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={toggleAuto}
+            aria-pressed={autoRefresh}
+            title="প্রতি ৩ মিনিটে স্বয়ংক্রিয়ভাবে সংখ্যা আপডেট হবে"
+            className={`flex items-center gap-2 border px-3 py-2 text-sm font-medium ${
+              autoRefresh
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-foreground hover:bg-muted"
+            }`}
+          >
+            <span
+              className={`size-2 rounded-full ${autoRefresh ? "animate-pulse bg-primary" : "bg-muted-foreground/50"}`}
+            />
+            অটো রিফ্রেশ {autoRefresh ? "চালু" : "বন্ধ"}
+          </button>
           <button
             type="button"
             onClick={refreshAll}
@@ -140,6 +161,7 @@ function Overview() {
             />
             রিফ্রেশ
           </button>
+
           <Link
             to="/admin/write"
             search={{ id: undefined }}
