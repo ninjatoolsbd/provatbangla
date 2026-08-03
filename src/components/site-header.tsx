@@ -85,7 +85,7 @@ export function SiteHeader() {
               {c.name}
             </Link>
           ))}
-          <span className="ml-2 hidden text-xs text-muted-foreground 2xl:inline">{banglaDate}</span>
+          
         </div>
 
         {open && (
