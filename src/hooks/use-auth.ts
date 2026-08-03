@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/my-supabase/client";
 
+export type AppRole = "admin" | "editor" | "user";
+
 export function useAuth() {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,18 +18,16 @@ export function useAuth() {
       setUserId(uid);
       setEmail(mail);
       if (!uid) {
-        setIsAdmin(false);
+        setRole(null);
         setLoading(false);
         return;
       }
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", uid)
-        .eq("role", "admin")
-        .maybeSingle();
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
       if (!active) return;
-      setIsAdmin(Boolean(data));
+      const roles = (data ?? []).map((r) => r.role as AppRole);
+      setRole(
+        roles.includes("admin") ? "admin" : roles.includes("editor") ? "editor" : "user",
+      );
       setLoading(false);
     };
 
@@ -45,5 +45,8 @@ export function useAuth() {
     };
   }, []);
 
-  return { userId, email, isAdmin, loading };
+  const isAdmin = role === "admin";
+  const isEditor = role === "editor";
+
+  return { userId, email, role, isAdmin, isEditor, canAccessAdmin: isAdmin || isEditor, loading };
 }
