@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAdsRouteImport } from './routes/admin/ads'
+import { Route as AdminAutomationRouteImport } from './routes/admin/automation'
 import { Route as AdminBreakingRouteImport } from './routes/admin/breaking'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
@@ -31,6 +32,7 @@ import { Route as AdminWriteRouteImport } from './routes/admin/write'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
+import { Route as ApiPublicCronSyncRouteImport } from './routes/api/public/cron-sync'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
 import { Route as ApiPublicR2SplatRouteImport } from './routes/api/public/r2.$'
 
@@ -62,6 +64,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const AdminAdsRoute = AdminAdsRouteImport.update({
   id: '/ads',
   path: '/ads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAutomationRoute = AdminAutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBreakingRoute = AdminBreakingRouteImport.update({
@@ -144,6 +151,11 @@ const PostSlugRoute = PostSlugRouteImport.update({
   path: '/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronSyncRoute = ApiPublicCronSyncRouteImport.update({
+  id: '/api/public/cron-sync',
+  path: '/api/public/cron-sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsImageSplatRoute = ApiPublicNewsImageSplatRouteImport.update({
   id: '/api/public/news-image/$',
   path: '/api/public/news-image/$',
@@ -161,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/automation': typeof AdminAutomationRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
@@ -178,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -186,6 +200,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/automation': typeof AdminAutomationRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
@@ -203,6 +218,7 @@ export interface FileRoutesByTo {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -213,6 +229,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/automation': typeof AdminAutomationRoute
   '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
@@ -230,6 +247,7 @@ export interface FileRoutesById {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -241,6 +259,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/epaper'
     | '/admin/ads'
+    | '/admin/automation'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
@@ -258,6 +277,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin/'
+    | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesByTo: FileRoutesByTo
@@ -266,6 +286,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/epaper'
     | '/admin/ads'
+    | '/admin/automation'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
@@ -283,6 +304,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin'
+    | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   id:
@@ -292,6 +314,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/epaper'
     | '/admin/ads'
+    | '/admin/automation'
     | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
@@ -309,6 +332,7 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin/'
+    | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesById: FileRoutesById
@@ -321,6 +345,7 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
   PostSlugRoute: typeof PostSlugRoute
+  ApiPublicCronSyncRoute: typeof ApiPublicCronSyncRoute
   ApiPublicNewsImageSplatRoute: typeof ApiPublicNewsImageSplatRoute
   ApiPublicR2SplatRoute: typeof ApiPublicR2SplatRoute
 }
@@ -367,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/ads'
       fullPath: '/admin/ads'
       preLoaderRoute: typeof AdminAdsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/automation': {
+      id: '/admin/automation'
+      path: '/automation'
+      fullPath: '/admin/automation'
+      preLoaderRoute: typeof AdminAutomationRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/breaking': {
@@ -481,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron-sync': {
+      id: '/api/public/cron-sync'
+      path: '/api/public/cron-sync'
+      fullPath: '/api/public/cron-sync'
+      preLoaderRoute: typeof ApiPublicCronSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-image/$': {
       id: '/api/public/news-image/$'
       path: '/api/public/news-image/$'
@@ -500,6 +539,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
+  AdminAutomationRoute: typeof AdminAutomationRoute
   AdminBreakingRoute: typeof AdminBreakingRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
@@ -518,6 +558,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdsRoute: AdminAdsRoute,
+  AdminAutomationRoute: AdminAutomationRoute,
   AdminBreakingRoute: AdminBreakingRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommentsRoute: AdminCommentsRoute,
@@ -544,6 +585,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
   PostSlugRoute: PostSlugRoute,
+  ApiPublicCronSyncRoute: ApiPublicCronSyncRoute,
   ApiPublicNewsImageSplatRoute: ApiPublicNewsImageSplatRoute,
   ApiPublicR2SplatRoute: ApiPublicR2SplatRoute,
 }

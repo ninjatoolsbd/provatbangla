@@ -1,6 +1,8 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
+  Bot,
+
   FileText,
   FolderTree,
   Gauge,
@@ -40,6 +42,8 @@ const contentItems = [
   { title: "ই-পেপার", url: "/admin/epaper", icon: Newspaper, adminOnly: true },
   { title: "মিডিয়া লাইব্রেরি", url: "/admin/media", icon: Image, adminOnly: false },
   { title: "বাল্ক ইমপোর্ট", url: "/admin/import", icon: Upload, adminOnly: true },
+  { title: "অটো নিউজ", url: "/admin/automation", icon: Bot, adminOnly: true },
+
 ];
 
 const engageItems = [
