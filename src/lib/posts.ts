@@ -66,12 +66,34 @@ export async function fetchPostBySlug(slug: string) {
   return (data ?? null) as Post | null;
 }
 
+/** Fetches every post for the admin area, paginating past the API row cap. */
 export async function fetchAllPostsForAdmin() {
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .order("updated_at", { ascending: false })
-    .limit(100);
-  if (error) throw error;
-  return (data ?? []) as Post[];
+  const pageSize = 1000;
+  const out: Post[] = [];
+  for (let page = 0; page < 50; page++) {
+    const from = page * pageSize;
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .order("updated_at", { ascending: false })
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as Post[];
+    out.push(...rows);
+    if (rows.length < pageSize) break;
+  }
+  return out;
+}
+
+/** Exact counts straight from the database (no row limit involved). */
+export async function fetchPostCounts() {
+  const countOf = async (status?: string) => {
+    let q = supabase.from("posts").select("id", { count: "exact", head: true });
+    if (status) q = q.eq("status", status);
+    const { count, error } = await q;
+    if (error) throw error;
+    return count ?? 0;
+  };
+  const [total, published] = await Promise.all([countOf(), countOf("published")]);
+  return { total, published, drafts: total - published };
 }
