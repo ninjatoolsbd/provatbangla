@@ -86,27 +86,28 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
           </button>
         ))}
       </div>
-      <div className="flex flex-col gap-3 p-3">
-        {list.slice(0, 4).map((a) => (
+      {/* kalbela: horizontal rail of portrait (9:16) story cards */}
+      <div className="flex snap-x gap-2 overflow-x-auto p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {list.slice(0, 6).map((a) => (
           <Link
             key={a.id}
             to="/news/$id"
             params={{ id: String(a.id) }}
-            className="group relative block overflow-hidden"
+            className="group relative block w-[62%] shrink-0 snap-start overflow-hidden"
           >
             <img
               src={a.image}
               alt={a.title}
-              className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+              className="aspect-[9/16] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]"
               loading="lazy"
             />
-            <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
+            <span className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
             {tab === "video" && (
-              <span className="absolute top-1/2 left-1/2 grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
+              <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85">
                 <Play className="size-4 fill-primary text-primary transition-transform duration-300 group-hover:scale-125" />
               </span>
             )}
-            <span className="absolute right-3 bottom-2 left-3 line-clamp-2 font-display text-[15px] leading-snug font-bold text-ink-foreground">
+            <span className="absolute right-2 bottom-2 left-2 line-clamp-3 font-display text-[14px] leading-snug font-bold text-ink-foreground">
               {a.title}
             </span>
           </Link>
@@ -115,6 +116,7 @@ function StoryTabs({ video, photo }: { video: Article[]; photo: Article[] }) {
     </div>
   );
 }
+
 
 /** Text-only headline list used inside section blocks (kalbela right rails). */
 function TextList({ items }: { items: Article[] }) {
@@ -168,9 +170,9 @@ function Home() {
   const opinion = byCategory("motamot");
 
   const lead = national[0]!;
-  const heroSub = pick(articles, 6, 1);
-  const heroMid = pick(articles, 2, 5);
-  const heroThumbs = pick(articles, 4, 7);
+  const heroSub = pick(articles, 9, 1);
+  const heroMid = pick(articles, 2, 10);
+  const heroThumbs = pick(articles, 5, 12);
   const strip = pick(articles, 4, 12);
   const latest = pick(articles, 10, 0);
   const popular = pick(articles, 10, 6);
@@ -186,9 +188,9 @@ function Home() {
 
           <div className="min-w-0 lg:col-span-6 lg:pr-5">
             <SplitLead article={lead} />
-            <div className="mt-4 grid gap-x-4 gap-y-5 border-t border-border pt-4 sm:grid-cols-3">
+            <div className="mt-4 grid divide-x divide-y divide-border border-t border-border sm:grid-cols-3">
               {heroSub.map((a, i) => (
-                <Reveal key={a.id} delay={i * 60}>
+                <Reveal key={a.id} delay={i * 60} className="p-3">
                   <GridCard article={a} compact />
                 </Reveal>
               ))}
@@ -231,7 +233,7 @@ function Home() {
           <div className="min-w-0 lg:col-span-3 lg:pl-5">
             <StoryTabs video={pick(articles, 5, 0)} photo={pick(articles, 5, 5)} />
             <div className="mt-4">
-              <AdSlot h="h-60" />
+              <AdSlot h="h-[600px]" />
             </div>
           </div>
         </section>
