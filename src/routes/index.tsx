@@ -244,7 +244,7 @@ function Home() {
         <VideoStrip items={pick(articles, 8, 3)} />
 
         {/* ============ OPINION | POLL | LATEST TABS ============ */}
-        <section className="mt-8 grid gap-6 lg:grid-cols-3">
+        <section className="mt-5 grid gap-6 border border-border bg-card p-4 lg:grid-cols-3">
           <OpinionColumn items={opinion.length ? opinion : pick(articles, 3, 2)} />
           <PollWidget cover={pick(articles, 1, 9)[0]} />
           <div>
@@ -254,7 +254,7 @@ function Home() {
         </section>
 
         {/* ================= READER FAVOURITES ================= */}
-        <section className="mt-8 border border-border p-4">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="পাঠকপ্রিয়" />
           <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
             {strip.map((a, i) => (
@@ -271,7 +271,7 @@ function Home() {
         </div>
 
         {/* ================= জাতীয় ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="জাতীয়" slug="jatiyo" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
             <div className="min-w-0 lg:col-span-5 lg:pr-5">
@@ -291,7 +291,7 @@ function Home() {
         </section>
 
         {/* ================= রাজনীতি ================= */}
-        <section className="mt-8 -mx-4 bg-secondary/60 px-4 py-6">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="রাজনীতি" slug="rajniti" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-4">
@@ -308,7 +308,7 @@ function Home() {
         </section>
 
         {/* ================= অর্থনীতি ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="অর্থনীতি" slug="arthonity" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
             <div className="min-w-0 lg:col-span-7 lg:pr-5">
@@ -321,7 +321,7 @@ function Home() {
         </section>
 
         {/* ================= সারাবাংলা + district ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="সারাবাংলা" slug="sarabangla" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-9 lg:grid-cols-4">
@@ -339,7 +339,7 @@ function Home() {
         </section>
 
         {/* ================= বিশ্ব + e-paper/calendar ================= */}
-        <section className="mt-8 -mx-4 bg-secondary/60 px-4 py-6">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="আন্তর্জাতিক" slug="antorjatik" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
@@ -364,7 +364,7 @@ function Home() {
         </section>
 
         {/* ================= বিনোদন ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="বিনোদন" slug="binodon" />
           <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
             {pick(ent.length ? ent : articles, 4, 2).map((a, i) => (
@@ -376,7 +376,7 @@ function Home() {
         </section>
 
         {/* ================= খেলা + social ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="খেলা" slug="khela" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
@@ -401,7 +401,7 @@ function Home() {
         </section>
 
         {/* ================= অপরাধ ================= */}
-        <section className="mt-8">
+        <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="অপরাধ" slug="apradh" />
           <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
             {pick(crime.length ? crime : articles, 4).map((a, i) => (
