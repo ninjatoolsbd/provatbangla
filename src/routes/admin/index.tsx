@@ -101,14 +101,28 @@ function Overview() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-[22px] font-bold text-primary">ওভারভিউ</h1>
-        <Link
-          to="/admin/write"
-          search={{ id: undefined }}
-          className="bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          নতুন নিউজ লিখুন
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={refreshAll}
+            disabled={refreshing || posts.isFetching || counts.isFetching}
+            className="flex items-center gap-2 border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60"
+          >
+            <RefreshCw
+              className={`size-4 ${refreshing || posts.isFetching || counts.isFetching ? "animate-spin" : ""}`}
+            />
+            রিফ্রেশ
+          </button>
+          <Link
+            to="/admin/write"
+            search={{ id: undefined }}
+            className="bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
+            নতুন নিউজ লিখুন
+          </Link>
+        </div>
       </div>
+
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
