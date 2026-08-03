@@ -11,8 +11,8 @@ import {
   Image,
 } from "lucide-react";
 
-import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
-import { listRows } from "@/lib/cms";
+import { fetchAllPostsForAdmin, fetchPostCounts, banglaDateTime } from "@/lib/posts";
+import { countRows, listRows } from "@/lib/cms";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -38,22 +38,35 @@ function useCount(table: string) {
   return q.data ?? [];
 }
 
+function useTableCount(table: string) {
+  const q = useQuery({
+    queryKey: ["cms-count", table],
+    queryFn: () => countRows(table),
+    retry: false,
+  });
+  return q.data ?? 0;
+}
+
 function Overview() {
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
+  const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
   const all = posts.data ?? [];
-  const published = all.filter((p) => p.status === "published");
-  const drafts = all.filter((p) => p.status !== "published");
+  const totals = counts.data ?? {
+    total: all.length,
+    published: all.filter((p) => p.status === "published").length,
+    drafts: all.filter((p) => p.status !== "published").length,
+  };
 
   const cats = useCount("categories");
   const comments = useCount("comments");
   const messages = useCount("contact_messages");
-  const subscribers = useCount("subscribers");
-  const media = useCount("media");
+  const subscribers = useTableCount("subscribers");
+  const media = useTableCount("media");
 
   const stats = [
-    { label: "মোট নিউজ", value: all.length, icon: FileText },
-    { label: "প্রকাশিত", value: published.length, icon: CheckCircle2 },
-    { label: "ড্রাফট", value: drafts.length, icon: FileEdit },
+    { label: "মোট নিউজ", value: totals.total, icon: FileText },
+    { label: "প্রকাশিত", value: totals.published, icon: CheckCircle2 },
+    { label: "ড্রাফট", value: totals.drafts, icon: FileEdit },
     { label: "ক্যাটাগরি", value: cats.length, icon: FolderTree },
     {
       label: "অপেক্ষমাণ মন্তব্য",
@@ -65,8 +78,8 @@ function Overview() {
       value: messages.filter((m) => !m["is_read"]).length,
       icon: Mail,
     },
-    { label: "নিউজলেটার গ্রাহক", value: subscribers.length, icon: Users },
-    { label: "মিডিয়া ফাইল", value: media.length, icon: Image },
+    { label: "নিউজলেটার গ্রাহক", value: subscribers, icon: Users },
+    { label: "মিডিয়া ফাইল", value: media, icon: Image },
   ];
 
 
