@@ -19,8 +19,8 @@
  */
 
 @theme inline {
-  --font-sans: "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Noto Serif Bengali", Georgia, serif;
+  --font-sans: "Hind Siliguri", "Noto Sans Bengali", "SolaimanLipi", "Nirmala UI", "Kalpurush", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Noto Serif Bengali", "Hind Siliguri", "Nirmala UI", Georgia, serif;
   --color-primary-hover: var(--primary-hover);
   --color-ink: var(--ink);
   --color-ink-foreground: var(--ink-foreground);
