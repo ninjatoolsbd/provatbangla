@@ -58,8 +58,17 @@ export function ResourceManager({
 
   const invalidate = () => void qc.invalidateQueries({ queryKey: key });
 
+  /** Empty date values must go to the database as null, not "". */
+  const clean = (values: Row): Row => {
+    const out: Row = { ...values };
+    for (const f of fields) {
+      if (f.type === "date" && !out[f.name]) out[f.name] = null;
+    }
+    return out;
+  };
+
   const create = useMutation({
-    mutationFn: () => insertRow(table, form),
+    mutationFn: () => insertRow(table, clean(form)),
     onSuccess: () => {
       toast.success("যোগ করা হয়েছে");
       setForm(emptyForm(fields));
@@ -70,7 +79,9 @@ export function ResourceManager({
   });
 
   const update = useMutation({
-    mutationFn: ({ id, values }: { id: string; values: Row }) => updateRow(table, id, values),
+    mutationFn: ({ id, values }: { id: string; values: Row }) =>
+      updateRow(table, id, clean(values)),
+
     onSuccess: () => {
       toast.success("সেভ হয়েছে");
       setEditingId(null);
