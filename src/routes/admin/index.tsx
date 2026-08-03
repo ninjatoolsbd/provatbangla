@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FileText,
   CheckCircle2,
@@ -49,20 +49,47 @@ function useTableCount(table: string) {
   return q.data ?? 0;
 }
 
+const AUTO_KEY = "admin-auto-refresh";
+const AUTO_INTERVAL_MS = 3 * 60 * 1000;
+
 function Overview() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
   const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
 
-  async function refreshAll() {
+  const refreshAll = useCallback(async () => {
     setRefreshing(true);
     try {
       await queryClient.refetchQueries({ type: "active" });
+      setLastRefreshed(new Date());
     } finally {
       setRefreshing(false);
     }
+  }, [queryClient]);
+
+  useEffect(() => {
+    setAutoRefresh(window.localStorage.getItem(AUTO_KEY) === "1");
+  }, []);
+
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const id = window.setInterval(() => {
+      void refreshAll();
+    }, AUTO_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [autoRefresh, refreshAll]);
+
+  function toggleAuto() {
+    setAutoRefresh((prev) => {
+      const next = !prev;
+      window.localStorage.setItem(AUTO_KEY, next ? "1" : "0");
+      return next;
+    });
   }
+
 
   const all = posts.data ?? [];
   const totals = counts.data ?? {
@@ -101,7 +128,28 @@ function Overview() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-[22px] font-bold text-primary">ওভারভিউ</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {lastRefreshed && (
+            <span className="text-xs text-muted-foreground">
+              সর্বশেষ আপডেট: {lastRefreshed.toLocaleTimeString("bn-BD")}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={toggleAuto}
+            aria-pressed={autoRefresh}
+            title="প্রতি ৩ মিনিটে স্বয়ংক্রিয়ভাবে সংখ্যা আপডেট হবে"
+            className={`flex items-center gap-2 border px-3 py-2 text-sm font-medium ${
+              autoRefresh
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-foreground hover:bg-muted"
+            }`}
+          >
+            <span
+              className={`size-2 rounded-full ${autoRefresh ? "animate-pulse bg-primary" : "bg-muted-foreground/50"}`}
+            />
+            অটো রিফ্রেশ {autoRefresh ? "চালু" : "বন্ধ"}
+          </button>
           <button
             type="button"
             onClick={refreshAll}
@@ -113,6 +161,7 @@ function Overview() {
             />
             রিফ্রেশ
           </button>
+
           <Link
             to="/admin/write"
             search={{ id: undefined }}
