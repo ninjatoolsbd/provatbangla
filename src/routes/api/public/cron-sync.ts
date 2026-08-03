@@ -3,12 +3,17 @@ import { createFileRoute } from "@tanstack/react-router";
 /**
  * দিনে একবার (বা যেকোনো সময়) কল করলে সোর্স সাইট থেকে নতুন নিউজ এনে রিরাইট করে সাইটে বসায়।
  * কল: /api/public/cron-sync?token=<auto_cron_token>
+ * ড্রাই-রান (কিছু সেভ হবে না, শুধু প্রিভিউ): &dry=1
  */
 export const Route = createFileRoute("/api/public/cron-sync")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const token = new URL(request.url).searchParams.get("token") ?? "";
+        const url = new URL(request.url);
+        const token = url.searchParams.get("token") ?? "";
+        const dryRun = ["1", "true", "yes"].includes(
+          (url.searchParams.get("dry") ?? url.searchParams.get("dryRun") ?? "").toLowerCase(),
+        );
         const { supabaseAdmin } = await import("@/integrations/my-supabase/client.server");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const admin = supabaseAdmin as any;
@@ -28,7 +33,7 @@ export const Route = createFileRoute("/api/public/cron-sync")({
         }
 
         const { runAutoSync } = await import("@/lib/auto-news.server");
-        const result = await runAutoSync();
+        const result = await runAutoSync(dryRun ? { dryRun: true } : {});
         return Response.json(result);
       },
     },

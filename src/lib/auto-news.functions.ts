@@ -20,6 +20,7 @@ export const runAutoImport = createServerFn({ method: "POST" })
       .object({
         sourceId: z.string().uuid().optional(),
         limit: z.number().int().min(1).max(10).optional(),
+        dryRun: z.boolean().optional(),
       })
       .parse(input ?? {}),
   )
@@ -29,7 +30,35 @@ export const runAutoImport = createServerFn({ method: "POST" })
     return runAutoSync({
       ...(data.sourceId ? { sourceId: data.sourceId } : {}),
       ...(data.limit ? { limit: data.limit } : {}),
+      ...(data.dryRun ? { dryRun: true } : {}),
     });
+  });
+
+const previewSchema = z.object({
+  sourceId: z.string().uuid(),
+  sourceName: z.string(),
+  sourceUrl: z.string().url(),
+  sourceTitle: z.string(),
+  title: z.string().min(3),
+  kicker: z.string().default(""),
+  excerpt: z.string().default(""),
+  content: z.string().min(20),
+  seo_title: z.string().default(""),
+  seo_description: z.string().default(""),
+  category: z.string().min(1),
+  imageUrl: z.string().nullable().default(null),
+  sourceImage: z.string().nullable().default(null),
+  status: z.enum(["draft", "published"]).optional(),
+});
+
+/** ড্রাই-রানের প্রিভিউ নিশ্চিত করে সাইটে সেভ করে। */
+export const publishAutoPreview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => previewSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { publishPreview } = await import("@/lib/auto-news.server");
+    return publishPreview(data);
   });
 
 export const previewSource = createServerFn({ method: "POST" })
