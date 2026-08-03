@@ -1,9 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, PenSquare, CheckCircle2, FileEdit } from "lucide-react";
+import {
+  FileText,
+  CheckCircle2,
+  FileEdit,
+  FolderTree,
+  MessageSquare,
+  Mail,
+  Users,
+  Image,
+} from "lucide-react";
 
-import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
+import { listRows } from "@/lib/cms";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -20,19 +29,46 @@ export const Route = createFileRoute("/admin/")({
   component: Overview,
 });
 
+function useCount(table: string) {
+  const q = useQuery({
+    queryKey: ["cms", table],
+    queryFn: () => listRows(table, { column: "created_at", ascending: false }),
+    retry: false,
+  });
+  return q.data ?? [];
+}
+
 function Overview() {
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
   const all = posts.data ?? [];
   const published = all.filter((p) => p.status === "published");
   const drafts = all.filter((p) => p.status !== "published");
-  const usedCats = new Set(all.map((p) => p.category)).size;
+
+  const cats = useCount("categories");
+  const comments = useCount("comments");
+  const messages = useCount("contact_messages");
+  const subscribers = useCount("subscribers");
+  const media = useCount("media");
 
   const stats = [
     { label: "মোট নিউজ", value: all.length, icon: FileText },
     { label: "প্রকাশিত", value: published.length, icon: CheckCircle2 },
     { label: "ড্রাফট", value: drafts.length, icon: FileEdit },
-    { label: "ব্যবহৃত ক্যাটাগরি", value: `${usedCats}/${categories.length}`, icon: PenSquare },
+    { label: "ক্যাটাগরি", value: cats.length, icon: FolderTree },
+    {
+      label: "অপেক্ষমাণ মন্তব্য",
+      value: comments.filter((c) => c["status"] === "pending").length,
+      icon: MessageSquare,
+    },
+    {
+      label: "অপঠিত বার্তা",
+      value: messages.filter((m) => !m["is_read"]).length,
+      icon: Mail,
+    },
+    { label: "নিউজলেটার গ্রাহক", value: subscribers.length, icon: Users },
+    { label: "মিডিয়া ফাইল", value: media.length, icon: Image },
   ];
+
 
   return (
     <div className="space-y-6">
