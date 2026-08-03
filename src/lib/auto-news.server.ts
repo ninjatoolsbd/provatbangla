@@ -248,7 +248,9 @@ export async function runAutoSync(
 }
 
 /** ড্রাই-রানে দেখা একটি প্রিভিউ (সম্পাদনা শেষে) সাইটে সেভ করে। */
-export async function publishPreview(preview: AutoPreview & { status?: "draft" | "published" }) {
+export async function publishPreview(
+  preview: AutoPreview & { status?: "draft" | "published" | undefined },
+) {
   const cfg = await settings();
   const status =
     preview.status ?? (cfg["auto_mode"] === "publish" ? "published" : "draft");
