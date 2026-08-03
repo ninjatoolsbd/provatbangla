@@ -180,9 +180,10 @@ function Home() {
       <SiteHeader />
       <BreakingTicker />
 
-      <main className="mx-auto max-w-[1240px] px-4 py-5">
+      <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         {/* ================= HERO ================= */}
-        <section className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+        <section className="grid gap-5 border border-border bg-card p-4 lg:grid-cols-12 lg:divide-x lg:divide-border">
+
           <div className="min-w-0 lg:col-span-6 lg:pr-5">
             <SplitLead article={lead} />
             <div className="mt-4 grid gap-x-4 gap-y-5 sm:grid-cols-3">
