@@ -3,6 +3,7 @@ import { Facebook, Link2, Twitter } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { AdBanner } from "@/components/ad-banner";
 import { GridCard, Meta, SectionHeading } from "@/components/news-cards";
 import { categoryName, getArticle, related } from "@/lib/news-data";
 
@@ -120,9 +121,7 @@ function NewsPage() {
                   <GridCard key={a.id} article={a} compact />
                 ))}
               </div>
-              <div className="mt-4 flex h-[250px] items-center justify-center border border-dashed border-border bg-secondary text-xs text-muted-foreground">
-                বিজ্ঞাপন
-              </div>
+              <AdBanner index={1} variant="box" className="mt-4 h-[250px]" />
             </div>
           </aside>
         </div>
