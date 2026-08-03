@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   FileText,
   CheckCircle2,
@@ -9,6 +10,7 @@ import {
   Mail,
   Users,
   Image,
+  RefreshCw,
 } from "lucide-react";
 
 import { fetchAllPostsForAdmin, fetchPostCounts, banglaDateTime } from "@/lib/posts";
@@ -48,8 +50,20 @@ function useTableCount(table: string) {
 }
 
 function Overview() {
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
   const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
   const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
+
+  async function refreshAll() {
+    setRefreshing(true);
+    try {
+      await queryClient.refetchQueries({ type: "active" });
+    } finally {
+      setRefreshing(false);
+    }
+  }
+
   const all = posts.data ?? [];
   const totals = counts.data ?? {
     total: all.length,
@@ -87,14 +101,28 @@ function Overview() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-[22px] font-bold text-primary">ওভারভিউ</h1>
-        <Link
-          to="/admin/write"
-          search={{ id: undefined }}
-          className="bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          নতুন নিউজ লিখুন
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={refreshAll}
+            disabled={refreshing || posts.isFetching || counts.isFetching}
+            className="flex items-center gap-2 border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60"
+          >
+            <RefreshCw
+              className={`size-4 ${refreshing || posts.isFetching || counts.isFetching ? "animate-spin" : ""}`}
+            />
+            রিফ্রেশ
+          </button>
+          <Link
+            to="/admin/write"
+            search={{ id: undefined }}
+            className="bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+          >
+            নতুন নিউজ লিখুন
+          </Link>
+        </div>
       </div>
+
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
