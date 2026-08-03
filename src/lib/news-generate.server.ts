@@ -6,7 +6,7 @@ import { generateNewsImage } from "./news-image.server";
 export const GenerateInput = z.object({
   prompt: z.string().min(3),
   details: z.string().default(""),
-  category: z.string().default("jatiyo"),
+  category: z.string().default("bangladesh"),
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   withImage: z.boolean().default(true),
   autoPublish: z.boolean().default(true),

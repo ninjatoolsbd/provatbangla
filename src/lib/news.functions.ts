@@ -10,7 +10,7 @@ export const rewriteNews = createServerFn({ method: "POST" })
       .object({
         title: z.string().min(1),
         content: z.string().min(1),
-        category: z.string().default("jatiyo"),
+        category: z.string().default("bangladesh"),
         tone: z.enum(["news", "analysis", "short"]).default("news"),
         variants: z.number().int().min(1).max(3).default(1),
       })
@@ -34,7 +34,7 @@ export const generateNews = createServerFn({ method: "POST" })
       .object({
         prompt: z.string().min(3),
         details: z.string().default(""),
-        category: z.string().default("jatiyo"),
+        category: z.string().default("bangladesh"),
         tone: z.enum(["news", "analysis", "short"]).default("news"),
         withImage: z.boolean().default(true),
         autoPublish: z.boolean().default(true),

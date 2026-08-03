@@ -46,7 +46,7 @@ export function DivisionMap({ pool = allArticles }: { pool?: Article[] }) {
     const found = newsOfDivision(active, pool);
     if (found.length) return found.slice(0, 6);
     // ডেমো ডেটায় ওই বিভাগের খবর না থাকলে সারাবাংলার খবর দেখানো হয়
-    return pool.filter((a) => a.category === "sarabangla").slice(0, 6);
+    return pool.filter((a) => a.category === "cholonbil").slice(0, 6);
   }, [active, pool]);
 
   return (

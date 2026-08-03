@@ -60,7 +60,7 @@ function WritePage() {
   const [genPrompt, setGenPrompt] = useState("");
 
   const [genDetails, setGenDetails] = useState("");
-  const [genCategory, setGenCategory] = useState("jatiyo");
+  const [genCategory, setGenCategory] = useState("bangladesh");
   const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
   const [genImage, setGenImage] = useState(true);
   const [genAutoPublish, setGenAutoPublish] = useState(true);
@@ -69,7 +69,7 @@ function WritePage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [kicker, setKicker] = useState("");
-  const [category, setCategory] = useState("jatiyo");
+  const [category, setCategory] = useState("bangladesh");
   const [imageUrl, setImageUrl] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");

@@ -148,15 +148,15 @@ function pick(list: Article[], n: number, offset = 0): Article[] {
 
 
 function Home() {
-  const national = byCategory("jatiyo");
-  const politics = byCategory("rajniti");
-  const around = byCategory("sarabangla");
+  const national = byCategory("bangladesh");
+  const politics = byCategory("chakri");
+  const around = byCategory("cholonbil");
   const world = byCategory("antorjatik");
   const sports = byCategory("khela");
   const ent = byCategory("binodon");
-  const econ = byCategory("arthonity");
+  const econ = byCategory("shikkha");
   const crime = byCategory("apradh");
-  const opinion = byCategory("motamot");
+  const opinion = byCategory("shilpo-sahitto");
 
   const lead = national[0]!;
   const heroSub = pick(articles, 9, 1);
@@ -256,7 +256,7 @@ function Home() {
 
         {/* ================= জাতীয় ================= */}
         <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title="জাতীয়" slug="jatiyo" />
+          <BarHeading title="বাংলাদেশ" slug="bangladesh" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
             <div className="min-w-0 lg:col-span-5 lg:pr-5">
               <LeadCard article={national[0]!} />
@@ -276,7 +276,7 @@ function Home() {
 
         {/* ================= রাজনীতি ================= */}
         <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title="রাজনীতি" slug="rajniti" />
+          <BarHeading title="চাকরি" slug="chakri" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-4">
               <LeadCard article={politics[0]!} />
@@ -293,7 +293,7 @@ function Home() {
 
         {/* ================= অর্থনীতি ================= */}
         <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title="অর্থনীতি" slug="arthonity" />
+          <BarHeading title="শিক্ষা" slug="shikkha" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
             <div className="min-w-0 lg:col-span-7 lg:pr-5">
               <LeadCard article={econ[0] ?? articles[3]!} />
@@ -306,7 +306,7 @@ function Home() {
 
         {/* ================= সারাবাংলা + district ================= */}
         <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title="সারাবাংলা" slug="sarabangla" />
+          <BarHeading title="চলনবিল" slug="cholonbil" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-9 lg:grid-cols-4">
               {pick(around.length ? around : articles, 8).map((a, i) => (
