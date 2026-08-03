@@ -23,6 +23,7 @@ import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
 import { Route as AdminPollsRouteImport } from './routes/admin/polls'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminSubscribersRouteImport } from './routes/admin/subscribers'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminWriteRouteImport } from './routes/admin/write'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -101,6 +102,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
+    | '/admin/subscribers'
     | '/admin/users'
     | '/admin/write'
     | '/category/$slug'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
+    | '/admin/subscribers'
     | '/admin/users'
     | '/admin/write'
     | '/category/$slug'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/settings'
+    | '/admin/subscribers'
     | '/admin/users'
     | '/admin/write'
     | '/category/$slug'
@@ -389,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -451,6 +470,7 @@ interface AdminRouteChildren {
   AdminPollsRoute: typeof AdminPollsRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWriteRoute: typeof AdminWriteRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -466,6 +486,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPollsRoute: AdminPollsRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWriteRoute: AdminWriteRoute,
   AdminIndexRoute: AdminIndexRoute,
