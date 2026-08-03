@@ -77,7 +77,7 @@ function PostsPage() {
     let failed = 0;
     for (let i = 0; i < pending.length; i++) {
       try {
-        await regeneratePostImage({ data: { postId: pending[i].id } });
+        await regeneratePostImage({ data: { postId: pending[i]!.id } });
       } catch {
         failed += 1;
         if (failed >= 3) {
