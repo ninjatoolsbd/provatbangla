@@ -3,18 +3,20 @@ import { kbImage } from "@/lib/kb-images";
 export type Category = { slug: string; name: string };
 
 export const categories: Category[] = [
-  { slug: "jatiyo", name: "জাতীয়" },
-  { slug: "rajniti", name: "রাজনীতি" },
-  { slug: "sarabangla", name: "সারাবাংলা" },
+  { slug: "sorboshesh", name: "সর্বশেষ" },
+  { slug: "apradh", name: "অপরাধ" },
   { slug: "antorjatik", name: "আন্তর্জাতিক" },
+  { slug: "bangladesh", name: "বাংলাদেশ" },
+  { slug: "shikkha", name: "শিক্ষা" },
+  { slug: "chakri", name: "চাকরি" },
+  { slug: "prajukti", name: "প্রযুক্তি" },
   { slug: "khela", name: "খেলা" },
   { slug: "binodon", name: "বিনোদন" },
-  { slug: "arthonity", name: "অর্থনীতি" },
-  { slug: "prajukti", name: "প্রযুক্তি" },
-  { slug: "shikkha", name: "শিক্ষা" },
-  { slug: "sasthyo", name: "স্বাস্থ্য" },
-  { slug: "apradh", name: "অপরাধ" },
-  { slug: "motamot", name: "মতামত" },
+  { slug: "shilpo-sahitto", name: "শিল্প ও সাহিত্য" },
+  { slug: "jibonjapon", name: "জীবনযাপন" },
+  { slug: "cholonbil", name: "চলনবিল" },
+  { slug: "video", name: "ভিডিও" },
+  { slug: "onnanno", name: "অন্যান্য" },
 ];
 
 export type Article = {
