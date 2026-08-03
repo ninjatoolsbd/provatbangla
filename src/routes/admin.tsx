@@ -23,12 +23,13 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
-  const { isAdmin, loading, email, userId } = useAuth();
+  const { isAdmin, canAccessAdmin, loading, email, userId } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !isAdmin && !userId) void navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, isAdmin, userId, navigate]);
+    if (!loading && !canAccessAdmin && !userId)
+      void navigate({ to: "/auth", search: { mode: "login" } });
+  }, [loading, canAccessAdmin, userId, navigate]);
 
   if (loading) {
     return (
@@ -38,7 +39,7 @@ function AdminLayout() {
     );
   }
 
-  if (!isAdmin) {
+  if (!canAccessAdmin) {
     if (!userId) return null;
     return (
       <div className="grid min-h-screen place-items-center bg-background px-4">
@@ -66,7 +67,7 @@ function AdminLayout() {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-muted/30">
-        <AdminSidebar email={email} />
+        <AdminSidebar email={email} isAdmin={isAdmin} />
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-12 items-center gap-2 border-b border-border bg-background px-3">
             <SidebarTrigger />
