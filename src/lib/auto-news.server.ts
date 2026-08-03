@@ -15,7 +15,26 @@ export type AutoRunResult = {
   created: number;
   skipped: number;
   failed: number;
+  dryRun?: boolean;
   details: { title: string; status: string; message?: string }[];
+  previews?: AutoPreview[];
+};
+
+/** ড্রাই-রানে তৈরি হওয়া (কিন্তু সেভ না করা) নিউজের পূর্বরূপ। */
+export type AutoPreview = {
+  sourceId: string;
+  sourceName: string;
+  sourceUrl: string;
+  sourceTitle: string;
+  title: string;
+  kicker: string;
+  excerpt: string;
+  content: string;
+  seo_title: string;
+  seo_description: string;
+  category: string;
+  imageUrl: string | null;
+  sourceImage: string | null;
 };
 
 async function settings(): Promise<Record<string, string>> {
