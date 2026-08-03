@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Bot, Play, Plus, Trash2, Upload } from "lucide-react";
+import { Bot, Eye, Play, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-import { runAutoImport } from "@/lib/auto-news.functions";
+import { publishAutoPreview, runAutoImport } from "@/lib/auto-news.functions";
 import {
   deleteRow,
   fetchSettings,
@@ -51,6 +51,11 @@ function AutomationPage() {
   const [lastRun, setLastRun] = useState<
     { title: string; status: string; message?: string }[] | null
   >(null);
+  type Preview = Awaited<ReturnType<typeof runAutoImport>> extends { previews?: (infer P)[] }
+    ? P
+    : never;
+  const [previews, setPreviews] = useState<Preview[]>([]);
+  const [publishing, setPublishing] = useState<string | null>(null);
 
   const sources = useQuery({
     queryKey: ["cms", "auto_sources"],
@@ -97,13 +102,21 @@ function AutomationPage() {
     onSuccess: () => void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] }),
   });
 
-  const run = async (sourceId?: string) => {
+  const run = async (sourceId?: string, dryRun = false) => {
     setRunning(true);
     setLastRun(null);
+    if (dryRun) setPreviews([]);
     try {
-      const res = await runAutoImport({ data: sourceId ? { sourceId } : {} });
+      const res = await runAutoImport({
+        data: { ...(sourceId ? { sourceId } : {}), ...(dryRun ? { dryRun: true } : {}) },
+      });
       setLastRun(res.details);
-      toast.success(`${res.created} নতুন, ${res.skipped} আগেই ছিল, ${res.failed} ব্যর্থ`);
+      if (dryRun) {
+        setPreviews((res.previews ?? []) as Preview[]);
+        toast.success(`${res.created}টি প্রিভিউ তৈরি হয়েছে — কিছুই সেভ হয়নি`);
+      } else {
+        toast.success(`${res.created} নতুন, ${res.skipped} আগেই ছিল, ${res.failed} ব্যর্থ`);
+      }
       void qc.invalidateQueries({ queryKey: ["cms", "auto_items"] });
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
     } catch (e) {
@@ -112,6 +125,23 @@ function AutomationPage() {
       setRunning(false);
     }
   };
+
+  const confirmPreview = async (p: Preview, status: "draft" | "published") => {
+    setPublishing(p.sourceUrl);
+    try {
+      await publishAutoPreview({ data: { ...p, status } });
+      setPreviews((list) => list.filter((x) => x.sourceUrl !== p.sourceUrl));
+      toast.success(status === "published" ? "পাবলিশ হয়েছে" : "ড্রাফটে সেভ হয়েছে");
+      void qc.invalidateQueries({ queryKey: ["cms", "auto_items"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "সেভ ব্যর্থ");
+    } finally {
+      setPublishing(null);
+    }
+  };
+
+  const updatePreview = (url: string, patch: Partial<Preview>) =>
+    setPreviews((list) => list.map((p) => (p.sourceUrl === url ? { ...p, ...patch } : p)));
 
   const uploadLogo = async (file: File | undefined) => {
     if (!file) return;
@@ -139,14 +169,24 @@ function AutomationPage() {
             সোর্স সাইট থেকে নতুন নিউজ → AI রিরাইট → ছবি মডিফাই ও ওয়াটারমার্ক → সাইটে প্রকাশ।
           </p>
         </div>
-        <button
-          type="button"
-          disabled={running}
-          onClick={() => void run()}
-          className="flex items-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
-        >
-          <Play className="size-4" /> {running ? "চলছে…" : "এখনই চালান"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={running}
+            onClick={() => void run(undefined, true)}
+            className="flex items-center gap-2 border border-border px-4 py-2 text-sm disabled:opacity-60"
+          >
+            <Eye className="size-4" /> {running ? "চলছে…" : "ড্রাই-রান (প্রিভিউ)"}
+          </button>
+          <button
+            type="button"
+            disabled={running}
+            onClick={() => void run()}
+            className="flex items-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
+          >
+            <Play className="size-4" /> {running ? "চলছে…" : "এখনই চালান"}
+          </button>
+        </div>
       </div>
 
       {/* সেটিংস */}
@@ -263,6 +303,14 @@ function AutomationPage() {
                 <button
                   type="button"
                   disabled={running}
+                  onClick={() => void run(String(s["id"]), true)}
+                  className="flex items-center gap-1 border border-border px-2 py-1 text-xs disabled:opacity-60"
+                >
+                  <Eye className="size-3.5" /> ড্রাই-রান
+                </button>
+                <button
+                  type="button"
+                  disabled={running}
                   onClick={() => void run(String(s["id"]))}
                   className="flex items-center gap-1 border border-border px-2 py-1 text-xs disabled:opacity-60"
                 >
@@ -314,6 +362,120 @@ function AutomationPage() {
           </button>
         </div>
       </section>
+
+      {previews.length > 0 && (
+        <section className="space-y-4 border border-border bg-background p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="font-display text-base font-bold">ড্রাই-রান প্রিভিউ</h2>
+              <p className="text-xs text-muted-foreground">
+                কিছুই সেভ হয়নি। লেখা ও ছবি দেখে নিশ্চিত হয়ে তবেই পাবলিশ বা ড্রাফট করুন।
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPreviews([])}
+              className="border border-border px-3 py-1.5 text-xs"
+            >
+              প্রিভিউ বাতিল
+            </button>
+          </div>
+
+          {previews.map((p) => (
+            <article key={p.sourceUrl} className="grid gap-4 border border-border p-3 md:grid-cols-[220px_1fr]">
+              <div className="space-y-2">
+                {p.imageUrl ? (
+                  <img
+                    src={p.imageUrl}
+                    alt={p.title}
+                    className="w-full border border-border object-cover"
+                  />
+                ) : (
+                  <div className="flex h-32 items-center justify-center border border-dashed border-border text-xs text-muted-foreground">
+                    ছবি নেই
+                  </div>
+                )}
+                {p.sourceImage ? (
+                  <a
+                    href={p.sourceImage}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-[11px] text-muted-foreground underline"
+                  >
+                    সোর্স ছবি দেখুন
+                  </a>
+                ) : null}
+                <a
+                  href={p.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block truncate text-[11px] text-muted-foreground underline"
+                >
+                  {p.sourceName} — মূল নিউজ
+                </a>
+              </div>
+
+              <div className="space-y-2">
+                <input
+                  value={p.title}
+                  onChange={(e) => updatePreview(p.sourceUrl, { title: e.target.value } as Partial<Preview>)}
+                  className="w-full border border-border bg-background px-2 py-1.5 font-display text-base font-bold"
+                />
+                <div className="flex flex-wrap gap-2">
+                  <input
+                    value={p.kicker}
+                    placeholder="কিকার"
+                    onChange={(e) => updatePreview(p.sourceUrl, { kicker: e.target.value } as Partial<Preview>)}
+                    className="w-40 border border-border bg-background px-2 py-1 text-xs"
+                  />
+                  <input
+                    value={p.category}
+                    placeholder="ক্যাটাগরি"
+                    onChange={(e) => updatePreview(p.sourceUrl, { category: e.target.value } as Partial<Preview>)}
+                    className="w-40 border border-border bg-background px-2 py-1 text-xs"
+                  />
+                </div>
+                <textarea
+                  value={p.content}
+                  rows={8}
+                  onChange={(e) => updatePreview(p.sourceUrl, { content: e.target.value } as Partial<Preview>)}
+                  className="w-full border border-border bg-background px-2 py-1.5 text-sm leading-7"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  SEO: {p.seo_title || "—"} · {p.seo_description || "—"}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={publishing === p.sourceUrl}
+                    onClick={() => void confirmPreview(p, "published")}
+                    className="bg-primary px-3 py-1.5 text-xs text-primary-foreground disabled:opacity-60"
+                  >
+                    পাবলিশ করুন
+                  </button>
+                  <button
+                    type="button"
+                    disabled={publishing === p.sourceUrl}
+                    onClick={() => void confirmPreview(p, "draft")}
+                    className="border border-border px-3 py-1.5 text-xs disabled:opacity-60"
+                  >
+                    ড্রাফটে রাখুন
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPreviews((list) => list.filter((x) => x.sourceUrl !== p.sourceUrl))
+                    }
+                    className="px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive"
+                  >
+                    বাদ দিন
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
 
       {lastRun && lastRun.length > 0 && (
         <section className="border border-border bg-background p-4">
