@@ -170,9 +170,9 @@ function Home() {
   const opinion = byCategory("motamot");
 
   const lead = national[0]!;
-  const heroSub = pick(articles, 6, 1);
-  const heroMid = pick(articles, 2, 5);
-  const heroThumbs = pick(articles, 4, 7);
+  const heroSub = pick(articles, 9, 1);
+  const heroMid = pick(articles, 2, 10);
+  const heroThumbs = pick(articles, 5, 12);
   const strip = pick(articles, 4, 12);
   const latest = pick(articles, 10, 0);
   const popular = pick(articles, 10, 6);
