@@ -7,7 +7,9 @@ function r2Config() {
   const secretAccessKey = process.env["R2_SECRET_ACCESS_KEY"];
   const bucket = process.env["R2_BUCKET"];
   if (!accountId || !accessKeyId || !secretAccessKey || !bucket) return null;
-  const publicBase = (process.env["R2_PUBLIC_BASE_URL"] ?? "").replace(/\/+$/, "");
+  let publicBase = (process.env["R2_PUBLIC_BASE_URL"] ?? "").replace(/\/+$/, "");
+  // The S3 API endpoint is NOT publicly readable — ignore it and use the app proxy instead.
+  if (publicBase.includes("r2.cloudflarestorage.com")) publicBase = "";
   return { accountId, accessKeyId, secretAccessKey, bucket, publicBase };
 }
 
