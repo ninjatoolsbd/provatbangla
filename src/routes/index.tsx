@@ -20,6 +20,7 @@ import {
   SocialFollow,
   VideoStrip,
 } from "@/components/home-widgets";
+import { DivisionMap } from "@/components/division-map";
 import { GridCard, LeadCard, SplitLead, ThumbRow } from "@/components/news-cards";
 import { articles, byCategory } from "@/lib/news-data";
 import type { Article } from "@/lib/news-data";
@@ -338,6 +339,11 @@ function Home() {
               <AdSlot h="h-52" />
             </div>
           </div>
+        </section>
+
+        {/* ================= এক ক্লিকে বিভাগের খবর ================= */}
+        <section className="mt-5">
+          <DivisionMap />
         </section>
 
         {/* ================= বিশ্ব + e-paper/calendar ================= */}
