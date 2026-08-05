@@ -334,7 +334,10 @@ function WritePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">অটোমেটিক (নতুন টুলস পেন্ডিং)</SelectItem>
+                  <SelectItem value="auto">অটোমেটিক (Gemini-Priority)</SelectItem>
+                  <SelectItem value="gemini">Google Gemini</SelectItem>
+                  <SelectItem value="openrouter">OpenRouter</SelectItem>
+                  <SelectItem value="groq">Groq AI</SelectItem>
                 </SelectContent>
               </Select>
             </div>
