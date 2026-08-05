@@ -47,8 +47,9 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  // Try the common endpoint for generation
-  const res = await fetch("https://api.frase.io/api/v1/ai/generate", {
+  // Frase often uses different endpoints depending on the account type.
+  // Trying the standard content generation endpoint.
+  const res = await fetch("https://api.frase.io/api/v1/content/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -63,6 +64,18 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 
   if (!res.ok) {
     const errorText = await res.text();
+    // If 404, try the /ai/generate fallback one last time with a slightly different structure
+    if (res.status === 404) {
+      const fallback = await fetch("https://api.frase.io/api/v1/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": opts.key },
+        body: JSON.stringify({ prompt: `${opts.system}\n\n${opts.prompt}` }),
+      });
+      if (fallback.ok) {
+        const d = await fallback.json() as any;
+        return d.text || d.result || "";
+      }
+    }
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
 
@@ -73,8 +86,7 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
-  // Nichesss v1 magic endpoint often requires plan_id or specific template
-  // If magic fails, try a direct magic call with a common model if supported
+  // Nichesss sometimes expects data as a query param or a different body structure
   const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
@@ -82,7 +94,9 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
       "Api-Key": opts.key,
     },
     body: JSON.stringify({
-      prompt: `${opts.system}\n\n${opts.prompt}`,
+      messages: [
+        { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
+      ],
       max_tokens: 1500
     }),
   });
@@ -92,8 +106,8 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
     throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
   }
   
-  const data = (await res.json()) as { text?: string; result?: string; data?: { text?: string } };
-  const text = data.text || data.result || data.data?.text || "";
+  const data = (await res.json()) as any;
+  const text = data.text || data.result || data.data?.text || data.choices?.[0]?.message?.content || "";
   if (!text.trim()) throw new Error("empty response from Nichesss");
   return text;
 }
