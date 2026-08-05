@@ -138,7 +138,9 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        blackbox epi lagbena?
+        Integrate Nichesss API only for News Content Generation.
+Base URL: https://nichesss.com/api
+Authentication: 690R0RxR2NUO2cHGNj3NpapRf
         {children}
         <Scripts />
       </body>
