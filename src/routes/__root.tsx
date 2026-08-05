@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        now kothay kon api kivabe active ase amake janao
+        lovable, Groq, Cerebras এবং Gemini text generation or news generation thk totally bad dao
         {children}
         <Scripts />
       </body>

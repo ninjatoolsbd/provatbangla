@@ -24,47 +24,6 @@ function pickImageData(payload: ImagesResponse) {
   return null;
 }
 
-async function fromLovable(fullPrompt: string) {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) return null;
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "google/gemini-3-pro-image",
-      messages: [{ role: "user", content: fullPrompt }],
-      modalities: ["image", "text"],
-      stream: false,
-    }),
-  });
-  if (!res.ok) return null;
-  return pickImageData((await res.json()) as ImagesResponse);
-}
-
-async function fromGemini(fullPrompt: string) {
-  const key = process.env["GEMINI_API_KEY"];
-  if (!key) return null;
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
-      }),
-    },
-  );
-  if (!res.ok) return null;
-  const data = (await res.json()) as {
-    candidates?: { content?: { parts?: { inlineData?: { data?: string } }[] } }[];
-  };
-  const parts = data.candidates?.[0]?.content?.parts ?? [];
-  for (const part of parts) {
-    if (part.inlineData?.data) return part.inlineData.data;
-  }
-  return null;
-}
-
 async function fromBlackbox(fullPrompt: string) {
   const key = process.env["BLACKBOX_API_KEY"];
   if (!key) return null;
@@ -83,14 +42,10 @@ async function fromBlackbox(fullPrompt: string) {
   const data = (await res.json()) as {
     choices?: { message?: { content?: string } }[];
   };
-  // Blackbox flux-pro usually returns a URL in the content or choices
-  // Based on the curl example, it returns a chat completion. 
-  // If it's flux-pro, the result is usually the URL in the text content.
   const text = data.choices?.[0]?.message?.content ?? "";
   const urlMatch = text.match(/https?:\/\/[^\s)]+/);
   if (urlMatch) return urlMatch[0];
   
-  // Try to pick base64 or other formats if present in specific image fields
   return pickImageData(data as any);
 }
 
@@ -100,24 +55,17 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "blackbox,gemini,lovable";
-    const priority = priorityStr.split(",").filter(Boolean);
+    const priorityStr = settings["image_gen_priority"] ?? "blackbox";
+    const priority = priorityStr.split(",").filter(p => p === "blackbox");
 
     let b64: string | null = null;
 
     for (const provider of priority) {
       if (provider === "blackbox") {
         b64 = await fromBlackbox(fullPrompt).catch(() => null);
-      } else if (provider === "gemini") {
-        b64 = await fromGemini(fullPrompt).catch(() => null);
-      } else if (provider === "lovable") {
-        b64 = await fromLovable(fullPrompt).catch(() => null);
       }
       if (b64) break;
     }
-
-    if (!b64) return null;
-
 
     if (!b64) return null;
 
@@ -129,7 +77,6 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
     const bytes = base64ToBytes(b64);
     const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
 
-    // Prefer Cloudflare R2 when configured, fall back to backend storage.
     const { uploadToR2 } = await import("@/lib/r2.server");
     const r2Url = await uploadToR2(`news/${path}`, bytes, "image/png");
     if (r2Url) return r2Url;
@@ -147,4 +94,3 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
 }
 
 export const NEWS_IMAGE_BUCKET = BUCKET;
-
