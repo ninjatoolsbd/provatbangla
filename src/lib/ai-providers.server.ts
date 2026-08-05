@@ -99,7 +99,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     messages: [
       { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "blackboxai", // Default model, can also try "gpt-4o"
+    model: "gpt-4o", // Based on common successful configurations for these keys
     max_tokens: 1024,
   };
 
