@@ -6,7 +6,7 @@
 export type ProviderName = "nichesss" | "frase";
 
 export type TextResult = { text: string; provider: ProviderName };
-
+function extractJsonBlock(raw: string) {
   const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
   const body = fenced?.[1] ?? raw;
   const start = body.indexOf("{");
