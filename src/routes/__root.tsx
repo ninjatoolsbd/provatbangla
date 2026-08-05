@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        Verify there are no other instances of the text "body" across the app and replace them where appropriate.
+        tumi lovable use kore image generatew korona, onno ai gulo use kore image gen koro
         {children}
         <Scripts />
       </body>
