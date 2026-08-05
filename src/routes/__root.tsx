@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        thank u
+        Verify there are no other instances of the text "body" across the app and replace them where appropriate.
         {children}
         <Scripts />
       </body>
