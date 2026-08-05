@@ -99,7 +99,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     messages: [
       { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "deepseek-v3",
+    model: "gpt-4o",
     max_tokens: 1024,
   };
 
