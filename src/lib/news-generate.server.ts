@@ -6,11 +6,12 @@ import { generateNewsImage } from "./news-image.server";
 export const GenerateInput = z.object({
   prompt: z.string().min(3),
   details: z.string().default(""),
+  referenceUrl: z.string().optional(),
   category: z.string().default("bangladesh"),
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   withImage: z.boolean().default(true),
   autoPublish: z.boolean().default(true),
-  provider: z.enum(["auto", "lovable", "groq", "cerebras", "gemini"]).default("auto"),
+  provider: z.enum(["auto", "blackbox", "frase", "nichesss", "spin-rewriter"]).default("auto"),
 });
 
 export type GenerateInputType = z.infer<typeof GenerateInput>;
@@ -32,6 +33,19 @@ const toneHint: Record<string, string> = {
 };
 
 export async function runGenerate(data: GenerateInputType) {
+  let referenceContent = "";
+  if (data.referenceUrl) {
+    try {
+      const { fetchArticle } = await import("./source-fetch.server");
+      const article = await fetchArticle(data.referenceUrl);
+      if (article.body) {
+        referenceContent = `\n\nরেফারেন্স ইউআরএল থেকে সংগৃহীত তথ্য:\n${article.body.slice(0, 8000)}`;
+      }
+    } catch (e) {
+      console.error("Failed to fetch reference URL:", e);
+    }
+  }
+
   const system = [
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক ও রিপোর্টার।",
     "সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে, কোনো ব্যাখ্যা বা মার্কডাউন ছাড়া।",
@@ -42,17 +56,20 @@ export async function runGenerate(data: GenerateInputType) {
     "নিয়ম:",
     "- ভাষা বাংলা, সাবলীল ও পেশাদার।",
     `- ${toneHint[data.tone]}।`,
-    "- content-এ কমপক্ষে ৫টি অনুচ্ছেদ, প্রতিটি ফাঁকা লাইন দিয়ে আলাদা, কোনো মার্কডাউন নয়।",
+    "- content-এ কমপক্ষে ৭টি অনুচ্ছেদ থাকতে হবে, প্রতিটি ফাঁকা লাইন দিয়ে আলাদা, কোনো মার্কডাউন নয়।",
+    "- নিউজের দৈর্ঘ্য কমপক্ষে ৩০০ শব্দ হতে হবে।",
+    "- ইন্টারনেট থেকে সংগৃহীত তথ্য (যদি থাকে) ব্যবহার করে বিস্তারিত প্রতিবেদন তৈরি করো।",
     "- বাস্তব ব্যক্তির নামে মিথ্যা উদ্ধৃতি দিও না।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- image_prompt হবে ইংরেজিতে, খবরটির উপযোগী একটি বাস্তবধর্মী ছবির বর্ণনা।",
+    "- image_prompt হবে ইংরেজিতে, খবরটির উপযোগী একটি বাস্তবধর্মী ও প্রাসঙ্গিক ছবির বর্ণনা।",
     "",
     "শুধু এই JSON কাঠামোয় উত্তর দাও:",
     '{"title":"","kicker":"","excerpt":"","content":"","seo_title":"","seo_description":"","image_prompt":""}',
     "",
     `বিভাগ: ${data.category}`,
-    `নিউজ প্রম্পট: ${data.prompt}`,
+    `নিউজ প্রম্পট/টাইটেল: ${data.prompt}`,
     data.details ? `অতিরিক্ত তথ্য:\n${data.details}` : "",
+    referenceContent,
   ]
     .filter(Boolean)
     .join("\n");

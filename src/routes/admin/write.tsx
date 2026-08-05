@@ -58,7 +58,7 @@ function WritePage() {
 
   const [mode, setMode] = useState<"manual" | "ai">("manual");
   const [genPrompt, setGenPrompt] = useState("");
-
+  const [genReferenceUrl, setGenReferenceUrl] = useState("");
   const [genDetails, setGenDetails] = useState("");
   const [genCategory, setGenCategory] = useState("bangladesh");
   const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
@@ -115,11 +115,12 @@ function WritePage() {
         data: {
           prompt: genPrompt,
           details: genDetails,
+          referenceUrl: genReferenceUrl,
           category: genCategory,
           tone: genTone,
           withImage: genImage,
           autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "lovable" | "groq" | "cerebras" | "gemini",
+          provider: genProvider as "auto" | "blackbox" | "frase" | "nichesss" | "spin-rewriter",
         },
       }),
     onSuccess: (res) => {
@@ -239,12 +240,21 @@ function WritePage() {
         <div className="space-y-3">
 
           <div className="space-y-2">
-            <Label htmlFor="genPrompt">নিউজ প্রম্পট</Label>
+            <Label htmlFor="genPrompt">নিউজের টাইটেল / মূল বিষয়</Label>
             <Input
               id="genPrompt"
               value={genPrompt}
               onChange={(e) => setGenPrompt(e.target.value)}
-              placeholder="যেমন: ঢাকায় মেট্রোরেলের নতুন রুট উদ্বোধন"
+              placeholder="যেমন: ঢাকায় মেট্রোরেলের নতুন রুট উদ্বোধন"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="genReferenceUrl">রেফারেন্স ইউআরএল (ঐচ্ছিক)</Label>
+            <Input
+              id="genReferenceUrl"
+              value={genReferenceUrl}
+              onChange={(e) => setGenReferenceUrl(e.target.value)}
+              placeholder="https://example.com/news-article"
             />
           </div>
           <div className="space-y-2">
@@ -293,11 +303,11 @@ function WritePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">অটো (ফলব্যাকসহ)</SelectItem>
-                  <SelectItem value="lovable">Lovable AI</SelectItem>
-                  <SelectItem value="groq">Groq</SelectItem>
-                  <SelectItem value="cerebras">Cerebras</SelectItem>
-                  <SelectItem value="gemini">Gemini</SelectItem>
+                  <SelectItem value="auto">অটো (সব প্রোভাইডার)</SelectItem>
+                  <SelectItem value="frase">Frase (SEO Optimized)</SelectItem>
+                  <SelectItem value="nichesss">Nichesss</SelectItem>
+                  <SelectItem value="spin-rewriter">Spin Rewriter</SelectItem>
+                  <SelectItem value="blackbox">Blackbox AI</SelectItem>
                 </SelectContent>
               </Select>
             </div>

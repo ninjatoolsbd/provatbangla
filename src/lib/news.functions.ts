@@ -34,11 +34,12 @@ export const generateNews = createServerFn({ method: "POST" })
       .object({
         prompt: z.string().min(3),
         details: z.string().default(""),
+        referenceUrl: z.string().optional(),
         category: z.string().default("bangladesh"),
         tone: z.enum(["news", "analysis", "short"]).default("news"),
         withImage: z.boolean().default(true),
         autoPublish: z.boolean().default(true),
-        provider: z.enum(["auto", "lovable", "groq", "cerebras", "gemini"]).default("auto"),
+        provider: z.enum(["auto", "blackbox", "frase", "nichesss", "spin-rewriter"]).default("auto"),
       })
       .parse(input),
   )
