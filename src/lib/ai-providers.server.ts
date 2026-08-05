@@ -96,6 +96,10 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
   const url = "https://api.blackbox.ai/api/chat";
   
   const body = {
+    messages: [
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt }
+    ],
     model: "deepseek-v3",
     max_tokens: 2048,
   };
