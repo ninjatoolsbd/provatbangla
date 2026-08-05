@@ -3,7 +3,7 @@
  * Order: Spin Rewriter (if set) → Lovable AI → Groq → Cerebras → Gemini (direct).
  */
 
-export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter";
+export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter" | "blackbox";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -100,6 +100,31 @@ async function geminiDirect(opts: { key: string; system: string; prompt: string;
   return text;
 }
 
+async function blackboxApi(opts: { key: string; system: string; prompt: string; json: boolean }) {
+  const res = await fetch("https://api.blackbox.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.key}`,
+    },
+    body: JSON.stringify({
+      model: "blackboxai/openai/gpt-4",
+      messages: [
+        { role: "system", content: opts.system },
+        { role: "user", content: opts.prompt },
+      ],
+      ...(opts.json ? { response_format: { type: "json_object" } } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error(`${res.status} Blackbox error: ${(await res.text()).slice(0, 300)}`);
+  const data = (await res.json()) as {
+    choices?: { message?: { content?: string } }[];
+  };
+  const text = data.choices?.[0]?.message?.content ?? "";
+  if (!text.trim()) throw new Error("empty response");
+  return text;
+}
+
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
@@ -115,9 +140,17 @@ export async function generateTextWithFallback(args: {
   const groqKey = process.env["GROQ_API_KEY"];
   const cerebrasKey = process.env["CEREBRAS_API_KEY"];
   const geminiKey = process.env["GEMINI_API_KEY"];
+  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
+
+  if (blackboxKey)
+    runners.push({
+      name: "blackbox",
+      run: () =>
+        blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt, json }),
+    });
 
   if (spinKey && !json)
     runners.push({
