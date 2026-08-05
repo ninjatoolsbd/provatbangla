@@ -93,7 +93,7 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
  * Blackbox AI API Implementation
  */
 async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.blackbox.ai/v1/chat/completions";
+  const url = "https://api.blackbox.ai/api/chat";
   
   const body = {
     messages: [
