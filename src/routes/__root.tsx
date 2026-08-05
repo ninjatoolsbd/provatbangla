@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          image ta jeno news er stahe mile , and 200% relevant hoy , sei onujai jeno image generate kore etar jnno to backend e systemt korte hbe, naki promt chalate hobe auto? na ki korba koro. amr image jeno news er sathe match kore. tasara kintu hbena
+          ami j news debo se news ta ai search korlei onek image pabe, or referecne thekeo image nite pare chaile. sei image die se kaj korte pare chaile. i dont konow erokom kora jay kina. kintu tumi jeta valo mone koro koro, amar image r news mil thaklei holo
         </div>
         {children}
         <Scripts />
