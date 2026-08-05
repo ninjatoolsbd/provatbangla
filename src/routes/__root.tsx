@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        then groq use kore banao image
+        AI API Diagnostics: Text (OK), Image (Quota Exceeded/Model Fix Applied)
         {children}
         <Scripts />
       </body>
