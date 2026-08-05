@@ -87,8 +87,9 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
       "Api-Key": opts.key,
     },
     body: JSON.stringify({
-      prompt: `${opts.system}\n\nUser Input: ${opts.prompt}`,
-      max_tokens: 1500,
+      messages: [
+        { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
+      ]
     }),
   });
 
