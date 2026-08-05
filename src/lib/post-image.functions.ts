@@ -22,12 +22,13 @@ async function buildVisualPrompt(title: string, body: string) {
     "4. NO TEXT: Explicitly state that there should be no text, watermarks, or logos.",
     "5. Be descriptive but concise (3-4 sentences).",
     "",
-    "Output ONLY the English description. No preamble.",
+    "Output ONLY the English description text. No 'Here is a description' or other conversational filler. Just the prompt for the AI image generator.",
   ].join("\n");
 
   try {
     const { text } = await generateTextWithFallback({ system, prompt });
-    return text;
+    // Strip common filler if AI ignores instructions
+    return text.replace(/^(Here is a description of|This is a|A photorealistic|Visual prompt:)/i, "").trim();
   } catch (e) {
     console.error("Failed to generate visual prompt, using fallback logic:", e);
     return `A realistic news photograph in Bangladesh showing: ${title}`;
