@@ -1,9 +1,9 @@
 /**
  * Multi-provider text generation with automatic fallback.
- * Preferred: Google Gemini (Primary) or OpenRouter (Fallback).
+ * Preferred: Blackbox AI (New), Google Gemini (Primary), or OpenRouter (Fallback).
  */
 
-export type ProviderName = "gemini" | "openrouter";
+export type ProviderName = "blackbox" | "gemini" | "openrouter";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -89,17 +89,60 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
   return text;
 }
 
+/**
+ * Blackbox AI API Implementation
+ */
+async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
+  const url = "https://api.blackbox.ai/api/chat";
+  
+  const body = {
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt }
+    ],
+    max_tokens: 2048,
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${opts.key}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Blackbox Error: ${res.status} ${errorText.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content || "";
+  if (!text) throw new Error("Blackbox returned empty response");
+  return text;
+}
+
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
   json?: boolean;
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
+  const blackboxKey = process.env["BLACKBOX_API_KEY"];
   const geminiKey = process.env["GEMINI_API_KEY"];
   const openrouterKey = process.env["OPENROUTER_API_KEY"];
 
   const json = args.json ?? false;
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
+
+  if (blackboxKey) {
+    runners.push({
+      name: "blackbox",
+      run: () => blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt }),
+    });
+  }
 
   if (geminiKey) {
     runners.push({
@@ -115,7 +158,7 @@ export async function generateTextWithFallback(args: {
     });
   }
 
-  const preferred = args.preferred || "gemini";
+  const preferred = args.preferred || "blackbox";
   runners.sort((a, b) => (a.name === preferred ? -1 : b.name === preferred ? 1 : 0));
 
   if (runners.length === 0) {
