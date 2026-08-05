@@ -138,9 +138,11 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        Integrate Nichesss API only for News Content Generation.
-Base URL: https://nichesss.com/api
-Authentication: 690R0RxR2NUO2cHGNj3NpapRf
+        Integrate Frase API for news content generation only.
+Base URL: https://api.frase.io/api/v1
+Auth: 241e46d0ec564de1be011aca80cc8521
+User enters a news topic → generate a full SEO-optimized news article using Frase → show the article in clean UI.
+Use Edge Function to keep API key secure. Add loading and error states.
         {children}
         <Scripts />
       </body>
