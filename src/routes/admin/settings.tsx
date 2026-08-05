@@ -159,8 +159,9 @@ function SettingsPage() {
             দ্রষ্টব্য: এই কীগুলি সুরক্ষিতভাবে ডেটাবেসে সংরক্ষিত হবে। Gemini-র জন্য একাধিক কী কমা (,) দিয়ে আলাদা করে দিতে পারেন।
           </p>
           {settingFields.filter(f => f.section === "ai").map((f) => {
-            const provider = f.key ? f.key.split("_")[0].toLowerCase() : "";
-            const result = testResults[f.key];
+            const fieldKey = f.key || "";
+            const provider = fieldKey.split("_")[0]?.toLowerCase() || "";
+            const result = testResults[fieldKey];
             
             return (
               <div key={f.key} className="space-y-2">
