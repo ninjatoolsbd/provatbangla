@@ -91,7 +91,7 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
         { role: "system", content: opts.system },
         { role: "user", content: opts.prompt }
       ],
-      model: "mistral-large-latest"
+      model: "claude-3-5-sonnet-latest"
     }),
   });
 
