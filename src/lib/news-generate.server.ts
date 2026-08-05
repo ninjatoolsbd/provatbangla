@@ -60,8 +60,8 @@ export async function runGenerate(data: GenerateInputType) {
     "নিয়ম:",
     "- ভাষা বাংলা, সাবলীল ও পেশাদার।",
     `- ${toneHint[data.tone]}।`,
-    "- content-এ কমপক্ষে ৭টি অনুচ্ছেদ থাকতে হবে, প্রতিটি ফাঁকা লাইন দিয়ে আলাদা, কোনো মার্কডাউন নয়।",
-    "- নিউজের দৈর্ঘ্য কমপক্ষে ৩০০ শব্দ হতে হবে।",
+    "- content-এ কমপক্ষে ৪টি অনুচ্ছেদ থাকতে হবে, প্রতিটি ফাঁকা লাইন দিয়ে আলাদা, কোনো মার্কডাউন নয়।",
+    "- নিউজের দৈর্ঘ্য কমপক্ষে ১৫০ শব্দ হতে হবে।",
     "- ইন্টারনেট থেকে সংগৃহীত তথ্য (যদি থাকে) ব্যবহার করে বিস্তারিত প্রতিবেদন তৈরি করো।",
     "- বাস্তব ব্যক্তির নামে মিথ্যা উদ্ধৃতি দিও না।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
@@ -97,8 +97,8 @@ export async function runGenerate(data: GenerateInputType) {
     // If we have a reference image, we can try to use it as a base or reference for generation
     // to ensure 200% relevance, especially for specific people or events.
     const imagePrompt = referenceImage 
-      ? `Reference Image Context: This is a photo from the original source. Create a new, similar, high-quality professional news version of this scene: ${parsed.image_prompt}`
-      : parsed.image_prompt;
+    ? `Reference Image Context: This is a photo from the original source. Create a new, similar, high-quality professional news version of this scene: ${parsed.image_prompt}`
+    : parsed.image_prompt;
     
     imageUrl = await generateNewsImage(imagePrompt || parsed.title);
   }

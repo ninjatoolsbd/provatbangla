@@ -115,7 +115,8 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`Blackbox Error: ${res.status} ${errorText}`);
+    console.error(`Blackbox API Error [${res.status}]:`, errorText);
+    throw new Error(`Blackbox Error: ${res.status}`);
   }
 
   const data = await res.json();
