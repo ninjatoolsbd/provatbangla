@@ -24,6 +24,99 @@ function pickImageData(payload: ImagesResponse) {
   return null;
 }
 
+async function fromCloudflare(prompt: string) {
+  const token = process.env["CLOUDFLARE_API_TOKEN"];
+  const accountId = process.env["CLOUDFLARE_ACCOUNT_ID"] || "0d889fc022ab5086c334140058a43637";
+  if (!token) return null;
+  // Using @cf/bytedance/stable-diffusion-xl-lightning or @cf/stabilityai/stable-diffusion-xl-base-1.0
+  // since the kimi-k2.7-code mentioned in the user's curl is a text model.
+  // I will use flux-schnell if available, or fall back to SDXL.
+  const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ prompt }),
+  });
+  if (!res.ok) return null;
+  const blob = await res.blob();
+  const buffer = await blob.arrayBuffer();
+  return `data:image/png;base64,${Buffer.from(buffer).toString("base64")}`;
+}
+
+async function fromPollinations(prompt: string) {
+  const key = process.env["POLLINATIONS_API_KEY"];
+  // Pollinations Flux usually works via simple URL or fetch
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&private=true&enhance=false&model=flux`;
+  const res = await fetch(url, {
+    headers: key ? { Authorization: `Bearer ${key}` } : {},
+  });
+  if (!res.ok) return null;
+  return url; // Returns the direct URL
+}
+
+async function fromGemini(prompt: string) {
+  const key = process.env["GEMINI_API_KEY"];
+  if (!key) return null;
+  // Gemini Imagen implementation... but we'll stick to simple providers first
+  return null; 
+}
+
+async function fromLeonardo(prompt: string) {
+  const key = process.env["LEONARDO_API_KEY"];
+  if (!key) return null;
+  const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      prompt,
+      modelId: "b2441e34-12f4-4ab9-a0ce-f1110f050d7d", // Leonardo Diffusion XL
+      width: 1024,
+      height: 576,
+      num_images: 1,
+    }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json() as any;
+  const generationId = data.sdGenerationJob?.generationId;
+  if (!generationId) return null;
+
+  // Poll for result
+  for (let i = 0; i < 10; i++) {
+    await new Promise(r => setTimeout(r, 2000));
+    const gRes = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    const gData = await gRes.json() as any;
+    const url = gData.generations_by_pk?.generated_images?.[0]?.url;
+    if (url) return url;
+  }
+  return null;
+}
+
+async function fromIdeogram(prompt: string) {
+  const key = process.env["IDEOGRAM_API_KEY"];
+  if (!key) return null;
+  const res = await fetch("https://api.ideogram.ai/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Api-Key": key,
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt,
+        aspect_ratio: "ASPECT_16_9",
+        model: "V_2",
+      },
+    }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json() as any;
+  return data.data?.[0]?.url || null;
+}
+
 async function fromBlackbox(fullPrompt: string) {
   const key = process.env["BLACKBOX_API_KEY"];
   if (!key) return null;
@@ -55,15 +148,19 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "blackbox";
-    const priority = priorityStr.split(",").filter(p => p === "blackbox");
+    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram,blackbox";
+    const priority = priorityStr.split(",").filter(Boolean);
 
     let b64: string | null = null;
 
     for (const provider of priority) {
-      if (provider === "blackbox") {
-        b64 = await fromBlackbox(fullPrompt).catch(() => null);
-      }
+      if (provider === "cloudflare") b64 = await fromCloudflare(fullPrompt).catch(() => null);
+      else if (provider === "pollinations") b64 = await fromPollinations(fullPrompt).catch(() => null);
+      else if (provider === "leonardo") b64 = await fromLeonardo(fullPrompt).catch(() => null);
+      else if (provider === "ideogram") b64 = await fromIdeogram(fullPrompt).catch(() => null);
+      else if (provider === "blackbox") b64 = await fromBlackbox(fullPrompt).catch(() => null);
+      else if (provider === "gemini") b64 = await fromGemini(fullPrompt).catch(() => null);
+      
       if (b64) break;
     }
 

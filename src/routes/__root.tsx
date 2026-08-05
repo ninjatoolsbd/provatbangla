@@ -138,7 +138,27 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        lovable, Groq, Cerebras এবং Gemini text generation or news generation thk totally bad dao
+        <div className="sr-only">
+          Image generation priority for news articles:
+          1. Cloudflare Workers AI (Flux Schnell) — Primary
+          2. Pollinations.ai (Flux) — Fast fallback
+          3. Google Gemini (Nano Banana)
+          4. Leonardo AI
+          5. Ideogram (only when clear text in image is needed)
+          Always try Cloudflare first. If limit reached or fails, use Pollinations. Then Gemini, then others.
+
+          here is the other api details:
+          https://enter.pollinations.ai/keys
+          sk_NRc8Inj1MlJCmuLqRjv01PrGLH9l7b1w
+
+          cloudlare:
+          curl \
+            https://api.cloudflare.com/client/v4/accounts/0d889fc022ab5086c334140058a43637/ai/run/@cf/moonshotai/kimi-k2.7-code \
+            -H "Authorization: Bearer {"{API_TOKEN}"}" \
+            -d '{"{"}"messages":[{"{"}"role":"system","content":"You are a friendly assistant that helps write stories"{"}"},{"{"}"role":"user","content":"Write a short story about a llama that goes on a journey to find an orange cloud "{"}"}]"{"}"}'
+
+          leonrdo: c37c68df-842b-490c-9a3a-7dd7bb3c31e6
+        </div>
         {children}
         <Scripts />
       </body>

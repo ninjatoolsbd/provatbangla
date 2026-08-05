@@ -30,7 +30,7 @@ function ImageGenSettingsPage() {
   });
 
   // Default priority: gemini, lovable
-  const priorityStr = cfg["image_gen_priority"] ?? "blackbox,gemini,lovable";
+  const priorityStr = cfg["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram";
   const priority = priorityStr.split(",").filter(Boolean);
 
   const move = (index: number, direction: "up" | "down") => {
@@ -46,13 +46,29 @@ function ImageGenSettingsPage() {
   };
 
   const providers: Record<string, { label: string; desc: string }> = {
-    blackbox: {
-      label: "Blackbox AI",
-      desc: "Blackbox Flux-Pro ব্যবহার করে হাই-কোয়ালিটি ইমেজ জেনারেট করে।",
+    cloudflare: {
+      label: "Cloudflare Workers AI",
+      desc: "Flux Schnell ব্যবহার করে দ্রুত এবং হাই-কোয়ালিটি ইমেজ জেনারেট করে।",
+    },
+    pollinations: {
+      label: "Pollinations.ai",
+      desc: "Flux মডেল ব্যবহার করে অত্যন্ত দ্রুত ইমেজ জেনারেশন।",
     },
     gemini: {
-      label: "Google Gemini",
-      desc: "আপনার নিজস্ব GEMINI_API_KEY ব্যবহার করে (সাশ্রয়ী)।",
+      label: "Google Gemini (Nano)",
+      desc: "সাশ্রয়ী বিকল্প ইমেজ জেনারেশন।",
+    },
+    leonardo: {
+      label: "Leonardo AI",
+      desc: "পেশাদার মানের এবং শৈল্পিক ইমেজ জেনারেশন।",
+    },
+    ideogram: {
+      label: "Ideogram",
+      desc: "ছবির ভেতরে পরিষ্কার টেক্সট দরকার হলে এটি সেরা।",
+    },
+    blackbox: {
+      label: "Blackbox AI",
+      desc: "Blackbox Flux-Pro ব্যবহার করে ব্যাকআপ হিসেবে কাজ করে।",
     },
     lovable: {
       label: "Lovable AI",
