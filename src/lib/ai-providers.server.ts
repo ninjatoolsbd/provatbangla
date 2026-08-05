@@ -49,11 +49,11 @@ async function openAiCompatible(opts: {
 export async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   // Frase AI Content Generation API
   // Using the /content/generate endpoint or equivalent
-  const res = await fetch("https://api.frase.io/api/v1/content/gen", {
+  const res = await fetch("https://api.frase.io/api/v1/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${opts.key}`,
+      "x-api-key": opts.key,
     },
     body: JSON.stringify({
       // Frase expectations for generation
@@ -80,14 +80,13 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
   // They expect a prompt and return generated text.
   // Note: Nichesss API might have specific 'plan' or 'template' requirements,
   // but usually a direct POST to a generation endpoint works for content.
-  const res = await fetch("https://nichesss.com/api/v1/posts", {
+  const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      plan_id: "magic_content",
       prompt: `${opts.system}\n\nUser Input: ${opts.prompt}`,
       max_tokens: 1500,
     }),
