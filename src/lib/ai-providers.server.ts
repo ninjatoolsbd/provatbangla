@@ -121,11 +121,11 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
       Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      // Nichesss typically uses specific templates, but we can try to pass the prompt
-      // as the base for content generation. 
-      // Based on common "magic" or "freeform" endpoints:
-      prompt: `${opts.system}\n\n${opts.prompt}`,
-      max_tokens: 1000,
+      messages: [
+        { role: "system", content: opts.system },
+        { role: "user", content: opts.prompt }
+      ],
+      max_tokens: 1500,
     }),
   });
 
