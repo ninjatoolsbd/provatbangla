@@ -3,7 +3,7 @@
  * Preferred: Blackbox AI (New), Google Gemini (Primary), or OpenRouter (Fallback).
  */
 
-export type ProviderName = "blackbox" | "gemini" | "openrouter";
+export type ProviderName = "blackbox";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -130,8 +130,9 @@ export async function generateTextWithFallback(args: {
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
   const blackboxKey = process.env["BLACKBOX_API_KEY"];
-  const geminiKey = process.env["GEMINI_API_KEY"];
-  const openrouterKey = process.env["OPENROUTER_API_KEY"];
+  // Gemini and OpenRouter disabled per user request
+  const geminiKey = undefined;
+  const openrouterKey = undefined;
 
   const json = args.json ?? false;
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];

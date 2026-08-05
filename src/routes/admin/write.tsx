@@ -122,7 +122,7 @@ function WritePage() {
           tone: genTone,
           withImage: genImage,
           autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "blackbox" | "gemini" | "openrouter",
+          provider: genProvider as "auto" | "blackbox",
         },
       }),
     onSuccess: (res) => {
@@ -334,10 +334,8 @@ function WritePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">অটো (সব প্রোভাইডার)</SelectItem>
+                  <SelectItem value="auto">অটো (Blackbox)</SelectItem>
                   <SelectItem value="blackbox">Blackbox AI (New)</SelectItem>
-                  <SelectItem value="gemini">Google Gemini (Primary)</SelectItem>
-                  <SelectItem value="openrouter">OpenRouter (Fallback)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
