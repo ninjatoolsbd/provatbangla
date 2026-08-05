@@ -47,72 +47,72 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  // Try Frase standard AI generation endpoint
-  const res = await fetch("https://api.frase.io/api/v1/ai/generate", {
+  const url = "https://api.frase.io/api/v1/ai/generate";
+  const headers = {
+    "Content-Type": "application/json",
+    "x-api-key": opts.key,
+  };
+  const body = {
+    query: opts.prompt,
+    instruction: opts.system,
+    max_tokens: 1500,
+  };
+
+  console.log(`[Frase Request] URL: ${url}`);
+  console.log(`[Frase Request] Headers: Content-Type: application/json, x-api-key: ${opts.key.slice(0, 6)}...`);
+  console.log(`[Frase Request] Body: ${JSON.stringify(body, null, 2)}`);
+
+  const res = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": opts.key,
-    },
-    body: JSON.stringify({
-      query: opts.prompt,
-      instruction: opts.system,
-      max_tokens: 1500,
-    }),
+    headers,
+    body: JSON.stringify(body),
   });
 
+  const responseBody = await res.text();
+  console.log(`[Frase Response] Status: ${res.status}`);
+  console.log(`[Frase Response] Body: ${responseBody}`);
+
   if (!res.ok) {
-    const errorText = await res.text();
-    // 404 means the path is wrong. Trying the 'magic' path if Frase uses it
-    const res2 = await fetch("https://api.frase.io/api/v1/magic", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": opts.key },
-      body: JSON.stringify({ prompt: `${opts.system}\n\n${opts.prompt}` }),
-    });
-    if (res2.ok) {
-      const data = await res2.json() as any;
-      return data.text || data.result || "";
-    }
-    throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
+    throw new Error(`${res.status} Frase error: ${responseBody}`);
   }
 
-  const data = (await res.json()) as any;
+  const data = JSON.parse(responseBody);
   return data.text || data.result || data.content || "";
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
-  // Nichesss often uses Bearer token with a specific model field
-  const res = await fetch("https://nichesss.com/api/v1/magic", {
+  const url = "https://nichesss.com/api/v1/magic";
+  const headers = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${opts.key}`,
+  };
+  const body = {
+    messages: [
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt }
+    ],
+    max_tokens: 1500
+  };
+
+  console.log(`[Nichesss Request] URL: ${url}`);
+  console.log(`[Nichesss Request] Headers: Content-Type: application/json, Authorization: Bearer ${opts.key.slice(0, 6)}...`);
+  console.log(`[Nichesss Request] Body: ${JSON.stringify(body, null, 2)}`);
+
+  const res = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${opts.key}`,
-    },
-    body: JSON.stringify({
-      messages: [{ role: "user", content: `${opts.system}\n\n${opts.prompt}` }],
-      max_tokens: 1500
-    }),
+    headers,
+    body: JSON.stringify(body),
   });
 
+  const responseBody = await res.text();
+  console.log(`[Nichesss Response] Status: ${res.status}`);
+  console.log(`[Nichesss Response] Body: ${responseBody}`);
+
   if (!res.ok) {
-    const errorText = await res.text();
-    // Try Api-Key header one last time
-    const res2 = await fetch("https://nichesss.com/api/v1/magic", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Api-Key": opts.key },
-      body: JSON.stringify({
-        prompt: `${opts.system}\n\n${opts.prompt}`,
-        max_tokens: 1500
-      }),
-    });
-    if (res2.ok) {
-      const data = await res2.json() as any;
-      return data.text || data.result || "";
-    }
-    throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
+    throw new Error(`${res.status} Nichesss error: ${responseBody}`);
   }
   
-  const data = (await res.json()) as any;
+  const data = JSON.parse(responseBody);
   return data.text || data.result || data.data?.text || "";
 }
 
