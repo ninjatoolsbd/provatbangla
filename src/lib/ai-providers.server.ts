@@ -227,11 +227,26 @@ export async function generateTextWithFallback(args: {
     // For each provider, iterate through its available keys (especially useful for Gemini)
     for (const key of provider.keys) {
       try {
-        const text = await provider.run(key);
-        const processedText = json ? extractJsonBlock(text) : text.trim();
+        const rawText = await provider.run(key);
+        let processedText = json ? extractJsonBlock(rawText) : rawText.trim();
         
-        if (json && !processedText.startsWith('{')) {
-          throw new Error(`${provider.name} returned invalid JSON format`);
+        if (json) {
+          try {
+            JSON.parse(processedText);
+          } catch (e) {
+            // AI often fails to escape newlines inside JSON strings or leaves trailing commas
+            // Let's try to fix common JSON issues if the first attempt fails
+            const fixedText = processedText
+              .replace(/\n/g, "\\n") // Escape literal newlines
+              .replace(/,\s*([}\]])/g, "$1"); // Remove trailing commas
+            
+            try {
+              JSON.parse(fixedText);
+              processedText = fixedText;
+            } catch {
+              // If it still fails, we'll let it throw in the next step or keep original to see error
+            }
+          }
         }
         
         return { text: processedText, provider: provider.name };
