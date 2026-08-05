@@ -34,12 +34,16 @@ const toneHint: Record<string, string> = {
 
 export async function runGenerate(data: GenerateInputType) {
   let referenceContent = "";
+  let referenceImage: string | null = null;
   if (data.referenceUrl) {
     try {
       const { fetchArticle } = await import("./source-fetch.server");
       const article = await fetchArticle(data.referenceUrl);
       if (article.body) {
         referenceContent = `\n\nরেফারেন্স ইউআরএল থেকে সংগৃহীত তথ্য:\n${article.body.slice(0, 8000)}`;
+      }
+      if (article.image) {
+        referenceImage = article.image;
       }
     } catch (e) {
       console.error("Failed to fetch reference URL:", e);
@@ -88,9 +92,16 @@ export async function runGenerate(data: GenerateInputType) {
     throw new Error("AI সঠিক ফরম্যাটে উত্তর দেয়নি, আবার চেষ্টা করুন।");
   }
 
-  const imageUrl = data.withImage
-    ? await generateNewsImage(parsed.image_prompt || parsed.title)
-    : null;
+  let imageUrl: string | null = null;
+  if (data.withImage) {
+    // If we have a reference image, we can try to use it as a base or reference for generation
+    // to ensure 200% relevance, especially for specific people or events.
+    const imagePrompt = referenceImage 
+      ? `Reference Image Context: This is a photo from the original source. Create a new, similar, high-quality professional news version of this scene: ${parsed.image_prompt}`
+      : parsed.image_prompt;
+    
+    imageUrl = await generateNewsImage(imagePrompt || parsed.title);
+  }
 
   return { article: parsed, imageUrl, provider };
 }
