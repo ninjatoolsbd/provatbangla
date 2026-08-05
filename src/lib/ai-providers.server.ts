@@ -20,7 +20,7 @@ function extractJsonBlock(raw: string) {
  * Google Gemini API Implementation
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${opts.key}`;
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${opts.key}`;
   
   const body = {
     contents: [
@@ -43,7 +43,7 @@ async function geminiApi(opts: { key: string; system: string; prompt: string }) 
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`Gemini Error: ${res.status}`);
+    throw new Error(`Gemini Error: ${res.status} ${errorText.slice(0, 100)}`);
   }
 
   const data = await res.json();
@@ -80,7 +80,7 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`OpenRouter Error: ${res.status}`);
+    throw new Error(`OpenRouter Error: ${res.status} ${errorText.slice(0, 100)}`);
   }
 
   const data = await res.json();
