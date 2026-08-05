@@ -99,7 +99,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     messages: [
       { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "deepseek-ai/DeepSeek-V3",
+    model: "blackboxai",
     max_tokens: 1024,
   };
 
@@ -107,7 +107,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": opts.key,
+      "Authorization": `Bearer ${opts.key}`,
     },
     body: JSON.stringify(body),
   });
