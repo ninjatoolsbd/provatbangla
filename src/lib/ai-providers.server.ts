@@ -168,7 +168,9 @@ export async function generateTextWithFallback(args: {
   const geminiKeys: string[] = [];
   for (let i = 1; i <= 5; i++) {
     const key = settings[`GEMINI_API_KEY_${i}`] || process.env[`GEMINI_API_KEY_${i}`];
-    if (key) geminiKeys.push(key.trim());
+    if (key && key.trim().length > 10) { // Only use non-empty, valid-looking keys
+      geminiKeys.push(key.trim());
+    }
   }
   
   // Legacy support for comma separated key
