@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
-import { Loader2, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2, Sparkles, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -78,6 +78,8 @@ function WritePage() {
   const [tone, setTone] = useState<"news" | "analysis" | "short">("news");
   const [variantCount, setVariantCount] = useState(1);
   const [versions, setVersions] = useState<Version[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
@@ -207,6 +209,35 @@ function WritePage() {
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `news-images/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from("news-media")
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("news-media")
+        .getPublicUrl(filePath);
+
+      setImageUrl(publicUrl);
+      toast.success("ছবি আপলোড সফল হয়েছে");
+    } catch (error: any) {
+      toast.error("আপলোড ব্যর্থ হয়েছে: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const canRewrite = title.trim().length > 0 && content.trim().length > 20;
 
@@ -380,13 +411,50 @@ function WritePage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="image">ছবির লিংক (ঐচ্ছিক)</Label>
-            <Input
-              id="image"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://..."
-            />
+            <Label>ফিচার ইমেজ</Label>
+            <div className="flex flex-col gap-2">
+              {imageUrl ? (
+                <div className="relative aspect-video w-full overflow-hidden border-2 border-primary/30">
+                  <img src={imageUrl} alt="Preview" className="h-full w-full object-cover" />
+                  <button
+                    onClick={() => setImageUrl("")}
+                    className="absolute top-2 right-2 rounded-full bg-red-600 p-1 text-white shadow-lg hover:bg-red-700"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center border-2 border-dashed border-primary/30 bg-secondary/20 transition-colors hover:bg-secondary/40"
+                >
+                  {isUploading ? (
+                    <Loader2 className="size-8 animate-spin text-primary" />
+                  ) : (
+                    <>
+                      <Upload className="mb-2 size-8 text-primary" />
+                      <span className="text-sm font-bold text-primary">ছবি আপলোড করুন</span>
+                    </>
+                  )}
+                </div>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <div className="flex items-center gap-2">
+                <Input
+                  id="image"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="অথবা সরাসরি ছবির ইউআরএল দিন..."
+                  className="h-8 text-xs"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
