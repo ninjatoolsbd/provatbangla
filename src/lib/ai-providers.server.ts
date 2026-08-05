@@ -20,8 +20,8 @@ function extractJsonBlock(raw: string) {
  * Google Gemini API Implementation
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
-  // We'll try models in order: gemini-1.5-flash, gemini-1.5-pro, then gemini-pro
-  const models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+  // Ordered by preference: flash-latest is often best for standard tasks
+  const models = ["gemini-1.5-flash", "gemini-flash-latest", "gemini-1.5-pro", "gemini-pro"];
   const versions = ["v1beta", "v1"];
   
   let lastError: Error | null = null;
