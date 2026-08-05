@@ -3,7 +3,7 @@
  * Order: Spin Rewriter (if set) → Lovable AI → Groq → Cerebras → Gemini (direct).
  */
 
-export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter" | "blackbox" | "nichesss";
+export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter" | "blackbox" | "nichesss" | "frase";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -125,6 +125,35 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string; 
   return text;
 }
 
+async function fraseApi(opts: { key: string; system: string; prompt: string }) {
+  // Frase AI Content Generation API
+  // Using the /content/generate endpoint or equivalent
+  const res = await fetch("https://api.frase.io/api/v1/content/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.key}`,
+    },
+    body: JSON.stringify({
+      // Frase expectations for generation
+      query: opts.prompt,
+      instruction: opts.system,
+      max_tokens: 2000,
+      temperature: 0.7,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
+  }
+
+  const data = (await res.json()) as { text?: string; content?: string; data?: { text?: string } };
+  const text = data.text || data.content || data.data?.text || "";
+  if (!text.trim()) throw new Error("empty response from Frase");
+  return text;
+}
+
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
   // Nichesss Content Generation API
   // They expect a prompt and return generated text.
@@ -164,10 +193,13 @@ export async function generateTextWithFallback(args: {
 }): Promise<TextResult> {
   const spinKey = process.env["SPIN_REWRITER_API_KEY"];
   const nichesssKey = process.env["NICHESSS_API_KEY"];
-  
-  // Nichesss is ONLY for news content generation (non-JSON)
-  const preferred = args.preferred || 
-    (nichesssKey && !args.json ? "nichesss" : 
+  const fraseKey = process.env["FRASE_API_KEY"];
+
+  // Frase and Nichesss are for news content generation (non-JSON)
+  const preferred =
+    args.preferred ||
+    (fraseKey && !args.json ? "frase" :
+     nichesssKey && !args.json ? "nichesss" :
      spinKey && !args.json ? "spin-rewriter" : undefined);
 
   const json = args.json ?? false;
@@ -179,6 +211,12 @@ export async function generateTextWithFallback(args: {
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
+
+  if (fraseKey && !json)
+    runners.push({
+      name: "frase",
+      run: () => fraseApi({ key: fraseKey, system: args.system, prompt: args.prompt }),
+    });
 
   if (nichesssKey && !json)
     runners.push({
