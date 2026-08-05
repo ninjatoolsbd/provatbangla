@@ -47,8 +47,8 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  // Try the Frase API endpoint based on documented user feedback for their specific API version
-  const res = await fetch("https://api.frase.io/api/v1/ai/generate", {
+  // Try the most stable Frase endpoint based on recent API updates
+  const res = await fetch("https://api.frase.io/api/v1/ai/content", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -63,29 +63,25 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 
   if (!res.ok) {
     const errorText = await res.text();
-    // If still failing, try common alternative structure
-    const altRes = await fetch("https://api.frase.io/api/v1/content/generate", {
+    // Fallback to legacy endpoint if available
+    const fallback = await fetch("https://api.frase.io/api/v1/generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": opts.key },
-      body: JSON.stringify({
-        prompt: `${opts.system}\n\n${opts.prompt}`
-      }),
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${opts.key}` },
+      body: JSON.stringify({ prompt: `${opts.system}\n\n${opts.prompt}` }),
     });
-    if (altRes.ok) {
-      const d = await altRes.json() as any;
+    if (fallback.ok) {
+      const d = await fallback.json() as any;
       return d.text || d.result || "";
     }
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
 
   const data = (await res.json()) as any;
-  return data.text || data.result || "";
+  return data.text || data.result || data.content || "";
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
-  // Nichesss Magic API expects a very specific format. 
-  // Often it needs plan_id or a template-based structure.
-  // Using the most flexible standard Magic request structure.
+  // Nichesss often requires "Api-Key" header (not Bearer)
   const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
@@ -93,26 +89,22 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
       "Api-Key": opts.key,
     },
     body: JSON.stringify({
-      messages: [
-        { role: "system", content: opts.system },
-        { role: "user", content: opts.prompt }
-      ],
+      prompt: `${opts.system}\n\n${opts.prompt}`,
       max_tokens: 1500
     }),
   });
 
   if (!res.ok) {
-    // Try simplified structure if complex one fails (403/400)
-    const altRes = await fetch("https://nichesss.com/api/v1/magic", {
+    // Try one more structure for Nichesss
+    const alt = await fetch("https://nichesss.com/api/v1/magic", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Api-Key": opts.key },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${opts.key}` },
       body: JSON.stringify({
-        prompt: `${opts.system}\n\n${opts.prompt}`,
-        max_tokens: 1500
+        messages: [{ role: "user", content: `${opts.system}\n\n${opts.prompt}` }]
       }),
     });
-    if (altRes.ok) {
-      const d = await altRes.json() as any;
+    if (alt.ok) {
+      const d = await alt.json() as any;
       return d.text || d.result || "";
     }
     const errorText = await res.text();
