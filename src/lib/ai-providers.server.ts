@@ -90,7 +90,8 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
       messages: [
         { role: "system", content: opts.system },
         { role: "user", content: opts.prompt }
-      ]
+      ],
+      model: "gpt-4o"
     }),
   });
 
