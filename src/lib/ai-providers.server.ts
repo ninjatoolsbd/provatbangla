@@ -88,7 +88,8 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
     },
     body: JSON.stringify({
       messages: [
-        { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
+        { role: "system", content: opts.system },
+        { role: "user", content: opts.prompt }
       ]
     }),
   });
