@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        deko onk image oprasongik, pls regenertae
+        kon kon api fail kortese?
         {children}
         <Scripts />
       </body>
