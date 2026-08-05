@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        amar api glour vitor konta konta die image genrate hobe dekhe janao
+        Add an image-generation settings page so I can choose the priority order between Gemini and fallback options.
         {children}
         <Scripts />
       </body>
