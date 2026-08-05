@@ -103,8 +103,8 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
 
-  const data = (await res.json()) as { text?: string; content?: string; data?: { text?: string } };
-  const text = data.text || data.content || data.data?.text || "";
+  const data = (await res.json()) as { text?: string; content?: string; data?: { text?: string }; response?: string };
+  const text = data.text || data.content || data.data?.text || data.response || "";
   if (!text.trim()) throw new Error("empty response from Frase");
   return text;
 }
@@ -114,18 +114,18 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
   // They expect a prompt and return generated text.
   // Note: Nichesss API might have specific 'plan' or 'template' requirements,
   // but usually a direct POST to a generation endpoint works for content.
-  const res = await fetch("https://nichesss.com/api/v1/posts", {
+  const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      // Nichesss typically uses specific templates, but we can try to pass the prompt
-      // as the base for content generation. 
-      // Based on common "magic" or "freeform" endpoints:
-      prompt: `${opts.system}\n\n${opts.prompt}`,
-      max_tokens: 1000,
+      messages: [
+        { role: "system", content: opts.system },
+        { role: "user", content: opts.prompt }
+      ],
+      max_tokens: 1500,
     }),
   });
 
@@ -134,8 +134,8 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
     throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
   }
   
-  const data = (await res.json()) as { text?: string; content?: string };
-  const text = data.text || data.content || "";
+  const data = (await res.json()) as { text?: string; content?: string; result?: string; response?: string };
+  const text = data.text || data.content || data.result || data.response || "";
   if (!text.trim()) throw new Error("empty response from Nichesss");
   return text;
 }
@@ -151,12 +151,13 @@ export async function generateTextWithFallback(args: {
   const fraseKey = process.env["FRASE_API_KEY"];
   
 
-  // Frase and Nichesss are for news content generation (non-JSON)
+  // Frase and Nichesss are for news content generation
+  // We allow JSON mode for these providers if they are being used for structured generation
   const preferred =
     args.preferred ||
-    (fraseKey && !args.json ? "frase" :
-     nichesssKey && !args.json ? "nichesss" :
-     spinKey && !args.json ? "spin-rewriter" : undefined);
+    (fraseKey ? "frase" :
+     nichesssKey ? "nichesss" :
+     spinKey ? "spin-rewriter" : undefined);
 
   const json = args.json ?? false;
 
@@ -164,19 +165,19 @@ export async function generateTextWithFallback(args: {
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
   // Order: Frase -> Nichesss -> Spin Rewriter
-  if (fraseKey && !json)
+  if (fraseKey)
     runners.push({
       name: "frase",
       run: () => fraseApi({ key: fraseKey, system: args.system, prompt: args.prompt }),
     });
 
-  if (nichesssKey && !json)
+  if (nichesssKey)
     runners.push({
       name: "nichesss",
       run: () => nichesssApi({ key: nichesssKey, system: args.system, prompt: args.prompt }),
     });
 
-  if (spinKey && !json)
+  if (spinKey)
     runners.push({
       name: "spin-rewriter",
       run: () => spinRewriterApi({ key: spinKey, prompt: args.prompt }),
@@ -193,7 +194,14 @@ export async function generateTextWithFallback(args: {
   for (const runner of runners) {
     try {
       const text = await runner.run();
-      return { text: json ? extractJsonBlock(text) : text.trim(), provider: runner.name };
+      const processedText = json ? extractJsonBlock(text) : text.trim();
+      
+      // Basic validation for JSON if requested
+      if (json && !processedText.startsWith('{')) {
+        throw new Error("Provider returned invalid JSON format");
+      }
+      
+      return { text: processedText, provider: runner.name };
     } catch (e) {
       errors.push(`${runner.name}: ${e instanceof Error ? e.message : String(e)}`);
     }
