@@ -100,8 +100,8 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
       { role: "system", content: opts.system },
       { role: "user", content: opts.prompt }
     ],
-    // Trying a more stable model identifier for Blackbox API
-    model: "blackboxai",
+    // Based on test results, this model identifier works correctly with the v1 API
+    model: "blackboxai/meta/llama-3.1-8b",
   };
 
   const res = await fetch(url, {
@@ -115,7 +115,8 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(`Blackbox Error: ${res.status} ${errorText}`);
+    console.error(`Blackbox API Error [${res.status}]:`, errorText);
+    throw new Error(`Blackbox Error: ${res.status}`);
   }
 
   const data = await res.json();
