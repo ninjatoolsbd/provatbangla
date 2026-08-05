@@ -54,8 +54,16 @@ async function geminiApi(opts: { key: string; system: string; prompt: string }) 
         }
 
         if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`Gemini Error: ${res.status} ${errorText.slice(0, 150)}`);
+    const errorText = await res.text();
+    // Log the actual error code and response for debugging
+    let detail = "";
+    try {
+      const parsed = JSON.parse(errorText);
+      detail = parsed.error?.message || errorText;
+    } catch {
+      detail = errorText;
+    }
+    throw new Error(`Gemini Error: ${res.status} ${detail.slice(0, 200)}`);
         }
 
         const data = await res.json();
