@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        u can do from ur side
+        deko onk image oprasongik, pls regenertae
         {children}
         <Scripts />
       </body>
