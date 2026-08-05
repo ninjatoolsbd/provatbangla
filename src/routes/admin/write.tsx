@@ -63,7 +63,7 @@ function WritePage() {
   const [genCategory, setGenCategory] = useState("bangladesh");
   const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
   const [genImage, setGenImage] = useState(true);
-  const [genAutoPublish, setGenAutoPublish] = useState(true);
+  const [genAutoPublish, setGenAutoPublish] = useState(false);
   const [genProvider, setGenProvider] = useState("auto");
 
   const [editingId, setEditingId] = useState<string | null>(null);
