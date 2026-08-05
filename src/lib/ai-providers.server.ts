@@ -90,8 +90,7 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
       messages: [
         { role: "system", content: opts.system },
         { role: "user", content: opts.prompt }
-      ],
-      model: "claude-3-5-sonnet-latest"
+      ]
     }),
   });
 
