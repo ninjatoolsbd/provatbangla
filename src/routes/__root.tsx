@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        akta image o thik nai, tmr deoa sob image vua. tumi ja gen koreso sob mittha. amk news er title er sathe mil rekhe banie dao image abar
+        image generate kore dao
         {children}
         <Scripts />
       </body>
