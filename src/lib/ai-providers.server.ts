@@ -3,7 +3,7 @@
  * Order: Spin Rewriter (if set) → Lovable AI → Groq → Cerebras → Gemini (direct).
  */
 
-export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter" | "blackbox";
+export type ProviderName = "lovable" | "groq" | "cerebras" | "gemini" | "spin-rewriter" | "blackbox" | "nichesss";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -125,6 +125,37 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string; 
   return text;
 }
 
+async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
+  // Nichesss Content Generation API
+  // They expect a prompt and return generated text.
+  // Note: Nichesss API might have specific 'plan' or 'template' requirements,
+  // but usually a direct POST to a generation endpoint works for content.
+  const res = await fetch("https://nichesss.com/api/v1/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.key}`,
+    },
+    body: JSON.stringify({
+      // Nichesss typically uses specific templates, but we can try to pass the prompt
+      // as the base for content generation. 
+      // Based on common "magic" or "freeform" endpoints:
+      prompt: `${opts.system}\n\n${opts.prompt}`,
+      max_tokens: 1000,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
+  }
+  
+  const data = (await res.json()) as { text?: string; content?: string };
+  const text = data.text || data.content || "";
+  if (!text.trim()) throw new Error("empty response from Nichesss");
+  return text;
+}
+
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
@@ -132,8 +163,12 @@ export async function generateTextWithFallback(args: {
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
   const spinKey = process.env["SPIN_REWRITER_API_KEY"];
-  const preferred = args.preferred || (spinKey && !args.json ? "spin-rewriter" : undefined);
-
+  const nichesssKey = process.env["NICHESSS_API_KEY"];
+  
+  // Nichesss is ONLY for news content generation (non-JSON)
+  const preferred = args.preferred || 
+    (nichesssKey && !args.json ? "nichesss" : 
+     spinKey && !args.json ? "spin-rewriter" : undefined);
 
   const json = args.json ?? false;
   const lovableKey = process.env["LOVABLE_API_KEY"];
@@ -144,6 +179,12 @@ export async function generateTextWithFallback(args: {
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
+
+  if (nichesssKey && !json)
+    runners.push({
+      name: "nichesss",
+      run: () => nichesssApi({ key: nichesssKey, system: args.system, prompt: args.prompt }),
+    });
 
   if (blackboxKey)
     runners.push({
