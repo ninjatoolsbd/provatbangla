@@ -39,7 +39,7 @@ export const generateNews = createServerFn({ method: "POST" })
         tone: z.enum(["news", "analysis", "short"]).default("news"),
         withImage: z.boolean().default(true),
         autoPublish: z.boolean().default(true),
-        provider: z.enum(["auto"]).default("auto"),
+        provider: z.enum(["auto", "gemini", "openrouter", "groq"]).default("auto"),
       })
       .parse(input),
   )
@@ -52,7 +52,7 @@ export const generateNews = createServerFn({ method: "POST" })
 
     const { runGenerate } = await import("@/lib/news-generate.server");
     const { slugify } = await import("@/lib/post-utils");
-    const { article, imageUrl, provider } = await runGenerate(data);
+    const { article, imageUrl, provider } = await runGenerate(data as any);
 
     let postId: string | null = null;
     let slug: string | null = null;
