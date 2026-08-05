@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          workers api token ta abr dite chai
+          ok now akn bolo kothay kon api kivabe use hocce
         </div>
         {children}
         <Scripts />
