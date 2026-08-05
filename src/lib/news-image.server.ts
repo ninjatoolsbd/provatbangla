@@ -67,7 +67,7 @@ async function fromGemini(fullPrompt: string) {
 
 /** Generates a news illustration (Lovable AI, falling back to Gemini) and stores it. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
-  const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
+  const fullPrompt = prompt.includes("photorealistic") ? prompt : `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
     // Priority changed: Use Gemini (user's key) first to preserve Lovable AI credits.
     const b64 = (await fromGemini(fullPrompt).catch(() => null)) ?? (await fromLovable(fullPrompt).catch(() => null));
