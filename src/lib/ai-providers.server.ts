@@ -1,9 +1,9 @@
 /**
  * Multi-provider text generation with automatic fallback.
- * Preferred: Google Gemini (Primary), OpenRouter, or Blackbox AI.
+ * Preferred: Google Gemini (Primary) or OpenRouter (Fallback).
  */
 
-export type ProviderName = "gemini" | "openrouter" | "blackbox";
+export type ProviderName = "gemini" | "openrouter";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -89,41 +89,6 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
   return text;
 }
 
-/**
- * Blackbox AI API Implementation
- */
-async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.blackbox.ai/api/chat";
-  
-  const body = {
-    messages: [
-      { role: "system", content: opts.system },
-      { role: "user", content: opts.prompt }
-    ],
-    model: "gpt-4o", // Defaulting to gpt-4o as standard for news generation
-    max_tokens: 2000
-  };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${opts.key}`
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Blackbox Error: ${res.status} ${errorText.slice(0, 200)}`);
-  }
-
-  const data = await res.json();
-  const text = data.choices?.[0]?.message?.content || data.response || "";
-  if (!text) throw new Error("Blackbox returned empty response");
-  return text;
-}
-
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
@@ -132,7 +97,6 @@ export async function generateTextWithFallback(args: {
 }): Promise<TextResult> {
   const geminiKey = process.env["GEMINI_API_KEY"];
   const openrouterKey = process.env["OPENROUTER_API_KEY"];
-  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
   const json = args.json ?? false;
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
@@ -148,13 +112,6 @@ export async function generateTextWithFallback(args: {
     runners.push({
       name: "openrouter",
       run: () => openrouterApi({ key: openrouterKey, system: args.system, prompt: args.prompt, json }),
-    });
-  }
-
-  if (blackboxKey) {
-    runners.push({
-      name: "blackbox",
-      run: () => blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt }),
     });
   }
 

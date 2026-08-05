@@ -122,7 +122,7 @@ function WritePage() {
           tone: genTone,
           withImage: genImage,
           autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "gemini" | "openrouter" | "blackbox",
+          provider: genProvider as "auto" | "gemini" | "openrouter",
         },
       }),
     onSuccess: (res) => {
@@ -337,7 +337,6 @@ function WritePage() {
                   <SelectItem value="auto">অটো (সব প্রোভাইডার)</SelectItem>
                   <SelectItem value="gemini">Google Gemini (Primary)</SelectItem>
                   <SelectItem value="openrouter">OpenRouter (Fallback)</SelectItem>
-                  <SelectItem value="blackbox">Blackbox AI</SelectItem>
                 </SelectContent>
               </Select>
             </div>
