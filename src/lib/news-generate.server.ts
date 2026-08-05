@@ -82,19 +82,36 @@ export async function runGenerate(data: GenerateInputType) {
   const { text, provider } = await generateTextWithFallback({
     system,
     prompt,
-    json: true,
+    json: false, // Set to false to prevent the internal provider from trying to parse complex JSON
     preferred: data.provider as any,
+  });
+
+  // Manual cleaning of common AI formatting errors before parsing
+  let cleanedText = text.trim();
+  // Remove markdown code blocks if present
+  cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "");
+  // Find the first { and last } to isolate JSON
+  const firstBrace = cleanedText.indexOf("{");
+  const lastBrace = cleanedText.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1) {
+    cleanedText = cleanedText.slice(firstBrace, lastBrace + 1);
+  }
+
+  // Final sanitization: Remove literal control characters that break JSON.parse
+  cleanedText = cleanedText.replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
+    if (c === '\n') return '\\n';
+    if (c === '\r') return '\\r';
+    if (c === '\t') return '\\t';
+    return '';
   });
 
   let parsed: z.infer<typeof Article>;
   try {
-    const rawJson = JSON.parse(text);
+    const rawJson = JSON.parse(cleanedText);
     parsed = Article.parse(rawJson);
   } catch (e) {
-    console.error("JSON Parse Error:", e, "Raw Text:", text);
-    // If parsing fails, it might be due to markdown in the content or trailing commas
-    // We try to return a basic structure if possible, but for now, let's just show a better error
-    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
+    console.error("Manual JSON Parse Error:", e, "Cleaned Text:", cleanedText);
+    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি। আবার চেষ্টা করুন। (Error: ${e instanceof Error ? e.message : String(e)})`);
   }
 
   let imageUrl: string | null = null;
