@@ -138,7 +138,9 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        Add an image-generation settings page so I can choose the priority order between Gemini and fallback options.
+        ami tmk spin rewriter api key dicci, eta die news rewrite kore dite hbe
+<br/><br/>
+815bb3a#00e5992_83dfe30?ae2ce33
         {children}
         <Scripts />
       </body>
