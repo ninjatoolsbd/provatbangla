@@ -144,19 +144,21 @@ export async function generateTextWithFallback(args: {
     });
   }
 
+  /* Disabled per user request
   if (geminiKey) {
     runners.push({
-      name: "gemini",
+      name: "gemini" as any,
       run: () => geminiApi({ key: geminiKey, system: args.system, prompt: args.prompt }),
     });
   }
 
   if (openrouterKey) {
     runners.push({
-      name: "openrouter",
+      name: "openrouter" as any,
       run: () => openrouterApi({ key: openrouterKey, system: args.system, prompt: args.prompt, json }),
     });
   }
+  */
 
   const preferred = args.preferred || "blackbox";
   runners.sort((a, b) => (a.name === preferred ? -1 : b.name === preferred ? 1 : 0));
