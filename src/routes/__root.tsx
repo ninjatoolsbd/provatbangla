@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          যোগ করুন যাতে আমি জেনারেট হওয়ার পর নিউজটা প্রিভিউ দেখে চাইলে টাইটেল/ডেসক্রিপশন টেক্সট এডিট করে তারপর সাবমিট করতে পারি।
+          image ta jeno news er stahe mile , and 200% relevant hoy , sei onujai jeno image generate kore etar jnno to backend e systemt korte hbe, naki promt chalate hobe auto? na ki korba koro. amr image jeno news er sathe match kore. tasara kintu hbena
         </div>
         {children}
         <Scripts />
