@@ -103,8 +103,8 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
 
-  const data = (await res.json()) as { text?: string; content?: string; data?: { text?: string } };
-  const text = data.text || data.content || data.data?.text || "";
+  const data = (await res.json()) as { text?: string; content?: string; data?: { text?: string }; response?: string };
+  const text = data.text || data.content || data.data?.text || data.response || "";
   if (!text.trim()) throw new Error("empty response from Frase");
   return text;
 }
