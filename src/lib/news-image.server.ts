@@ -31,7 +31,7 @@ async function fromLovable(fullPrompt: string) {
     method: "POST",
     headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-3-pro-image",
+      model: "google/imagen-3",
       messages: [{ role: "user", content: fullPrompt }],
       modalities: ["image", "text"],
       stream: false,
