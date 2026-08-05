@@ -49,7 +49,7 @@ async function openAiCompatible(opts: {
 export async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   // Frase AI Content Generation API
   // Using the /content/generate endpoint or equivalent
-  const res = await fetch("https://api.frase.io/api/v1/content/generate", {
+  const res = await fetch("https://next.frase.io/api/v1/content/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -87,10 +87,7 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
       Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      messages: [
-        { role: "system", content: opts.system },
-        { role: "user", content: opts.prompt }
-      ],
+      prompt: `${opts.system}\n\nUser Input: ${opts.prompt}`,
       max_tokens: 1500,
     }),
   });
