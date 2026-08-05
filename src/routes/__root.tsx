@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        kon ai quota limit?
+        deko onk image oprasongik, pls regenertae
         {children}
         <Scripts />
       </body>
