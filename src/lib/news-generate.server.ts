@@ -11,7 +11,7 @@ export const GenerateInput = z.object({
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   withImage: z.boolean().default(true),
   autoPublish: z.boolean().default(true),
-  provider: z.enum(["auto", "blackbox"]).default("auto"),
+  provider: z.enum(["auto"]).default("auto"),
 });
 
 export type GenerateInputType = z.infer<typeof GenerateInput>;
@@ -82,7 +82,7 @@ export async function runGenerate(data: GenerateInputType) {
     system,
     prompt,
     json: true,
-    preferred: data.provider === "auto" ? undefined : (data.provider as ProviderName),
+    preferred: data.provider as ProviderName,
   });
 
   let parsed: z.infer<typeof Article>;
