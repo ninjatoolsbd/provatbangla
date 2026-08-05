@@ -93,13 +93,13 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
  * Blackbox AI API Implementation
  */
 async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.blackbox.ai/api/chat";
+  const url = "https://www.blackbox.ai/api/chat";
   
   const body = {
     messages: [
       { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "gpt-4",
+    model: "blackboxai",
     max_tokens: 2048,
   };
 
@@ -107,7 +107,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${opts.key}`,
+      "x-api-key": opts.key,
     },
     body: JSON.stringify(body),
   });
