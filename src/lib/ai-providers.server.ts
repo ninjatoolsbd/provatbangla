@@ -20,7 +20,7 @@ function extractJsonBlock(raw: string) {
  * Google Gemini API Implementation
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${opts.key}`;
+  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${opts.key}`;
   
   const body = {
     contents: [
