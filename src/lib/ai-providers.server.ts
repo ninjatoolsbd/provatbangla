@@ -173,20 +173,22 @@ export async function generateTextWithFallback(args: {
   const spinKey = process.env["SPIN_REWRITER_API_KEY"];
   const nichesssKey = process.env["NICHESSS_API_KEY"];
   const fraseKey = process.env["FRASE_API_KEY"];
+  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
   // Frase and Nichesss are for news content generation (non-JSON)
   const preferred =
     args.preferred ||
     (fraseKey && !args.json ? "frase" :
      nichesssKey && !args.json ? "nichesss" :
-     spinKey && !args.json ? "spin-rewriter" : undefined);
+     spinKey && !args.json ? "spin-rewriter" : 
+     blackboxKey ? "blackbox" : undefined);
 
   const json = args.json ?? false;
-  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
+  // Order: Frase -> Nichesss -> Spin Rewriter -> Blackbox
   if (fraseKey && !json)
     runners.push({
       name: "frase",
@@ -199,17 +201,17 @@ export async function generateTextWithFallback(args: {
       run: () => nichesssApi({ key: nichesssKey, system: args.system, prompt: args.prompt }),
     });
 
+  if (spinKey && !json)
+    runners.push({
+      name: "spin-rewriter",
+      run: () => spinRewriterApi({ key: spinKey, prompt: args.prompt }),
+    });
+
   if (blackboxKey)
     runners.push({
       name: "blackbox",
       run: () =>
         blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt, json }),
-    });
-
-  if (spinKey && !json)
-    runners.push({
-      name: "spin-rewriter",
-      run: () => spinRewriterApi({ key: spinKey, prompt: args.prompt }),
     });
 
 
