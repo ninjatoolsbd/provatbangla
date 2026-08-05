@@ -114,7 +114,7 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
   // They expect a prompt and return generated text.
   // Note: Nichesss API might have specific 'plan' or 'template' requirements,
   // but usually a direct POST to a generation endpoint works for content.
-  const res = await fetch("https://nichesss.com/api/v1/posts", {
+  const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
