@@ -53,7 +53,8 @@ export async function runGenerate(data: GenerateInputType) {
   const system = [
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক ও রিপোর্টার।",
     "সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে। কোনো ভূমিকা, উপসংহার বা মার্কডাউন (যেমন ```json) ব্যবহার করবে না।",
-    "বিশেষ সতর্কতা: টেক্সটের ভেতরে ডাবল কোট (\") ব্যবহারের বদলে সিঙ্গেল কোট (') ব্যবহার করো যাতে JSON ভেঙে না যায়।",
+    "অত্যন্ত গুরুত্বপূর্ণ: টেক্সটের ভেতর কোনো নতুন লাইন (Enter) ব্যবহার করবে না। প্রতিটি ফিল্ডের ভ্যালু অবশ্যই এক লাইনে হতে হবে। নতুন লাইনের প্রয়োজন হলে '\\n' (ব্যাকস্ল্যাশ এন) ব্যবহার করো।",
+    "টেক্সটের ভেতরে ডাবল কোট (\") ব্যবহারের বদলে সিঙ্গেল কোট (') ব্যবহার করো।",
   ].join(" ");
 
   const prompt = [
@@ -61,15 +62,14 @@ export async function runGenerate(data: GenerateInputType) {
     "নিয়ম:",
     "- ভাষা বাংলা, সাবলীল ও পেশাদার।",
     `- ${toneHint[data.tone]}।`,
-    "- content-এ কমপক্ষে ৭-৮টি অনুচ্ছেদ থাকতে হবে, প্রতিটি ফাঁকা লাইন দিয়ে আলাদা, কোনো মার্কডাউন নয়।",
     "- নিউজের দৈর্ঘ্য কমপক্ষে ৪০০-৫০০ শব্দ হতে হবে।",
-    "- ইন্টারনেট থেকে সংগৃহীত তথ্য (যদি থাকে) ব্যবহার করে বিস্তারিত প্রতিবেদন তৈরি করো।",
+    "- content-এ ৭-৮টি অনুচ্ছেদ থাকতে হবে। অনুচ্ছেদগুলো \\n\\n দিয়ে আলাদা করবে।",
     "- বাস্তব ব্যক্তির নামে মিথ্যা উদ্ধৃতি দিও না।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- image_prompt হবে ইংরেজিতে, খবরটির উপযোগী একটি অত্যন্ত বাস্তবধর্মী ও প্রাসঙ্গিক (Highly Relevant) ছবির বর্ণনা। ছবির বর্ণনায় নিউজের মূল বিষয়বস্তু, স্থান এবং পরিবেশ ফুটিয়ে তুলতে হবে যাতে সেটি ২০০% প্রাসঙ্গিক হয়।",
+    "- image_prompt হবে ইংরেজিতে, খবরটির উপযোগী একটি বাস্তবধর্মী ছবির বর্ণনা।",
     "",
-    "শুধু এই JSON কাঠামোয় উত্তর দাও:",
-    '{"title":"","kicker":"","excerpt":"","content":"","seo_title":"","seo_description":"","image_prompt":""}',
+    "JSON ফরম্যাটে উত্তর দাও (Strict JSON):",
+    '{"title":"শিরোনাম","kicker":"কিউয়ার্ড","excerpt":"সংক্ষিপ্ত সারসংক্ষেপ","content":"মূল খবর এখানে...","seo_title":"SEO শিরোনাম","seo_description":"SEO মেটা ডেসক্রিপশন","image_prompt":"English image prompt"}',
     "",
     `বিভাগ: ${data.category}`,
     `নিউজ প্রম্পট/টাইটেল: ${data.prompt}`,
@@ -82,19 +82,36 @@ export async function runGenerate(data: GenerateInputType) {
   const { text, provider } = await generateTextWithFallback({
     system,
     prompt,
-    json: true,
+    json: false, // Set to false to prevent the internal provider from trying to parse complex JSON
     preferred: data.provider as any,
+  });
+
+  // Manual cleaning of common AI formatting errors before parsing
+  let cleanedText = text.trim();
+  // Remove markdown code blocks if present
+  cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "");
+  // Find the first { and last } to isolate JSON
+  const firstBrace = cleanedText.indexOf("{");
+  const lastBrace = cleanedText.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1) {
+    cleanedText = cleanedText.slice(firstBrace, lastBrace + 1);
+  }
+
+  // Final sanitization: Remove literal control characters that break JSON.parse
+  cleanedText = cleanedText.replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
+    if (c === '\n') return '\\n';
+    if (c === '\r') return '\\r';
+    if (c === '\t') return '\\t';
+    return '';
   });
 
   let parsed: z.infer<typeof Article>;
   try {
-    const rawJson = JSON.parse(text);
+    const rawJson = JSON.parse(cleanedText);
     parsed = Article.parse(rawJson);
   } catch (e) {
-    console.error("JSON Parse Error:", e, "Raw Text:", text);
-    // If parsing fails, it might be due to markdown in the content or trailing commas
-    // We try to return a basic structure if possible, but for now, let's just show a better error
-    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
+    console.error("Manual JSON Parse Error:", e, "Cleaned Text:", cleanedText);
+    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি। আবার চেষ্টা করুন। (Error: ${e instanceof Error ? e.message : String(e)})`);
   }
 
   let imageUrl: string | null = null;

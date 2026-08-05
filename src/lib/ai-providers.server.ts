@@ -234,17 +234,21 @@ export async function generateTextWithFallback(args: {
           try {
             JSON.parse(processedText);
           } catch (e) {
-            // AI often fails to escape newlines inside JSON strings or leaves trailing commas
-            // Let's try to fix common JSON issues if the first attempt fails
+            // Handle unescaped control characters like newlines and tabs
             const fixedText = processedText
-              .replace(/\n/g, "\\n") // Escape literal newlines
+              .replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
+                if (c === '\n') return '\\n';
+                if (c === '\r') return '\\r';
+                if (c === '\t') return '\\t';
+                return '';
+              })
               .replace(/,\s*([}\]])/g, "$1"); // Remove trailing commas
             
             try {
               JSON.parse(fixedText);
               processedText = fixedText;
-            } catch {
-              // If it still fails, we'll let it throw in the next step or keep original to see error
+            } catch (innerE) {
+              console.error("Final JSON fix attempt failed:", innerE, "Fixed Text sample:", fixedText.slice(0, 100));
             }
           }
         }
