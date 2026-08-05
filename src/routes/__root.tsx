@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          lovable er default ai er kaj ki tahole amr site e
+          akn ai die news likhar page ta thik koro , etake workable banao. thik moto kaj korce kina check koro and dekho news er title dile news generate hocce kina,minimum 300 word jeno news likhe eta ensure korba. o internet e oi news search kore then sekhen thk likhbe, or referenc eurl deoar option dite paro extra, jodi se reference url pay to seta thekeo likhar chesta korbe Full news. and image ta obossoi relevant hote hbe news er sathe, title and descriton onujai news hobe
         </div>
         {children}
         <Scripts />
