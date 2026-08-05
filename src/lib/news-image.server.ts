@@ -70,7 +70,7 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
   const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
     const { fetchSettings } = await import("./cms");
-    const settings = await fetchSettings().catch(() => ({}));
+    const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
     const priorityStr = settings["image_gen_priority"] ?? "gemini,lovable";
     const priority = priorityStr.split(",").filter(Boolean);
 

@@ -73,7 +73,7 @@ function ImageGenSettingsPage() {
 
         <div className="space-y-3 pt-2">
           {priority.map((p, idx) => {
-            const info = providers[p] || { label: p, desc: "" };
+            const info = providers[p] ?? { label: p, desc: "" };
             return (
               <div
                 key={p}
