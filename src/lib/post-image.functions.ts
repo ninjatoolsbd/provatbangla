@@ -28,7 +28,7 @@ async function buildVisualPrompt(title: string, body: string) {
   try {
     const { text } = await generateTextWithFallback({ system, prompt });
     // Strip common filler if AI ignores instructions
-    return text.replace(/^(Here is a description of|This is a|A photorealistic|Visual prompt:)/i, "").trim();
+    return text.replace(/^(Here is a description of|Here's a description of|This is a|A photorealistic|Visual prompt:)/gi, "").trim();
   } catch (e) {
     console.error("Failed to generate visual prompt, using fallback logic:", e);
     return `A realistic news photograph in Bangladesh showing: ${title}`;
