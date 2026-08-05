@@ -134,8 +134,8 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
     throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
   }
   
-  const data = (await res.json()) as { text?: string; content?: string };
-  const text = data.text || data.content || "";
+  const data = (await res.json()) as { text?: string; content?: string; result?: string; response?: string };
+  const text = data.text || data.content || data.result || data.response || "";
   if (!text.trim()) throw new Error("empty response from Nichesss");
   return text;
 }
