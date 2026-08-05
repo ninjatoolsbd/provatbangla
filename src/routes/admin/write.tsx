@@ -122,7 +122,7 @@ function WritePage() {
           tone: genTone,
           withImage: genImage,
           autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "blackbox" | "frase" | "nichesss" | "spin-rewriter",
+          provider: genProvider as "auto" | "frase" | "nichesss",
         },
       }),
     onSuccess: (res) => {
@@ -337,8 +337,6 @@ function WritePage() {
                   <SelectItem value="auto">অটো (সব প্রোভাইডার)</SelectItem>
                   <SelectItem value="frase">Frase (SEO Optimized)</SelectItem>
                   <SelectItem value="nichesss">Nichesss</SelectItem>
-                  <SelectItem value="spin-rewriter">Spin Rewriter</SelectItem>
-                  <SelectItem value="blackbox">Blackbox AI</SelectItem>
                 </SelectContent>
               </Select>
             </div>
