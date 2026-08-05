@@ -107,7 +107,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${opts.key}`,
+      "x-api-key": opts.key,
     },
     body: JSON.stringify(body),
   });
