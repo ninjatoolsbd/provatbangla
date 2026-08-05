@@ -69,7 +69,8 @@ async function fromGemini(fullPrompt: string) {
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
-    const b64 = (await fromLovable(fullPrompt).catch(() => null)) ?? (await fromGemini(fullPrompt).catch(() => null));
+    // Priority changed: Use Gemini (user's key) first to preserve Lovable AI credits.
+    const b64 = (await fromGemini(fullPrompt).catch(() => null)) ?? (await fromLovable(fullPrompt).catch(() => null));
     if (!b64) return null;
 
     const bytes = base64ToBytes(b64);
