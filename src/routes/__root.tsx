@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        tumi lovable use kore image generatew korona, onno ai gulo use kore image gen koro
+        akn tmr genarate kor aimage gulo check koro, aktao mil nai news er sathe
         {children}
         <Scripts />
       </body>
