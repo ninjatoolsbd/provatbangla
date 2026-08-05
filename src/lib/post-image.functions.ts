@@ -48,7 +48,8 @@ export const regeneratePostImage = createServerFn({ method: "POST" })
 
     const { generateNewsImage } = await import("@/lib/news-image.server");
     const body = `${post.excerpt ?? ""} ${post.content ?? ""}`.replace(/<[^>]+>/g, " ");
-    const imageUrl = await generateNewsImage(buildPrompt(post.title, body));
+    const visualPrompt = await buildVisualPrompt(post.title, body);
+    const imageUrl = await generateNewsImage(visualPrompt);
     if (!imageUrl) throw new Error("ছবি বানানো যায়নি — AI ক্রেডিট/কোটা শেষ হতে পারে।");
 
     const { error: upErr } = await context.supabase
