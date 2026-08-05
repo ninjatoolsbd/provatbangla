@@ -138,11 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        Integrate Frase API for news content generation only.
-Base URL: https://api.frase.io/api/v1
-Auth: 241e46d0ec564de1be011aca80cc8521
-User enters a news topic → generate a full SEO-optimized news article using Frase → show the article in clean UI.
-Use Edge Function to keep API key secure. Add loading and error states.
+        now kothay kon api kivabe active ase amake janao
         {children}
         <Scripts />
       </body>
