@@ -20,7 +20,7 @@ function extractJsonBlock(raw: string) {
  * Google Gemini API Implementation
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${opts.key}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${opts.key}`;
   
   const body = {
     contents: [
@@ -93,13 +93,13 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
  * Blackbox AI API Implementation
  */
 async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://www.blackbox.ai/api/chat";
+  const url = "https://api.blackbox.ai/v1/chat/completions";
   
   const body = {
     messages: [
       { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "gpt-4o",
+    model: "blackboxai",
     max_tokens: 2048,
   };
 
