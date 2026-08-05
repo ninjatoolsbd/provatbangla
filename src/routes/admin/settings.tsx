@@ -40,7 +40,11 @@ const settingFields: { key: string; label: string; textarea?: boolean; section?:
   { key: "twitter_url", label: "এক্স (টুইটার) লিংক", section: "site" },
   
   // AI Keys Section
-  { key: "GEMINI_API_KEY", label: "Google Gemini API Keys (কমা দিয়ে একাধিক কী দিন)", textarea: true, section: "ai" },
+  { key: "GEMINI_API_KEY_1", label: "Google Gemini API Key 1", section: "ai" },
+  { key: "GEMINI_API_KEY_2", label: "Google Gemini API Key 2", section: "ai" },
+  { key: "GEMINI_API_KEY_3", label: "Google Gemini API Key 3", section: "ai" },
+  { key: "GEMINI_API_KEY_4", label: "Google Gemini API Key 4", section: "ai" },
+  { key: "GEMINI_API_KEY_5", label: "Google Gemini API Key 5", section: "ai" },
   { key: "OPENROUTER_API_KEY", label: "OpenRouter API Key", section: "ai" },
   { key: "GROQ_API_KEY", label: "Groq API Key", section: "ai" },
 ];
