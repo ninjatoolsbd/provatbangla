@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {"NOW BLACKBOX API USe korte chai, ami details dicic. blackbox die text generation and image genaration hbe maybe\n\n\n\nচ্যাটবট বানানো\n\nবাংলা কনটেন্ট অটো জেনারেট\n\nইমেজ জেনারেট করে সাইটে দেখানো\n\nকোড হেল্পার / AI ফিচার যোগ করা\n\napi key: sk-strn_ffNetn7OWt3cVZH3w\n\nchat: curl https://api.blackbox.ai/chat/completions \\\n\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n\n  -H \"Content-Type: application/json\" \\\n\n  -d '{\n\n    \"model\": \"blackboxai/openai/gpt-4\",\n\n    \"messages\": [{\"role\": \"user\", \"content\": \"বাংলায় একটা ছোট গল্প লেখো\"}]\n\n  }'\n\nimage: curl https://api.blackbox.ai/chat/completions \\\n\n  -H \"Authorization: Bearer YOUR_KEY\" \\\n\n  -H \"Content-Type: application/json\" \\\n\n  -d '{\n\n    \"model\": \"flux-pro\",\n\n    \"messages\": [{\"role\": \"user\", \"content\": \"a futuristic city at sunset\"}]\n\n  }'"}
+        blackbox epi lagbena?
         {children}
         <Scripts />
       </body>
