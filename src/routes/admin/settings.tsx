@@ -23,17 +23,22 @@ export const Route = createFileRoute("/admin/settings")({
   component: SettingsPage,
 });
 
-const settingFields: { key: string; label: string; textarea?: boolean }[] = [
-  { key: "site_name", label: "সাইটের নাম" },
-  { key: "tagline", label: "স্লোগান" },
-  { key: "description", label: "সাইট বর্ণনা (SEO)", textarea: true },
-  { key: "editor_name", label: "সম্পাদকের নাম" },
-  { key: "contact_email", label: "যোগাযোগ ইমেইল" },
-  { key: "contact_phone", label: "যোগাযোগ ফোন" },
-  { key: "address", label: "ঠিকানা", textarea: true },
-  { key: "facebook_url", label: "ফেসবুক লিংক" },
-  { key: "youtube_url", label: "ইউটিউব লিংক" },
-  { key: "twitter_url", label: "এক্স (টুইটার) লিংক" },
+const settingFields: { key: string; label: string; textarea?: boolean; section?: string }[] = [
+  { key: "site_name", label: "সাইটের নাম", section: "site" },
+  { key: "tagline", label: "স্লোগান", section: "site" },
+  { key: "description", label: "সাইট বর্ণনা (SEO)", textarea: true, section: "site" },
+  { key: "editor_name", label: "সম্পাদকের নাম", section: "site" },
+  { key: "contact_email", label: "যোগাযোগ ইমেইল", section: "site" },
+  { key: "contact_phone", label: "যোগাযোগ ফোন", section: "site" },
+  { key: "address", label: "ঠিকানা", textarea: true, section: "site" },
+  { key: "facebook_url", label: "ফেসবুক লিংক", section: "site" },
+  { key: "youtube_url", label: "ইউটিউব লিংক", section: "site" },
+  { key: "twitter_url", label: "এক্স (টুইটার) লিংক", section: "site" },
+  
+  // AI Keys Section
+  { key: "GEMINI_API_KEY", label: "Google Gemini API Keys (কমা দিয়ে একাধিক কী দিন)", textarea: true, section: "ai" },
+  { key: "OPENROUTER_API_KEY", label: "OpenRouter API Key", section: "ai" },
+  { key: "GROQ_API_KEY", label: "Groq API Key", section: "ai" },
 ];
 
 function SettingsPage() {
@@ -69,29 +74,63 @@ function SettingsPage() {
     <div className="max-w-2xl space-y-4">
       <h1 className="font-display text-[22px] font-bold text-primary">সেটিংস</h1>
 
-      <div className="space-y-3 border border-border bg-background p-4">
-        <h2 className="font-display text-base font-bold">সাইট তথ্য</h2>
-        {settingFields.map((f) => (
-          <label key={f.key} className="block">
-            <span className="mb-1 block text-xs text-muted-foreground">{f.label}</span>
-            {f.textarea ? (
-              <textarea
-                rows={3}
-                className={input}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            ) : (
-              <input
-                className={input}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            )}
-          </label>
-        ))}
-        <Button onClick={() => void save()} disabled={saving}>
-          {saving ? "সেভ হচ্ছে…" : "সেভ করুন"}
+      <div className="space-y-6">
+        {/* সাইট তথ্য */}
+        <div className="space-y-3 border border-border bg-background p-4">
+          <h2 className="font-display text-base font-bold">সাইট তথ্য</h2>
+          {settingFields.filter(f => f.section === "site").map((f) => (
+            <label key={f.key} className="block">
+              <span className="mb-1 block text-xs text-muted-foreground">{f.label}</span>
+              {f.textarea ? (
+                <textarea
+                  rows={3}
+                  className={input}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                />
+              ) : (
+                <input
+                  className={input}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                />
+              )}
+            </label>
+          ))}
+        </div>
+
+        {/* AI API Keys */}
+        <div className="space-y-3 border border-border bg-background p-4">
+          <h2 className="font-display text-base font-bold text-primary">AI API কনফিগারেশন</h2>
+          <p className="text-[11px] text-muted-foreground italic">
+            দ্রষ্টব্য: এই কীগুলি সুরক্ষিতভাবে ডেটাবেসে সংরক্ষিত হবে। Gemini-র জন্য একাধিক কী কমা (,) দিয়ে আলাদা করে দিতে পারেন।
+          </p>
+          {settingFields.filter(f => f.section === "ai").map((f) => (
+            <label key={f.key} className="block">
+              <span className="mb-1 block text-xs text-muted-foreground font-bold">{f.label}</span>
+              {f.textarea ? (
+                <textarea
+                  rows={2}
+                  className={input}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                  placeholder={`${f.label} এখানে দিন...`}
+                />
+              ) : (
+                <input
+                  type="password"
+                  className={input}
+                  value={form[f.key] ?? ""}
+                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                  placeholder={`${f.label} এখানে দিন...`}
+                />
+              )}
+            </label>
+          ))}
+        </div>
+
+        <Button className="w-full sm:w-auto" onClick={() => void save()} disabled={saving}>
+          {saving ? "সেভ হচ্ছে…" : "সব সেটিংস সেভ করুন"}
         </Button>
       </div>
 
