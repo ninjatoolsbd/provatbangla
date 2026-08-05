@@ -30,7 +30,7 @@ function ImageGenSettingsPage() {
   });
 
   // Default priority: gemini, lovable
-  const priorityStr = cfg["image_gen_priority"] ?? "gemini,lovable";
+  const priorityStr = cfg["image_gen_priority"] ?? "blackbox,gemini,lovable";
   const priority = priorityStr.split(",").filter(Boolean);
 
   const move = (index: number, direction: "up" | "down") => {
@@ -46,6 +46,10 @@ function ImageGenSettingsPage() {
   };
 
   const providers: Record<string, { label: string; desc: string }> = {
+    blackbox: {
+      label: "Blackbox AI",
+      desc: "Blackbox Flux-Pro ব্যবহার করে হাই-কোয়ালিটি ইমেজ জেনারেট করে।",
+    },
     gemini: {
       label: "Google Gemini",
       desc: "আপনার নিজস্ব GEMINI_API_KEY ব্যবহার করে (সাশ্রয়ী)।",

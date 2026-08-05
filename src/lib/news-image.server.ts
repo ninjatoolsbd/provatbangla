@@ -65,19 +65,50 @@ async function fromGemini(fullPrompt: string) {
   return null;
 }
 
+async function fromBlackbox(fullPrompt: string) {
+  const key = process.env["BLACKBOX_API_KEY"];
+  if (!key) return null;
+  const res = await fetch("https://api.blackbox.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      model: "flux-pro",
+      messages: [{ role: "user", content: fullPrompt }],
+    }),
+  });
+  if (!res.ok) return null;
+  const data = (await res.json()) as {
+    choices?: { message?: { content?: string } }[];
+  };
+  // Blackbox flux-pro usually returns a URL in the content or choices
+  // Based on the curl example, it returns a chat completion. 
+  // If it's flux-pro, the result is usually the URL in the text content.
+  const text = data.choices?.[0]?.message?.content ?? "";
+  const urlMatch = text.match(/https?:\/\/[^\s)]+/);
+  if (urlMatch) return urlMatch[0];
+  
+  // Try to pick base64 or other formats if present in specific image fields
+  return pickImageData(data as any);
+}
+
 /** Generates a news illustration based on user-defined priority. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "gemini,lovable";
+    const priorityStr = settings["image_gen_priority"] ?? "blackbox,gemini,lovable";
     const priority = priorityStr.split(",").filter(Boolean);
 
     let b64: string | null = null;
 
     for (const provider of priority) {
-      if (provider === "gemini") {
+      if (provider === "blackbox") {
+        b64 = await fromBlackbox(fullPrompt).catch(() => null);
+      } else if (provider === "gemini") {
         b64 = await fromGemini(fullPrompt).catch(() => null);
       } else if (provider === "lovable") {
         b64 = await fromLovable(fullPrompt).catch(() => null);
@@ -87,6 +118,13 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
 
     if (!b64) return null;
 
+
+    if (!b64) return null;
+
+    // If it's already a full URL (from Blackbox), just return it
+    if (b64.startsWith("http") && !b64.includes("data:")) {
+      return b64;
+    }
 
     const bytes = base64ToBytes(b64);
     const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
