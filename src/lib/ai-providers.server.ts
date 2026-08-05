@@ -87,7 +87,7 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string; 
       Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      model: "blackboxai/openai/gpt-4",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: opts.system },
         { role: "user", content: opts.prompt },
