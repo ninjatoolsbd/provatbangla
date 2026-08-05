@@ -106,6 +106,9 @@ export async function generateTextWithFallback(args: {
   json?: boolean;
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
+  const spinKey = process.env["SPIN_REWRITER_API_KEY"];
+  const preferred = args.preferred || (spinKey && !args.json ? "spin-rewriter" : undefined);
+
 
   const json = args.json ?? false;
   const lovableKey = process.env["LOVABLE_API_KEY"];
