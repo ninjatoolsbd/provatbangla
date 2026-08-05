@@ -168,7 +168,7 @@ function SettingsPage() {
                   <span className="text-xs text-muted-foreground font-bold">{f.label}</span>
                   <button
                     onClick={() => void runTest(f.key, provider, form[f.key] ?? "")}
-                    disabled={testing[f.key] || !form[f.key]}
+                    disabled={!!testing[f.key] || !form[f.key]}
                     className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary hover:opacity-80 disabled:opacity-30"
                   >
                     {testing[f.key] ? (
