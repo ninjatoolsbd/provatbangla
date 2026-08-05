@@ -329,13 +329,12 @@ function WritePage() {
             </div>
             <div className="space-y-2">
               <Label>AI প্রোভাইডার</Label>
-              <Select value={genProvider} onValueChange={setGenProvider}>
+              <Select value={genProvider} onValueChange={(v) => setGenProvider(v as any)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="auto">অটো (Blackbox)</SelectItem>
-                  <SelectItem value="blackbox">Blackbox AI (New)</SelectItem>
+                  <SelectItem value="auto">অটোমেটিক (নতুন টুলস পেন্ডিং)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
