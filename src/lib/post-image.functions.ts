@@ -3,21 +3,35 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/my-supabase/auth-middleware";
 
-/** Builds a prompt that describes the actual subject of the article. */
-function buildPrompt(title: string, body: string) {
-  return [
-    "Create a photorealistic press photograph for a Bangladeshi newspaper article.",
-    "The photo must visually depict the real subject of this news story.",
+/** Builds a detailed visual description in English for the image generator. */
+async function buildVisualPrompt(title: string, body: string) {
+  const { generateTextWithFallback } = await import("@/lib/ai-providers.server");
+  
+  const system = "You are a professional photo editor for a Bangladeshi news agency. Your task is to describe a specific, realistic, and highly relevant news photograph in English based on a Bengali article. The description should be for an image generator (like DALL-E or Imagen).";
+  
+  const prompt = [
+    "Analyze this news article and describe one single, powerful, photorealistic news image that perfectly illustrates the main event.",
     "",
-    `Headline (Bangla): ${title}`,
-    `Story details (Bangla): ${body.slice(0, 700)}`,
+    `Headline: ${title}`,
+    `Body Snippet: ${body.slice(0, 1000)}`,
     "",
-    "Requirements: real-life documentary news photography in Bangladesh, authentic local people,",
-    "clothing, architecture and environment matching the story; natural light; 35mm editorial look;",
-    "sharp focus; wide 16:9 framing.",
-    "Absolutely no readable text anywhere: no signboards, banners, posters, captions, logos or watermarks.",
-    "No collage, no illustration, no text overlay.",
+    "Instructions:",
+    "1. Focus on the core subject: if it's a protest, describe protesters; if it's an accident, describe the scene; if it's a politician, describe them in a professional setting.",
+    "2. Mention Bangladeshi context: authentic faces, clothing (saree, lungi, panjabi), environment (dhaka streets, rural villages, local architecture).",
+    "3. Use photographic terms: 'editorial photography', 'wide angle', 'documentary style', 'natural lighting'.",
+    "4. NO TEXT: Explicitly state that there should be no text, watermarks, or logos.",
+    "5. Be descriptive but concise (3-4 sentences).",
+    "",
+    "Output ONLY the English description. No preamble.",
   ].join("\n");
+
+  try {
+    const { text } = await generateTextWithFallback({ system, prompt });
+    return text;
+  } catch (e) {
+    console.error("Failed to generate visual prompt, using fallback logic:", e);
+    return `A realistic news photograph in Bangladesh showing: ${title}`;
+  }
 }
 
 /** Regenerates a topic-relevant AI image for one post and saves it. */
