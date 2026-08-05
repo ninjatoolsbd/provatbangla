@@ -32,9 +32,7 @@ async function fromLovable(fullPrompt: string) {
     headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "google/imagen-3",
-      messages: [{ role: "user", content: fullPrompt }],
-      modalities: ["image", "text"],
-      stream: false,
+      prompt: fullPrompt,
     }),
   });
   if (!res.ok) return null;
