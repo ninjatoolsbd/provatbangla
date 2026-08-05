@@ -1,46 +1,14 @@
 /**
  * Multi-provider text generation with automatic fallback.
- * Order: Spin Rewriter (if set) → Lovable AI → Groq → Cerebras → Gemini (direct).
+ * Order: Frase → Nichesss
  */
 
-export type ProviderName = "spin-rewriter" | "nichesss" | "frase";
+export type ProviderName = "nichesss" | "frase";
 
 export type TextResult = { text: string; provider: ProviderName };
 
-async function spinRewriterApi(opts: { key: string; prompt: string }) {
-  // Spin Rewriter API v12
-  // We use the 'text_with_spintax' or 'unique_variation' action.
-  // For news rewriting, we usually want a unique variation.
-  const params = new URLSearchParams({
-    email: "bbh2270@gmail.com", // From context history
-    api_key: opts.key,
-    action: "unique_variation",
-    text: opts.prompt,
-    protected_terms: "",
-    auto_protected_terms: "true",
-    nested_spintax: "true",
-    auto_sentences: "true",
-    auto_paragraphs: "true",
-    auto_new_lines: "false",
-    reorder_paragraphs: "false",
-    use_only_synonyms: "false",
-    confidence_level: "medium",
-    spintax_format: "{|}",
-  });
+// Spin Rewriter removed as requested.
 
-  const res = await fetch("https://www.spinrewriter.com/action/api", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
-  });
-
-  if (!res.ok) throw new Error(`${res.status} Spin Rewriter error`);
-  const data = (await res.json()) as { status: string; response: string };
-  if (data.status !== "OK") throw new Error(data.response || "Spin Rewriter API failed");
-  return data.response;
-}
-
-function extractJsonBlock(raw: string) {
   const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
   const body = fenced?.[1] ?? raw;
   const start = body.indexOf("{");
@@ -146,25 +114,20 @@ export async function generateTextWithFallback(args: {
   json?: boolean;
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
-  const spinKey = process.env["SPIN_REWRITER_API_KEY"];
   const nichesssKey = process.env["NICHESSS_API_KEY"];
   const fraseKey = process.env["FRASE_API_KEY"];
-  
 
   // Frase and Nichesss are for news content generation
-  // We allow JSON mode for these providers if they are being used for structured generation
   const preferred =
     args.preferred ||
     (fraseKey ? "frase" :
-     nichesssKey ? "nichesss" :
-     spinKey ? "spin-rewriter" : undefined);
+     nichesssKey ? "nichesss" : undefined);
 
   const json = args.json ?? false;
 
-
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
-  // Order: Frase -> Nichesss -> Spin Rewriter
+  // Order: Frase -> Nichesss
   if (fraseKey)
     runners.push({
       name: "frase",
@@ -176,13 +139,6 @@ export async function generateTextWithFallback(args: {
       name: "nichesss",
       run: () => nichesssApi({ key: nichesssKey, system: args.system, prompt: args.prompt }),
     });
-
-  if (spinKey)
-    runners.push({
-      name: "spin-rewriter",
-      run: () => spinRewriterApi({ key: spinKey, prompt: args.prompt }),
-    });
-
 
   if (preferred) {
     runners.sort((a, b) => (a.name === preferred ? -1 : b.name === preferred ? 1 : 0));

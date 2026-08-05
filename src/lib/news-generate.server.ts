@@ -11,7 +11,7 @@ export const GenerateInput = z.object({
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   withImage: z.boolean().default(true),
   autoPublish: z.boolean().default(true),
-  provider: z.enum(["auto", "blackbox", "frase", "nichesss", "spin-rewriter"]).default("auto"),
+  provider: z.enum(["auto", "frase", "nichesss"]).default("auto"),
 });
 
 export type GenerateInputType = z.infer<typeof GenerateInput>;
