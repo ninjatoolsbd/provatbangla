@@ -47,7 +47,9 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.frase.io/api/v1/ai/generate";
+  // Official Frase API documentation suggests /ai/content or /content/generate
+  // Based on the 404, we are testing the endpoint provided in their standard documentation.
+  const url = "https://api.frase.io/api/v1/ai/content";
   const headers = {
     "Content-Type": "application/json",
     "x-api-key": opts.key,
@@ -73,6 +75,9 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   console.log(`[Frase Response] Body: ${responseBody}`);
 
   if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error(`Frase Endpoint Not Found (404). Please verify if your account uses 'api.frase.io' or 'next.frase.io'.`);
+    }
     throw new Error(`${res.status} Frase error: ${responseBody}`);
   }
 
@@ -81,16 +86,15 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
+  // Official Nichesss API documentation uses /v1/magic
   const url = "https://nichesss.com/api/v1/magic";
   const headers = {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${opts.key}`,
   };
+  // Nichesss Magic often expects a 'settings' or 'plan_id' for content generation
   const body = {
-    messages: [
-      { role: "system", content: opts.system },
-      { role: "user", content: opts.prompt }
-    ],
+    prompt: `${opts.system}\n\n${opts.prompt}`,
     max_tokens: 1500
   };
 
@@ -109,6 +113,9 @@ async function nichesssApi(opts: { key: string; system: string; prompt: string }
   console.log(`[Nichesss Response] Body: ${responseBody}`);
 
   if (!res.ok) {
+    if (res.status === 403) {
+      throw new Error(`Nichesss Forbidden (403). Your API key might be valid but lacks "Magic" generation permissions or credits.`);
+    }
     throw new Error(`${res.status} Nichesss error: ${responseBody}`);
   }
   
