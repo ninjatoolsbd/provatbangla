@@ -100,8 +100,8 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
       { role: "system", content: opts.system },
       { role: "user", content: opts.prompt }
     ],
-    // Based on test results, this model identifier works correctly with the v1 API
-    model: "blackboxai/meta/llama-3.1-8b",
+    // Trying a more stable model identifier for Blackbox API
+    model: "blackboxai",
   };
 
   const res = await fetch(url, {
