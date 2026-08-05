@@ -47,8 +47,8 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  // Try the most stable Frase endpoint based on recent API updates
-  const res = await fetch("https://api.frase.io/api/v1/ai/content", {
+  // Try Frase standard AI generation endpoint
+  const res = await fetch("https://api.frase.io/api/v1/ai/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -63,15 +63,15 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 
   if (!res.ok) {
     const errorText = await res.text();
-    // Fallback to legacy endpoint if available
-    const fallback = await fetch("https://api.frase.io/api/v1/generate", {
+    // 404 means the path is wrong. Trying the 'magic' path if Frase uses it
+    const res2 = await fetch("https://api.frase.io/api/v1/magic", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${opts.key}` },
+      headers: { "Content-Type": "application/json", "x-api-key": opts.key },
       body: JSON.stringify({ prompt: `${opts.system}\n\n${opts.prompt}` }),
     });
-    if (fallback.ok) {
-      const d = await fallback.json() as any;
-      return d.text || d.result || "";
+    if (res2.ok) {
+      const data = await res2.json() as any;
+      return data.text || data.result || "";
     }
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
@@ -81,33 +81,34 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
-  // Nichesss often requires "Api-Key" header (not Bearer)
+  // Nichesss often uses Bearer token with a specific model field
   const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Api-Key": opts.key,
+      "Authorization": `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      prompt: `${opts.system}\n\n${opts.prompt}`,
+      messages: [{ role: "user", content: `${opts.system}\n\n${opts.prompt}` }],
       max_tokens: 1500
     }),
   });
 
   if (!res.ok) {
-    // Try one more structure for Nichesss
-    const alt = await fetch("https://nichesss.com/api/v1/magic", {
+    const errorText = await res.text();
+    // Try Api-Key header one last time
+    const res2 = await fetch("https://nichesss.com/api/v1/magic", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${opts.key}` },
+      headers: { "Content-Type": "application/json", "Api-Key": opts.key },
       body: JSON.stringify({
-        messages: [{ role: "user", content: `${opts.system}\n\n${opts.prompt}` }]
+        prompt: `${opts.system}\n\n${opts.prompt}`,
+        max_tokens: 1500
       }),
     });
-    if (alt.ok) {
-      const d = await alt.json() as any;
-      return d.text || d.result || "";
+    if (res2.ok) {
+      const data = await res2.json() as any;
+      return data.text || data.result || "";
     }
-    const errorText = await res.text();
     throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
   }
   
