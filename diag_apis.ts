@@ -1,4 +1,10 @@
 
+import dotenv from 'dotenv';
+dotenv.config();
+
+// Mock import.meta.env for the diagnostic script
+(globalThis as any).import = { meta: { env: process.env } };
+
 import { generateTextWithFallback } from "./src/lib/ai-providers.server";
 import { generateNewsImage } from "./src/lib/news-image.server";
 
@@ -7,6 +13,10 @@ async function diag() {
   
   const providers = ["lovable", "groq", "cerebras", "gemini"];
   for (const p of providers) {
+    if (!process.env[`${p.toUpperCase()}_API_KEY`] && p !== 'lovable') {
+        console.log(`\nTesting Text Provider: ${p} - SKIPPED (No API Key)`);
+        continue;
+    }
     console.log(`\nTesting Text Provider: ${p}`);
     try {
       const res = await generateTextWithFallback({
@@ -20,9 +30,9 @@ async function diag() {
     }
   }
 
-  console.log("\nTesting Image Generation (Lovable)...");
+  console.log("\nTesting Image Generation...");
   try {
-    const img = await generateNewsImage("A simple red circle on white background");
+    const img = await generateNewsImage("A high resolution photograph of a sunset over a river in Bangladesh");
     if (img) {
       console.log(`✅ Image success: ${img}`);
     } else {
