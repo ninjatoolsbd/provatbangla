@@ -132,10 +132,10 @@ export async function generateTextWithFallback(args: {
 }): Promise<TextResult> {
   // Load keys from both Env and DB Settings
   const { fetchSettings } = await import("./cms");
-  const settings = await fetchSettings().catch(() => ({}));
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
 
-  const geminiKeysRaw = settings["GEMINI_API_KEY"] || process.env["GEMINI_API_KEY"] || "";
-  const geminiKeys = geminiKeysRaw.split(",").map(k => k.trim()).filter(Boolean);
+  const geminiKeysRaw = (settings["GEMINI_API_KEY"] || process.env["GEMINI_API_KEY"] || "") as string;
+  const geminiKeys = geminiKeysRaw.split(",").map((k: string) => k.trim()).filter(Boolean);
   
   const openrouterKey = settings["OPENROUTER_API_KEY"] || process.env["OPENROUTER_API_KEY"];
   const groqKey = settings["GROQ_API_KEY"] || process.env["GROQ_API_KEY"];
