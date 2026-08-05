@@ -1,9 +1,9 @@
 /**
  * Multi-provider text generation with automatic fallback.
- * Preferred: Google Gemini (Primary) or OpenRouter (Fallback).
+ * Preferred: Google Gemini (Primary), OpenRouter, or Blackbox AI.
  */
 
-export type ProviderName = "gemini" | "openrouter";
+export type ProviderName = "gemini" | "openrouter" | "blackbox";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -59,7 +59,7 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
   const url = "https://openrouter.ai/api/v1/chat/completions";
   
   const body = {
-    model: "meta-llama/llama-3.1-8b-instruct:free", // Using a free model as default fallback
+    model: "meta-llama/llama-3.1-8b-instruct:free",
     messages: [
       { role: "system", content: opts.system },
       { role: "user", content: opts.prompt }
@@ -72,7 +72,7 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${opts.key}`,
-      "HTTP-Referer": "https://lovable.dev", // OpenRouter requirement
+      "HTTP-Referer": "https://lovable.dev",
       "X-Title": "ProbhatBangla News Editor",
     },
     body: JSON.stringify(body),
@@ -89,6 +89,41 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
   return text;
 }
 
+/**
+ * Blackbox AI API Implementation
+ */
+async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
+  const url = "https://api.blackbox.ai/api/chat";
+  
+  const body = {
+    messages: [
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt }
+    ],
+    model: "gpt-4o", // Defaulting to gpt-4o as standard for news generation
+    max_tokens: 2000
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${opts.key}`
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Blackbox Error: ${res.status} ${errorText.slice(0, 200)}`);
+  }
+
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content || data.response || "";
+  if (!text) throw new Error("Blackbox returned empty response");
+  return text;
+}
+
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
@@ -97,11 +132,11 @@ export async function generateTextWithFallback(args: {
 }): Promise<TextResult> {
   const geminiKey = process.env["GEMINI_API_KEY"];
   const openrouterKey = process.env["OPENROUTER_API_KEY"];
+  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
   const json = args.json ?? false;
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
-  // Add Gemini if key exists
   if (geminiKey) {
     runners.push({
       name: "gemini",
@@ -109,7 +144,6 @@ export async function generateTextWithFallback(args: {
     });
   }
 
-  // Add OpenRouter if key exists
   if (openrouterKey) {
     runners.push({
       name: "openrouter",
@@ -117,12 +151,18 @@ export async function generateTextWithFallback(args: {
     });
   }
 
-  // Sorting based on preference (Primary: Gemini)
+  if (blackboxKey) {
+    runners.push({
+      name: "blackbox",
+      run: () => blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt }),
+    });
+  }
+
   const preferred = args.preferred || "gemini";
   runners.sort((a, b) => (a.name === preferred ? -1 : b.name === preferred ? 1 : 0));
 
   if (runners.length === 0) {
-    throw new Error("কোনো AI প্রোভাইডার (Gemini/OpenRouter) কনফিগার করা নেই। অনুগ্রহ করে API কী চেক করুন।");
+    throw new Error("কোনো AI প্রোভাইডার কনফিগার করা নেই।");
   }
 
   const errors: string[] = [];
@@ -131,7 +171,6 @@ export async function generateTextWithFallback(args: {
       const text = await runner.run();
       const processedText = json ? extractJsonBlock(text) : text.trim();
       
-      // Basic validation for JSON if requested
       if (json && !processedText.startsWith('{')) {
         throw new Error(`${runner.name} returned invalid JSON format`);
       }
