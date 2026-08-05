@@ -87,9 +87,13 @@ export async function runGenerate(data: GenerateInputType) {
 
   let parsed: z.infer<typeof Article>;
   try {
-    parsed = Article.parse(JSON.parse(text));
-  } catch {
-    throw new Error("AI সঠিক ফরম্যাটে উত্তর দেয়নি, আবার চেষ্টা করুন।");
+    const rawJson = JSON.parse(text);
+    parsed = Article.parse(rawJson);
+  } catch (e) {
+    console.error("JSON Parse Error:", e, "Raw Text:", text);
+    // If parsing fails, it might be due to markdown in the content or trailing commas
+    // We try to return a basic structure if possible, but for now, let's just show a better error
+    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
   }
 
   let imageUrl: string | null = null;

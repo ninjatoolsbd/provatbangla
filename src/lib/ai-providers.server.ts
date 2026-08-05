@@ -8,12 +8,17 @@ export type ProviderName = "gemini" | "openrouter" | "groq";
 export type TextResult = { text: string; provider: ProviderName };
 
 function extractJsonBlock(raw: string) {
-  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const body = fenced?.[1] ?? raw;
-  const start = body.indexOf("{");
-  const end = body.lastIndexOf("}");
-  if (start === -1 || end === -1) return body.trim();
-  return body.slice(start, end + 1).trim();
+  // Try to find anything between { and } including nested braces
+  const start = raw.indexOf("{");
+  const end = raw.lastIndexOf("}");
+  if (start === -1 || end === -1) return raw.trim();
+  
+  let jsonCandidate = raw.slice(start, end + 1).trim();
+  
+  // Clean up potential markdown code fences if they were captured inside
+  jsonCandidate = jsonCandidate.replace(/^```json\s*/i, "").replace(/```$/i, "");
+  
+  return jsonCandidate;
 }
 
 /**
