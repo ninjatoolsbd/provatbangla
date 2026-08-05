@@ -96,11 +96,11 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
   const url = "https://api.blackbox.ai/api/chat";
   
   const body = {
-    model: "gpt-4o",
     messages: [
       { role: "system", content: opts.system },
       { role: "user", content: opts.prompt }
     ],
+    model: "gpt-4o",
     max_tokens: 2048,
   };
 
