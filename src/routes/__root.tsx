@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          lovable er ai kothao us ehoccena right
+          lovable er default ai er kaj ki tahole amr site e
         </div>
         {children}
         <Scripts />
