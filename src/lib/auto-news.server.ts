@@ -56,7 +56,53 @@ type Rewritten = {
   category: string;
 };
 
-async function rewrite(article: { title: string; body: string }, fallbackCategory: string) {
+async function rewrite(
+  article: { title: string; body: string },
+  fallbackCategory: string,
+  useSpinRewriter = false,
+) {
+  if (useSpinRewriter) {
+    try {
+      // Direct call to spin-rewriter (manual step since spin-rewriter doesn't support JSON naturally)
+      // For automation, we often want the full AI context, but user specifically asked for Spin Rewriter.
+      // We'll use the fallback chain but preferred spin-rewriter.
+      const spinRes = await generateTextWithFallback({
+        system: "Rewrite this news article in Bengali professionally.",
+        prompt: `নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বাংলায় পুনর্লিখন করো:\n\n${article.body.slice(0, 4000)}`,
+        preferred: "spin-rewriter",
+      });
+      
+      // Since Spin Rewriter just returns text, we still need an LLM to structure it into our JSON format
+      const structurePrompt = `
+        নিচের রিরাইট করা বাংলা টেক্সট থেকে টাইটেল, কিকার, এক্সার্প্ট এবং এসইও ডেটা বের করে নিচের JSON ফরম্যাটে দাও। 
+        ক্যাটাগরি হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, onnanno
+        
+        টেক্সট: ${spinRes.text}
+        
+        JSON ফরম্যাট: {"title":"","kicker":"","excerpt":"","content":"","seo_title":"","seo_description":"","category":""}
+      `;
+      
+      const { text } = await generateTextWithFallback({ 
+        system: "You are a professional news editor. Output ONLY valid JSON.", 
+        prompt: structurePrompt, 
+        json: true 
+      });
+      
+      const parsed = JSON.parse(text) as Partial<Rewritten>;
+      return {
+        title: parsed.title || article.title,
+        kicker: parsed.kicker ?? "",
+        excerpt: parsed.excerpt ?? parsed.content?.slice(0, 160) ?? "",
+        content: parsed.content || spinRes.text,
+        seo_title: parsed.seo_title ?? "",
+        seo_description: parsed.seo_description ?? "",
+        category: parsed.category || fallbackCategory,
+      } satisfies Rewritten;
+    } catch (e) {
+      console.error("Spin Rewriter failed, falling back to LLM rewrite", e);
+    }
+  }
+
   const system =
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে, কোনো ব্যাখ্যা ছাড়া।";
   const prompt = [
@@ -114,6 +160,7 @@ export async function runAutoSync(
   const withCredit = cfg["auto_credit"] !== "false";
   const aiImage = cfg["auto_image_ai"] !== "false";
   const logoUrl = cfg["watermark_logo_url"] || undefined;
+  const useSpin = cfg["auto_spin_rewriter"] === "true";
 
   for (const source of (sources ?? []) as {
     id: string;
@@ -157,7 +204,11 @@ export async function runAutoSync(
         const body = article.body;
         if (!title || body.length < 120) throw new Error("যথেষ্ট কনটেন্ট পাওয়া যায়নি");
 
-        const news = await rewrite({ title, body }, source.category === "auto" ? "bangladesh" : source.category);
+        const news = await rewrite(
+          { title, body },
+          source.category === "auto" ? "bangladesh" : source.category,
+          useSpin
+        );
 
         const sourceImage = article.image ?? item.image ?? null;
         const imageUrl = sourceImage
