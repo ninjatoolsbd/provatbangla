@@ -164,15 +164,15 @@ function SettingsPage() {
             const result = testResults[fieldKey];
             
             return (
-              <div key={f.key} className="space-y-2">
+              <div key={fieldKey} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground font-bold">{f.label}</span>
                   <button
-                    onClick={() => void runTest(f.key, provider, form[f.key] ?? "")}
-                    disabled={!!testing[f.key] || !form[f.key]}
+                    onClick={() => void runTest(fieldKey, provider, form[fieldKey] ?? "")}
+                    disabled={!!testing[fieldKey] || !form[fieldKey]}
                     className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary hover:opacity-80 disabled:opacity-30"
                   >
-                    {testing[f.key] ? (
+                    {testing[fieldKey] ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <Play className="h-2.5 w-2.5 fill-current" />
@@ -184,16 +184,16 @@ function SettingsPage() {
                   <textarea
                     rows={2}
                     className={input}
-                    value={form[f.key] ?? ""}
-                    onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                    value={form[fieldKey] ?? ""}
+                    onChange={(e) => setForm({ ...form, [fieldKey]: e.target.value })}
                     placeholder={`${f.label} এখানে দিন...`}
                   />
                 ) : (
                   <input
                     type="password"
                     className={input}
-                    value={form[f.key] ?? ""}
-                    onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                    value={form[fieldKey] ?? ""}
+                    onChange={(e) => setForm({ ...form, [fieldKey]: e.target.value })}
                     placeholder={`${f.label} এখানে দিন...`}
                   />
                 )}
