@@ -20,36 +20,59 @@ function extractJsonBlock(raw: string) {
  * Google Gemini API Implementation
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
-  const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${opts.key}`;
+  // We'll try models in order: gemini-1.5-flash, gemini-1.5-pro, then gemini-pro
+  const models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+  const versions = ["v1beta", "v1"];
   
-  const body = {
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: `${opts.system}\n\n${opts.prompt}` }]
+  let lastError: Error | null = null;
+
+  for (const model of models) {
+    for (const version of versions) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/${version}/models/${model}:generateContent?key=${opts.key}`;
+        
+        const body = {
+          contents: [{
+            role: "user",
+            parts: [{ text: `${opts.system}\n\n${opts.prompt}` }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 2048,
+          }
+        };
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        if (res.status === 404) {
+          // If 404, the model or version might be wrong, try next
+          continue;
+        }
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Gemini Error: ${res.status} ${errorText.slice(0, 150)}`);
+        }
+
+        const data = await res.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (!text) throw new Error("Gemini returned empty response");
+        return text;
+      } catch (e) {
+        lastError = e instanceof Error ? e : new Error(String(e));
+        // If it's a 404 we already 'continue', but for other errors (like 401, 429) we might want to propagate or log
+        if (!String(e).includes("404")) {
+          throw e; 
+        }
       }
-    ],
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 2048,
     }
-  };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Gemini Error: ${res.status} ${errorText.slice(0, 100)}`);
   }
 
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  if (!text) throw new Error("Gemini returned empty response");
-  return text;
+  throw lastError || new Error("Gemini model not found (Tried flash, pro, and legacy)");
 }
 
 /**
