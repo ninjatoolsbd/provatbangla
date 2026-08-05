@@ -59,7 +59,7 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
   const url = "https://openrouter.ai/api/v1/chat/completions";
   
   const body = {
-    model: "meta-llama/llama-3.1-8b-instruct:free",
+    model: "meta-llama/llama-3.3-70b-instruct",
     messages: [
       { role: "system", content: opts.system },
       { role: "user", content: opts.prompt }
