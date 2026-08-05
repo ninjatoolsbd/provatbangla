@@ -117,30 +117,6 @@ async function fromIdeogram(prompt: string) {
   return data.data?.[0]?.url || null;
 }
 
-async function fromBlackbox(fullPrompt: string) {
-  const key = process.env["BLACKBOX_API_KEY"];
-  if (!key) return null;
-  const res = await fetch("https://api.blackbox.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      model: "flux-pro",
-      messages: [{ role: "user", content: fullPrompt }],
-    }),
-  });
-  if (!res.ok) return null;
-  const data = (await res.json()) as {
-    choices?: { message?: { content?: string } }[];
-  };
-  const text = data.choices?.[0]?.message?.content ?? "";
-  const urlMatch = text.match(/https?:\/\/[^\s)]+/);
-  if (urlMatch) return urlMatch[0];
-  
-  return pickImageData(data as any);
-}
 
 /** Generates a news illustration based on user-defined priority. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
@@ -148,8 +124,8 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram,blackbox";
-    const priority = priorityStr.split(",").filter(Boolean);
+    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram";
+    const priority = priorityStr.split(",").filter(p => Boolean(p) && p !== "blackbox");
 
     let b64: string | null = null;
 
@@ -158,7 +134,7 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
       else if (provider === "pollinations") b64 = await fromPollinations(fullPrompt).catch(() => null);
       else if (provider === "leonardo") b64 = await fromLeonardo(fullPrompt).catch(() => null);
       else if (provider === "ideogram") b64 = await fromIdeogram(fullPrompt).catch(() => null);
-      else if (provider === "blackbox") b64 = await fromBlackbox(fullPrompt).catch(() => null);
+      
       else if (provider === "gemini") b64 = await fromGemini(fullPrompt).catch(() => null);
       
       if (b64) break;

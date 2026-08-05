@@ -3,7 +3,7 @@
  * Order: Spin Rewriter (if set) → Lovable AI → Groq → Cerebras → Gemini (direct).
  */
 
-export type ProviderName = "spin-rewriter" | "blackbox" | "nichesss" | "frase";
+export type ProviderName = "spin-rewriter" | "nichesss" | "frase";
 
 export type TextResult = { text: string; provider: ProviderName };
 
@@ -79,30 +79,6 @@ async function openAiCompatible(opts: {
 }
 
 
-async function blackboxApi(opts: { key: string; system: string; prompt: string; json: boolean }) {
-  const res = await fetch("https://api.blackbox.ai/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${opts.key}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: opts.system },
-        { role: "user", content: opts.prompt },
-      ],
-      ...(opts.json ? { response_format: { type: "json_object" } } : {}),
-    }),
-  });
-  if (!res.ok) throw new Error(`${res.status} Blackbox error: ${(await res.text()).slice(0, 300)}`);
-  const data = (await res.json()) as {
-    choices?: { message?: { content?: string } }[];
-  };
-  const text = data.choices?.[0]?.message?.content ?? "";
-  if (!text.trim()) throw new Error("empty response");
-  return text;
-}
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   // Frase AI Content Generation API
@@ -173,22 +149,21 @@ export async function generateTextWithFallback(args: {
   const spinKey = process.env["SPIN_REWRITER_API_KEY"];
   const nichesssKey = process.env["NICHESSS_API_KEY"];
   const fraseKey = process.env["FRASE_API_KEY"];
-  const blackboxKey = process.env["BLACKBOX_API_KEY"];
+  
 
   // Frase and Nichesss are for news content generation (non-JSON)
   const preferred =
     args.preferred ||
     (fraseKey && !args.json ? "frase" :
      nichesssKey && !args.json ? "nichesss" :
-     spinKey && !args.json ? "spin-rewriter" : 
-     blackboxKey ? "blackbox" : undefined);
+     spinKey && !args.json ? "spin-rewriter" : undefined);
 
   const json = args.json ?? false;
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
-  // Order: Frase -> Nichesss -> Spin Rewriter -> Blackbox
+  // Order: Frase -> Nichesss -> Spin Rewriter
   if (fraseKey && !json)
     runners.push({
       name: "frase",
@@ -205,13 +180,6 @@ export async function generateTextWithFallback(args: {
     runners.push({
       name: "spin-rewriter",
       run: () => spinRewriterApi({ key: spinKey, prompt: args.prompt }),
-    });
-
-  if (blackboxKey)
-    runners.push({
-      name: "blackbox",
-      run: () =>
-        blackboxApi({ key: blackboxKey, system: args.system, prompt: args.prompt, json }),
     });
 
 
