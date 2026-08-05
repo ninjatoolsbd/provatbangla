@@ -24,7 +24,6 @@ function pickImageData(payload: ImagesResponse) {
   return null;
 }
 
-
 async function fromBlackbox(fullPrompt: string) {
   const key = process.env["BLACKBOX_API_KEY"];
   if (!key) return null;
@@ -43,14 +42,10 @@ async function fromBlackbox(fullPrompt: string) {
   const data = (await res.json()) as {
     choices?: { message?: { content?: string } }[];
   };
-  // Blackbox flux-pro usually returns a URL in the content or choices
-  // Based on the curl example, it returns a chat completion. 
-  // If it's flux-pro, the result is usually the URL in the text content.
   const text = data.choices?.[0]?.message?.content ?? "";
   const urlMatch = text.match(/https?:\/\/[^\s)]+/);
   if (urlMatch) return urlMatch[0];
   
-  // Try to pick base64 or other formats if present in specific image fields
   return pickImageData(data as any);
 }
 
@@ -68,11 +63,9 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
     for (const provider of priority) {
       if (provider === "blackbox") {
         b64 = await fromBlackbox(fullPrompt).catch(() => null);
+      }
       if (b64) break;
     }
-
-    if (!b64) return null;
-
 
     if (!b64) return null;
 
@@ -84,7 +77,6 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
     const bytes = base64ToBytes(b64);
     const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
 
-    // Prefer Cloudflare R2 when configured, fall back to backend storage.
     const { uploadToR2 } = await import("@/lib/r2.server");
     const r2Url = await uploadToR2(`news/${path}`, bytes, "image/png");
     if (r2Url) return r2Url;
@@ -102,4 +94,3 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
 }
 
 export const NEWS_IMAGE_BUCKET = BUCKET;
-
