@@ -93,21 +93,21 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
  * Blackbox AI API Implementation
  */
 async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.blackbox.ai/v1/chat/completions";
+  const url = "https://www.blackbox.ai/api/chat";
   
   const body = {
     messages: [
-      { role: "system", content: opts.system },
-      { role: "user", content: opts.prompt }
+      { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
     ],
-    model: "gpt-4o",
+    model: "deepseek-v3",
+    max_tokens: 1024,
   };
 
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${opts.key}`,
+      "x-api-key": opts.key,
     },
     body: JSON.stringify(body),
   });
