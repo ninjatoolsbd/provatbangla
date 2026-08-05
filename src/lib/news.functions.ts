@@ -39,7 +39,7 @@ export const generateNews = createServerFn({ method: "POST" })
         tone: z.enum(["news", "analysis", "short"]).default("news"),
         withImage: z.boolean().default(true),
         autoPublish: z.boolean().default(true),
-        provider: z.enum(["auto", "blackbox"]).default("auto"),
+        provider: z.enum(["auto"]).default("auto"),
       })
       .parse(input),
   )
