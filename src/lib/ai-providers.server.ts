@@ -84,7 +84,7 @@ export async function nichesssApi(opts: { key: string; system: string; prompt: s
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Api-Key": opts.key,
+      Authorization: `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
       messages: [
