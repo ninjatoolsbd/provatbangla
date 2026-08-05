@@ -40,7 +40,11 @@ const settingFields: { key: string; label: string; textarea?: boolean; section?:
   { key: "twitter_url", label: "এক্স (টুইটার) লিংক", section: "site" },
   
   // AI Keys Section
-  { key: "GEMINI_API_KEY", label: "Google Gemini API Keys (কমা দিয়ে একাধিক কী দিন)", textarea: true, section: "ai" },
+  { key: "GEMINI_API_KEY_1", label: "Google Gemini API Key 1", section: "ai" },
+  { key: "GEMINI_API_KEY_2", label: "Google Gemini API Key 2", section: "ai" },
+  { key: "GEMINI_API_KEY_3", label: "Google Gemini API Key 3", section: "ai" },
+  { key: "GEMINI_API_KEY_4", label: "Google Gemini API Key 4", section: "ai" },
+  { key: "GEMINI_API_KEY_5", label: "Google Gemini API Key 5", section: "ai" },
   { key: "OPENROUTER_API_KEY", label: "OpenRouter API Key", section: "ai" },
   { key: "GROQ_API_KEY", label: "Groq API Key", section: "ai" },
 ];
@@ -80,8 +84,8 @@ function SettingsPage() {
       return;
     }
 
-    // Handle multiple Gemini keys
-    const keysToTest = provider === "gemini" 
+    // Handle Gemini keys (either single from the new fields or legacy multiple)
+    const keysToTest = provider.startsWith("gemini") 
       ? apiValue.split(",").map(k => k.trim()).filter(Boolean)
       : [apiValue.trim()];
 
@@ -95,7 +99,7 @@ function SettingsPage() {
       for (const k of keysToTest) {
         const res = await testAiKey({ 
           data: { 
-            provider: provider as "gemini" | "openrouter" | "groq", 
+            provider: "gemini", 
             key: k 
           } 
         });
@@ -156,11 +160,11 @@ function SettingsPage() {
         <div className="space-y-3 border border-border bg-background p-4">
           <h2 className="font-display text-base font-bold text-primary">AI API কনফিগারেশন</h2>
           <p className="text-[11px] text-muted-foreground italic">
-            দ্রষ্টব্য: এই কীগুলি সুরক্ষিতভাবে ডেটাবেসে সংরক্ষিত হবে। Gemini-র জন্য একাধিক কী কমা (,) দিয়ে আলাদা করে দিতে পারেন।
+            দ্রষ্টব্য: এই কীগুলি সুরক্ষিতভাবে ডেটাবেসে সংরক্ষিত হবে। ৫টি আলাদা Gemini কী ব্যবহার করতে পারেন।
           </p>
           {settingFields.filter(f => f.section === "ai").map((f) => {
             const fieldKey = f.key || "";
-            const provider = fieldKey.split("_")[0]?.toLowerCase() || "";
+            const provider = fieldKey.toLowerCase().includes("gemini") ? "gemini" : (fieldKey.split("_")[0]?.toLowerCase() || "");
             const result = testResults[fieldKey];
             
             return (
