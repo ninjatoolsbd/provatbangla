@@ -122,7 +122,7 @@ function WritePage() {
           tone: genTone,
           withImage: genImage,
           autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "frase" | "nichesss",
+          provider: genProvider as "auto" | "gemini" | "openrouter",
         },
       }),
     onSuccess: (res) => {
@@ -335,8 +335,8 @@ function WritePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="auto">অটো (সব প্রোভাইডার)</SelectItem>
-                  <SelectItem value="frase">Frase (SEO Optimized)</SelectItem>
-                  <SelectItem value="nichesss">Nichesss</SelectItem>
+                  <SelectItem value="gemini">Google Gemini (Primary)</SelectItem>
+                  <SelectItem value="openrouter">OpenRouter (Fallback)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

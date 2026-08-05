@@ -61,7 +61,8 @@ async function rewrite(
   fallbackCategory: string,
   useSpinRewriter = false,
 ) {
-  // Spin Rewriter functionality removed as requested.
+  // Preferred AI providers are Gemini and OpenRouter.
+
 
 
   const system =
