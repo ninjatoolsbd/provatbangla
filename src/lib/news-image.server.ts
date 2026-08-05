@@ -144,7 +144,7 @@ async function fromBlackbox(fullPrompt: string) {
 
 /** Generates a news illustration based on user-defined priority. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
-  const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
+  const fullPrompt = `Ultra-realistic editorial news photography for a newspaper, high quality, 16:9, highly relevant to the context: ${prompt}. Cinematic lighting, professional press photo style, no text, no watermark.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
