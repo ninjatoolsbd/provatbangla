@@ -29,10 +29,12 @@ async function fromLovable(fullPrompt: string) {
   if (!key) return null;
   const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
     method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-3.1-flash-image",
-      prompt: fullPrompt,
+      model: "google/gemini-3-pro-image",
+      messages: [{ role: "user", content: fullPrompt }],
+      modalities: ["image", "text"],
+      stream: false,
     }),
   });
   if (!res.ok) return null;
@@ -65,7 +67,7 @@ async function fromGemini(fullPrompt: string) {
 
 /** Generates a news illustration (Lovable AI, falling back to Gemini) and stores it. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
-  const fullPrompt = prompt.includes("photorealistic") ? prompt : `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
+  const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
     // Priority changed: Use Gemini (user's key) first to preserve Lovable AI credits.
     const b64 = (await fromGemini(fullPrompt).catch(() => null)) ?? (await fromLovable(fullPrompt).catch(() => null));

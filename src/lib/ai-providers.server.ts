@@ -47,7 +47,7 @@ async function openAiCompatible(opts: {
 
 async function geminiDirect(opts: { key: string; system: string; prompt: string; json: boolean }) {
   const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
     {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": opts.key },
@@ -89,7 +89,7 @@ export async function generateTextWithFallback(args: {
         openAiCompatible({
           url: "https://ai.gateway.lovable.dev/v1/chat/completions",
           headers: { "Lovable-API-Key": lovableKey },
-          model: "google/gemini-2.0-flash",
+          model: "google/gemini-3.5-flash",
           system: args.system,
           prompt: args.prompt,
           json,

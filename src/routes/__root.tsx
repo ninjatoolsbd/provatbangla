@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        ami ki toke root text update lkorte bolesi? madar chod
+        tumi lovable use kore image generatew korona, onno ai gulo use kore image gen koro
         {children}
         <Scripts />
       </body>
