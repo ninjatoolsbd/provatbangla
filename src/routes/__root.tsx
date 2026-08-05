@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        image generate kore dao
+        u can do from ur side
         {children}
         <Scripts />
       </body>
