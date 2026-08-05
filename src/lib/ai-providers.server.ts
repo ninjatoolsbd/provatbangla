@@ -199,3 +199,26 @@ export async function generateTextWithFallback(args: {
 
   throw new Error(`সব AI প্রোভাইডার ব্যর্থ হয়েছে — ${errors.join(" | ")}`);
 }
+
+export async function testAiKey(provider: ProviderName, key: string): Promise<{ success: boolean; message: string }> {
+  const system = "You are a test assistant.";
+  const prompt = "Say 'OK' if you can read this.";
+  
+  try {
+    let result: string;
+    if (provider === "gemini") {
+      result = await geminiApi({ key, system, prompt });
+    } else if (provider === "openrouter") {
+      result = await openrouterApi({ key, system, prompt, json: false });
+    } else if (provider === "groq") {
+      result = await groqApi({ key, system, prompt });
+    } else {
+      throw new Error("Unknown provider");
+    }
+    
+    return { success: true, message: `সংযুক্ত হয়েছে: ${result.slice(0, 50)}...` };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return { success: false, message: `ব্যর্থ হয়েছে: ${msg}` };
+  }
+}

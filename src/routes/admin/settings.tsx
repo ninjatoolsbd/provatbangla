@@ -2,11 +2,15 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Check, Loader2, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/my-supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchSettings, saveSetting } from "@/lib/cms";
+import { useServerFn } from "@tanstack/react-start";
+import { testAiKeyFn } from "@/lib/ai-test.functions";
+
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
@@ -48,6 +52,10 @@ function SettingsPage() {
   const settings = useQuery({ queryKey: ["cms", "site_settings"], queryFn: fetchSettings });
   const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState<Record<string, boolean>>({});
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; message: string } | null>>({});
+  const testAiKey = useServerFn(testAiKeyFn);
+
 
   useEffect(() => {
     if (settings.data) setForm(settings.data);
@@ -63,12 +71,57 @@ function SettingsPage() {
       void qc.invalidateQueries({ queryKey: ["cms", "site_settings"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "সেভ করা যায়নি");
+    }
+  };
+
+  const runTest = async (key: string, provider: string, apiValue: string) => {
+    if (!apiValue) {
+      toast.error("প্রথমে কী লিখুন");
+      return;
+    }
+
+    // Handle multiple Gemini keys
+    const keysToTest = provider === "gemini" 
+      ? apiValue.split(",").map(k => k.trim()).filter(Boolean)
+      : [apiValue.trim()];
+
+    setTesting({ ...testing, [key]: true });
+    setTestResults({ ...testResults, [key]: null });
+
+    try {
+      let allSuccess = true;
+      let combinedMessage = "";
+
+      for (const k of keysToTest) {
+        const res = await testAiKey({ 
+          data: { 
+            provider: provider as "gemini" | "openrouter" | "groq", 
+            key: k 
+          } 
+        });
+        if (!res.success) allSuccess = false;
+        combinedMessage += (keysToTest.length > 1 ? `[Key ${k.slice(0, 5)}...]: ` : "") + res.message + "\n";
+      }
+
+      setTestResults(prev => ({ 
+        ...prev, 
+        [key]: { success: allSuccess, message: combinedMessage.trim() } 
+      }));
+      
+      if (allSuccess) toast.success(`${provider.toUpperCase()} কানেকশন সফল`);
+      else toast.error(`${provider.toUpperCase()} কানেকশন ব্যর্থ`);
+    } catch (e) {
+      setTestResults(prev => ({ 
+        ...prev, 
+        [key]: { success: false, message: "Error calling test function" } 
+      }));
     } finally {
-      setSaving(false);
+      setTesting(prev => ({ ...prev, [key]: false }));
     }
   };
 
   const input = "w-full border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
+
 
   return (
     <div className="max-w-2xl space-y-4">
@@ -105,28 +158,54 @@ function SettingsPage() {
           <p className="text-[11px] text-muted-foreground italic">
             দ্রষ্টব্য: এই কীগুলি সুরক্ষিতভাবে ডেটাবেসে সংরক্ষিত হবে। Gemini-র জন্য একাধিক কী কমা (,) দিয়ে আলাদা করে দিতে পারেন।
           </p>
-          {settingFields.filter(f => f.section === "ai").map((f) => (
-            <label key={f.key} className="block">
-              <span className="mb-1 block text-xs text-muted-foreground font-bold">{f.label}</span>
-              {f.textarea ? (
-                <textarea
-                  rows={2}
-                  className={input}
-                  value={form[f.key] ?? ""}
-                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                  placeholder={`${f.label} এখানে দিন...`}
-                />
-              ) : (
-                <input
-                  type="password"
-                  className={input}
-                  value={form[f.key] ?? ""}
-                  onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                  placeholder={`${f.label} এখানে দিন...`}
-                />
-              )}
-            </label>
-          ))}
+          {settingFields.filter(f => f.section === "ai").map((f) => {
+            const fieldKey = f.key || "";
+            const provider = fieldKey.split("_")[0]?.toLowerCase() || "";
+            const result = testResults[fieldKey];
+            
+            return (
+              <div key={fieldKey} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground font-bold">{f.label}</span>
+                  <button
+                    onClick={() => void runTest(fieldKey, provider, form[fieldKey] ?? "")}
+                    disabled={!!testing[fieldKey] || !form[fieldKey]}
+                    className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary hover:opacity-80 disabled:opacity-30"
+                  >
+                    {testing[fieldKey] ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Play className="h-2.5 w-2.5 fill-current" />
+                    )}
+                    টেস্ট করুন
+                  </button>
+                </div>
+                {f.textarea ? (
+                  <textarea
+                    rows={2}
+                    className={input}
+                    value={form[fieldKey] ?? ""}
+                    onChange={(e) => setForm({ ...form, [fieldKey]: e.target.value })}
+                    placeholder={`${f.label} এখানে দিন...`}
+                  />
+                ) : (
+                  <input
+                    type="password"
+                    className={input}
+                    value={form[fieldKey] ?? ""}
+                    onChange={(e) => setForm({ ...form, [fieldKey]: e.target.value })}
+                    placeholder={`${f.label} এখানে দিন...`}
+                  />
+                )}
+                {result && (
+                  <div className={`text-[10px] p-2 border ${result.success ? 'bg-green-500/5 border-green-500/20 text-green-600' : 'bg-red-500/5 border-red-500/20 text-red-600'} whitespace-pre-wrap`}>
+                    {result.message}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
         </div>
 
         <Button className="w-full sm:w-auto" onClick={() => void save()} disabled={saving}>
