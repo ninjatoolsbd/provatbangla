@@ -47,8 +47,8 @@ async function openAiCompatible(opts: {
 
 
 async function fraseApi(opts: { key: string; system: string; prompt: string }) {
-  // Try the Frase API endpoint as documented for AI generation
-  const res = await fetch("https://api.frase.io/api/v1/ai/content", {
+  // Try Frase standard AI generation endpoint
+  const res = await fetch("https://api.frase.io/api/v1/ai/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -63,25 +63,16 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 
   if (!res.ok) {
     const errorText = await res.text();
-    // 404 is a path issue. Let's try the /ai/generate endpoint which is also common
-    const res2 = await fetch("https://api.frase.io/api/v1/ai/generate", {
+    // 404 means the path is wrong. Trying the 'magic' path if Frase uses it
+    const res2 = await fetch("https://api.frase.io/api/v1/magic", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": opts.key,
-      },
-      body: JSON.stringify({
-        query: opts.prompt,
-        instruction: opts.system,
-        max_tokens: 1500,
-      }),
+      headers: { "Content-Type": "application/json", "x-api-key": opts.key },
+      body: JSON.stringify({ prompt: `${opts.system}\n\n${opts.prompt}` }),
     });
-
     if (res2.ok) {
       const data = await res2.json() as any;
       return data.text || data.result || "";
     }
-    
     throw new Error(`${res.status} Frase error: ${errorText.slice(0, 300)}`);
   }
 
@@ -90,41 +81,34 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
 }
 
 async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
-  // Nichesss Magic API - Try the specific endpoint format they use for direct generation
+  // Nichesss often uses Bearer token with a specific model field
   const res = await fetch("https://nichesss.com/api/v1/magic", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Api-Key": opts.key,
+      "Authorization": `Bearer ${opts.key}`,
     },
     body: JSON.stringify({
-      settings: {
-        prompt: `${opts.system}\n\n${opts.prompt}`,
-        max_tokens: 1500
-      }
+      messages: [{ role: "user", content: `${opts.system}\n\n${opts.prompt}` }],
+      max_tokens: 1500
     }),
   });
 
   if (!res.ok) {
     const errorText = await res.text();
-    // Try simple direct prompt body if settings object fails
+    // Try Api-Key header one last time
     const res2 = await fetch("https://nichesss.com/api/v1/magic", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Api-Key": opts.key,
-      },
+      headers: { "Content-Type": "application/json", "Api-Key": opts.key },
       body: JSON.stringify({
         prompt: `${opts.system}\n\n${opts.prompt}`,
         max_tokens: 1500
       }),
     });
-
     if (res2.ok) {
       const data = await res2.json() as any;
       return data.text || data.result || "";
     }
-
     throw new Error(`${res.status} Nichesss error: ${errorText.slice(0, 300)}`);
   }
   
