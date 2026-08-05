@@ -138,7 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        deko onk image oprasongik, pls regenertae
+        AI API Diagnostics: Text (OK), Image (Quota Exceeded/Model Fix Applied)
         {children}
         <Scripts />
       </body>
