@@ -139,7 +139,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="sr-only">
-          ok now akn bolo kothay kon api kivabe use hocce
+          lovable er ai kothao us ehoccena right
         </div>
         {children}
         <Scripts />
