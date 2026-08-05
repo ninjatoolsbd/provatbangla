@@ -29,7 +29,7 @@ async function fromLovable(fullPrompt: string) {
   if (!key) return null;
   const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "google/gemini-3-pro-image",
       messages: [{ role: "user", content: fullPrompt }],
