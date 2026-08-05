@@ -11,7 +11,7 @@ export const GenerateInput = z.object({
   tone: z.enum(["news", "analysis", "short"]).default("news"),
   withImage: z.boolean().default(true),
   autoPublish: z.boolean().default(true),
-  provider: z.enum(["auto"]).default("auto"),
+  provider: z.enum(["auto", "gemini", "openrouter", "groq"]).default("auto"),
 });
 
 export type GenerateInputType = z.infer<typeof GenerateInput>;
@@ -82,7 +82,7 @@ export async function runGenerate(data: GenerateInputType) {
     system,
     prompt,
     json: true,
-    preferred: data.provider as ProviderName,
+    preferred: data.provider as any,
   });
 
   let parsed: z.infer<typeof Article>;
@@ -94,8 +94,6 @@ export async function runGenerate(data: GenerateInputType) {
 
   let imageUrl: string | null = null;
   if (data.withImage) {
-    // If we have a reference image, we can try to use it as a base or reference for generation
-    // to ensure 200% relevance, especially for specific people or events.
     const imagePrompt = referenceImage 
     ? `Reference Image Context: This is a photo from the original source. Create a new, similar, high-quality professional news version of this scene: ${parsed.image_prompt}`
     : parsed.image_prompt;
