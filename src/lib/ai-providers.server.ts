@@ -46,7 +46,7 @@ async function openAiCompatible(opts: {
 
 
 
-async function fraseApi(opts: { key: string; system: string; prompt: string }) {
+export async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   // Frase AI Content Generation API
   // Using the /content/generate endpoint or equivalent
   const res = await fetch("https://api.frase.io/api/v1/content/generate", {
@@ -75,7 +75,7 @@ async function fraseApi(opts: { key: string; system: string; prompt: string }) {
   return text;
 }
 
-async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
+export async function nichesssApi(opts: { key: string; system: string; prompt: string }) {
   // Nichesss Content Generation API
   // They expect a prompt and return generated text.
   // Note: Nichesss API might have specific 'plan' or 'template' requirements,
