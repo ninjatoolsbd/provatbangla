@@ -173,6 +173,7 @@ export async function generateTextWithFallback(args: {
   const spinKey = process.env["SPIN_REWRITER_API_KEY"];
   const nichesssKey = process.env["NICHESSS_API_KEY"];
   const fraseKey = process.env["FRASE_API_KEY"];
+  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
   // Frase and Nichesss are for news content generation (non-JSON)
   const preferred =
@@ -183,7 +184,6 @@ export async function generateTextWithFallback(args: {
      blackboxKey ? "blackbox" : undefined);
 
   const json = args.json ?? false;
-  const blackboxKey = process.env["BLACKBOX_API_KEY"];
 
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
