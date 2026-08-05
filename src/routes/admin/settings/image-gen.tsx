@@ -130,7 +130,7 @@ function ImageGenSettingsPage() {
 
         <div className="mt-4 rounded-md bg-muted/50 p-4 text-xs text-muted-foreground">
           <p>
-            <strong>টিপস:</strong> আপনার যদি নিজস্ব Gemini API Key সেট করা থাকে, তবে Gemini-কে ১ নম্বরে রাখা সাশ্রয়ী।
+            <strong>টিপস:</strong> আপনার যদি নিজস্ব Cloudflare বা Pollinations API Key সেট করা থাকে, তবে সেগুলোকে ১ নম্বরে রাখা সাশ্রয়ী।
             যদি কোনো কারণে প্রথম অপশনটি কাজ না করে, তবে স্বয়ংক্রিয়ভাবে পরবর্তী অপশনটি চেষ্টা করা হবে।
           </p>
         </div>
