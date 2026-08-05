@@ -198,6 +198,7 @@ export async function generateTextWithFallback(args: {
   }
 
   throw new Error(`সব AI প্রোভাইডার ব্যর্থ হয়েছে — ${errors.join(" | ")}`);
+}
 
 export async function testAiKey(provider: ProviderName, key: string): Promise<{ success: boolean; message: string }> {
   const system = "You are a test assistant.";
