@@ -82,7 +82,7 @@ export async function runGenerate(data: GenerateInputType) {
     system,
     prompt,
     json: true,
-    preferred: data.provider === "auto" ? undefined : (data.provider as ProviderName),
+    preferred: data.provider as ProviderName,
   });
 
   let parsed: z.infer<typeof Article>;
