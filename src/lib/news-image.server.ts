@@ -24,14 +24,14 @@ function pickImageData(payload: ImagesResponse) {
   return null;
 }
 
-async function fromLovable(fullPrompt: string) {
-  const key = process.env["LOVABLE_API_KEY"];
+async function fromGroq(fullPrompt: string) {
+  const key = process.env["GROQ_API_KEY"];
   if (!key) return null;
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+  const res = await fetch("https://api.groq.com/openai/v1/images/generations", {
     method: "POST",
-    headers: { "Lovable-API-Key": key, "Content-Type": "application/json" },
+    headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-3.1-flash-image",
+      model: "black-forest-labs/flux-1-schnell",
       prompt: fullPrompt,
     }),
   });
@@ -67,8 +67,8 @@ async function fromGemini(fullPrompt: string) {
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = prompt.includes("photorealistic") ? prompt : `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
-    // Priority changed: Use Gemini (user's key) first to preserve Lovable AI credits.
-    const b64 = (await fromGemini(fullPrompt).catch(() => null)) ?? (await fromLovable(fullPrompt).catch(() => null));
+    // Priority: Try Groq (Flux) first as requested, then Gemini.
+    const b64 = (await fromGroq(fullPrompt).catch(() => null)) ?? (await fromGemini(fullPrompt).catch(() => null));
     if (!b64) return null;
 
     const bytes = base64ToBytes(b64);
