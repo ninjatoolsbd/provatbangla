@@ -197,6 +197,7 @@ function AutomationPage() {
             [
               ["auto_enabled", "অটোমেশন চালু"],
               ["auto_image_ai", "ছবি AI দিয়ে মডিফাই + ওয়াটারমার্ক"],
+              ["auto_spin_rewriter", "Spin Rewriter ব্যবহার করুন"],
               ["auto_credit", "নিউজের শেষে সোর্স ক্রেডিট"],
             ] as const
           ).map(([key, label]) => (
