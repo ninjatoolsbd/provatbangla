@@ -24,46 +24,6 @@ function pickImageData(payload: ImagesResponse) {
   return null;
 }
 
-async function fromLovable(fullPrompt: string) {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) return null;
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "google/gemini-3-pro-image",
-      messages: [{ role: "user", content: fullPrompt }],
-      modalities: ["image", "text"],
-      stream: false,
-    }),
-  });
-  if (!res.ok) return null;
-  return pickImageData((await res.json()) as ImagesResponse);
-}
-
-async function fromGemini(fullPrompt: string) {
-  const key = process.env["GEMINI_API_KEY"];
-  if (!key) return null;
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
-      }),
-    },
-  );
-  if (!res.ok) return null;
-  const data = (await res.json()) as {
-    candidates?: { content?: { parts?: { inlineData?: { data?: string } }[] } }[];
-  };
-  const parts = data.candidates?.[0]?.content?.parts ?? [];
-  for (const part of parts) {
-    if (part.inlineData?.data) return part.inlineData.data;
-  }
-  return null;
-}
 
 async function fromBlackbox(fullPrompt: string) {
   const key = process.env["BLACKBOX_API_KEY"];
@@ -100,19 +60,14 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "blackbox,gemini,lovable";
-    const priority = priorityStr.split(",").filter(Boolean);
+    const priorityStr = settings["image_gen_priority"] ?? "blackbox";
+    const priority = priorityStr.split(",").filter(p => p === "blackbox");
 
     let b64: string | null = null;
 
     for (const provider of priority) {
       if (provider === "blackbox") {
         b64 = await fromBlackbox(fullPrompt).catch(() => null);
-      } else if (provider === "gemini") {
-        b64 = await fromGemini(fullPrompt).catch(() => null);
-      } else if (provider === "lovable") {
-        b64 = await fromLovable(fullPrompt).catch(() => null);
-      }
       if (b64) break;
     }
 
