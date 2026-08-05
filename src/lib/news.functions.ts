@@ -82,4 +82,3 @@ export const generateNews = createServerFn({ method: "POST" })
 
     return { article, imageUrl, provider, postId, slug };
   });
-
