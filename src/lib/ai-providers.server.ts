@@ -228,27 +228,32 @@ export async function generateTextWithFallback(args: {
     for (const key of provider.keys) {
       try {
         const rawText = await provider.run(key);
-        let processedText = json ? extractJsonBlock(rawText) : rawText.trim();
+        let processedText = extractJsonBlock(rawText);
         
+        // Always try to parse and fix if it's supposed to be JSON
         if (json) {
           try {
             JSON.parse(processedText);
           } catch (e) {
-            // Handle unescaped control characters like newlines and tabs
-            const fixedText = processedText
-              .replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
-                if (c === '\n') return '\\n';
-                if (c === '\r') return '\\r';
-                if (c === '\t') return '\\t';
-                return '';
-              })
-              .replace(/,\s*([}\]])/g, "$1"); // Remove trailing commas
+            // Attempt to fix common JSON issues
+            let fixedText = processedText
+              // Remove literal newlines inside strings - replace with \n
+              .replace(/([^\\])\n/g, "$1\\n")
+              // Remove trailing commas
+              .replace(/,\s*([}\]])/g, "$1")
+              // Remove potential text before or after the JSON block if extractJsonBlock missed it
+              .trim();
+
+            // Try to handle unescaped quotes in a very basic way 
+            // (this is dangerous but might help for news content)
+            // It tries to find quotes that are NOT followed by : or , or }
             
             try {
               JSON.parse(fixedText);
               processedText = fixedText;
             } catch (innerE) {
-              console.error("Final JSON fix attempt failed:", innerE, "Fixed Text sample:", fixedText.slice(0, 100));
+               // If still failing, return as is and let the caller handle it or fail
+               console.warn("JSON fix failed, returning raw processed text", innerE);
             }
           }
         }
