@@ -138,9 +138,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        ami tmk spin rewriter api key dicci, eta die news rewrite kore dite hbe
-<br/><br/>
-815bb3a#00e5992_83dfe30?ae2ce33
+        spinrewriter k base dhoro, then ami try kori auto news korar and rewrite korar, then deki kaj kor ekina
         {children}
         <Scripts />
       </body>

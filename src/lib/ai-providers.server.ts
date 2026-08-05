@@ -106,13 +106,16 @@ export async function generateTextWithFallback(args: {
   json?: boolean;
   preferred?: ProviderName | undefined;
 }): Promise<TextResult> {
+  const spinKey = process.env["SPIN_REWRITER_API_KEY"];
+  const preferred = args.preferred || (spinKey && !args.json ? "spin-rewriter" : undefined);
+
 
   const json = args.json ?? false;
   const lovableKey = process.env["LOVABLE_API_KEY"];
   const groqKey = process.env["GROQ_API_KEY"];
   const cerebrasKey = process.env["CEREBRAS_API_KEY"];
   const geminiKey = process.env["GEMINI_API_KEY"];
-  const spinKey = process.env["SPIN_REWRITER_API_KEY"];
+
 
   const runners: { name: ProviderName; run: () => Promise<string> }[] = [];
 
@@ -167,8 +170,8 @@ export async function generateTextWithFallback(args: {
       run: () => geminiDirect({ key: geminiKey, system: args.system, prompt: args.prompt, json }),
     });
 
-  if (args.preferred) {
-    runners.sort((a, b) => (a.name === args.preferred ? -1 : b.name === args.preferred ? 1 : 0));
+  if (preferred) {
+    runners.sort((a, b) => (a.name === preferred ? -1 : b.name === preferred ? 1 : 0));
   }
 
   if (runners.length === 0) throw new Error("কোনো AI প্রোভাইডার কনফিগার করা নেই।");
