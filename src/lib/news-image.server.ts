@@ -65,13 +65,28 @@ async function fromGemini(fullPrompt: string) {
   return null;
 }
 
-/** Generates a news illustration (Lovable AI, falling back to Gemini) and stores it. */
+/** Generates a news illustration based on user-defined priority. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = `Photorealistic editorial news photograph, 16:9, no text or watermark: ${prompt}`;
   try {
-    // Priority changed: Use Gemini (user's key) first to preserve Lovable AI credits.
-    const b64 = (await fromGemini(fullPrompt).catch(() => null)) ?? (await fromLovable(fullPrompt).catch(() => null));
+    const { fetchSettings } = await import("./cms");
+    const settings = await fetchSettings().catch(() => ({}));
+    const priorityStr = settings["image_gen_priority"] ?? "gemini,lovable";
+    const priority = priorityStr.split(",").filter(Boolean);
+
+    let b64: string | null = null;
+
+    for (const provider of priority) {
+      if (provider === "gemini") {
+        b64 = await fromGemini(fullPrompt).catch(() => null);
+      } else if (provider === "lovable") {
+        b64 = await fromLovable(fullPrompt).catch(() => null);
+      }
+      if (b64) break;
+    }
+
     if (!b64) return null;
+
 
     const bytes = base64ToBytes(b64);
     const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;

@@ -58,6 +58,7 @@ const systemItems = [
   { title: "ইউজার ও অথর", url: "/admin/users", icon: Users, adminOnly: true },
   { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree, adminOnly: true },
   { title: "সেটিংস", url: "/admin/settings", icon: Settings, adminOnly: true },
+  { title: "ইমেজ সেটিংস", url: "/admin/settings/image-gen", icon: Image, adminOnly: true },
 ];
 
 
