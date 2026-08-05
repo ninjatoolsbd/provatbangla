@@ -38,8 +38,8 @@ function ImageGenSettingsPage() {
     const targetIndex = direction === "up" ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= newPriority.length) return;
 
-    const temp = newPriority[index];
-    newPriority[index] = newPriority[targetIndex];
+    const temp = newPriority[index]!;
+    newPriority[index] = newPriority[targetIndex]!;
     newPriority[targetIndex] = temp;
 
     setSetting.mutate({ key: "image_gen_priority", value: newPriority.join(",") });
