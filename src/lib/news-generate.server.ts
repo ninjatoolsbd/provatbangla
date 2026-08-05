@@ -53,8 +53,8 @@ export async function runGenerate(data: GenerateInputType) {
   const system = [
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক ও রিপোর্টার।",
     "সবসময় শুধুমাত্র একটি বৈধ JSON অবজেক্ট আউটপুট দেবে।",
-    "অত্যন্ত গুরুত্বপূর্ণ: তোমার উত্তরে কোনো টেক্সট, ভূমিকা বা মার্কডাউন (যেমন ```json) থাকবে না। শুধুমাত্র '{' দিয়ে শুরু এবং '}' দিয়ে শেষ করবে।",
-    "টেক্সটের ভেতরে যদি ডাবল কোট (\") ব্যবহারের প্রয়োজন হয়, তবে অবশ্যই সেটি এস্কেপ (\\\") করবে। উদাহরণ: \"তিনি বলেন, \\\"সবকিছু ঠিক আছে\\\"।\"",
+    "অত্যন্ত গুরুত্বপূর্ণ: টেক্সটের ভেতর কোনো নতুন লাইন (Enter) ব্যবহার করবে না। প্রতিটি ফিল্ডের ভ্যালু অবশ্যই এক লাইনে হতে হবে। নতুন লাইনের প্রয়োজন হলে '\\n' (ব্যাকস্ল্যাশ এন) ব্যবহার করো।",
+    "টেক্সটের ভেতরে ডাবল কোট (\") ব্যবহারের বদলে সিঙ্গেল কোট (') ব্যবহার করো।",
     "আউটপুটটি অবশ্যই এমনভাবে দেবে যাতে JSON.parse সরাসরি কাজ করে।",
   ].join(" ");
 
@@ -103,33 +103,31 @@ export async function runGenerate(data: GenerateInputType) {
     cleanedText = cleanedText.slice(firstBrace, lastBrace + 1);
   }
 
-  // Advanced sanitization for JSON
-  function sanitizeForJson(str: string) {
-    // 1. Remove control characters (except common ones handled below)
-    let s = str.replace(/[\u0000-\u0009\u000B-\u000C\u000E-\u001F\u007F-\u009F]/g, "");
+  // Strict cleaning for JSON
+  function strictClean(str: string) {
+    let s = str.trim();
+    // Remove invisible control characters except \n, \r, \t
+    s = s.replace(/[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F-\u009F]/g, "");
     
-    // 2. Fix unescaped backslashes (but not already escaped ones)
-    // This is tricky, usually it's easier to let the AI try to handle it or use a library
-    // But for common news text, newlines are the main issue.
+    // Fix common AI JSON errors: literal newlines inside values
+    // This is the most common cause of "Unterminated string"
+    // We look for content between double quotes and replace real newlines with \n
+    s = s.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match) => {
+      return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+    });
+
     return s;
   }
 
-  cleanedText = sanitizeForJson(cleanedText);
+  cleanedText = strictClean(cleanedText);
 
   let parsed: z.infer<typeof Article>;
   try {
     const rawJson = JSON.parse(cleanedText);
     parsed = Article.parse(rawJson);
   } catch (e) {
-    console.error("Manual JSON Parse Error:", e, "Cleaned Text:", cleanedText);
-    // If double quotes inside values were the issue, try a desperate regex fix for common structures
-    try {
-      // Look for keys and try to wrap values more strictly? Risky.
-      // Better to just report the error and suggest a retry.
-      throw e;
-    } catch {
-      throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
-    }
+    console.error("Manual JSON Parse Error:", e, "Cleaned Text Sample:", cleanedText.slice(0, 500));
+    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
   }
 
   let imageUrl: string | null = null;
