@@ -93,14 +93,15 @@ async function openrouterApi(opts: { key: string; system: string; prompt: string
  * Blackbox AI API Implementation
  */
 async function blackboxApi(opts: { key: string; system: string; prompt: string }) {
-  const url = "https://api.blackbox.ai/api/chat";
+  const url = "https://api.blackbox.ai/v1/chat/completions";
   
   const body = {
     messages: [
-      { role: "user", content: `${opts.system}\n\n${opts.prompt}` }
+      { role: "system", content: opts.system },
+      { role: "user", content: opts.prompt }
     ],
-    model: "blackboxai",
-    max_tokens: 1024,
+    // Based on test results, this model identifier works correctly with the v1 API
+    model: "blackboxai/meta/llama-3.1-8b",
   };
 
   const res = await fetch(url, {
@@ -114,7 +115,6 @@ async function blackboxApi(opts: { key: string; system: string; prompt: string }
 
   if (!res.ok) {
     const errorText = await res.text();
-    // Return the specific error message for debugging
     throw new Error(`Blackbox Error: ${res.status} ${errorText}`);
   }
 
