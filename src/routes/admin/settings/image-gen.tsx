@@ -31,7 +31,7 @@ function ImageGenSettingsPage() {
 
   // Default priority: gemini, lovable
   const priorityStr = cfg["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram";
-  const priority = priorityStr.split(",").filter(Boolean);
+  const priority = priorityStr.split(",").filter(p => Boolean(p) && p !== "blackbox");
 
   const move = (index: number, direction: "up" | "down") => {
     const newPriority = [...priority];
@@ -65,10 +65,6 @@ function ImageGenSettingsPage() {
     ideogram: {
       label: "Ideogram",
       desc: "ছবির ভেতরে পরিষ্কার টেক্সট দরকার হলে এটি সেরা।",
-    },
-    blackbox: {
-      label: "Blackbox AI",
-      desc: "Blackbox Flux-Pro ব্যবহার করে ব্যাকআপ হিসেবে কাজ করে।",
     },
     lovable: {
       label: "Lovable AI",
