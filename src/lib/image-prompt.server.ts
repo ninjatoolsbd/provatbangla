@@ -24,7 +24,7 @@ Headline: ${args.title}
 Details: ${args.description.slice(0, 500)}
 ${args.hint ? `Image Idea: ${args.hint}` : ""}
 
-Describe the photo:`,
+Describe the photo:`;
 
   try {
     const result = await generateTextWithFallback({
