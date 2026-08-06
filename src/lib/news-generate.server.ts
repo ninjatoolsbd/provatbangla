@@ -157,12 +157,19 @@ export async function runGenerate(data: GenerateInputType) {
 
   let imageUrl: string | null = null;
   if (data.withImage) {
-    const imagePrompt = referenceImage 
-    ? `Reference Image Context: This is a photo from the original source. Create a new, similar, high-quality professional news version of this scene: ${parsed.image_prompt}`
-    : parsed.image_prompt;
-    
+    const { buildRelevantImagePrompt } = await import("./image-prompt.server");
+    const scene = await buildRelevantImagePrompt({
+      title: parsed.title,
+      description: `${parsed.excerpt} ${parsed.content}`,
+      hint: parsed.image_prompt,
+    });
+    const imagePrompt = referenceImage
+      ? `${scene} Recreate this real news scene as an original press photograph (do not copy any existing photo).`
+      : scene;
+
     imageUrl = await generateNewsImage(imagePrompt || parsed.title);
   }
+
 
   return { article: parsed, imageUrl, provider };
 }

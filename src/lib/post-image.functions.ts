@@ -33,9 +33,12 @@ export const regeneratePostImage = createServerFn({ method: "POST" })
     if (error || !post) throw new Error(error?.message ?? "নিউজ পাওয়া যায়নি।");
 
     const { generateNewsImage } = await import("@/lib/news-image.server");
+    const { buildRelevantImagePrompt } = await import("@/lib/image-prompt.server");
     const body = `${post.excerpt ?? ""} ${post.content ?? ""}`.replace(/<[^>]+>/g, " ");
-    const imageUrl = await generateNewsImage(buildPrompt(post.title, body));
+    const scene = await buildRelevantImagePrompt({ title: post.title, description: body });
+    const imageUrl = await generateNewsImage(buildPrompt(post.title, scene));
     if (!imageUrl) throw new Error("ছবি বানানো যায়নি — AI ক্রেডিট/কোটা শেষ হতে পারে।");
+
 
     const { error: upErr } = await context.supabase
       .from("posts")
