@@ -5,13 +5,21 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
-import { getPublishedPost } from "@/lib/public-posts.functions";
+import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.functions";
 
 export const Route = createFileRoute("/post/$slug")({
-  loader: async ({ params }) => {
-    const post = await getPublishedPost({ data: { slug: params.slug } });
+  validateSearch: (search: Record<string, unknown>) => ({
+    preview: search.preview === "true",
+  }),
+  loader: async ({ params, search }) => {
+    let post;
+    if (search.preview) {
+      post = await getPostForPreview({ data: { slug: params.slug } });
+    } else {
+      post = await getPublishedPost({ data: { slug: params.slug } });
+    }
     if (!post) throw notFound();
-    return { post: post as Post };
+    return { post: post as Post, isPreview: search.preview };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
