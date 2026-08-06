@@ -32,7 +32,6 @@ import { Route as AdminWriteRouteImport } from './routes/admin/write'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
-import { Route as AdminSettingsImageGenRouteImport } from './routes/admin/settings/image-gen'
 import { Route as ApiPublicCronSyncRouteImport } from './routes/api/public/cron-sync'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
 import { Route as ApiPublicR2SplatRouteImport } from './routes/api/public/r2.$'
@@ -152,11 +151,6 @@ const PostSlugRoute = PostSlugRouteImport.update({
   path: '/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSettingsImageGenRoute = AdminSettingsImageGenRouteImport.update({
-  id: '/image-gen',
-  path: '/image-gen',
-  getParentRoute: () => AdminSettingsRoute,
-} as any)
 const ApiPublicCronSyncRoute = ApiPublicCronSyncRouteImport.update({
   id: '/api/public/cron-sync',
   path: '/api/public/cron-sync',
@@ -189,7 +183,7 @@ export interface FileRoutesByFullPath {
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
-  '/admin/settings': typeof AdminSettingsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
@@ -197,7 +191,6 @@ export interface FileRoutesByFullPath {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
-  '/admin/settings/image-gen': typeof AdminSettingsImageGenRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -217,7 +210,7 @@ export interface FileRoutesByTo {
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
-  '/admin/settings': typeof AdminSettingsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
@@ -225,7 +218,6 @@ export interface FileRoutesByTo {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin': typeof AdminIndexRoute
-  '/admin/settings/image-gen': typeof AdminSettingsImageGenRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -247,7 +239,7 @@ export interface FileRoutesById {
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
-  '/admin/settings': typeof AdminSettingsRouteWithChildren
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/write': typeof AdminWriteRoute
@@ -255,7 +247,6 @@ export interface FileRoutesById {
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
-  '/admin/settings/image-gen': typeof AdminSettingsImageGenRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -286,7 +277,6 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin/'
-    | '/admin/settings/image-gen'
     | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -314,7 +304,6 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin'
-    | '/admin/settings/image-gen'
     | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -343,7 +332,6 @@ export interface FileRouteTypes {
     | '/news/$id'
     | '/post/$slug'
     | '/admin/'
-    | '/admin/settings/image-gen'
     | '/api/public/cron-sync'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -525,13 +513,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/settings/image-gen': {
-      id: '/admin/settings/image-gen'
-      path: '/image-gen'
-      fullPath: '/admin/settings/image-gen'
-      preLoaderRoute: typeof AdminSettingsImageGenRouteImport
-      parentRoute: typeof AdminSettingsRoute
-    }
     '/api/public/cron-sync': {
       id: '/api/public/cron-sync'
       path: '/api/public/cron-sync'
@@ -556,18 +537,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminSettingsRouteChildren {
-  AdminSettingsImageGenRoute: typeof AdminSettingsImageGenRoute
-}
-
-const AdminSettingsRouteChildren: AdminSettingsRouteChildren = {
-  AdminSettingsImageGenRoute: AdminSettingsImageGenRoute,
-}
-
-const AdminSettingsRouteWithChildren = AdminSettingsRoute._addFileChildren(
-  AdminSettingsRouteChildren,
-)
-
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
   AdminAutomationRoute: typeof AdminAutomationRoute
@@ -580,7 +549,7 @@ interface AdminRouteChildren {
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminPollsRoute: typeof AdminPollsRoute
   AdminPostsRoute: typeof AdminPostsRoute
-  AdminSettingsRoute: typeof AdminSettingsRouteWithChildren
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWriteRoute: typeof AdminWriteRoute
@@ -599,7 +568,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMessagesRoute: AdminMessagesRoute,
   AdminPollsRoute: AdminPollsRoute,
   AdminPostsRoute: AdminPostsRoute,
-  AdminSettingsRoute: AdminSettingsRouteWithChildren,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWriteRoute: AdminWriteRoute,
@@ -623,3 +592,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
