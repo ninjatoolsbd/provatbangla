@@ -67,64 +67,11 @@ async function fromGemini(prompt: string) {
 }
 
 async function fromLeonardo(prompt: string) {
-  const { fetchSettings } = await import("./cms");
-  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-  const key = settings["LEONARDO_API_KEY"] || process.env["LEONARDO_API_KEY"];
-  if (!key) return null;
-  const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      prompt,
-      modelId: "b2441e34-12f4-4ab9-a0ce-f1110f050d7d", // Leonardo Diffusion XL
-      width: 1024,
-      height: 576,
-      num_images: 1,
-    }),
-  });
-  if (!res.ok) return null;
-  const data = await res.json() as any;
-  const generationId = data.sdGenerationJob?.generationId;
-  if (!generationId) return null;
-
-  // Poll for result
-  for (let i = 0; i < 10; i++) {
-    await new Promise(r => setTimeout(r, 2000));
-    const gRes = await fetch(`https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`, {
-      headers: { Authorization: `Bearer ${key}` },
-    });
-    const gData = await gRes.json() as any;
-    const url = gData.generations_by_pk?.generated_images?.[0]?.url;
-    if (url) return url;
-  }
-  return null;
+  return null; // Leonardo is removed
 }
 
 async function fromIdeogram(prompt: string) {
-  const { fetchSettings } = await import("./cms");
-  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-  const key = settings["IDEOGRAM_API_KEY"] || process.env["IDEOGRAM_API_KEY"];
-  if (!key) return null;
-  const res = await fetch("https://api.ideogram.ai/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Api-Key": key,
-    },
-    body: JSON.stringify({
-      image_request: {
-        prompt,
-        aspect_ratio: "ASPECT_16_9",
-        model: "V_2",
-      },
-    }),
-  });
-  if (!res.ok) return null;
-  const data = await res.json() as any;
-  return data.data?.[0]?.url || null;
+  return null; // Ideogram is removed
 }
 
 
