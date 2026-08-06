@@ -96,7 +96,7 @@ function MediaPage() {
     onSuccess: () => {
       toast.success("সফলভাবে মুছে ফেলা হয়েছে");
       setSelected(new Set());
-      void qc.invalidateQueries({ queryKey: ["cms", "media"] });
+      void qc.invalidateQueries({ queryKey: ["cms", "media-merged"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
