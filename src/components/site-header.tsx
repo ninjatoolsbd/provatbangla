@@ -89,10 +89,15 @@ export function SiteHeader() {
             </Link>
           ))}
           <div className="relative group">
-            <button className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary flex items-center gap-1">
+            <Link
+              to="/category/$slug"
+              params={{ slug: 'onnanno' }}
+              className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary flex items-center gap-1"
+              activeProps={{ className: "text-primary" }}
+            >
               অন্যান্য
               <Menu className="size-3.5" />
-            </button>
+            </Link>
             <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
               {categories.filter(c => [
                 'health', 'probas', 'orthoniti', 'ain-adalat', 
