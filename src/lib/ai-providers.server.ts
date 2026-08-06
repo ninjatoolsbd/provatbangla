@@ -244,8 +244,8 @@ export async function generateTextWithFallback(args: {
               // Remove potential text before or after the JSON block
               .trim();
 
-            // Try to handle unescaped quotes inside values using a safer heuristic
-            // Find patterns like "key": "value" and ensure double quotes inside are handled
+            // Try to handle unescaped quotes inside values
+            // We look for patterns like "key": "value" and escape quotes inside the value
             fixedText = fixedText.replace(/"([^"]+)":\s*"([\s\S]*?)"(?=\s*[,}])|([^{}\[\]",\s]+)/g, (match, key, val) => {
               if (key && val) {
                 // If it's a key-value pair, escape any " inside the val that aren't already escaped
@@ -255,6 +255,12 @@ export async function generateTextWithFallback(args: {
               return match;
             });
             
+            // Fix unescaped control characters in strings (like 'ন')
+            fixedText = fixedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match) => {
+               // Replace literal tab, carriage return, and newline with their escaped versions
+               return match.replace(/\t/g, "\\t").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+            });
+
             try {
               JSON.parse(fixedText);
               processedText = fixedText;
