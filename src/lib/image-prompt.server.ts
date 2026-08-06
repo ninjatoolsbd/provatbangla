@@ -9,26 +9,28 @@ export async function buildRelevantImagePrompt(args: {
   description: string;
   hint?: string;
 }): Promise<string> {
-  const system = `You are a professional photojournalist. 
-Your task is to describe a single, high-impact photograph that perfectly represents the provided news headline and details.
-The description MUST focus on the actual subject (person, event, or object) mentioned in the headline.
+  const system = `You are an expert Visual Prompt Engineer for AI image generators (like Flux and Midjourney).
+Your goal is to translate a Bengali news headline and its details into a highly specific, photorealistic English visual prompt.
 
-Rules:
-1. Subject Accuracy: If the news is about a specific person (e.g. Ronaldo, a politician), describe that person or a clear symbol of them.
-2. Bangladeshi Context: Unless the story is international, assume the setting is Bangladesh. Describe authentic clothing (Saree, Lungi, Panjabi), rickshaws, local architecture, and Bangladeshi facial features.
-3. No Text: Do not include any words, signs, or logos in the description.
-4. Professional Style: Use terms like "35mm lens", "f/2.8", "editorial photography", "natural lighting", "press photo".
-5. Concise: Write the description in English, max 60 words.
+CORE PRIORITY:
+1. SUBJECT MATCHING: If the news is about a SPECIFIC person (e.g., Cristiano Ronaldo, Joe Biden, Sheikh Hasina), the prompt MUST focus on them. Do NOT describe generic people if a specific celebrity or leader is mentioned.
+2. CONTEXTUAL REALISM:
+   - If the subject is Bangladeshi (politicians, local events): Describe Bangladeshi facial features, skin tones, local attire (Panjabi, Saree, Lungi), and authentic Bangladeshi backgrounds (Rickshaws, Dhaka streets, local offices).
+   - If the subject is INTERNATIONAL (e.g., Ronaldo, Elon Musk): Describe them in their natural setting (football field, press conference, tech office) WITHOUT forced Bangladeshi elements.
+3. STYLE: "Photorealistic editorial news photography". 
+   - Use technical terms: "Captured on 35mm lens", "f/2.8 aperture", "natural lighting", "press photo style", "sharp focus", "high resolution".
+   - NO TEXT, NO LOGOS, NO SIGNAGE.
+   - NO ILLUSTRATIONS, NO CARTOONS. 100% REALISM.
 
 Headline: ${args.title}
 Details: ${args.description.slice(0, 500)}
-${args.hint ? `Image Idea: ${args.hint}` : ""}
+${args.hint ? `User Hint: ${args.hint}` : ""}
 
-Describe the photo:`;
+Output ONLY the English visual prompt. No preamble.`;
 
   try {
     const result = await generateTextWithFallback({
-      system: "You generate English image prompts for AI image generators.",
+      system: "You generate precise, photorealistic image prompts for AI based on news context.",
       prompt: system,
       json: false,
       preferred: "gemini"
