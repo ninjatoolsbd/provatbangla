@@ -17,7 +17,7 @@ function basicPrompt(title: string, description: string) {
   return [
     `News scene depicting: ${stripHtml(title)}.`,
     stripHtml(description).slice(0, 400),
-    "Bangladesh context, real people and real location matching the story.",
+    "100% realistic photography, real Bangladeshi people with local features, Bangladeshi location background.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -44,9 +44,10 @@ export async function buildRelevantImagePrompt(input: {
   const prompt = [
     "Read this Bangla news and describe the single most representative real-life photograph for it.",
     "Rules:",
-    "- Name the concrete subject, action, place and time of day implied by the news.",
-    "- Mention people's appearance/clothing and the environment as they would truly look in Bangladesh.",
-    "- Stay strictly on-topic: the photo must match the headline and body, not a generic newsroom scene.",
+    "- CRITICAL: The photo MUST look 100% real, like a professional press photograph. No illustrations, no cartoons.",
+    "- Human subjects must have realistic Bangladeshi facial features, skin tones, and local clothing (Saree, Lungi, Panjabi, Salwar Kameez, or typical local modern wear).",
+    "- The background and environment MUST be distinctly Bangladeshi (local architecture, rickshaws, greenery, or specific cityscapes of Dhaka/Chittagong/etc.).",
+    "- Stay strictly on-topic: the photo must match the headline and body 100%.",
     "- Output English only, 40-70 words, one paragraph.",
     "- Do not include any text, letters, signboards, logos or watermarks in the described scene.",
     "",
