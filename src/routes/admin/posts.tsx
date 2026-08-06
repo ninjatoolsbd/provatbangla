@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, Eye, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, Eye, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -329,6 +329,47 @@ function PostsPage() {
                 >
                   <Eye className="size-4" />
                 </a>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      className="text-muted-foreground transition-colors hover:text-primary"
+                      title="ক্যাটাগরি পরিবর্তন"
+                    >
+                      <FolderEdit className="size-4" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-2" align="end">
+                    <p className="mb-2 text-[10px] font-bold uppercase text-muted-foreground">
+                      ক্যাটাগরি সেট করুন
+                    </p>
+                    <div className="grid gap-1">
+                      {categories.map((c) => (
+                        <Button
+                          key={c.slug}
+                          variant={p.category === c.slug ? "default" : "ghost"}
+                          size="sm"
+                          className="justify-start text-xs h-8"
+                          onClick={async () => {
+                            const { error } = await supabase
+                              .from("posts")
+                              .update({ category: c.slug })
+                              .eq("id", p.id);
+                            if (error) {
+                              toast.error(error.message);
+                            } else {
+                              toast.success("ক্যাটাগরি আপডেট করা হয়েছে");
+                              void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+                            }
+                          }}
+                        >
+                          {c.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
                 <Link
                   to="/admin/write"
                   search={{ id: p.id }}
