@@ -189,19 +189,51 @@ function PostsPage() {
           </Button>
 
           {selectedIds.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                if (confirm(`${selectedIds.length} টি নিউজ মুছে ফেলতে চান?`)) {
-                  bulkDelete.mutate(selectedIds);
-                }
-              }}
-              disabled={bulkDelete.isPending}
-            >
-              <Trash2 className="mr-2 size-4" />
-              নির্বাচিতগুলো মুছুন ({selectedIds.length})
-            </Button>
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="bg-primary/5">
+                    <FolderEdit className="mr-2 size-4" />
+                    ক্যাটাগরি সেট করুন ({selectedIds.length})
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-2" align="end">
+                  <p className="mb-2 text-[10px] font-bold uppercase text-muted-foreground">
+                    বাল্ক ক্যাটাগরি পরিবর্তন
+                  </p>
+                  <div className="grid gap-1">
+                    {categories.map((c) => (
+                      <Button
+                        key={c.slug}
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-xs h-8"
+                        disabled={bulkUpdateCategory.isPending}
+                        onClick={() => {
+                          bulkUpdateCategory.mutate({ ids: selectedIds, category: c.slug });
+                        }}
+                      >
+                        {c.name}
+                      </Button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  if (confirm(`${selectedIds.length} টি নিউজ মুছে ফেলতে চান?`)) {
+                    bulkDelete.mutate(selectedIds);
+                  }
+                }}
+                disabled={bulkDelete.isPending}
+              >
+                <Trash2 className="mr-2 size-4" />
+                নির্বাচিতগুলো মুছুন ({selectedIds.length})
+              </Button>
+            </div>
           )}
           <Button asChild size="sm">
             <Link to="/admin/write">নিউজ লিখুন</Link>
