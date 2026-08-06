@@ -138,9 +138,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="sr-only">
-          ami j news debo se news ta ai search korlei onek image pabe, or referecne thekeo image nite pare chaile. sei image die se kaj korte pare chaile. i dont konow erokom kora jay kina. kintu tumi jeta valo mone koro koro, amar image r news mil thaklei holo
-        </div>
         {children}
         <Scripts />
       </body>
