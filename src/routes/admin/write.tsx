@@ -70,6 +70,9 @@ function WritePage() {
     if (!id || !postsQuery.data) return;
     const p = postsQuery.data.find((x) => x.id === id);
     if (!p || editingId === p.id) return;
+    
+    // Only set these values if the user hasn't started editing
+    // or if we are switching to a completely different news item
     setEditingId(p.id);
     setTitle(p.title);
     setKicker(p.kicker ?? "");
@@ -79,7 +82,7 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-  }, [id, postsQuery.data, editingId]);
+  }, [id, postsQuery.data]); // Removed editingId from deps to prevent re-runs on same ID
 
   function applyVersion(v: Version) {
     setTitle(v.title);
