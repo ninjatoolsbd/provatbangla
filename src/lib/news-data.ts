@@ -4,11 +4,11 @@ export type Category = { slug: string; name: string };
 
 export const categories: Category[] = [
   { slug: "sorboshesh", name: "সর্বশেষ" },
-  { slug: "apradh", name: "অপরাধ" },
   { slug: "bangladesh", name: "বাংলাদেশ" },
   { slug: "antorjatik", name: "আন্তর্জাতিক" },
   { slug: "politics", name: "রাজনীতি" },
   { slug: "shikkha", name: "শিক্ষা" },
+  { slug: "apradh", name: "অপরাধ" },
   { slug: "chakri", name: "চাকরি" },
   { slug: "prajukti", name: "প্রযুক্তি" },
   { slug: "khela", name: "খেলা" },
@@ -18,6 +18,12 @@ export const categories: Category[] = [
   { slug: "cholonbil", name: "চলনবিল" },
   { slug: "video", name: "ভিডিও" },
   { slug: "health", name: "স্বাস্থ্য" },
+  { slug: "probas", name: "প্রবাস" },
+  { slug: "orthoniti", name: "অর্থনীতি" },
+  { slug: "ain-adalat", name: "আইন-আদালত" },
+  { slug: "motamot", name: "মতামত" },
+  { slug: "bishesh-protibedon", name: "বিশেষ প্রতিবেদন" },
+  { slug: "photo-gallery", name: "ফটো গ্যালারি" },
   { slug: "onnanno", name: "অন্যান্য" },
 ];
 

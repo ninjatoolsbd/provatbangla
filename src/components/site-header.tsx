@@ -74,7 +74,10 @@ export function SiteHeader() {
           >
             <Home className="size-[18px]" />
           </Link>
-          {categories.filter(c => c.slug !== 'health' && c.slug !== 'onnanno').map((c) => (
+          {categories.filter(c => ![
+            'health', 'probas', 'orthoniti', 'ain-adalat', 
+            'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+          ].includes(c.slug)).map((c) => (
             <Link
               key={c.slug}
               to="/category/$slug"
@@ -91,7 +94,10 @@ export function SiteHeader() {
               <Menu className="size-3.5" />
             </button>
             <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
-              {categories.filter(c => c.slug === 'health' || c.slug === 'onnanno').map((c) => (
+              {categories.filter(c => [
+                'health', 'probas', 'orthoniti', 'ain-adalat', 
+                'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+              ].includes(c.slug)).map((c) => (
                 <Link
                   key={c.slug}
                   to="/category/$slug"
