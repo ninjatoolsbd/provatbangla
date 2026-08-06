@@ -76,7 +76,7 @@ export function SiteHeader() {
           </Link>
           {categories.filter(c => ![
             'health', 'probas', 'orthoniti', 'ain-adalat', 
-            'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+            'motamot', 'bishesh-protibedon', 'photo-gallery'
           ].includes(c.slug)).map((c) => (
             <Link
               key={c.slug}
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
               {categories.filter(c => [
                 'health', 'probas', 'orthoniti', 'ain-adalat', 
-                'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+                'motamot', 'bishesh-protibedon', 'photo-gallery'
               ].includes(c.slug)).map((c) => (
                 <Link
                   key={c.slug}

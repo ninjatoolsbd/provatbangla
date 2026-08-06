@@ -24,7 +24,7 @@ export const categories: Category[] = [
   { slug: "motamot", name: "মতামত" },
   { slug: "bishesh-protibedon", name: "বিশেষ প্রতিবেদন" },
   { slug: "photo-gallery", name: "ফটো গ্যালারি" },
-  { slug: "onnanno", name: "অন্যান্য" },
+  
 ];
 
 export type Article = {
