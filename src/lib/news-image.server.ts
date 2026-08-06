@@ -67,7 +67,7 @@ async function fromPollinations(prompt: string) {
 }
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
-  const fullPrompt = `${prompt} -- Real-life professional news photography, shot on 35mm lens, f/2.8, sharp focus, natural daylight, authentic Bangladeshi atmosphere, 8k resolution, cinematic, realistic skin textures, high detail, no text, no blur, editorial style.`;
+  const fullPrompt = `${prompt} -- Real-life professional news photography, shot on 35mm lens, f/2.8, sharp focus, natural daylight, authentic atmosphere, 8k resolution, cinematic, realistic skin textures, high detail, no text, no blur, editorial style. If the subject is a famous person (e.g. Cristiano Ronaldo), depict them accurately. If the scene is set in Bangladesh, use authentic local details.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
