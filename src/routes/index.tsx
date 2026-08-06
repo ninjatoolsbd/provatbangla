@@ -388,9 +388,11 @@ function Home() {
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
               <div className="grid gap-5 lg:grid-cols-12">
-                <div className="min-w-0 lg:col-span-6">
-                  <LeadCard article={sports[0] ?? articles[9]!} />
-                </div>
+                {sports[0] && (
+                  <div className="min-w-0 lg:col-span-6">
+                    <LeadCard article={sports[0]} />
+                  </div>
+                )}
                 <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-6">
                   {pick(sports.length ? sports : articles, 4, 1).map((a, i) => (
                     <Reveal key={`${a.id}-${i}`} delay={i * 60}>
