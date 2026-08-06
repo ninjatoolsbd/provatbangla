@@ -27,46 +27,75 @@ function pickImageData(payload: ImagesResponse) {
 async function fromCloudflare(prompt: string) {
   const { fetchSettings } = await import("./cms");
   const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-  const token = settings["CLOUDFLARE_API_TOKEN"] || process.env["CLOUDFLARE_API_TOKEN"];
+  const tokensStr = settings["CLOUDFLARE_API_TOKEN"] || process.env["CLOUDFLARE_API_TOKEN"] || "";
+  const tokens = tokensStr.split(",").map(t => t.trim()).filter(Boolean);
   const accountId = settings["CLOUDFLARE_ACCOUNT_ID"] || process.env["CLOUDFLARE_ACCOUNT_ID"] || "0d889fc022ab5086c334140058a43637";
-  if (!token) return null;
-  // Using @cf/bytedance/stable-diffusion-xl-lightning or @cf/stabilityai/stable-diffusion-xl-base-1.0
-  // since the kimi-k2.7-code mentioned in the user's curl is a text model.
-  // I will use flux-schnell if available, or fall back to SDXL.
-  const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ prompt }),
-  });
-  if (!res.ok) return null;
-  const contentType = res.headers.get("content-type") ?? "";
-  if (contentType.includes("application/json")) {
-    const payload = await res.json() as { result?: { image?: string } | string };
-    const encoded = typeof payload.result === "string" ? payload.result : payload.result?.image;
-    return encoded ? `data:image/png;base64,${encoded}` : null;
-  }
+  
+  if (tokens.length === 0) return null;
 
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
-  const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-  if (!isPng && !isJpeg) return null;
-  return `data:${isJpeg ? "image/jpeg" : "image/png"};base64,${Buffer.from(bytes).toString("base64")}`;
+  for (const token of tokens) {
+    try {
+      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ prompt }),
+      });
+      
+      if (res.status === 429 || res.status === 401) {
+        console.warn(`Cloudflare Token failing (Status ${res.status}), trying next...`);
+        continue;
+      }
+      
+      if (!res.ok) continue;
+
+      const contentType = res.headers.get("content-type") ?? "";
+      if (contentType.includes("application/json")) {
+        const payload = await res.json() as { result?: { image?: string } | string };
+        const encoded = typeof payload.result === "string" ? payload.result : payload.result?.image;
+        if (encoded) return `data:image/png;base64,${encoded}`;
+        continue;
+      }
+
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+      const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+      if (!isPng && !isJpeg) continue;
+      return `data:${isJpeg ? "image/jpeg" : "image/png"};base64,${Buffer.from(bytes).toString("base64")}`;
+    } catch (e) {
+      console.error("Cloudflare attempt failed:", e);
+      continue;
+    }
+  }
+  return null;
 }
 
 async function fromPollinations(prompt: string) {
   const { fetchSettings } = await import("./cms");
   const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-  const key = settings["POLLINATIONS_API_KEY"] || process.env["POLLINATIONS_API_KEY"];
-  // Pollinations Flux usually works via simple URL or fetch
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&private=true&enhance=false&model=flux`;
-  const res = await fetch(url, {
-    headers: key ? { Authorization: `Bearer ${key}` } : {},
-  });
-  if (!res.ok) return null;
-  return url; // Returns the direct URL
+  const keysStr = settings["POLLINATIONS_API_KEY"] || process.env["POLLINATIONS_API_KEY"] || "";
+  const keys = keysStr.split(",").map(k => k.trim()).filter(Boolean);
+  
+  // Even if no keys, Pollinations often works without one, but we'll prioritize list if provided
+  const attemptKeys = keys.length > 0 ? keys : [null];
+
+  for (const key of attemptKeys) {
+    try {
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&private=true&enhance=false&model=flux`;
+      const res = await fetch(url, {
+        headers: key ? { Authorization: `Bearer ${key}` } : {},
+      });
+      if (res.status === 429 || res.status === 401) continue;
+      if (!res.ok) continue;
+      return url; 
+    } catch (e) {
+      continue;
+    }
+  }
+  return null;
 }
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
+
   const fullPrompt = `${prompt} -- Real-life professional news photography, shot on 35mm lens, f/2.8, sharp focus, natural daylight, authentic Bangladeshi atmosphere, 8k resolution, cinematic, realistic skin textures, high detail, no text, no blur, editorial style.`;
   try {
     const { fetchSettings } = await import("./cms");
