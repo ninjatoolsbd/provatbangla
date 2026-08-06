@@ -148,32 +148,6 @@ function PostsPage() {
           <p className="text-sm text-muted-foreground">আপনার সাইটের সব নিউজ এখান থেকে ম্যানেজ করুন।</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant={showDuplicates ? "default" : "outline"}
-            size="sm"
-            onClick={() => {
-              setShowDuplicates(!showDuplicates);
-              setShowMissingImages(false);
-            }}
-            className={cn(showDuplicates && "bg-amber-600 hover:bg-amber-700")}
-          >
-            <Copy className="mr-2 size-4" />
-            {showDuplicates ? "সব নিউজ দেখুন" : "ডুপ্লিকেট নিউজ খুঁজুন"}
-          </Button>
-
-          <Button
-            variant={showMissingImages ? "default" : "outline"}
-            size="sm"
-            onClick={() => {
-              setShowMissingImages(!showMissingImages);
-              setShowDuplicates(false);
-            }}
-            className={cn(showMissingImages && "bg-red-600 hover:bg-red-700")}
-          >
-            <ImageOff className="mr-2 size-4" />
-            {showMissingImages ? "সব নিউজ দেখুন" : "ছবি নেই এমন নিউজ"}
-          </Button>
-
           {selectedIds.length > 0 && (
             <Button
               variant="destructive"
@@ -266,6 +240,34 @@ function PostsPage() {
               )}
             </PopoverContent>
           </Popover>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-4">
+          <Button
+            variant={showDuplicates ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setShowDuplicates(!showDuplicates);
+              setShowMissingImages(false);
+            }}
+            className={cn(showDuplicates && "bg-amber-600 hover:bg-amber-700")}
+          >
+            <Copy className="mr-2 size-4" />
+            {showDuplicates ? "সব নিউজ দেখুন" : "ডুপ্লিকেট নিউজ খুঁজুন"}
+          </Button>
+
+          <Button
+            variant={showMissingImages ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setShowMissingImages(!showMissingImages);
+              setShowDuplicates(false);
+            }}
+            className={cn(showMissingImages && "bg-red-600 hover:bg-red-700")}
+          >
+            <ImageOff className="mr-2 size-4" />
+            {showMissingImages ? "সব নিউজ দেখুন" : "ছবি নেই এমন নিউজ"}
+          </Button>
         </div>
       </div>
 
