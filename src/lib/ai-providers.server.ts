@@ -243,25 +243,25 @@ export async function generateTextWithFallback(args: {
           try {
             JSON.parse(processedText);
           } catch (e) {
-            // Attempt to fix common JSON issues
-            let fixedText = processedText
-              // Remove literal newlines inside strings - replace with \n
-              .replace(/([^\\])\n/g, "$1\\n")
-              // Remove trailing commas
-              .replace(/,\s*([}\]])/g, "$1")
-              // Remove potential text before or after the JSON block
-              .trim();
-
-            // Try to handle unescaped quotes inside values using a safer heuristic
-            // Find patterns like "key": "value" and ensure double quotes inside are handled
-            fixedText = fixedText.replace(/"([^"]+)":\s*"([\s\S]*?)"(?=\s*[,}])|([^{}\[\]",\s]+)/g, (match, key, val) => {
-              if (key && val) {
-                // If it's a key-value pair, escape any " inside the val that aren't already escaped
-                const escapedVal = val.replace(/(?<!\\)"/g, '\\"');
-                return `"${key}": "${escapedVal}"`;
+            // Robust cleaning for literal newlines inside JSON strings
+            let fixedText = "";
+            let inString = false;
+            let escaped = false;
+            for (let i = 0; i < processedText.length; i++) {
+              const char = processedText[i];
+              if (char === '"' && !escaped) {
+                inString = !inString;
+                fixedText += char;
+              } else if (inString && (char === '\n' || char === '\r')) {
+                fixedText += "\\n";
+              } else {
+                fixedText += char;
               }
-              return match;
-            });
+              escaped = char === "\\" && !escaped;
+            }
+
+            // Remove trailing commas before closing braces/brackets
+            fixedText = fixedText.replace(/,\s*([}\]])/g, "$1").trim();
             
             try {
               JSON.parse(fixedText);
