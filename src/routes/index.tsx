@@ -158,13 +158,13 @@ function Home() {
   const crime = byCategory("apradh");
   const opinion = byCategory("shilpo-sahitto");
 
-  const lead = national[0]!;
-  const heroSub = pick(articles, 9, 1);
-  const heroMid = pick(articles, 2, 10);
-  const heroThumbs = pick(articles, 5, 12);
-  const strip = pick(articles, 4, 12);
-  const latest = pick(articles, 10, 0);
-  const popular = pick(articles, 10, 6);
+  const lead = articles[0];
+  const heroSub = articles.slice(1, 10);
+  const heroMid = articles.slice(10, 12);
+  const heroThumbs = articles.slice(12, 17);
+  const strip = articles.slice(17, 21);
+  const latest = articles.slice(0, 10);
+  const popular = articles.slice(10, 20);
 
   return (
     <div className="min-h-screen bg-background">
