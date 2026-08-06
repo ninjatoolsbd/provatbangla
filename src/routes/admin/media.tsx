@@ -78,20 +78,22 @@ function MediaPage() {
 
   const remove = useMutation({
     mutationFn: async (ids: string[]) => {
-      // Filter out post-origin IDs as they aren't in the 'media' table
       const mediaIds = ids.filter(id => !id.startsWith("post-"));
+      const postImageIds = ids.filter(id => id.startsWith("post-")).map(id => id.replace("post-", ""));
       
+      // Delete from media table
       if (mediaIds.length > 0) {
         for (const id of mediaIds) {
           await deleteRow("media", id);
         }
       }
 
-      // Optional: if user expects post-origin images to be "deleted" from posts,
-      // we would need to null out their image_url, but standard WP behavior
-      // is that the media library view is read-only for post-attached images
-      // unless they are explicitly in the media table.
-      // For now, we just skip them to avoid the UUID error.
+      // Remove from posts table (clear image_url)
+      if (postImageIds.length > 0) {
+        for (const postId of postImageIds) {
+          await db.from("posts").update({ image_url: null }).eq("id", postId);
+        }
+      }
     },
     onSuccess: () => {
       toast.success("সফলভাবে মুছে ফেলা হয়েছে");
@@ -222,18 +224,16 @@ function MediaPage() {
                   >
                     <Copy className="size-3.5" />
                   </button>
-                  {!m["is_post_image"] && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm("মুছে ফেলবেন?")) remove.mutate([id]);
-                      }}
-                      className="p-1 text-muted-foreground hover:text-destructive transition-colors"
-                      title="ডিলিট"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm("মুছে ফেলবেন?")) remove.mutate([id]);
+                    }}
+                    className="p-1 text-muted-foreground hover:text-destructive transition-colors"
+                    title="ডিলিট"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
                 </span>
               </figcaption>
             </figure>
