@@ -50,8 +50,8 @@ const settingFields: { key: string; label: string; textarea?: boolean; section?:
   { key: "CLOUDFLARE_API_TOKEN", label: "Cloudflare API Token (Image)", section: "ai" },
   { key: "CLOUDFLARE_ACCOUNT_ID", label: "Cloudflare Account ID", section: "ai" },
   { key: "POLLINATIONS_API_KEY", label: "Pollinations API Key (Optional)", section: "ai" },
-  { key: "LEONARDO_API_KEY", label: "Leonardo API Key", section: "ai" },
-  { key: "IDEOGRAM_API_KEY", label: "Ideogram API Key", section: "ai" },
+  { key: "LEONARDO_API_KEY", label: "Leonardo API Key (Removed)", section: "ai" },
+  { key: "IDEOGRAM_API_KEY", label: "Ideogram API Key (Removed)", section: "ai" },
 ];
 
 function SettingsPage() {
