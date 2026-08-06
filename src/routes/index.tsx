@@ -349,9 +349,11 @@ function Home() {
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
               <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-                <div className="min-w-0 lg:col-span-5 lg:pr-5">
-                  <LeadCard article={world[0] ?? articles[6]!} />
-                </div>
+                {world[0] && (
+                  <div className="min-w-0 lg:col-span-5 lg:pr-5">
+                    <LeadCard article={world[0]} />
+                  </div>
+                )}
                 <div className="min-w-0 lg:col-span-7 lg:pl-5">
                   {pick(world.length ? world : articles, 4, 1).map((a, i) => (
                     <Reveal key={`${a.id}-${i}`} delay={i * 50}>
