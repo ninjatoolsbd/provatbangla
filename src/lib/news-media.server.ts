@@ -1,6 +1,6 @@
 /**
- * সোর্স ইমেজ নামানো → AI দিয়ে মডিফাই → লোগো ওয়াটারমার্ক → R2-তে আপলোড।
- * Worker রানটাইমে sharp/canvas নেই, তাই ওয়াটারমার্কও Gemini image edit দিয়ে বসানো হয়।
+ * সোর্স ইমেজ নামানো → লোগো ওয়াটারমার্ক → R2-তে আপলোড।
+ * Worker রানটাইমে sharp/canvas নেই, তাই ওয়াটারমার্ক Gemini image edit দিয়ে বসানো হয়।
  */
 
 import { getFromR2, uploadToR2 } from "@/lib/r2.server";
@@ -68,8 +68,8 @@ async function geminiEdit(parts: GeminiParts): Promise<Uint8Array | null> {
 }
 
 /**
- * সোর্স ছবি নিয়ে AI-মডিফাই + ওয়াটারমার্ক বসিয়ে R2-তে রাখে।
- * ব্যর্থ হলে অন্তত মূল ছবিটাই R2-তে মিরর করে রাখে; তাতেও ব্যর্থ হলে null।
+ * সোর্স ছবি নিয়ে ওয়াটারমার্ক বসিয়ে R2-তে রাখে।
+ * ব্যবহারকারী এখন আর AI দিয়ে ছবি রিরাইট করতে চান না, শুধু ওয়াটারমার্ক চান।
  */
 export async function processSourceImage(opts: {
   imageUrl: string;
@@ -83,31 +83,21 @@ export async function processSourceImage(opts: {
   let finalBytes: Uint8Array | null = null;
   let finalType = mimeType;
 
-  if (opts.aiModify) {
-    const logo = opts.logoUrl ? await fetchBytes(opts.logoUrl) : null;
+  // লোগো থাকলে সেটা ওয়াটারমার্ক হিসেবে বসানো হবে
+  const logo = opts.logoUrl ? await fetchBytes(opts.logoUrl) : null;
+  if (logo) {
     const parts: GeminiParts = [
       {
-        text: [
-          "Re-render this news photograph as an original editorial illustration-style photo:",
-          "keep the same subject, scene and composition, but change lighting, colour grading and fine details",
-          "so it is visually distinct from the original. Photorealistic, 16:9, no text.",
-          logo
-            ? "Then composite the provided logo as a small semi-transparent watermark in the bottom-right corner."
-            : "",
-        ]
-          .filter(Boolean)
-          .join(" "),
+        text: "Place the second image (logo) as a small semi-transparent watermark in the bottom-right corner of the first image. Do not change the first image's content, style, or quality at all. Keep the news photo exactly as it is.",
       },
       { inlineData: { mimeType, data: bytesToBase64(source.bytes) } },
-    ];
-    if (logo) {
-      parts.push({
+      {
         inlineData: {
           mimeType: logo.type.startsWith("image/") ? logo.type : "image/png",
           data: bytesToBase64(logo.bytes),
         },
-      });
-    }
+      },
+    ];
     const edited = await geminiEdit(parts);
     if (edited) {
       finalBytes = edited;
