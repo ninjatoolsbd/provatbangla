@@ -325,9 +325,9 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
       const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json", 
           "accept": "application/json",
-          "Authorization": `Bearer ${key}` 
+          "content-type": "application/json",
+          "authorization": `Bearer ${key}`
         },
         body: JSON.stringify({ 
           prompt: testPrompt, 
