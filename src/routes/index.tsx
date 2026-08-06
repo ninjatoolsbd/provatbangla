@@ -225,7 +225,8 @@ function Home() {
               <AdBanner index={2} variant="skyscraper" className="h-[600px]" />
             </div>
           </div>
-        </section>
+          </section>
+        )}
 
         <div className="my-6">
           <AdBanner index={0} className="h-24" />
