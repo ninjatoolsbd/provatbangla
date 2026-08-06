@@ -147,26 +147,32 @@ function WritePage() {
 
     try {
       setIsUploading(true);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `news-images/${fileName}`;
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const res = String(reader.result);
+          resolve(res.slice(res.indexOf(",") + 1));
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-      const { data, error } = await supabase.storage
-        .from("news-media")
-        .upload(filePath, file);
+      const { uploadMedia } = await import("@/lib/media.functions");
+      const res = await uploadMedia({
+        data: {
+          name: file.name,
+          contentType: file.type || "image/jpeg",
+          dataBase64: base64,
+        },
+      });
 
-      if (error) throw error;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("news-media")
-        .getPublicUrl(filePath);
-
-      setImageUrl(publicUrl);
+      setImageUrl(res.url);
       toast.success("ছবি আপলোড সফল হয়েছে");
     } catch (error: any) {
-      toast.error("আপলোড ব্যর্থ হয়েছে: " + error.message);
+      toast.error("আপলোড ব্যর্থ হয়েছে: " + (error.message || "Unknown error"));
     } finally {
       setIsUploading(false);
+      if (e.target) e.target.value = "";
     }
   };
 
