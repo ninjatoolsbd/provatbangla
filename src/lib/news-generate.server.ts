@@ -127,7 +127,32 @@ export async function runGenerate(data: GenerateInputType) {
     parsed = Article.parse(rawJson);
   } catch (e) {
     console.error("Manual JSON Parse Error:", e, "Cleaned Text Sample:", cleanedText.slice(0, 500));
-    throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
+    // Fallback attempt: extract properties using regex if JSON parse fails
+    try {
+      const regexExtract = (key: string) => {
+        const match = cleanedText.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`));
+        return match ? match[1] : "";
+      };
+      
+      const title = regexExtract("title");
+      const content = regexExtract("content");
+      
+      if (title && content) {
+        parsed = {
+          title,
+          kicker: regexExtract("kicker") || "খবর",
+          excerpt: regexExtract("excerpt") || content.slice(0, 200),
+          content: content.replace(/\\n/g, "\n"),
+          seo_title: regexExtract("seo_title") || title,
+          seo_description: regexExtract("seo_description") || content.slice(0, 150),
+          image_prompt: regexExtract("image_prompt") || title,
+        };
+      } else {
+        throw e;
+      }
+    } catch (fallbackError) {
+      throw new Error(`AI সঠিক ফরম্যাটে উত্তর দেয়নি (JSON Parse Error)। আবার চেষ্টা করুন। বিস্তারিত: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }
 
   let imageUrl: string | null = null;

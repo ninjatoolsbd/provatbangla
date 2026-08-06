@@ -241,22 +241,24 @@ export async function generateTextWithFallback(args: {
               .replace(/([^\\])\n/g, "$1\\n")
               // Remove trailing commas
               .replace(/,\s*([}\]])/g, "$1")
-              // Remove potential text before or after the JSON block if extractJsonBlock missed it
+              // Remove potential text before or after the JSON block
               .trim();
 
-            // Try to handle unescaped quotes inside values. 
-            // This regex looks for quotes that are NOT part of the JSON structure (key or value boundaries)
-            // It's a heuristic: any quote NOT preceded by [:,{] and NOT followed by [:,}] is likely unescaped.
-            // But doing this with regex is very risky for Bengali text.
-            // Instead, let's try a common fix: if a line looks like "key": "value with "quotes" inside",
-            // we escape the inner ones.
+            // Try to handle unescaped quotes inside values using a safer heuristic
+            // Find patterns like "key": "value" and ensure double quotes inside are handled
+            fixedText = fixedText.replace(/"([^"]+)":\s*"([\s\S]*?)"(?=\s*[,}])|([^{}\[\]",\s]+)/g, (match, key, val) => {
+              if (key && val) {
+                // If it's a key-value pair, escape any " inside the val that aren't already escaped
+                const escapedVal = val.replace(/(?<!\\)"/g, '\\"');
+                return `"${key}": "${escapedVal}"`;
+              }
+              return match;
+            });
             
             try {
               JSON.parse(fixedText);
               processedText = fixedText;
             } catch (innerE) {
-               // One last try: if it's a "Unexpected token 'ক'" error, it often means a quote was missed.
-               // We will log and let news-generate try its cleaning.
                console.warn("JSON fix failed, returning raw processed text", innerE);
             }
           }
