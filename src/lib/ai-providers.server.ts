@@ -16,7 +16,10 @@ function extractJsonBlock(raw: string) {
   let jsonCandidate = raw.slice(start, end + 1).trim();
   
   // Clean up potential markdown code fences if they were captured inside
-  jsonCandidate = jsonCandidate.replace(/^```json\s*/i, "").replace(/```$/i, "");
+  jsonCandidate = jsonCandidate.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "");
+  
+  // Final safeguard: remove any non-printable control characters that break JSON
+  jsonCandidate = jsonCandidate.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
   
   return jsonCandidate;
 }
