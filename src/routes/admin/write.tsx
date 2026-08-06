@@ -53,18 +53,6 @@ function WritePage() {
   const { id } = Route.useSearch();
   const queryClient = useQueryClient();
   const auth = useAuth();
-  const rewrite = useServerFn(rewriteNews);
-  const generate = useServerFn(generateNews);
-
-  const [mode, setMode] = useState<"manual" | "ai">("manual");
-  const [genPrompt, setGenPrompt] = useState("");
-  const [genReferenceUrl, setGenReferenceUrl] = useState("");
-  const [genDetails, setGenDetails] = useState("");
-  const [genCategory, setGenCategory] = useState("bangladesh");
-  const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
-  const [genImage, setGenImage] = useState(true);
-  const [genAutoPublish, setGenAutoPublish] = useState(false);
-  const [genProvider, setGenProvider] = useState("auto");
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -75,9 +63,6 @@ function WritePage() {
   const [content, setContent] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDesc, setSeoDesc] = useState("");
-  const [tone, setTone] = useState<"news" | "analysis" | "short">("news");
-  const [variantCount, setVariantCount] = useState(1);
-  const [versions, setVersions] = useState<Version[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
