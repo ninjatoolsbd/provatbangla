@@ -138,14 +138,14 @@ function MediaPage() {
         />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8">
         {rows.map((m: Row) => {
           const id = String(m["id"]);
           const isSelected = selected.has(id);
           return (
             <figure 
               key={id} 
-              className={`relative border transition-all cursor-pointer group ${isSelected ? 'border-primary ring-2 ring-primary/20 scale-[0.98]' : 'border-border bg-background hover:border-primary/50'}`}
+              className={`relative border transition-all cursor-pointer group ${isSelected ? 'border-primary ring-2 ring-primary/20' : 'border-border bg-background hover:border-primary/40'}`}
               onClick={() => toggleSelect(id)}
             >
               <div className="aspect-square w-full overflow-hidden bg-muted">
@@ -163,8 +163,8 @@ function MediaPage() {
                 </div>
               )}
 
-              <figcaption className="flex items-center justify-between gap-2 px-2 py-1.5 bg-background/95 backdrop-blur-sm">
-                <span className="truncate text-[11px] text-muted-foreground font-medium">
+              <figcaption className="flex items-center justify-between gap-2 px-1.5 py-1 bg-background/95 backdrop-blur-sm border-t border-border">
+                <span className="truncate text-[10px] text-muted-foreground font-medium">
                   {String(m["file_name"] ?? "")}
                 </span>
                 <span className="flex shrink-0 gap-1" onClick={(e) => e.stopPropagation()}>
