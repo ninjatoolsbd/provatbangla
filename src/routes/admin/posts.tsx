@@ -316,7 +316,7 @@ function PostsPage() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <div className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4 bg-muted/50 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="grid grid-cols-[auto_1fr_100px_180px_120px] items-center gap-4 bg-muted/50 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
           <button onClick={toggleAll} className="flex items-center">
             {selectedIds.length === rows.length && rows.length > 0 ? (
               <CheckSquare className="size-4 text-primary" />
@@ -325,14 +325,14 @@ function PostsPage() {
             )}
           </button>
           <div>টাইটেল</div>
-          <div className="hidden sm:block">স্ট্যাটাস</div>
-          <div className="hidden sm:block">তারিখ</div>
+          <div className="hidden text-center sm:block">স্ট্যাটাস</div>
+          <div className="hidden text-center sm:block">তারিখ</div>
           <div className="text-right">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
           {rows.map((p) => (
-            <div key={p.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4 px-4 py-4 hover:bg-muted/30">
+            <div key={p.id} className="grid grid-cols-[auto_1fr_100px_180px_120px] items-center gap-4 px-4 py-4 hover:bg-muted/30">
               <button onClick={() => toggleSelection(p.id)}>
                 {selectedIds.includes(p.id) ? (
                   <CheckSquare className="size-4 text-primary" />
@@ -348,7 +348,7 @@ function PostsPage() {
                 </p>
               </div>
 
-              <div className="hidden sm:block">
+              <div className="hidden text-center sm:block">
                 <span
                   className={cn(
                     "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium",
@@ -361,7 +361,7 @@ function PostsPage() {
                 </span>
               </div>
 
-              <div className="hidden text-xs text-muted-foreground sm:block">
+              <div className="hidden text-center text-[11px] text-muted-foreground sm:block">
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
