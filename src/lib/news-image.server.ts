@@ -128,24 +128,32 @@ async function fromIdeogram(prompt: string) {
 }
 
 
-/** Generates a news illustration based on user-defined priority. */
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = `Ultra-realistic editorial news photography for a newspaper, high quality, 16:9, highly relevant to the context: ${prompt}. Cinematic lighting, professional press photo style, no text, no watermark.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,gemini,leonardo,ideogram";
-    const priority = priorityStr.split(",").filter(p => Boolean(p) && p !== "blackbox");
+    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,leonardo,ideogram,gemini";
+    const priority = priorityStr.split(",").map(p => p.trim()).filter(p => Boolean(p) && p !== "blackbox");
 
     let b64: string | null = null;
 
     for (const provider of priority) {
-      if (provider === "cloudflare") b64 = await fromCloudflare(fullPrompt).catch(() => null);
-      else if (provider === "pollinations") b64 = await fromPollinations(fullPrompt).catch(() => null);
-      else if (provider === "leonardo") b64 = await fromLeonardo(fullPrompt).catch(() => null);
-      else if (provider === "ideogram") b64 = await fromIdeogram(fullPrompt).catch(() => null);
-      
-      else if (provider === "gemini") b64 = await fromGemini(fullPrompt).catch(() => null);
+      if (provider === "cloudflare") {
+        b64 = await fromCloudflare(fullPrompt).catch(() => null);
+      }
+      else if (provider === "pollinations") {
+        b64 = await fromPollinations(fullPrompt).catch(() => null);
+      }
+      else if (provider === "leonardo") {
+        b64 = await fromLeonardo(fullPrompt).catch(() => null);
+      }
+      else if (provider === "ideogram") {
+        b64 = await fromIdeogram(fullPrompt).catch(() => null);
+      }
+      else if (provider === "gemini") {
+        b64 = await fromGemini(fullPrompt).catch(() => null);
+      }
       
       if (b64) break;
     }
