@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -55,10 +55,30 @@ function PostsPage() {
   const [cat, setCat] = useState("all");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [showDuplicates, setShowDuplicates] = useState(false);
   
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
-  const rows = (postsQuery.data ?? []).filter((p) => {
+  const allPosts = postsQuery.data ?? [];
+
+  // Group by title to find duplicates
+  const duplicateTitles = new Set<string>();
+  if (showDuplicates) {
+    const titleCounts = new Map<string, number>();
+    allPosts.forEach(p => {
+      const normalized = p.title.trim().toLowerCase();
+      titleCounts.set(normalized, (titleCounts.get(normalized) || 0) + 1);
+    });
+    titleCounts.forEach((count, title) => {
+      if (count > 1) duplicateTitles.add(title);
+    });
+  }
+
+  const rows = allPosts.filter((p) => {
+    if (showDuplicates) {
+      return duplicateTitles.has(p.title.trim().toLowerCase());
+    }
+
     const matchesQuery = p.title.toLowerCase().includes(q.trim().toLowerCase());
     const matchesStatus = status === "all" || p.status === status;
     const matchesCategory = cat === "all" || p.category === cat;
@@ -122,7 +142,17 @@ function PostsPage() {
           <h1 className="font-display text-2xl font-bold text-primary">সব নিউজ</h1>
           <p className="text-sm text-muted-foreground">আপনার সাইটের সব নিউজ এখান থেকে ম্যানেজ করুন।</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant={showDuplicates ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowDuplicates(!showDuplicates)}
+            className={cn(showDuplicates && "bg-amber-600 hover:bg-amber-700")}
+          >
+            <Copy className="mr-2 size-4" />
+            {showDuplicates ? "সব নিউজ দেখুন" : "ডুপ্লিকেট নিউজ খুঁজুন"}
+          </Button>
+
           {selectedIds.length > 0 && (
             <Button
               variant="destructive"
@@ -294,9 +324,11 @@ function PostsPage() {
               <div className="rounded-full bg-muted p-3">
                 <Search className="size-6 text-muted-foreground" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-foreground">কোনো নিউজ পাওয়া যায়নি</h3>
+              <h3 className="mt-4 text-sm font-semibold text-foreground">
+                {showDuplicates ? "কোনো ডুপ্লিকেট নিউজ পাওয়া যায়নি" : "কোনো নিউজ পাওয়া যায়নি"}
+              </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।
+                {showDuplicates ? "আপনার সাইটে বর্তমানে কোনো ডুপ্লিকেট টাইটেল নেই।" : "ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।"}
               </p>
             </div>
           )}
