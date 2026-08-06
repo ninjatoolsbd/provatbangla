@@ -299,3 +299,50 @@ export async function testAiKey(provider: ProviderName, key: string): Promise<{ 
     return { success: false, message: `ব্যর্থ হয়েছে: ${msg}` };
   }
 }
+
+export async function testImageAiKey(provider: string, key: string, extra?: string): Promise<{ success: boolean; message: string }> {
+  const testPrompt = "A small red apple on a white background, minimalist style.";
+  try {
+    if (provider === "cloudflare") {
+      const accountId = extra || "0d889fc022ab5086c334140058a43637";
+      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ prompt: testPrompt }),
+      });
+      if (!res.ok) throw new Error(`Cloudflare Error: ${res.status}`);
+      return { success: true, message: "সংযুক্ত হয়েছে: Cloudflare Flux OK" };
+    }
+    
+    if (provider === "pollinations") {
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(testPrompt)}?nologo=true&private=true&model=flux`;
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${key}` } });
+      if (!res.ok) throw new Error(`Pollinations Error: ${res.status}`);
+      return { success: true, message: "সংযুক্ত হয়েছে: Pollinations Flux OK" };
+    }
+
+    if (provider === "leonardo") {
+      const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ prompt: testPrompt, modelId: "b2441e34-12f4-4ab9-a0ce-f1110f050d7d", width: 512, height: 512, num_images: 1 }),
+      });
+      if (!res.ok) throw new Error(`Leonardo Error: ${res.status}`);
+      return { success: true, message: "সংযুক্ত হয়েছে: Leonardo API OK" };
+    }
+
+    if (provider === "ideogram") {
+      const res = await fetch("https://api.ideogram.ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Api-Key": key },
+        body: JSON.stringify({ image_request: { prompt: testPrompt, aspect_ratio: "ASPECT_1_1", model: "V_2" } }),
+      });
+      if (!res.ok) throw new Error(`Ideogram Error: ${res.status}`);
+      return { success: true, message: "সংযুক্ত হয়েছে: Ideogram API OK" };
+    }
+
+    return { success: false, message: "অজানা ইমেজ প্রোভাইডার" };
+  } catch (e) {
+    return { success: false, message: `ব্যর্থ হয়েছে: ${e instanceof Error ? e.message : String(e)}` };
+  }
+}

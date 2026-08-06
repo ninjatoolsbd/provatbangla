@@ -47,6 +47,11 @@ const settingFields: { key: string; label: string; textarea?: boolean; section?:
   { key: "GEMINI_API_KEY_5", label: "Google Gemini API Key 5", section: "ai" },
   { key: "OPENROUTER_API_KEY", label: "OpenRouter API Key", section: "ai" },
   { key: "GROQ_API_KEY", label: "Groq API Key", section: "ai" },
+  { key: "CLOUDFLARE_API_TOKEN", label: "Cloudflare API Token (Image)", section: "ai" },
+  { key: "CLOUDFLARE_ACCOUNT_ID", label: "Cloudflare Account ID", section: "ai" },
+  { key: "POLLINATIONS_API_KEY", label: "Pollinations API Key (Optional)", section: "ai" },
+  { key: "LEONARDO_API_KEY", label: "Leonardo API Key", section: "ai" },
+  { key: "IDEOGRAM_API_KEY", label: "Ideogram API Key", section: "ai" },
 ];
 
 function SettingsPage() {
@@ -84,6 +89,9 @@ function SettingsPage() {
       return;
     }
 
+    const extra = (key === "CLOUDFLARE_API_TOKEN") ? form["CLOUDFLARE_ACCOUNT_ID"] : undefined;
+
+
     // Handle Gemini keys (either single from the new fields or legacy multiple)
     const keysToTest = provider.startsWith("gemini") 
       ? apiValue.split(",").map(k => k.trim()).filter(Boolean)
@@ -99,8 +107,9 @@ function SettingsPage() {
       for (const k of keysToTest) {
         const res = await testAiKey({ 
           data: { 
-            provider: "gemini", 
-            key: k 
+            provider: provider as any, 
+            key: k,
+            extra
           } 
         });
         if (!res.success) allSuccess = false;
