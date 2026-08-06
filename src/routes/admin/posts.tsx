@@ -316,24 +316,24 @@ function PostsPage() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <div className="grid grid-cols-[auto_1fr_100px_180px_120px] items-center gap-4 bg-muted/50 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          <button onClick={toggleAll} className="flex items-center">
+        <div className="flex items-center gap-4 bg-muted/50 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <button onClick={toggleAll} className="flex items-center shrink-0 w-6">
             {selectedIds.length === rows.length && rows.length > 0 ? (
               <CheckSquare className="size-4 text-primary" />
             ) : (
               <Square className="size-4" />
             )}
           </button>
-          <div>টাইটেল</div>
-          <div className="hidden text-center sm:block">স্ট্যাটাস</div>
-          <div className="hidden text-center sm:block">তারিখ</div>
-          <div className="text-right">অ্যাকশন</div>
+          <div className="flex-1 min-w-0">টাইটেল</div>
+          <div className="hidden w-24 text-center sm:block shrink-0">স্ট্যাটাস</div>
+          <div className="hidden w-40 text-center sm:block shrink-0">তারিখ</div>
+          <div className="w-24 text-right shrink-0">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
           {rows.map((p) => (
-            <div key={p.id} className="grid grid-cols-[auto_1fr_100px_180px_120px] items-center gap-4 px-4 py-4 hover:bg-muted/30">
-              <button onClick={() => toggleSelection(p.id)}>
+            <div key={p.id} className="flex items-center gap-4 px-4 py-4 hover:bg-muted/30">
+              <button onClick={() => toggleSelection(p.id)} className="shrink-0 w-6">
                 {selectedIds.includes(p.id) ? (
                   <CheckSquare className="size-4 text-primary" />
                 ) : (
@@ -348,7 +348,7 @@ function PostsPage() {
                 </p>
               </div>
 
-              <div className="hidden text-center sm:block">
+              <div className="hidden w-24 text-center sm:block shrink-0">
                 <span
                   className={cn(
                     "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium",
@@ -361,11 +361,11 @@ function PostsPage() {
                 </span>
               </div>
 
-              <div className="hidden text-center text-[11px] text-muted-foreground sm:block">
+              <div className="hidden w-40 text-center text-[11px] text-muted-foreground sm:block shrink-0">
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
-              <div className="flex items-center justify-end gap-3">
+              <div className="flex w-24 items-center justify-end gap-3 shrink-0">
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
