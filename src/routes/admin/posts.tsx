@@ -126,6 +126,20 @@ function PostsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const bulkUpdateCategory = useMutation({
+    mutationFn: async ({ ids, category }: { ids: string[]; category: string }) => {
+      const { error } = await supabase.from("posts").update({ category }).in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: (_, variables) => {
+      const catName = categories.find((c) => c.slug === variables.category)?.name || variables.category;
+      toast.success(`${selectedIds.length} টি নিউজের ক্যাটাগরি '${catName}' এ পরিবর্তন করা হয়েছে`);
+      setSelectedIds([]);
+      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const toggleSelection = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
