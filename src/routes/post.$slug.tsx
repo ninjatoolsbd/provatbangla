@@ -9,17 +9,18 @@ import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.function
 
 export const Route = createFileRoute("/post/$slug")({
   validateSearch: (search: Record<string, unknown>) => ({
-    preview: search.preview === "true",
+    preview: search['preview'] === "true",
   }),
   loader: async ({ params, search }) => {
     let post;
-    if (search.preview) {
+    const isPreview = (search as any).preview;
+    if (isPreview) {
       post = await getPostForPreview({ data: { slug: params.slug } });
     } else {
       post = await getPublishedPost({ data: { slug: params.slug } });
     }
     if (!post) throw notFound();
-    return { post: post as Post, isPreview: search.preview };
+    return { post: post as Post, isPreview };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
