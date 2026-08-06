@@ -77,7 +77,7 @@ export function SiteHeader() {
           {categories.filter(c => ![
             'health', 'probas', 'orthoniti', 'ain-adalat', 
             'motamot', 'bishesh-protibedon', 'photo-gallery'
-          ].includes(c.slug)).map((c) => (
+          ].includes(c.slug) || c.slug === 'onnanno').map((c) => (
             <Link
               key={c.slug}
               to="/category/$slug"
