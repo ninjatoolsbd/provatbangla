@@ -25,8 +25,10 @@ function pickImageData(payload: ImagesResponse) {
 }
 
 async function fromCloudflare(prompt: string) {
-  const token = process.env["CLOUDFLARE_API_TOKEN"];
-  const accountId = process.env["CLOUDFLARE_ACCOUNT_ID"] || "0d889fc022ab5086c334140058a43637";
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  const token = settings["CLOUDFLARE_API_TOKEN"] || process.env["CLOUDFLARE_API_TOKEN"];
+  const accountId = settings["CLOUDFLARE_ACCOUNT_ID"] || process.env["CLOUDFLARE_ACCOUNT_ID"] || "0d889fc022ab5086c334140058a43637";
   if (!token) return null;
   // Using @cf/bytedance/stable-diffusion-xl-lightning or @cf/stabilityai/stable-diffusion-xl-base-1.0
   // since the kimi-k2.7-code mentioned in the user's curl is a text model.
@@ -43,7 +45,9 @@ async function fromCloudflare(prompt: string) {
 }
 
 async function fromPollinations(prompt: string) {
-  const key = process.env["POLLINATIONS_API_KEY"];
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  const key = settings["POLLINATIONS_API_KEY"] || process.env["POLLINATIONS_API_KEY"];
   // Pollinations Flux usually works via simple URL or fetch
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&private=true&enhance=false&model=flux`;
   const res = await fetch(url, {
@@ -54,14 +58,18 @@ async function fromPollinations(prompt: string) {
 }
 
 async function fromGemini(prompt: string) {
-  const key = process.env["GEMINI_API_KEY"];
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  const key = settings["GEMINI_API_KEY_1"] || settings["GEMINI_API_KEY"] || process.env["GEMINI_API_KEY_1"] || process.env["GEMINI_API_KEY"];
   if (!key) return null;
   // Gemini Imagen implementation... but we'll stick to simple providers first
   return null; 
 }
 
 async function fromLeonardo(prompt: string) {
-  const key = process.env["LEONARDO_API_KEY"];
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  const key = settings["LEONARDO_API_KEY"] || process.env["LEONARDO_API_KEY"];
   if (!key) return null;
   const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
     method: "POST",
@@ -96,7 +104,9 @@ async function fromLeonardo(prompt: string) {
 }
 
 async function fromIdeogram(prompt: string) {
-  const key = process.env["IDEOGRAM_API_KEY"];
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  const key = settings["IDEOGRAM_API_KEY"] || process.env["IDEOGRAM_API_KEY"];
   if (!key) return null;
   const res = await fetch("https://api.ideogram.ai/generate", {
     method: "POST",
