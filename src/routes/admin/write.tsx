@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Upload, X } from "lucide-react";
+import { Eye, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -325,9 +325,22 @@ function WritePage() {
             ড্রাফট সেভ
           </Button>
           {editingId && (
-            <Button variant="ghost" onClick={resetForm}>
-              নতুন নিউজ
-            </Button>
+            <>
+              <Button asChild variant="outline">
+                <a 
+                  href={`/post/${slugify(title)}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center"
+                >
+                  <Eye className="mr-2 size-4" />
+                  প্রিভিউ
+                </a>
+              </Button>
+              <Button variant="ghost" onClick={resetForm}>
+                নতুন নিউজ
+              </Button>
+            </>
           )}
         </div>
       </section>

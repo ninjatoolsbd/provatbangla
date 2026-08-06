@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, Eye, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -320,6 +320,15 @@ function PostsPage() {
               </div>
 
               <div className="flex items-center justify-end gap-3">
+                <a
+                  href={`/post/${p.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-xs font-medium text-muted-foreground hover:text-primary"
+                  title="ভিউ নিউজ"
+                >
+                  <Eye className="size-4" />
+                </a>
                 <Link
                   to="/admin/write"
                   search={{ id: p.id }}
