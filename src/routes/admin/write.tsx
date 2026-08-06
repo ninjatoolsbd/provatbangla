@@ -143,7 +143,9 @@ function WritePage() {
           ? `নিউজ তৈরি ও লাইভ হয়েছে (${res.provider})`
           : `নিউজ তৈরি হয়েছে (${res.provider}) — নিচে এডিট করে পাবলিশ করুন`,
       );
-      if (!res.imageUrl && genImage) toast.warning("ছবি তৈরি করা যায়নি, লিংক দিয়ে দিন।");
+      if (!res.imageUrl && genImage) {
+        toast.error("ছবি তৈরি বা সংরক্ষণ করা যায়নি। নিউজ তৈরি হয়েছে, তবে ছবি যোগ হয়নি।");
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
     onError: (e: Error) => toast.error(e.message),
