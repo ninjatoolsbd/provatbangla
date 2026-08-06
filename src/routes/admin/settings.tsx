@@ -49,6 +49,7 @@ const settingFields: { key: string; label: string; textarea?: boolean; section?:
   { key: "GROQ_API_KEY", label: "Groq API Key", section: "ai" },
   { key: "CLOUDFLARE_API_TOKEN", label: "Cloudflare API Token (Image)", section: "ai" },
   { key: "CLOUDFLARE_ACCOUNT_ID", label: "Cloudflare Account ID", section: "ai" },
+  { key: "POLLINATIONS_API_KEY", label: "Pollinations API Key (Optional)", section: "ai" },
 ];
 
 function SettingsPage() {
