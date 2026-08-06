@@ -321,7 +321,7 @@ function PostsPage() {
 
               <div className="flex items-center justify-end gap-3">
                 <a
-                  href={`/post/${p.slug}`}
+                  href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center text-xs font-medium text-muted-foreground hover:text-primary"

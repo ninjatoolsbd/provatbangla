@@ -41,12 +41,17 @@ export const Route = createFileRoute("/post/$slug")({
 });
 
 function PostPage() {
-  const { post } = Route.useLoaderData();
+  const { post, isPreview } = Route.useLoaderData();
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main className="mx-auto max-w-[900px] px-4 py-6">
+        {isPreview && (
+          <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+            এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
+          </div>
+        )}
         <nav className="mb-4 text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">
             প্রচ্ছদ
