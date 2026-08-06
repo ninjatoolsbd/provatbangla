@@ -135,11 +135,19 @@ function WritePage() {
       if (error) throw error;
       return data.id as string;
     },
-    onSuccess: (_id, status) => {
+    onSuccess: (id, status) => {
       toast.success(status === "published" ? "নিউজ লাইভ হয়েছে" : "ড্রাফট সংরক্ষিত হয়েছে");
       void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
-      if (status === "published") resetForm();
+      
+      if (status === "published") {
+        resetForm();
+      } else {
+        // If it was a draft save and we weren't editing, set the ID so we don't insert a duplicate next time
+        if (!editingId) {
+          setEditingId(id);
+        }
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
