@@ -134,7 +134,7 @@ function MediaPage() {
         });
       }
       toast.success("আপলোড সম্পন্ন");
-      void qc.invalidateQueries({ queryKey: ["cms", "media"] });
+      void qc.invalidateQueries({ queryKey: ["cms", "media-merged"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "আপলোড ব্যর্থ");
     } finally {
