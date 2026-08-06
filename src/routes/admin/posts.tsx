@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,16 @@ import {
 import { supabase } from "@/integrations/my-supabase/client";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { bn } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 
 /** Placeholder/irrelevant images that should be replaced by topic-relevant AI photos. */
@@ -43,134 +53,242 @@ function PostsPage() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [cat, setCat] = useState("all");
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null);
-
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
-  const rows = (postsQuery.data ?? []).filter(
-    (p) =>
-      (status === "all" || p.status === status) &&
-      (cat === "all" || p.category === cat) &&
-      p.title.toLowerCase().includes(q.trim().toLowerCase()),
-  );
+  const rows = (postsQuery.data ?? []).filter((p) => {
+    const matchesQuery = p.title.toLowerCase().includes(q.trim().toLowerCase());
+    const matchesStatus = status === "all" || p.status === status;
+    const matchesCategory = cat === "all" || p.category === cat;
+    
+    let matchesDate = true;
+    if (date) {
+      const pDate = new Date(p.created_at);
+      matchesDate = 
+        pDate.getFullYear() === date.getFullYear() &&
+        pDate.getMonth() === date.getMonth() &&
+        pDate.getDate() === date.getDate();
+    }
+
+    return matchesQuery && matchesStatus && matchesCategory && matchesDate;
+  });
 
 
-  const toggle = useMutation({
-    mutationFn: async (p: { id: string; status: string }) => {
-      const next = p.status === "published" ? "draft" : "published";
-      const { error } = await supabase
-        .from("posts")
-        .update({
-          status: next,
-          published_at: next === "published" ? new Date().toISOString() : null,
-        })
-        .eq("id", p.id);
+  const bulkDelete = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.from("posts").delete().in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("স্ট্যাটাস আপডেট হয়েছে");
+      toast.success(`${selectedIds.length} টি নিউজ মুছে ফেলা হয়েছে`);
+      setSelectedIds([]);
       void qc.invalidateQueries({ queryKey: ["admin-posts"] });
-      void qc.invalidateQueries({ queryKey: ["published-posts"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const del = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("posts").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("মুছে ফেলা হয়েছে");
-      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
-      void qc.invalidateQueries({ queryKey: ["published-posts"] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
+  const toggleSelection = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.length === rows.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(rows.map((r) => r.id));
+    }
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-[22px] font-bold text-primary">সব নিউজ</h1>
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-primary">সব নিউজ</h1>
+          <p className="text-sm text-muted-foreground">আপনার সাইটের সব নিউজ এখান থেকে ম্যানেজ করুন।</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {selectedIds.length > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                if (confirm(`${selectedIds.length} টি নিউজ মুছে ফেলতে চান?`)) {
+                  bulkDelete.mutate(selectedIds);
+                }
+              }}
+              disabled={bulkDelete.isPending}
+            >
+              <Trash2 className="mr-2 size-4" />
+              নির্বাচিতগুলো মুছুন ({selectedIds.length})
+            </Button>
+          )}
+          <Button asChild size="sm">
+            <Link to="/admin/write">নিউজ লিখুন</Link>
+          </Button>
+        </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Input placeholder="টাইটেল খুঁজুন..." value={q} onChange={(e) => setQ(e.target.value)} />
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
-            <SelectItem value="published">প্রকাশিত</SelectItem>
-            <SelectItem value="draft">ড্রাফট</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={cat} onValueChange={setCat}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">সব ক্যাটাগরি</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c.slug} value={c.slug}>
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+        <div className="grid gap-4 md:grid-cols-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="টাইটেল খুঁজুন..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger>
+              <SelectValue placeholder="সব স্ট্যাটাস" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
+              <SelectItem value="published">প্রকাশিত</SelectItem>
+              <SelectItem value="draft">ড্রাফট</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={cat} onValueChange={setCat}>
+            <SelectTrigger>
+              <SelectValue placeholder="সব ক্যাটাগরি" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">সব ক্যাটাগরি</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.slug} value={c.slug}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <Calendar className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP", { locale: bn }) : "তারিখ নির্বাচন করুন"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <CalendarComponent
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+              {date && (
+                <div className="border-t p-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => setDate(undefined)}
+                  >
+                    রিসেট করুন
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
-      <div className="divide-y divide-border border border-border bg-background">
-        {rows.map((p) => (
-          <div key={p.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-sm font-bold">{p.title}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {categories.find((c) => c.slug === p.category)?.name ?? p.category} ·{" "}
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4 bg-muted/50 px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <button onClick={toggleAll} className="flex items-center">
+            {selectedIds.length === rows.length && rows.length > 0 ? (
+              <CheckSquare className="size-4 text-primary" />
+            ) : (
+              <Square className="size-4" />
+            )}
+          </button>
+          <div>টাইটেল</div>
+          <div className="hidden sm:block">স্ট্যাটাস</div>
+          <div className="hidden sm:block">তারিখ</div>
+          <div className="text-right">অ্যাকশন</div>
+        </div>
+
+        <div className="divide-y divide-border">
+          {rows.map((p) => (
+            <div key={p.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4 px-4 py-4 hover:bg-muted/30">
+              <button onClick={() => toggleSelection(p.id)}>
+                {selectedIds.includes(p.id) ? (
+                  <CheckSquare className="size-4 text-primary" />
+                ) : (
+                  <Square className="size-4" />
+                )}
+              </button>
+              
+              <div className="min-w-0">
+                <p className="truncate font-display text-sm font-semibold text-foreground">{p.title}</p>
+                <p className="text-xs text-muted-foreground">
+                  {categories.find((c) => c.slug === p.category)?.name ?? p.category}
+                </p>
+              </div>
+
+              <div className="hidden sm:block">
+                <span
+                  className={cn(
+                    "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    p.status === "published"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                  )}
+                >
+                  {p.status === "published" ? "প্রকাশিত" : "ড্রাফট"}
+                </span>
+              </div>
+
+              <div className="hidden text-xs text-muted-foreground sm:block">
                 {banglaDateTime(p.published_at ?? p.created_at)}
+              </div>
+
+              <div className="flex items-center justify-end gap-3">
+                <Link
+                  to="/admin/write"
+                  search={{ id: p.id }}
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  এডিট
+                </Link>
+                <button
+                  onClick={() => {
+                    if (confirm("আপনি কি নিশ্চিতভাবে এই নিউজটি মুছতে চান?")) {
+                      del.mutate(p.id);
+                    }
+                  }}
+                  className="text-muted-foreground transition-colors hover:text-destructive"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+          {rows.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="rounded-full bg-muted p-3">
+                <Search className="size-6 text-muted-foreground" />
+              </div>
+              <h3 className="mt-4 text-sm font-semibold text-foreground">কোনো নিউজ পাওয়া যায়নি</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।
               </p>
             </div>
-            <span
-              className={`px-2 py-0.5 text-xs ${
-                p.status === "published"
-                  ? "bg-primary/10 text-primary"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              {p.status === "published" ? "প্রকাশিত" : "ড্রাফট"}
-            </span>
-            <button
-              className="text-xs text-primary hover:underline"
-              onClick={() => toggle.mutate({ id: p.id, status: p.status })}
-            >
-              {p.status === "published" ? "ড্রাফটে নিন" : "পাবলিশ"}
-            </button>
-            <Link to="/admin/write" search={{ id: p.id }} className="text-xs text-primary hover:underline">
-              এডিট
-            </Link>
-            {p.status === "published" && p.slug && (
-              <Link
-                to="/post/$slug"
-                params={{ slug: p.slug }}
-                className="text-xs text-muted-foreground hover:text-primary"
-              >
-                দেখুন
-              </Link>
-            )}
-            <button
-              onClick={() => del.mutate(p.id)}
-              aria-label="মুছুন"
-              className="text-muted-foreground hover:text-primary"
-            >
-              <Trash2 className="size-4" />
-            </button>
-          </div>
-        ))}
-        {rows.length === 0 && (
-          <p className="px-4 py-6 text-sm text-muted-foreground">কোনো নিউজ পাওয়া যায়নি।</p>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
