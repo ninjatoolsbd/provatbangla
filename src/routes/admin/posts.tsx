@@ -76,6 +76,18 @@ function PostsPage() {
   });
 
 
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("posts").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("মুছে ফেলা হয়েছে");
+      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const bulkDelete = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("posts").delete().in("id", ids);
