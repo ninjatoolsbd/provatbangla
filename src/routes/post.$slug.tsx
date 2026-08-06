@@ -7,20 +7,26 @@ import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
 import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.functions";
 
+type PostSearch = {
+  preview?: boolean;
+};
+
 export const Route = createFileRoute("/post/$slug")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    preview: search['preview'] === "true",
-  }),
-  loader: async ({ params, search }) => {
+  validateSearch: (search: Record<string, unknown>): PostSearch => {
+    return {
+      preview: search['preview'] === "true" || search['preview'] === true,
+    };
+  },
+  loaderDeps: ({ search: { preview } }) => ({ preview }),
+  loader: async ({ params, deps: { preview } }) => {
     let post;
-    const isPreview = (search as any).preview;
-    if (isPreview) {
+    if (preview) {
       post = await getPostForPreview({ data: { slug: params.slug } });
     } else {
       post = await getPublishedPost({ data: { slug: params.slug } });
     }
     if (!post) throw notFound();
-    return { post: post as Post, isPreview };
+    return { post: post as Post, isPreview: !!preview };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
