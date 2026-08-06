@@ -96,7 +96,7 @@ async function fromPollinations(prompt: string) {
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
 
-  const fullPrompt = `${prompt}, photorealistic news photography, editorial style, shot on 35mm lens, f/2.8, sharp focus, natural colors, high detail, realistic skin textures, authentic atmosphere, no text, no watermark, no digital artifacts, 8k resolution, documentary style, realistic photography.`;
+  const fullPrompt = `${prompt}, high quality photorealistic news photography, editorial press photo, 35mm lens, f/2.8, sharp focus, high detail, natural color palette, documentary style, 8k resolution, realistic textures, no text, no watermark, no logo, no digital glitches.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
@@ -107,15 +107,22 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
       .filter((provider) => provider === "cloudflare" || provider === "pollinations");
 
     let b64: string | null = null;
+    let usedProvider: string = "";
 
     for (const provider of priority) {
       if (provider === "cloudflare") {
         b64 = await fromCloudflare(fullPrompt).catch(() => null);
+        if (b64) usedProvider = "Cloudflare Flux";
       }
       else if (provider === "pollinations") {
         b64 = await fromPollinations(fullPrompt).catch(() => null);
+        if (b64) usedProvider = "Pollinations Flux";
       }
       if (b64) break;
+    }
+
+    if (usedProvider) {
+      console.log(`[ImageGen] Success using ${usedProvider}`);
     }
 
     if (!b64) return null;
