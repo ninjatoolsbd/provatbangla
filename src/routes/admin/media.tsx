@@ -208,6 +208,7 @@ function MediaPage() {
               <figcaption className="flex items-center justify-between gap-2 px-1.5 py-1 bg-background/95 backdrop-blur-sm border-t border-border">
                 <span className="truncate text-[10px] text-muted-foreground font-medium">
                   {String(m["file_name"] ?? "")}
+                  {m["is_post_image"] && <span className="ml-1 text-[8px] opacity-60">(নিউজ)</span>}
                 </span>
                 <span className="flex shrink-0 gap-1" onClick={(e) => e.stopPropagation()}>
                   <button
@@ -221,16 +222,18 @@ function MediaPage() {
                   >
                     <Copy className="size-3.5" />
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (confirm("মুছে ফেলবেন?")) remove.mutate([id]);
-                    }}
-                    className="p-1 text-muted-foreground hover:text-destructive transition-colors"
-                    title="ডিলিট"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
+                  {!m["is_post_image"] && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm("মুছে ফেলবেন?")) remove.mutate([id]);
+                      }}
+                      className="p-1 text-muted-foreground hover:text-destructive transition-colors"
+                      title="ডিলিট"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  )}
                 </span>
               </figcaption>
             </figure>
