@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -56,6 +56,7 @@ function PostsPage() {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showDuplicates, setShowDuplicates] = useState(false);
+  const [showMissingImages, setShowMissingImages] = useState(false);
   
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
@@ -77,6 +78,10 @@ function PostsPage() {
   const rows = allPosts.filter((p) => {
     if (showDuplicates) {
       return duplicateTitles.has(p.title.trim().toLowerCase());
+    }
+
+    if (showMissingImages) {
+      return !p.image_url || p.image_url.trim() === "";
     }
 
     const matchesQuery = p.title.toLowerCase().includes(q.trim().toLowerCase());
@@ -146,11 +151,27 @@ function PostsPage() {
           <Button
             variant={showDuplicates ? "default" : "outline"}
             size="sm"
-            onClick={() => setShowDuplicates(!showDuplicates)}
+            onClick={() => {
+              setShowDuplicates(!showDuplicates);
+              setShowMissingImages(false);
+            }}
             className={cn(showDuplicates && "bg-amber-600 hover:bg-amber-700")}
           >
             <Copy className="mr-2 size-4" />
             {showDuplicates ? "সব নিউজ দেখুন" : "ডুপ্লিকেট নিউজ খুঁজুন"}
+          </Button>
+
+          <Button
+            variant={showMissingImages ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setShowMissingImages(!showMissingImages);
+              setShowDuplicates(false);
+            }}
+            className={cn(showMissingImages && "bg-red-600 hover:bg-red-700")}
+          >
+            <ImageOff className="mr-2 size-4" />
+            {showMissingImages ? "সব নিউজ দেখুন" : "ছবি নেই এমন নিউজ"}
           </Button>
 
           {selectedIds.length > 0 && (
@@ -325,10 +346,18 @@ function PostsPage() {
                 <Search className="size-6 text-muted-foreground" />
               </div>
               <h3 className="mt-4 text-sm font-semibold text-foreground">
-                {showDuplicates ? "কোনো ডুপ্লিকেট নিউজ পাওয়া যায়নি" : "কোনো নিউজ পাওয়া যায়নি"}
+                {showDuplicates 
+                  ? "কোনো ডুপ্লিকেট নিউজ পাওয়া যায়নি" 
+                  : showMissingImages 
+                    ? "সব নিউজে ছবি আছে" 
+                    : "কোনো নিউজ পাওয়া যায়নি"}
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                {showDuplicates ? "আপনার সাইটে বর্তমানে কোনো ডুপ্লিকেট টাইটেল নেই।" : "ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।"}
+                {showDuplicates 
+                  ? "আপনার সাইটে বর্তমানে কোনো ডুপ্লিকেট টাইটেল নেই।" 
+                  : showMissingImages 
+                    ? "আপনার সাইটে এমন কোনো নিউজ নেই যাতে ছবি আপলোড করা হয়নি।" 
+                    : "ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।"}
               </p>
             </div>
           )}
