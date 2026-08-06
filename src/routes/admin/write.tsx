@@ -328,7 +328,7 @@ function WritePage() {
             <>
               <Button asChild variant="outline">
                 <a 
-                  href={`/post/${slugify(title)}`} 
+                  href={`/post/${slugify(title)}?preview=true`} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center"

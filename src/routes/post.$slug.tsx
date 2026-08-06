@@ -5,13 +5,28 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
-import { getPublishedPost } from "@/lib/public-posts.functions";
+import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.functions";
+
+type PostSearch = {
+  preview?: boolean;
+};
 
 export const Route = createFileRoute("/post/$slug")({
-  loader: async ({ params }) => {
-    const post = await getPublishedPost({ data: { slug: params.slug } });
+  validateSearch: (search: Record<string, unknown>): PostSearch => {
+    return {
+      preview: search['preview'] === "true" || search['preview'] === true,
+    };
+  },
+  loaderDeps: ({ search: { preview } }) => ({ preview }),
+  loader: async ({ params, deps: { preview } }) => {
+    let post;
+    if (preview) {
+      post = await getPostForPreview({ data: { slug: params.slug } });
+    } else {
+      post = await getPublishedPost({ data: { slug: params.slug } });
+    }
     if (!post) throw notFound();
-    return { post: post as Post };
+    return { post: post as Post, isPreview: !!preview };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -41,12 +56,17 @@ export const Route = createFileRoute("/post/$slug")({
 });
 
 function PostPage() {
-  const { post } = Route.useLoaderData();
+  const { post, isPreview } = Route.useLoaderData();
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <main className="mx-auto max-w-[900px] px-4 py-6">
+        {isPreview && (
+          <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+            এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
+          </div>
+        )}
         <nav className="mb-4 text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">
             প্রচ্ছদ
