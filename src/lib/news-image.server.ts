@@ -96,7 +96,7 @@ async function fromPollinations(prompt: string) {
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
 
-  const fullPrompt = `${prompt}, photorealistic news photography, editorial style, shot on 35mm lens, f/2.8, sharp focus, natural colors, high detail, realistic skin textures, authentic atmosphere, no text, no watermark, no digital artifacts, 8k resolution.`;
+  const fullPrompt = `${prompt}, photorealistic news photography, editorial style, shot on 35mm lens, f/2.8, sharp focus, natural colors, high detail, realistic skin textures, authentic atmosphere, no text, no watermark, no digital artifacts, 8k resolution, documentary style, realistic photography.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;

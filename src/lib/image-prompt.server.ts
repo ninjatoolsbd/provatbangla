@@ -17,10 +17,12 @@ CORE PRIORITY:
 2. CONTEXTUAL REALISM:
    - If the subject is Bangladeshi (politicians, local events): Describe Bangladeshi facial features, skin tones, local attire (Panjabi, Saree, Lungi), and authentic Bangladeshi backgrounds (Rickshaws, Dhaka streets, local offices).
    - If the subject is INTERNATIONAL (e.g., Ronaldo, Elon Musk): Describe them in their natural setting (football field, press conference, tech office) WITHOUT forced Bangladeshi elements.
-3. STYLE: "Photorealistic editorial news photography". 
+3. LOGICAL RELEVANCE: Ensure the visual elements directly represent the news facts. If the news is about prices or objects, show those objects in a professional editorial setting.
+4. STYLE: "Photorealistic editorial news photography". 
    - Use technical terms: "Captured on 35mm lens", "f/2.8 aperture", "natural lighting", "press photo style", "sharp focus", "high resolution".
    - NO TEXT, NO LOGOS, NO SIGNAGE.
    - NO ILLUSTRATIONS, NO CARTOONS. 100% REALISM.
+   - AVOID generic "beautiful woman" or "glitchy" effects unless the news is specifically about those things.
 
 Headline: ${args.title}
 Details: ${args.description.slice(0, 500)}
