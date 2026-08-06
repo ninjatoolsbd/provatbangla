@@ -259,9 +259,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="বাংলাদেশ" slug="bangladesh" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-            <div className="min-w-0 lg:col-span-5 lg:pr-5">
-              <LeadCard article={national[0]!} />
-            </div>
+            {national[0] && (
+              <div className="min-w-0 lg:col-span-5 lg:pr-5">
+                <LeadCard article={national[0]} />
+              </div>
+            )}
             <div className="min-w-0 lg:col-span-4 lg:px-5">
               {pick(national, 3, 1).map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
