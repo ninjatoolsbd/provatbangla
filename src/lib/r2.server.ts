@@ -43,6 +43,13 @@ export async function uploadToR2(
       headers: { "Content-Type": contentType },
     });
     if (!res.ok) return null;
+
+    // Never persist a URL unless the object can actually be read back.
+    // This prevents broken editor previews when R2 accepts a request but the
+    // object is unavailable because of credentials, bucket, or key issues.
+    const verification = await client.fetch(url, { method: "GET" });
+    if (!verification.ok) return null;
+
     return cfg.publicBase ? `${cfg.publicBase}/${key}` : `/api/public/r2/${key}`;
   } catch {
     return null;

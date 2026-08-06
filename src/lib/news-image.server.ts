@@ -39,9 +39,18 @@ async function fromCloudflare(prompt: string) {
     body: JSON.stringify({ prompt }),
   });
   if (!res.ok) return null;
-  const blob = await res.blob();
-  const buffer = await blob.arrayBuffer();
-  return `data:image/png;base64,${Buffer.from(buffer).toString("base64")}`;
+  const contentType = res.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const payload = await res.json() as { result?: { image?: string } | string };
+    const encoded = typeof payload.result === "string" ? payload.result : payload.result?.image;
+    return encoded ? `data:image/png;base64,${encoded}` : null;
+  }
+
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+  const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  if (!isPng && !isJpeg) return null;
+  return `data:${isJpeg ? "image/jpeg" : "image/png"};base64,${Buffer.from(bytes).toString("base64")}`;
 }
 
 async function fromPollinations(prompt: string) {
@@ -57,31 +66,16 @@ async function fromPollinations(prompt: string) {
   return url; // Returns the direct URL
 }
 
-async function fromGemini(prompt: string) {
-  const { fetchSettings } = await import("./cms");
-  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-  const key = settings["GEMINI_API_KEY_1"] || settings["GEMINI_API_KEY"] || process.env["GEMINI_API_KEY_1"] || process.env["GEMINI_API_KEY"];
-  if (!key) return null;
-  // Gemini Imagen implementation... but we'll stick to simple providers first
-  return null; 
-}
-
-async function fromLeonardo(prompt: string) {
-  return null; // Leonardo is removed
-}
-
-async function fromIdeogram(prompt: string) {
-  return null; // Ideogram is removed
-}
-
-
 export async function generateNewsImage(prompt: string): Promise<string | null> {
   const fullPrompt = `Ultra-realistic editorial news photography for a newspaper, high quality, 16:9, highly relevant to the context: ${prompt}. Cinematic lighting, professional press photo style, no text, no watermark.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
-    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations,leonardo,ideogram,gemini";
-    const priority = priorityStr.split(",").map(p => p.trim()).filter(p => Boolean(p) && p !== "blackbox");
+    const priorityStr = settings["image_gen_priority"] ?? "cloudflare,pollinations";
+    const priority = priorityStr
+      .split(",")
+      .map((provider) => provider.trim())
+      .filter((provider) => provider === "cloudflare" || provider === "pollinations");
 
     let b64: string | null = null;
 
@@ -92,16 +86,6 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
       else if (provider === "pollinations") {
         b64 = await fromPollinations(fullPrompt).catch(() => null);
       }
-      else if (provider === "leonardo") {
-        b64 = await fromLeonardo(fullPrompt).catch(() => null);
-      }
-      else if (provider === "ideogram") {
-        b64 = await fromIdeogram(fullPrompt).catch(() => null);
-      }
-      else if (provider === "gemini") {
-        b64 = await fromGemini(fullPrompt).catch(() => null);
-      }
-      
       if (b64) break;
     }
 
@@ -113,15 +97,21 @@ export async function generateNewsImage(prompt: string): Promise<string | null> 
     }
 
     const bytes = base64ToBytes(b64);
-    const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.png`;
+    const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+    const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    if (!isPng && !isJpeg) return null;
+
+    const contentType = isJpeg ? "image/jpeg" : "image/png";
+    const extension = isJpeg ? "jpg" : "png";
+    const path = `generated/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
 
     const { uploadToR2 } = await import("@/lib/r2.server");
-    const r2Url = await uploadToR2(`news/${path}`, bytes, "image/png");
+    const r2Url = await uploadToR2(`news/${path}`, bytes, contentType);
     if (r2Url) return r2Url;
 
     const { error } = await supabaseAdmin.storage
       .from(BUCKET)
-      .upload(path, bytes, { contentType: "image/png", upsert: false });
+      .upload(path, bytes, { contentType, upsert: false });
     if (error) return null;
 
     return `/api/public/news-image/${path}`;
