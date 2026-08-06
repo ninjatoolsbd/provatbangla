@@ -173,10 +173,10 @@ function Home() {
 
       <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         {/* ================= HERO ================= */}
-        <section className="grid gap-5 border border-border bg-card p-4 lg:grid-cols-12 lg:divide-x lg:divide-border">
-
-          <div className="min-w-0 lg:col-span-6 lg:pr-5">
-            <SplitLead article={lead} />
+        {lead && (
+          <section className="grid gap-5 border border-border bg-card p-4 lg:grid-cols-12 lg:divide-x lg:divide-border">
+            <div className="min-w-0 lg:col-span-6 lg:pr-5">
+              <SplitLead article={lead} />
             <div className="mt-4 grid divide-x divide-y divide-border border-t border-border sm:grid-cols-3">
               {heroSub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60} className="p-3">
