@@ -3,7 +3,7 @@
  * সাধারণ RSS/সাইটম্যাপ সাপোর্ট + দুটি নির্দিষ্ট সাইটের অ্যাডাপ্টার।
  */
 
-const UA = "Mozilla/5.0 (compatible; ProvatBanglaBot/1.0)";
+const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
 export type SourceItem = {
   url: string;

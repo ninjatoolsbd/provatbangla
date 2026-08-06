@@ -166,7 +166,7 @@ function AutomationPage() {
         <div>
           <h1 className="font-display text-[22px] font-bold text-primary">অটো নিউজ কালেকশন</h1>
           <p className="text-sm text-muted-foreground">
-            সোর্স সাইট থেকে নতুন নিউজ → AI রিরাইট → ছবি মডিফাই ও ওয়াটারমার্ক → সাইটে প্রকাশ।
+            আপনার পছন্দের নিউজ সাইট থেকে অটোমেটিক সংবাদ সংগ্রহ করুন। শুধু সাইটের লিংক দিন, বাকি কাজ AI করবে।
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -254,7 +254,7 @@ function AutomationPage() {
 
           <h2 className="pt-2 font-display text-base font-bold">দৈনিক ক্রন লিংক</h2>
           <p className="text-xs text-muted-foreground">
-            দিনে একবার এই লিংকে হিট করলেই অটো-সিঙ্ক চলবে (cron-job.org বা pg_cron)।
+            দিনে একবার এই লিংকে হিট করলেই অটো-সিঙ্ক চলবে (এটি আপনার হোস্টিং বা ক্রন সার্ভারে সেট করুন)।
           </p>
           <div className="flex gap-2">
             <input
@@ -334,13 +334,13 @@ function AutomationPage() {
 
         <div className="mt-3 flex flex-wrap gap-2">
           <input
-            placeholder="সোর্সের নাম"
+            placeholder="সাইটের নাম (যেমন: প্রথম আলো)"
             value={newSource.name}
             onChange={(e) => setNewSource({ ...newSource, name: e.target.value })}
             className="border border-border bg-background px-3 py-2 text-sm"
           />
           <input
-            placeholder="https://example.com"
+            placeholder="নিউজ সাইটের মূল লিংক (যেমন: https://prothomalo.com)"
             value={newSource.site_url}
             onChange={(e) => setNewSource({ ...newSource, site_url: e.target.value })}
             className="min-w-[240px] flex-1 border border-border bg-background px-3 py-2 text-sm"
