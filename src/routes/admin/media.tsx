@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Copy, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-import { deleteRow, insertRow, listRows, type Row } from "@/lib/cms";
+import { deleteRow, insertRow, listRows, type Row, db } from "@/lib/cms";
 import { uploadMedia } from "@/lib/media.functions";
 
 export const Route = createFileRoute("/admin/media")({
@@ -41,8 +41,39 @@ function MediaPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const list = useQuery({
-    queryKey: ["cms", "media"],
-    queryFn: () => listRows("media", { column: "created_at", ascending: false }),
+    queryKey: ["cms", "media-merged"],
+    queryFn: async () => {
+      // 1. Get explicit media library uploads
+      const mediaRes = await listRows("media", { column: "created_at", ascending: false });
+      
+      // 2. Get images already used in posts (WP imports, etc)
+      const { data: postsData } = await db
+        .from("posts")
+        .select("id, title, image_url, created_at")
+        .not("image_url", "is", null)
+        .neq("image_url", "")
+        .order("created_at", { ascending: false });
+
+      // Transform post images to match media structure
+      const postImages = (postsData ?? [])
+        .filter((p: any) => p.image_url && !p.image_url.includes("picsum.photos")) // Ignore placeholders
+        .map((p: any) => ({
+          id: `post-${p.id}`,
+          url: p.image_url,
+          file_name: p.title,
+          is_post_image: true,
+          created_at: p.created_at
+        }));
+
+      // Merge and remove duplicates by URL
+      const merged = [...mediaRes, ...postImages];
+      const unique = Array.from(new Map(merged.map(item => [item.url, item])).values());
+      
+      // Sort by date
+      return unique.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    },
   });
 
   const remove = useMutation({
