@@ -76,8 +76,8 @@ export function SiteHeader() {
           </Link>
           {categories.filter(c => ![
             'health', 'probas', 'orthoniti', 'ain-adalat', 
-            'motamot', 'bishesh-protibedon', 'photo-gallery'
-          ].includes(c.slug) || c.slug === 'onnanno').map((c) => (
+            'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+          ].includes(c.slug)).map((c) => (
             <Link
               key={c.slug}
               to="/category/$slug"
