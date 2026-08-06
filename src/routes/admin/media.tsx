@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Copy, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-import { deleteRow, insertRow, listRows, type Row } from "@/lib/cms";
+import { deleteRow, insertRow, listRows, type Row, db } from "@/lib/cms";
 import { uploadMedia } from "@/lib/media.functions";
 
 export const Route = createFileRoute("/admin/media")({
@@ -56,8 +56,8 @@ function MediaPage() {
 
       // Transform post images to match media structure
       const postImages = (postsData ?? [])
-        .filter(p => p.image_url && !p.image_url.includes("picsum.photos")) // Ignore placeholders
-        .map(p => ({
+        .filter((p: any) => p.image_url && !p.image_url.includes("picsum.photos")) // Ignore placeholders
+        .map((p: any) => ({
           id: `post-${p.id}`,
           url: p.image_url,
           file_name: p.title,
