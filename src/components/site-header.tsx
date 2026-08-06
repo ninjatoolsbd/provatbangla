@@ -74,7 +74,7 @@ export function SiteHeader() {
           >
             <Home className="size-[18px]" />
           </Link>
-          {categories.map((c) => (
+          {categories.filter(c => c.slug !== 'health' && c.slug !== 'onnanno').map((c) => (
             <Link
               key={c.slug}
               to="/category/$slug"
@@ -85,6 +85,25 @@ export function SiteHeader() {
               {c.name}
             </Link>
           ))}
+          <div className="relative group">
+            <button className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary flex items-center gap-1">
+              অন্যান্য
+              <Menu className="size-3.5" />
+            </button>
+            <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
+              {categories.filter(c => c.slug === 'health' || c.slug === 'onnanno').map((c) => (
+                <Link
+                  key={c.slug}
+                  to="/category/$slug"
+                  params={{ slug: c.slug }}
+                  className="block px-4 py-2 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors"
+                  activeProps={{ className: "text-primary bg-accent" }}
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </div>
+          </div>
           
         </div>
 

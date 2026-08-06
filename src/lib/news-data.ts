@@ -16,6 +16,7 @@ export const categories: Category[] = [
   { slug: "jibonjapon", name: "জীবনযাপন" },
   { slug: "cholonbil", name: "চলনবিল" },
   { slug: "video", name: "ভিডিও" },
+  { slug: "health", name: "স্বাস্থ্য" },
   { slug: "onnanno", name: "অন্যান্য" },
 ];
 
