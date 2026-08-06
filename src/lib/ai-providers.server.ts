@@ -356,10 +356,31 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
     if (provider === "ideogram") {
       const res = await fetch("https://api.ideogram.ai/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Api-Key": key },
-        body: JSON.stringify({ image_request: { prompt: testPrompt, aspect_ratio: "ASPECT_1_1", model: "V_2" } }),
+        headers: { 
+          "Content-Type": "application/json", 
+          "Api-Key": key 
+        },
+        body: JSON.stringify({ 
+          image_request: { 
+            prompt: testPrompt, 
+            aspect_ratio: "ASPECT_1_1", 
+            model: "V_2",
+            magic_prompt_option: "OFF"
+          } 
+        }),
       });
-      if (!res.ok) throw new Error(`Ideogram Error: ${res.status}`);
+      if (!res.ok) {
+        const errorText = await res.text();
+        let detail = "";
+        try {
+          const parsed = JSON.parse(errorText);
+          detail = parsed.error || parsed.message || errorText;
+          if (typeof detail === 'object') detail = JSON.stringify(detail);
+        } catch {
+          detail = errorText;
+        }
+        throw new Error(`Ideogram Error: ${res.status} ${detail.slice(0, 200)}`);
+      }
       return { success: true, message: "সংযুক্ত হয়েছে: Ideogram API OK" };
     }
 
