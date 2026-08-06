@@ -37,23 +37,25 @@ export async function buildRelevantImagePrompt(input: {
   const hint = stripHtml(input.hint || "").slice(0, 300);
 
   const system =
-    "You are a photo editor for a Bangladeshi newspaper. You convert Bangla news text into a single, " +
-    "concrete English photo brief. Reply with ONE plain sentence-group only, no JSON, no quotes, no lists, " +
-    "no explanation. Never invent a different topic than the news given.";
+    "You are a professional visual journalist and photo editor for a top Bangladeshi news portal. " +
+    "Your job is to translate complex Bangla news into a high-impact, realistic photo prompt for AI image generators (like Flux). " +
+    "You must ensure the prompt describes a scene that is 100% relevant to the news facts, focusing on a single, powerful visual moment. " +
+    "The output must be in English.";
 
   const prompt = [
-    "Read this Bangla news and describe the single most representative real-life photograph for it.",
-    "Rules:",
-    "- CRITICAL: The photo MUST look 100% real, like a professional press photograph. No illustrations, no cartoons.",
-    "- Human subjects must have realistic Bangladeshi facial features, skin tones, and local clothing (Saree, Lungi, Panjabi, Salwar Kameez, or typical local modern wear).",
-    "- The background and environment MUST be distinctly Bangladeshi (local architecture, rickshaws, greenery, or specific cityscapes of Dhaka/Chittagong/etc.).",
-    "- Stay strictly on-topic: the photo must match the headline and body 100%.",
-    "- Output English only, 40-70 words, one paragraph.",
-    "- Do not include any text, letters, signboards, logos or watermarks in the described scene.",
+    "Task: Create a detailed English photo brief from the following Bangla news.",
+    "",
+    "Mandatory Rules for High Relevance & Cultural Accuracy:",
+    "1. FOCUS ON NEWS FACTS: If the news is about a person (e.g., Ronaldo), the photo MUST focus on that specific person or a direct symbolic representation of the event mentioned in the headline.",
+    "2. HUMAN REPRESENTATION: All people must look like real Bangladeshis (facial features, skin tones). For public figures, describe them in a way that respects their likeness.",
+    "3. CULTURAL SETTING: Describe Bangladeshi environments (specific Dhaka streets, rural Bengal, local architecture, rickshaws, tea stalls, etc.) to ground the image in local context.",
+    "4. NO GENERIC AI STYLE: Avoid 'fantasy' or 'dreamy' looks. Specify 'editorial news photography, candid, sharp focus, real lighting'.",
+    "5. NO TEXT: Explicitly state 'no text, no letters, no signboards, no watermarks, no logos'.",
+    "6. SINGLE SENTENCE: Output ONE descriptive paragraph in English (50-80 words). No JSON, no extra chatter.",
     "",
     `Headline (Bangla): ${title}`,
     description ? `Body (Bangla): ${description}` : "",
-    hint ? `Editor hint: ${hint}` : "",
+    hint ? `User/Editor Instruction: ${hint}` : "",
   ]
     .filter(Boolean)
     .join("\n");
