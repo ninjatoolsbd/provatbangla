@@ -67,7 +67,7 @@ async function fromPollinations(prompt: string) {
 }
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
-  const fullPrompt = `100% realistic award-winning editorial news photography for a Bangladeshi newspaper, hyper-realistic, high quality, 16:9 aspect ratio. The scene must feature Bangladeshi people with local features and Bangladeshi environments. Highly relevant to: ${prompt}. Professional press photo style, cinematic natural lighting, 8k resolution, no text, no watermark.`;
+  const fullPrompt = `${prompt} -- Real-life professional news photography, shot on 35mm lens, f/2.8, sharp focus, natural daylight, authentic Bangladeshi atmosphere, 8k resolution, cinematic, realistic skin textures, high detail, no text, no blur, editorial style.`;
   try {
     const { fetchSettings } = await import("./cms");
     const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
