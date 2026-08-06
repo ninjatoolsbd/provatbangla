@@ -192,28 +192,33 @@ export async function generateTextWithFallback(args: {
   // Build the hierarchical queue: Gemini Keys -> OpenRouter -> Groq
   const queue: { name: ProviderName; run: (key: string) => Promise<string>; keys: string[] }[] = [];
 
-  if (geminiKeys.length > 0) {
-    queue.push({
-      name: "gemini",
+  // If a preferred provider is specified, put it first
+  const preferred = args.preferred || "auto";
+
+  const availableProviders = [
+    {
+      name: "gemini" as ProviderName,
       keys: geminiKeys,
-      run: (key) => geminiApi({ key, system: args.system, prompt: args.prompt }),
-    });
-  }
+      run: (key: string) => geminiApi({ key, system: args.system, prompt: args.prompt }),
+    },
+    {
+      name: "openrouter" as ProviderName,
+      keys: openrouterKey ? [openrouterKey] : [],
+      run: (key: string) => openrouterApi({ key, system: args.system, prompt: args.prompt, json }),
+    },
+    {
+      name: "groq" as ProviderName,
+      keys: groqKey ? [groqKey] : [],
+      run: (key: string) => groqApi({ key, system: args.system, prompt: args.prompt }),
+    },
+  ];
 
-  if (openrouterKey) {
-    queue.push({
-      name: "openrouter",
-      keys: [openrouterKey],
-      run: (key) => openrouterApi({ key, system: args.system, prompt: args.prompt, json }),
-    });
-  }
-
-  if (groqKey) {
-    queue.push({
-      name: "groq",
-      keys: [groqKey],
-      run: (key) => groqApi({ key, system: args.system, prompt: args.prompt }),
-    });
+  if (preferred !== "auto") {
+    const pref = availableProviders.find(p => p.name === preferred);
+    if (pref && pref.keys.length > 0) queue.push(pref);
+    availableProviders.filter(p => p.name !== preferred && p.keys.length > 0).forEach(p => queue.push(p));
+  } else {
+    availableProviders.filter(p => p.keys.length > 0).forEach(p => queue.push(p));
   }
 
   if (queue.length === 0) {

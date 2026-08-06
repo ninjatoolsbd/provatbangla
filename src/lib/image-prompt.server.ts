@@ -37,18 +37,19 @@ export async function buildRelevantImagePrompt(input: {
   const hint = stripHtml(input.hint || "").slice(0, 300);
 
   const system =
-    "You are a professional visual journalist and photo editor for a top Bangladeshi news portal. " +
+    "You are a professional visual journalist and photo editor for a top news portal. " +
     "Your job is to translate complex Bangla news into a high-impact, realistic photo prompt for AI image generators (like Flux). " +
     "You must ensure the prompt describes a scene that is 100% relevant to the news facts, focusing on a single, powerful visual moment. " +
+    "If the news is about a global celebrity or specific event, prioritize accurate representation of that subject over generic location details. " +
     "The output must be in English.";
 
   const prompt = [
     "Task: Create a detailed English photo brief from the following Bangla news.",
     "",
     "Mandatory Rules for High Relevance & Cultural Accuracy:",
-    "1. FOCUS ON NEWS FACTS: If the news is about a person (e.g., Ronaldo), the photo MUST focus on that specific person or a direct symbolic representation of the event mentioned in the headline.",
-    "2. HUMAN REPRESENTATION: All people must look like real Bangladeshis (facial features, skin tones). For public figures, describe them in a way that respects their likeness.",
-    "3. CULTURAL SETTING: Describe Bangladeshi environments (specific Dhaka streets, rural Bengal, local architecture, rickshaws, tea stalls, etc.) to ground the image in local context.",
+    "1. FOCUS ON NEWS FACTS: If the news is about a specific person (e.g., Ronaldo, Messi, local politician), the photo MUST focus on that specific person in a relevant context. DO NOT replace them with generic people unless they are just part of a crowd.",
+    "2. HUMAN REPRESENTATION: All people must look realistic. If the news is local to Bangladesh, use Bangladeshi features. If it is global news, use appropriate ethnic features for the subjects mentioned.",
+    "3. CONTEXTUAL SETTING: Ground the image in the specific location mentioned in the news (e.g., a stadium for sports, a specific city street, a government building).",
     "4. NO GENERIC AI STYLE: Avoid 'fantasy' or 'dreamy' looks. Specify 'editorial news photography, candid, sharp focus, real lighting'.",
     "5. NO TEXT: Explicitly state 'no text, no letters, no signboards, no watermarks, no logos'.",
     "6. SINGLE SENTENCE: Output ONE descriptive paragraph in English (50-80 words). No JSON, no extra chatter.",
