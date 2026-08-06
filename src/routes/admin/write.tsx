@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Sparkles, Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/my-supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { generateNews, rewriteNews } from "@/lib/news.functions";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
 
@@ -53,18 +51,6 @@ function WritePage() {
   const { id } = Route.useSearch();
   const queryClient = useQueryClient();
   const auth = useAuth();
-  const rewrite = useServerFn(rewriteNews);
-  const generate = useServerFn(generateNews);
-
-  const [mode, setMode] = useState<"manual" | "ai">("manual");
-  const [genPrompt, setGenPrompt] = useState("");
-  const [genReferenceUrl, setGenReferenceUrl] = useState("");
-  const [genDetails, setGenDetails] = useState("");
-  const [genCategory, setGenCategory] = useState("bangladesh");
-  const [genTone, setGenTone] = useState<"news" | "analysis" | "short">("news");
-  const [genImage, setGenImage] = useState(true);
-  const [genAutoPublish, setGenAutoPublish] = useState(false);
-  const [genProvider, setGenProvider] = useState("auto");
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -75,9 +61,6 @@ function WritePage() {
   const [content, setContent] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDesc, setSeoDesc] = useState("");
-  const [tone, setTone] = useState<"news" | "analysis" | "short">("news");
-  const [variantCount, setVariantCount] = useState(1);
-  const [versions, setVersions] = useState<Version[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -96,60 +79,7 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-    setVersions([]);
   }, [id, postsQuery.data, editingId]);
-
-  const rewriteMutation = useMutation({
-    mutationFn: async () =>
-      rewrite({ data: { title, content, category, tone, variants: variantCount } }),
-    onSuccess: (res) => {
-      setVersions(res.versions);
-      const first = res.versions[0];
-      if (first) applyVersion(first);
-      toast.success("AI রিরাইট সম্পন্ন হয়েছে");
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  const generateMutation = useMutation({
-    mutationFn: async () =>
-      generate({
-        data: {
-          prompt: genPrompt,
-          details: genDetails,
-          referenceUrl: genReferenceUrl,
-          category: genCategory,
-          tone: genTone,
-          withImage: genImage,
-          autoPublish: genAutoPublish,
-          provider: genProvider as "auto" | "blackbox",
-        },
-      }),
-    onSuccess: (res) => {
-      setEditingId(null);
-      setTitle(res.article.title);
-      setKicker(res.article.kicker ?? "");
-      setCategory(genCategory);
-      setImageUrl(res.imageUrl ?? "");
-      setExcerpt(res.article.excerpt);
-      setContent(res.article.content);
-      setSeoTitle(res.article.seo_title ?? "");
-      setSeoDesc(res.article.seo_description ?? "");
-      setVersions([]);
-      void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
-      void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
-      toast.success(
-        res.postId
-          ? `নিউজ তৈরি ও লাইভ হয়েছে (${res.provider})`
-          : `নিউজ তৈরি হয়েছে (${res.provider}) — নিচে এডিট করে পাবলিশ করুন`,
-      );
-      if (!res.imageUrl && genImage) {
-        toast.error("ছবি তৈরি বা সংরক্ষণ করা যায়নি। নিউজ তৈরি হয়েছে, তবে ছবি যোগ হয়নি।");
-      }
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
 
   function applyVersion(v: Version) {
     setTitle(v.title);
@@ -168,7 +98,6 @@ function WritePage() {
     setContent("");
     setSeoTitle("");
     setSeoDesc("");
-    setVersions([]);
   }
 
   const saveMutation = useMutation({
@@ -247,137 +176,8 @@ function WritePage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-[22px] font-bold text-primary">নিউজ লিখুন</h1>
-        <div className="flex border-2 border-primary/30">
-          <button
-            type="button"
-            onClick={() => setMode("manual")}
-            className={`px-4 py-2 text-sm font-bold ${mode === "manual" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
-          >
-            নিজে লিখুন
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("ai")}
-            className={`px-4 py-2 text-sm font-bold ${mode === "ai" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground"}`}
-          >
-            AI দিয়ে লিখুন
-          </button>
-        </div>
       </div>
 
-      {mode === "ai" && (
-      <section className="border-2 border-primary/30 bg-secondary/30 p-4">
-        <h2 className="mb-3 flex items-center gap-2 font-display text-[18px] font-bold text-primary">
-          <Sparkles className="size-4" /> AI দিয়ে নতুন নিউজ বানান
-        </h2>
-        <div className="space-y-3">
-
-          <div className="space-y-2">
-            <Label htmlFor="genPrompt">নিউজের টাইটেল / মূল বিষয়</Label>
-            <Input
-              id="genPrompt"
-              value={genPrompt}
-              onChange={(e) => setGenPrompt(e.target.value)}
-              placeholder="যেমন: ঢাকায় মেট্রোরেলের নতুন রুট উদ্বোধন"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="genReferenceUrl">রেফারেন্স ইউআরএল (ঐচ্ছিক)</Label>
-            <Input
-              id="genReferenceUrl"
-              value={genReferenceUrl}
-              onChange={(e) => setGenReferenceUrl(e.target.value)}
-              placeholder="https://example.com/news-article"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="genDetails">অতিরিক্ত বিবরণ (ঐচ্ছিক)</Label>
-            <Textarea
-              id="genDetails"
-              rows={4}
-              value={genDetails}
-              onChange={(e) => setGenDetails(e.target.value)}
-              placeholder="তারিখ, স্থান, ব্যক্তি, সংখ্যা — যা যা খবরে থাকা দরকার"
-            />
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="space-y-2">
-              <Label>ক্যাটাগরি</Label>
-              <Select value={genCategory} onValueChange={setGenCategory}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((c) => (
-                    <SelectItem key={c.slug} value={c.slug}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>ধরন</Label>
-              <Select value={genTone} onValueChange={(v) => setGenTone(v as typeof genTone)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="news">সংবাদ</SelectItem>
-                  <SelectItem value="analysis">বিশ্লেষণ</SelectItem>
-                  <SelectItem value="short">সংক্ষিপ্ত</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>AI প্রোভাইডার</Label>
-              <Select value={genProvider} onValueChange={(v) => setGenProvider(v as any)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">অটোমেটিক (Gemini-Priority)</SelectItem>
-                  <SelectItem value="gemini">Google Gemini</SelectItem>
-                  <SelectItem value="openrouter">OpenRouter</SelectItem>
-                  <SelectItem value="groq">Groq AI</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-5">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                className="size-4 accent-[hsl(var(--primary))]"
-                checked={genImage}
-                onChange={(e) => setGenImage(e.target.checked)}
-              />
-              AI ছবি তৈরি করো
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                className="size-4 accent-[hsl(var(--primary))]"
-                checked={genAutoPublish}
-                onChange={(e) => setGenAutoPublish(e.target.checked)}
-              />
-              অটো পাবলিশ
-            </label>
-            <Button
-              onClick={() => generateMutation.mutate()}
-              disabled={genPrompt.trim().length < 3 || generateMutation.isPending}
-            >
-              {generateMutation.isPending ? (
-                <Loader2 className="mr-2 size-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 size-4" />
-              )}
-              নিউজ জেনারেট করুন
-            </Button>
-          </div>
-        </div>
-      </section>
-      )}
 
 
       <section className="space-y-4">
@@ -470,65 +270,7 @@ function WritePage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-end gap-3 border border-border p-3">
-          <div className="space-y-2">
-            <Label>রিরাইট ধরন</Label>
-            <Select value={tone} onValueChange={(v) => setTone(v as typeof tone)}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="news">সংবাদ</SelectItem>
-                <SelectItem value="analysis">বিশ্লেষণ</SelectItem>
-                <SelectItem value="short">সংক্ষিপ্ত</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>ভার্সন সংখ্যা</Label>
-            <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
-              <SelectTrigger className="w-28">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">১টি</SelectItem>
-                <SelectItem value="2">২টি</SelectItem>
-                <SelectItem value="3">৩টি</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            onClick={() => rewriteMutation.mutate()}
-            disabled={!canRewrite || rewriteMutation.isPending}
-          >
-            {rewriteMutation.isPending ? (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            ) : (
-              <Sparkles className="mr-2 size-4" />
-            )}
-            রিরাইট করুন
-          </Button>
-        </div>
 
-        {versions.length > 1 && (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {versions.map((v, i) => (
-              <div key={i} className="border border-border p-3">
-                <p className="font-display text-sm font-bold text-primary">{v.label}</p>
-                <p className="mt-1 font-display text-[15px] font-bold">{v.title}</p>
-                <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">{v.excerpt}</p>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="mt-2"
-                  onClick={() => applyVersion(v)}
-                >
-                  এই ভার্সনটি ব্যবহার করুন
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
 
         <div className="space-y-2">
           <Label htmlFor="excerpt">সারসংক্ষেপ</Label>
