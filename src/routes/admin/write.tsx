@@ -341,65 +341,7 @@ function WritePage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-end gap-3 border border-border p-3">
-          <div className="space-y-2">
-            <Label>রিরাইট ধরন</Label>
-            <Select value={tone} onValueChange={(v) => setTone(v as typeof tone)}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="news">সংবাদ</SelectItem>
-                <SelectItem value="analysis">বিশ্লেষণ</SelectItem>
-                <SelectItem value="short">সংক্ষিপ্ত</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>ভার্সন সংখ্যা</Label>
-            <Select value={String(variantCount)} onValueChange={(v) => setVariantCount(Number(v))}>
-              <SelectTrigger className="w-28">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">১টি</SelectItem>
-                <SelectItem value="2">২টি</SelectItem>
-                <SelectItem value="3">৩টি</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            onClick={() => rewriteMutation.mutate()}
-            disabled={!canRewrite || rewriteMutation.isPending}
-          >
-            {rewriteMutation.isPending ? (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            ) : (
-              <Sparkles className="mr-2 size-4" />
-            )}
-            রিরাইট করুন
-          </Button>
-        </div>
 
-        {versions.length > 1 && (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {versions.map((v, i) => (
-              <div key={i} className="border border-border p-3">
-                <p className="font-display text-sm font-bold text-primary">{v.label}</p>
-                <p className="mt-1 font-display text-[15px] font-bold">{v.title}</p>
-                <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">{v.excerpt}</p>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="mt-2"
-                  onClick={() => applyVersion(v)}
-                >
-                  এই ভার্সনটি ব্যবহার করুন
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
 
         <div className="space-y-2">
           <Label htmlFor="excerpt">সারসংক্ষেপ</Label>
