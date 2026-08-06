@@ -304,22 +304,48 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
   const testPrompt = "A small red apple on a white background, minimalist style.";
   try {
     if (provider === "cloudflare") {
+      const tokensStr = key || "";
+      const tokens = tokensStr.split(",").map(t => t.trim()).filter(Boolean);
       const accountId = extra || "0d889fc022ab5086c334140058a43637";
-      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ prompt: testPrompt }),
-      });
-      if (!res.ok) throw new Error(`Cloudflare Error: ${res.status}`);
-      return { success: true, message: "সংযুক্ত হয়েছে: Cloudflare Flux OK" };
+      
+      if (tokens.length === 0) throw new Error("Cloudflare API Token missing");
+
+      const errors: string[] = [];
+      for (const token of tokens) {
+        try {
+          const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ prompt: testPrompt }),
+          });
+          if (res.ok) return { success: true, message: `সংযুক্ত হয়েছে: Cloudflare Flux OK (Token: ${token.slice(0, 6)}...)` };
+          errors.push(`Token ${token.slice(0, 6)}...: HTTP ${res.status}`);
+        } catch (e) {
+          errors.push(`Token ${token.slice(0, 6)}...: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      }
+      throw new Error(`Cloudflare Error: ${errors.join(" | ")}`);
     }
     
     if (provider === "pollinations") {
-      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(testPrompt)}?nologo=true&private=true&model=flux`;
-      const res = await fetch(url, { headers: { Authorization: `Bearer ${key}` } });
-      if (!res.ok) throw new Error(`Pollinations Error: ${res.status}`);
-      return { success: true, message: "সংযুক্ত হয়েছে: Pollinations Flux OK" };
+      const keysStr = key || "";
+      const keys = keysStr.split(",").map(k => k.trim()).filter(Boolean);
+      const attemptKeys = keys.length > 0 ? keys : [null];
+
+      const errors: string[] = [];
+      for (const k of attemptKeys) {
+        try {
+          const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(testPrompt)}?nologo=true&private=true&model=flux`;
+          const res = await fetch(url, { headers: k ? { Authorization: `Bearer ${k}` } : {} });
+          if (res.ok) return { success: true, message: `সংযুক্ত হয়েছে: Pollinations Flux OK${k ? ` (Key: ${k.slice(0, 6)}...)` : ""}` };
+          errors.push(`${k ? `Key ${k.slice(0, 6)}...` : "No Key"}: HTTP ${res.status}`);
+        } catch (e) {
+          errors.push(`${k ? `Key ${k.slice(0, 6)}...` : "No Key"}: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      }
+      throw new Error(`Pollinations Error: ${errors.join(" | ")}`);
     }
+
 
     if (provider === "leonardo") {
       const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
