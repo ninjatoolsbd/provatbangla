@@ -148,6 +148,101 @@ function PostsPage() {
           <p className="text-sm text-muted-foreground">আপনার সাইটের সব নিউজ এখান থেকে ম্যানেজ করুন।</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {selectedIds.length > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                if (confirm(`${selectedIds.length} টি নিউজ মুছে ফেলতে চান?`)) {
+                  bulkDelete.mutate(selectedIds);
+                }
+              }}
+              disabled={bulkDelete.isPending}
+            >
+              <Trash2 className="mr-2 size-4" />
+              নির্বাচিতগুলো মুছুন ({selectedIds.length})
+            </Button>
+          )}
+          <Button asChild size="sm">
+            <Link to="/admin/write">নিউজ লিখুন</Link>
+          </Button>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+        <div className="grid gap-4 md:grid-cols-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="টাইটেল খুঁজুন..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger>
+              <SelectValue placeholder="সব স্ট্যাটাস" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
+              <SelectItem value="published">প্রকাশিত</SelectItem>
+              <SelectItem value="draft">ড্রাফট</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={cat} onValueChange={setCat}>
+            <SelectTrigger>
+              <SelectValue placeholder="সব ক্যাটাগরি" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">সব ক্যাটাগরি</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.slug} value={c.slug}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <Calendar className="mr-2 h-4 w-4" />
+                {date ? format(date, "PPP", { locale: bn }) : "তারিখ নির্বাচন করুন"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <CalendarComponent
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+              {date && (
+                <div className="border-t p-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={() => setDate(undefined)}
+                  >
+                    রিসেট করুন
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-4">
           <Button
             variant={showDuplicates ? "default" : "outline"}
             size="sm"
@@ -173,30 +268,8 @@ function PostsPage() {
             <ImageOff className="mr-2 size-4" />
             {showMissingImages ? "সব নিউজ দেখুন" : "ছবি নেই এমন নিউজ"}
           </Button>
-
-          {selectedIds.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                if (confirm(`${selectedIds.length} টি নিউজ মুছে ফেলতে চান?`)) {
-                  bulkDelete.mutate(selectedIds);
-                }
-              }}
-              disabled={bulkDelete.isPending}
-            >
-              <Trash2 className="mr-2 size-4" />
-              নির্বাচিতগুলো মুছুন ({selectedIds.length})
-            </Button>
-          )}
-          <Button asChild size="sm">
-            <Link to="/admin/write">নিউজ লিখুন</Link>
-          </Button>
         </div>
       </div>
-
-      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <div className="grid gap-4 md:grid-cols-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
