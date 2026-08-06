@@ -300,9 +300,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="শিক্ষা" slug="shikkha" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-            <div className="min-w-0 lg:col-span-7 lg:pr-5">
-              <LeadCard article={econ[0] ?? articles[3]!} />
-            </div>
+            {econ[0] && (
+              <div className="min-w-0 lg:col-span-7 lg:pr-5">
+                <LeadCard article={econ[0]} />
+              </div>
+            )}
             <div className="min-w-0 lg:col-span-5 lg:pl-5">
               <TextList items={econ.length > 1 ? econ.slice(1) : pick(articles, 4, 8)} />
             </div>
