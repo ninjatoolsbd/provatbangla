@@ -78,9 +78,20 @@ function MediaPage() {
 
   const remove = useMutation({
     mutationFn: async (ids: string[]) => {
-      for (const id of ids) {
-        await deleteRow("media", id);
+      // Filter out post-origin IDs as they aren't in the 'media' table
+      const mediaIds = ids.filter(id => !id.startsWith("post-"));
+      
+      if (mediaIds.length > 0) {
+        for (const id of mediaIds) {
+          await deleteRow("media", id);
+        }
       }
+
+      // Optional: if user expects post-origin images to be "deleted" from posts,
+      // we would need to null out their image_url, but standard WP behavior
+      // is that the media library view is read-only for post-attached images
+      // unless they are explicitly in the media table.
+      // For now, we just skip them to avoid the UUID error.
     },
     onSuccess: () => {
       toast.success("সফলভাবে মুছে ফেলা হয়েছে");
