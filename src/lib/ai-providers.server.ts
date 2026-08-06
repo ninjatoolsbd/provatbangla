@@ -324,8 +324,20 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
     if (provider === "leonardo") {
       const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ prompt: testPrompt, modelId: "b2441e34-12f4-4ab9-a0ce-f1110f050d7d", width: 512, height: 512, num_images: 1 }),
+        headers: { 
+          "Content-Type": "application/json", 
+          "accept": "application/json",
+          "Authorization": `Bearer ${key}` 
+        },
+        body: JSON.stringify({ 
+          prompt: testPrompt, 
+          modelId: "7b592283-e8a7-4c5a-9ba6-d18c31f258b9", 
+          width: 512, 
+          height: 512, 
+          num_images: 1,
+          alchemy: false,
+          ultra: false
+        }),
       });
       if (!res.ok) {
         const errorText = await res.text();
