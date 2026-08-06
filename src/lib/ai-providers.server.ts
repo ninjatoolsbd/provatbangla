@@ -327,7 +327,17 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
         body: JSON.stringify({ prompt: testPrompt, modelId: "b2441e34-12f4-4ab9-a0ce-f1110f050d7d", width: 512, height: 512, num_images: 1 }),
       });
-      if (!res.ok) throw new Error(`Leonardo Error: ${res.status}`);
+      if (!res.ok) {
+        const errorText = await res.text();
+        let detail = "";
+        try {
+          const parsed = JSON.parse(errorText);
+          detail = parsed.error || parsed.message || errorText;
+        } catch {
+          detail = errorText;
+        }
+        throw new Error(`Leonardo Error: ${res.status} ${detail.slice(0, 200)}`);
+      }
       return { success: true, message: "সংযুক্ত হয়েছে: Leonardo API OK" };
     }
 
