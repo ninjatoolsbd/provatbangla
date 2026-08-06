@@ -92,9 +92,10 @@ async function fromPollinations(prompt: string) {
     }
   }
   return null;
-
+}
 
 export async function generateNewsImage(prompt: string): Promise<string | null> {
+
   const fullPrompt = `${prompt} -- Real-life professional news photography, shot on 35mm lens, f/2.8, sharp focus, natural daylight, authentic Bangladeshi atmosphere, 8k resolution, cinematic, realistic skin textures, high detail, no text, no blur, editorial style.`;
   try {
     const { fetchSettings } = await import("./cms");
