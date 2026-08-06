@@ -281,9 +281,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="চাকরি" slug="chakri" />
           <div className="grid gap-5 lg:grid-cols-12">
-            <div className="min-w-0 lg:col-span-4">
-              <LeadCard article={politics[0]!} />
-            </div>
+            {politics[0] && (
+              <div className="min-w-0 lg:col-span-4">
+                <LeadCard article={politics[0]} />
+              </div>
+            )}
             <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
               {pick(politics, 6, 1).map((a, i) => (
                 <Reveal key={`${a.id}-${i}`} delay={i * 60}>
