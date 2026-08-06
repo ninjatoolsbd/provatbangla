@@ -158,13 +158,13 @@ function Home() {
   const crime = byCategory("apradh");
   const opinion = byCategory("shilpo-sahitto");
 
-  const lead = national[0]!;
-  const heroSub = pick(articles, 9, 1);
-  const heroMid = pick(articles, 2, 10);
-  const heroThumbs = pick(articles, 5, 12);
-  const strip = pick(articles, 4, 12);
-  const latest = pick(articles, 10, 0);
-  const popular = pick(articles, 10, 6);
+  const lead = articles[0];
+  const heroSub = articles.slice(1, 10);
+  const heroMid = articles.slice(10, 12);
+  const heroThumbs = articles.slice(12, 17);
+  const strip = articles.slice(17, 21);
+  const latest = articles.slice(0, 10);
+  const popular = articles.slice(10, 20);
 
   return (
     <div className="min-h-screen bg-background">
@@ -173,10 +173,10 @@ function Home() {
 
       <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         {/* ================= HERO ================= */}
-        <section className="grid gap-5 border border-border bg-card p-4 lg:grid-cols-12 lg:divide-x lg:divide-border">
-
-          <div className="min-w-0 lg:col-span-6 lg:pr-5">
-            <SplitLead article={lead} />
+        {lead && (
+          <section className="grid gap-5 border border-border bg-card p-4 lg:grid-cols-12 lg:divide-x lg:divide-border">
+            <div className="min-w-0 lg:col-span-6 lg:pr-5">
+              <SplitLead article={lead} />
             <div className="mt-4 grid divide-x divide-y divide-border border-t border-border sm:grid-cols-3">
               {heroSub.map((a, i) => (
                 <Reveal key={a.id} delay={i * 60} className="p-3">
@@ -225,7 +225,8 @@ function Home() {
               <AdBanner index={2} variant="skyscraper" className="h-[600px]" />
             </div>
           </div>
-        </section>
+          </section>
+        )}
 
         <div className="my-6">
           <AdBanner index={0} className="h-24" />
@@ -258,9 +259,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="বাংলাদেশ" slug="bangladesh" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-            <div className="min-w-0 lg:col-span-5 lg:pr-5">
-              <LeadCard article={national[0]!} />
-            </div>
+            {national[0] && (
+              <div className="min-w-0 lg:col-span-5 lg:pr-5">
+                <LeadCard article={national[0]} />
+              </div>
+            )}
             <div className="min-w-0 lg:col-span-4 lg:px-5">
               {pick(national, 3, 1).map((a, i) => (
                 <Reveal key={a.id} delay={i * 60}>
@@ -278,9 +281,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="চাকরি" slug="chakri" />
           <div className="grid gap-5 lg:grid-cols-12">
-            <div className="min-w-0 lg:col-span-4">
-              <LeadCard article={politics[0]!} />
-            </div>
+            {politics[0] && (
+              <div className="min-w-0 lg:col-span-4">
+                <LeadCard article={politics[0]} />
+              </div>
+            )}
             <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
               {pick(politics, 6, 1).map((a, i) => (
                 <Reveal key={`${a.id}-${i}`} delay={i * 60}>
@@ -295,9 +300,11 @@ function Home() {
         <section className="mt-5 border border-border bg-card p-4">
           <BarHeading title="শিক্ষা" slug="shikkha" />
           <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-            <div className="min-w-0 lg:col-span-7 lg:pr-5">
-              <LeadCard article={econ[0] ?? articles[3]!} />
-            </div>
+            {econ[0] && (
+              <div className="min-w-0 lg:col-span-7 lg:pr-5">
+                <LeadCard article={econ[0]} />
+              </div>
+            )}
             <div className="min-w-0 lg:col-span-5 lg:pl-5">
               <TextList items={econ.length > 1 ? econ.slice(1) : pick(articles, 4, 8)} />
             </div>
@@ -342,9 +349,11 @@ function Home() {
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
               <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-                <div className="min-w-0 lg:col-span-5 lg:pr-5">
-                  <LeadCard article={world[0] ?? articles[6]!} />
-                </div>
+                {world[0] && (
+                  <div className="min-w-0 lg:col-span-5 lg:pr-5">
+                    <LeadCard article={world[0]} />
+                  </div>
+                )}
                 <div className="min-w-0 lg:col-span-7 lg:pl-5">
                   {pick(world.length ? world : articles, 4, 1).map((a, i) => (
                     <Reveal key={`${a.id}-${i}`} delay={i * 50}>
@@ -379,9 +388,11 @@ function Home() {
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-9">
               <div className="grid gap-5 lg:grid-cols-12">
-                <div className="min-w-0 lg:col-span-6">
-                  <LeadCard article={sports[0] ?? articles[9]!} />
-                </div>
+                {sports[0] && (
+                  <div className="min-w-0 lg:col-span-6">
+                    <LeadCard article={sports[0]} />
+                  </div>
+                )}
                 <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-6">
                   {pick(sports.length ? sports : articles, 4, 1).map((a, i) => (
                     <Reveal key={`${a.id}-${i}`} delay={i * 60}>
