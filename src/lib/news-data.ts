@@ -5,8 +5,9 @@ export type Category = { slug: string; name: string };
 export const categories: Category[] = [
   { slug: "sorboshesh", name: "সর্বশেষ" },
   { slug: "apradh", name: "অপরাধ" },
-  { slug: "antorjatik", name: "আন্তর্জাতিক" },
   { slug: "bangladesh", name: "বাংলাদেশ" },
+  { slug: "politics", name: "রাজনীতি" },
+  { slug: "antorjatik", name: "আন্তর্জাতিক" },
   { slug: "shikkha", name: "শিক্ষা" },
   { slug: "chakri", name: "চাকরি" },
   { slug: "prajukti", name: "প্রযুক্তি" },
