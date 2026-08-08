@@ -167,25 +167,24 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   // Final fallback: try to scrape links from the HTML if it's a page
   try {
     const html = await getText(siteUrl);
-    const links = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)] as [string, string, string][];
+    const linkMatches = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
     const items: SourceItem[] = [];
     const seen = new Set<string>();
-
     
     // Pick links that look like articles (long paths, not utility links)
-    for (const match of links) {
-      const url = match[1];
-      const text = match[2];
+    for (const match of linkMatches) {
+      const href = match[1];
+      const linkText = match[2];
       
-      if (!url) continue;
-      const cleanUrl = url.split('#')[0].split('?')[0];
+      if (!href) continue;
+      const cleanUrl = href.split('#')[0].split('?')[0];
       if (seen.has(cleanUrl)) continue;
       
       try {
         const urlObj = new URL(cleanUrl);
         const path = urlObj.pathname;
         const isArticle = path.split('/').length > 2 && path.length > 10;
-        const title = stripTags(text || "");
+        const title = stripTags(linkText || "");
         
         if (isArticle && title.length > 20) {
           seen.add(cleanUrl);
@@ -196,6 +195,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       }
       if (items.length >= limit) break;
     }
+
 
     if (items.length) return items;
   } catch(e) {
