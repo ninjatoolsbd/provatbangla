@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, Eye, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, Eye, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Sparkles, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -327,7 +327,7 @@ function PostsPage() {
           <div className="flex-1 min-w-0">টাইটেল</div>
           <div className="hidden w-24 text-center sm:block shrink-0">স্ট্যাটাস</div>
           <div className="hidden w-40 text-center sm:block shrink-0">তারিখ</div>
-          <div className="w-24 text-right shrink-0">অ্যাকশন</div>
+          <div className="w-40 text-right shrink-0">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
@@ -365,7 +365,7 @@ function PostsPage() {
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
-              <div className="flex w-24 items-center justify-end gap-3 shrink-0">
+              <div className="flex w-40 items-center justify-end gap-3 shrink-0">
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
@@ -375,6 +375,8 @@ function PostsPage() {
                 >
                   <Eye className="size-4" />
                 </a>
+
+                <CategorySuggestion postId={p.id} title={p.title} content={p.content} currentCategory={p.category} />
 
                 <Popover>
                   <PopoverTrigger asChild>
@@ -460,5 +462,84 @@ function PostsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function CategorySuggestion({ postId, title, content, currentCategory }: { postId: string, title: string, content: string, currentCategory: string }) {
+  const qc = useQueryClient();
+  const [suggestion, setSuggestion] = useState<{ slug: string, name: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getSuggestion = async () => {
+    try {
+      setIsLoading(true);
+      const { suggestCategory } = await import("@/lib/news-suggest.functions");
+      const res = await suggestCategory({ data: { title, content } });
+      setSuggestion({ slug: res.suggestedSlug, name: res.suggestedName });
+    } catch (error) {
+      console.error(error);
+      toast.error("সাজেশন লোড করা যায়নি");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const applySuggestion = async () => {
+    if (!suggestion) return;
+    try {
+      const { error } = await supabase.from("posts").update({ category: suggestion.slug }).eq("id", postId);
+      if (error) throw error;
+      toast.success(`ক্যাটাগরি '${suggestion.name}' হিসেবে সেট করা হয়েছে`);
+      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+      setSuggestion(null);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          onClick={() => !suggestion && getSuggestion()}
+          className={cn(
+            "text-muted-foreground transition-colors hover:text-amber-500",
+            suggestion && "text-amber-500"
+          )}
+          title="ক্যাটাগরি সাজেশন"
+        >
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 p-3" align="end">
+        <h4 className="mb-2 text-xs font-bold text-foreground">AI ক্যাটাগরি সাজেশন</h4>
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Loader2 className="size-5 animate-spin text-primary" />
+          </div>
+        ) : suggestion ? (
+          <div className="space-y-3">
+            <div className="rounded-lg bg-amber-50 p-2 dark:bg-amber-900/20">
+              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase">সুপারিশকৃত:</p>
+              <p className="text-sm font-semibold">{suggestion.name}</p>
+            </div>
+            
+            {suggestion.slug === currentCategory ? (
+              <p className="text-[11px] text-green-600">এটি বর্তমানে সঠিক ক্যাটাগরিতে আছে।</p>
+            ) : (
+              <Button size="sm" className="w-full h-8 text-xs" onClick={applySuggestion}>
+                সাজেশন গ্রহণ করুন
+              </Button>
+            )}
+            
+            <Button variant="ghost" size="sm" className="w-full h-8 text-[10px]" onClick={getSuggestion}>
+              আবার চেক করুন
+            </Button>
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">সাজেশন লোড হচ্ছে...</p>
+        )}
+      </PopoverContent>
+    </Popover>
   );
 }
