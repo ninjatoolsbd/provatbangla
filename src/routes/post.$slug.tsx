@@ -96,10 +96,11 @@ function PostPage() {
           </div>
 
           {post.image_url && (
-            <img
+            <NewsImage
               src={post.image_url}
               alt={post.title}
               className="mt-5 aspect-[16/9] w-full object-cover"
+              loading="eager"
             />
           )}
 
