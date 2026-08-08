@@ -173,20 +173,19 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
     
     // Pick links that look like articles (long paths, not utility links)
     for (const match of linkMatches) {
-      if (!match || match.length < 3) continue;
-      const hrefValue = match[1];
-      const textValue = match[2];
+      const href = match[1];
+      const text = match[2];
       
-      if (typeof hrefValue !== 'string' || !hrefValue) continue;
+      if (typeof href !== 'string' || !href) continue;
       
-      const cleanUrl = hrefValue.split('#')[0].split('?')[0];
+      const cleanUrl: string = href.split('#')[0].split('?')[0];
       if (seen.has(cleanUrl)) continue;
       
       try {
         const urlObj = new URL(cleanUrl);
         const path = urlObj.pathname;
         const isArticle = path.split('/').length > 2 && path.length > 10;
-        const titleText = stripTags(typeof textValue === 'string' ? textValue : "");
+        const titleText = stripTags(typeof text === 'string' ? text : "");
         
         if (isArticle && titleText.length > 20) {
           seen.add(cleanUrl);
@@ -197,6 +196,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       }
       if (items.length >= limit) break;
     }
+
 
 
     if (items.length) return items;
