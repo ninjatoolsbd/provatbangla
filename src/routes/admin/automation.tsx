@@ -88,8 +88,13 @@ function AutomationPage() {
       setNewSource({ name: "", site_url: "", source_category_url: "", target_category: "", per_run: 5 });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
+      console.log("Source added successfully");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: any) => {
+      console.error("Failed to add source:", e);
+      const msg = e.message || (typeof e === 'string' ? e : JSON.stringify(e));
+      toast.error(`ব্যর্থ: ${msg}`);
+    },
   });
 
   const toggleSource = useMutation({
@@ -396,8 +401,11 @@ function AutomationPage() {
           />
           <button
             type="button"
-            disabled={!newSource.name || !newSource.site_url}
-            onClick={() => addSource.mutate()}
+            disabled={!newSource.name || !newSource.site_url || addSource.isPending}
+            onClick={() => {
+              console.log("Adding source:", newSource);
+              addSource.mutate();
+            }}
             className="flex items-center justify-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
           >
             <Plus className="size-4" /> যোগ করুন
