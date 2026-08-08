@@ -123,7 +123,7 @@ export function DivisionMap() {
             <span className="text-primary">{activeDiv.bn}</span> বিভাগের খবর
           </h3>
           {items.map((a, i) => (
-            <ThumbRow key={`${active}-${a.id}-${i}`} article={a} />
+            <ThumbRow key={`${active}-${a.id}-${i}`} article={a as any} />
           ))}
         </div>
       </div>

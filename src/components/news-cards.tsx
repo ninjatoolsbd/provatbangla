@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import type { Article } from "@/lib/news-data";
+import type { Post } from "@/lib/posts";
 import { categoryName } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 
@@ -9,29 +10,29 @@ function ArticleLink({
   className,
   children,
 }: {
-  article: Article;
+  article: Article | Post;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <Link to="/post/$slug" params={{ slug: article.slug ?? String(article.id) }} className={className}>
+    <Link to="/post/$slug" params={{ slug: (article as any).slug ?? String(article.id) }} className={className}>
       {children}
     </Link>
   );
 }
 
-function Kicker({ article }: { article: Article }) {
+function Kicker({ article }: { article: Article | Post }) {
   if (!article.kicker) return null;
   return <span className="text-primary">{article.kicker} / </span>;
 }
 
 /** Big story: image on the left, headline + excerpt on the right (kalbela hero). */
-export function SplitLead({ article }: { article: Article }) {
+export function SplitLead({ article }: { article: Article | Post }) {
   return (
     <article className="group grid gap-4 sm:grid-cols-[1.15fr_1fr]">
       <ArticleLink article={article} className="block overflow-hidden">
         <img
-          src={article.image}
+          src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           loading="eager"
@@ -53,12 +54,12 @@ export function SplitLead({ article }: { article: Article }) {
 }
 
 
-export function LeadCard({ article }: { article: Article }) {
+export function LeadCard({ article }: { article: Article | Post }) {
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
         <img
-          src={article.image}
+          src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
@@ -77,12 +78,12 @@ export function LeadCard({ article }: { article: Article }) {
   );
 }
 
-export function GridCard({ article, compact = false }: { article: Article; compact?: boolean }) {
+export function GridCard({ article, compact = false }: { article: Article | Post; compact?: boolean }) {
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
         <img
-          src={article.image}
+          src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
@@ -104,12 +105,12 @@ export function GridCard({ article, compact = false }: { article: Article; compa
 }
 
 /** Compact row: small square thumb left, bold headline right. */
-export function ThumbRow({ article }: { article: Article }) {
+export function ThumbRow({ article }: { article: Article | Post }) {
   return (
     <article className="group flex gap-3 border-b border-border py-3 transition-all duration-300 last:border-0 hover:translate-x-1">
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
         <img
-          src={article.image}
+          src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="size-[72px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
@@ -125,7 +126,7 @@ export function ThumbRow({ article }: { article: Article }) {
   );
 }
 
-export function ListRow({ article, index }: { article: Article; index?: number }) {
+export function ListRow({ article, index }: { article: Article | Post; index?: number }) {
   return (
     <article className="group flex gap-3 border-b border-border py-3 transition-all duration-300 last:border-0 hover:translate-x-1">
       {typeof index === "number" && (
@@ -143,7 +144,7 @@ export function ListRow({ article, index }: { article: Article; index?: number }
       </div>
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
         <img
-          src={article.image}
+          src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="h-16 w-24 object-cover"
           loading="lazy"
@@ -153,7 +154,7 @@ export function ListRow({ article, index }: { article: Article; index?: number }
   );
 }
 
-export function Meta({ article }: { article: Article }) {
+export function Meta({ article }: { article: Article | Post }) {
   return (
     <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
       <span className="font-semibold text-primary">{categoryName(article.category)}</span>
@@ -162,7 +163,7 @@ export function Meta({ article }: { article: Article }) {
       <span>•</span>
       <span>{article.location}</span>
       <span>•</span>
-      <span>{article.time}</span>
+      <span>{(article as any).time ?? (article as any).published_at}</span>
     </div>
   );
 }
