@@ -122,99 +122,14 @@ async function fromAmaderShomoy(siteUrl: string, limit: number): Promise<SourceI
 
 export async function discoverLatest(siteUrl: string, limit: number): Promise<SourceItem[]> {
   const h = host(siteUrl);
-  
-  // If the siteUrl itself looks like an RSS feed or sitemap
-  if (siteUrl.toLowerCase().endsWith('.xml') || siteUrl.toLowerCase().includes('/rss') || siteUrl.toLowerCase().includes('/feed')) {
-    const rss = await fromRss(siteUrl, limit);
-    if (rss.length) return rss;
-    
-    // Check if it's actually just the XML content directly
-    try {
-      const xml = await getText(siteUrl);
-      if (/<(item|entry)[\s>]/i.test(xml)) {
-        const items: SourceItem[] = [];
-        for (const block of xml.split(/<item[\s>]/i).slice(1)) {
-          const link = block.match(/<link>([^<]+)<\/link>/i)?.[1]?.trim();
-          const title = stripTags(block.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-          if (link && title) items.push({ url: link, title });
-          if (items.length >= limit) break;
-        }
-        if (items.length) return items;
-      }
-      
-      // Check sitemap-like loc tags
-      const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1] ?? "");
-      if (locs.length) {
-        return locs.slice(0, limit).map(url => ({ url, title: "" }));
-      }
-    } catch(e) {
-      console.error("Direct fetch failed for feed-like URL", e);
-    }
-  }
-
   if (h.includes("dainikamadershomoy")) {
     const items = await fromAmaderShomoy(siteUrl, limit).catch(() => []);
     if (items.length) return items;
   }
-  
-  // Try standard patterns on the base domain
   const rss = await fromRss(siteUrl, limit);
   if (rss.length) return rss;
-  
-  const sitemap = await fromNewsSitemap(siteUrl, limit);
-  if (sitemap.length) return sitemap;
-
-  // Final fallback: try to scrape links from the HTML if it's a page
-  try {
-    const html = await getText(siteUrl);
-    const linkMatches = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
-    console.log(`Scraping ${siteUrl}: found ${linkMatches.length} raw links`);
-
-    const items: SourceItem[] = [];
-    const seen = new Set<string>();
-    
-    // Pick links that look like articles (long paths, not utility links)
-    for (const match of linkMatches) {
-      const href = match[1];
-      const text = match[2];
-      
-      if (typeof href !== 'string' || !href) continue;
-      
-      const parts = href.split('#')[0]?.split('?')[0];
-      const cleanUrl: string = parts || "";
-
-
-
-      if (seen.has(cleanUrl)) continue;
-      
-      try {
-        const urlObj = new URL(cleanUrl);
-        const path = urlObj.pathname;
-        const isArticle = (path.split('/').length > 2 && path.length > 10) || /\/\d{4}\/\d{2}\/\d{2}\/|details|news|article/.test(path);
-        const titleText = stripTags(typeof text === 'string' ? text : "");
-        
-        if (isArticle && titleText.length > 20) {
-          seen.add(cleanUrl);
-          items.push({ url: cleanUrl, title: titleText });
-        }
-      } catch (e) {
-        continue;
-      }
-      if (items.length >= limit) break;
-    }
-
-
-
-    if (items.length) return items;
-  } catch(e) {
-    console.error("HTML fallback discovery failed", e);
-  }
-
-  return [];
+  return fromNewsSitemap(siteUrl, limit);
 }
-
-
-
 
 /* ---------------- extraction ---------------- */
 

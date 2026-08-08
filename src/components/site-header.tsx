@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
 import { useState } from "react";
-import logoAsset from "@/assets/logo.png.asset.json";
 
 import { categories } from "@/lib/news-data";
 
@@ -28,12 +27,14 @@ export function SiteHeader() {
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-transform duration-300 hover:scale-[1.03]">
-          <img 
-            src={logoAsset.url} 
-            alt="প্রভাতবাংলা" 
-            className="h-10 md:h-12 w-auto object-contain"
-          />
+        <Link to="/" className="flex shrink-0 flex-col items-center leading-none">
+          <span className="text-[9px] tracking-[0.2em] text-muted-foreground">দৈনিক</span>
+          <span className="font-display text-3xl font-extrabold tracking-tight text-foreground transition-transform duration-300 hover:scale-[1.03] sm:text-[2.6rem]">
+            প্রভাত<span className="text-primary">বাংলা</span>
+          </span>
+          <span className="mt-0.5 text-[8px] tracking-[0.3em] text-muted-foreground">
+            সত্যের সন্ধানে
+          </span>
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
