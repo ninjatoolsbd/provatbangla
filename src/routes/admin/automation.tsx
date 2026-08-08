@@ -169,10 +169,9 @@ function AutomationPage() {
   return (
     <div className="space-y-5">
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800 whitespace-pre-line">
-        0 নতুন, 0 আগেই ছিল, 0 ব্যর্থ
-
-erokom ase khali
+        koi kono news to add hoccena auto
       </div>
+
 
 
       <div className="flex flex-wrap items-center justify-between gap-3">
