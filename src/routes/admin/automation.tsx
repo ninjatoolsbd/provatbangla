@@ -396,8 +396,11 @@ function AutomationPage() {
           />
           <button
             type="button"
-            disabled={!newSource.name || !newSource.site_url}
-            onClick={() => addSource.mutate()}
+            disabled={!newSource.name || !newSource.site_url || addSource.isPending}
+            onClick={() => {
+              console.log("Adding source:", newSource);
+              addSource.mutate();
+            }}
             className="flex items-center justify-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
           >
             <Plus className="size-4" /> যোগ করুন
