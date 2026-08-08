@@ -6,6 +6,39 @@ import type { Post } from "@/lib/posts";
 import { categoryName } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 
+export const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1585829365234-781fcd04c838?auto=format&fit=crop&w=800&q=80";
+
+export function NewsImage({ 
+  src, 
+  alt, 
+  className, 
+  loading = "lazy" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  className?: string;
+  loading?: "lazy" | "eager";
+}) {
+  const [error, setError] = React.useState(false);
+  
+  // Reset error if src changes
+  React.useEffect(() => {
+    setError(false);
+  }, [src]);
+
+  const imageSrc = !src || error ? PLACEHOLDER_IMAGE : src;
+
+  return (
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={className}
+      loading={loading}
+      onError={() => setError(true)}
+    />
+  );
+}
+
 function ArticleLink({
   article,
   className,
