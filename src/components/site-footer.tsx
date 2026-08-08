@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 
 import { categories } from "@/lib/news-data";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 const socials = [
   { Icon: Facebook, label: "Facebook" },
@@ -44,8 +45,12 @@ export function SiteFooter() {
           <div className="grid gap-8 md:grid-cols-12">
             {/* brand + editor info */}
             <div className="md:col-span-4">
-              <Link to="/" className="font-display text-3xl font-extrabold">
-                প্রভাতবাংলা
+              <Link to="/" className="inline-block transition-transform duration-300 hover:scale-[1.03]">
+                <img 
+                  src={logoAsset.url} 
+                  alt="প্রভাতবাংলা" 
+                  className="h-12 w-auto object-contain brightness-0 invert" 
+                />
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
                 সম্পাদক ও প্রকাশক: <span className="text-ink-foreground">ডেমো সম্পাদক</span>

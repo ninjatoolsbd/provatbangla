@@ -20,6 +20,7 @@ import {
   Home,
 } from "lucide-react";
 
+import logoAsset from "@/assets/logo.png.asset.json";
 import {
   Sidebar,
   SidebarContent,
@@ -67,9 +68,12 @@ export function AdminSidebar({ email, isAdmin = true }: { email: string | null; 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-3 py-3">
-        <span className="font-display text-base font-bold text-primary">
-          প্রভাতবাংলা অ্যাডমিন
-        </span>
+        <div className="flex items-center gap-2">
+          <img src={logoAsset.url} alt="Logo" className="size-8 object-contain" />
+          <span className="font-display text-base font-bold text-primary">
+            প্রভাতবাংলা
+          </span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {(
