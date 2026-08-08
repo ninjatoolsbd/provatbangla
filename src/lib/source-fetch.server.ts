@@ -173,30 +173,30 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
     
     // Pick links that look like articles (long paths, not utility links)
     for (const match of linkMatches) {
-      if (match && match.length >= 3) {
-        const href = match[1];
-        const linkText = match[2];
+      const href = match[1];
+      const linkText = match[2];
+      
+      if (typeof href !== 'string' || !href) continue;
+      
+      const cleanUrl = href.split('#')[0].split('?')[0];
+      if (seen.has(cleanUrl)) continue;
+      
+      try {
+        const urlObj = new URL(cleanUrl);
+        const path = urlObj.pathname;
+        const isArticle = path.split('/').length > 2 && path.length > 10;
+        const title = stripTags(linkText || "");
         
-        if (!href) continue;
-        const cleanUrl = href.split('#')[0].split('?')[0];
-        if (seen.has(cleanUrl)) continue;
-        
-        try {
-          const urlObj = new URL(cleanUrl);
-          const path = urlObj.pathname;
-          const isArticle = path.split('/').length > 2 && path.length > 10;
-          const title = stripTags(linkText || "");
-          
-          if (isArticle && title.length > 20) {
-            seen.add(cleanUrl);
-            items.push({ url: cleanUrl, title });
-          }
-        } catch (e) {
-          continue;
+        if (isArticle && title.length > 20) {
+          seen.add(cleanUrl);
+          items.push({ url: cleanUrl, title });
         }
-        if (items.length >= limit) break;
+      } catch (e) {
+        continue;
       }
+      if (items.length >= limit) break;
     }
+
 
 
 
