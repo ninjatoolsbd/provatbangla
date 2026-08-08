@@ -168,6 +168,10 @@ function AutomationPage() {
 
   return (
     <div className="space-y-5">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+        অটো-নিউজ সেকশনে ক্যাটাগরি ম্যাপিং সঠিকভাবে কাজ করছে কি না যাচাই করতে একটি টেস্ট সোর্স সেটআপ করে ফলাফল দেখান।
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-[22px] font-bold text-primary">অটো নিউজ কালেকশন</h1>
