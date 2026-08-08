@@ -403,7 +403,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
         </div>
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="relative lg:col-span-2">
-            <img
+            <NewsImage
               src={main.image}
               alt={main.title}
               className="aspect-[16/9] w-full object-cover"
