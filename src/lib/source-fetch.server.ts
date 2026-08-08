@@ -168,6 +168,8 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   try {
     const html = await getText(siteUrl);
     const linkMatches = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+    console.log(`Scraping ${siteUrl}: found ${linkMatches.length} raw links`);
+
     const items: SourceItem[] = [];
     const seen = new Set<string>();
     
@@ -188,7 +190,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       try {
         const urlObj = new URL(cleanUrl);
         const path = urlObj.pathname;
-        const isArticle = path.split('/').length > 2 && path.length > 10;
+        const isArticle = (path.split('/').length > 2 && path.length > 10) || /\/\d{4}\/\d{2}\/\d{2}\/|details|news|article/.test(path);
         const titleText = stripTags(typeof text === 'string' ? text : "");
         
         if (isArticle && titleText.length > 20) {
