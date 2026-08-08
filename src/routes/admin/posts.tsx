@@ -341,7 +341,7 @@ function PostsPage() {
                 )}
               </button>
               
-              <div className="min-w-0">
+              <div className="flex-1 min-w-0">
                 <p className="truncate font-display text-sm font-semibold text-foreground">{p.title}</p>
                 <p className="text-xs text-muted-foreground">
                   {categories.find((c) => c.slug === p.category)?.name ?? p.category}
@@ -361,11 +361,11 @@ function PostsPage() {
                 </span>
               </div>
 
-              <div className="hidden w-40 text-center text-[11px] text-muted-foreground sm:block shrink-0">
+              <div className="hidden w-40 text-center text-[11px] text-muted-foreground sm:block shrink-0 text-nowrap">
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
-              <div className="flex w-40 items-center justify-end gap-3 shrink-0">
+              <div className="flex w-48 items-center justify-end gap-3 shrink-0">
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
