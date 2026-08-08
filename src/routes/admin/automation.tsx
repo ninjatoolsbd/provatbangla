@@ -88,6 +88,7 @@ function AutomationPage() {
       setNewSource({ name: "", site_url: "", source_category_url: "", target_category: "", per_run: 5 });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
+      console.log("Source added successfully");
     },
     onError: (e: Error) => toast.error(e.message),
   });
