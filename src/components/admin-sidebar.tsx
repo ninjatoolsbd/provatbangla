@@ -43,7 +43,7 @@ const contentItems = [
   { title: "মিডিয়া লাইব্রেরি", url: "/admin/media", icon: Image, adminOnly: false },
   { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree, adminOnly: true },
   { title: "বাল্ক ইমপোর্ট", url: "/admin/import", icon: Upload, adminOnly: true },
-  { title: "অটো নিউজ", url: "/admin/automation", icon: Bot, adminOnly: true },
+  
 ];
 
 const engageItems = [
