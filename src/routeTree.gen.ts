@@ -33,6 +33,7 @@ import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
 import { Route as ApiPublicCronSyncRouteImport } from './routes/api/public/cron-sync'
+import { Route as ApiPublicFixDbRouteImport } from './routes/api/public/fix-db'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
 import { Route as ApiPublicR2SplatRouteImport } from './routes/api/public/r2.$'
 
@@ -156,6 +157,11 @@ const ApiPublicCronSyncRoute = ApiPublicCronSyncRouteImport.update({
   path: '/api/public/cron-sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFixDbRoute = ApiPublicFixDbRouteImport.update({
+  id: '/api/public/fix-db',
+  path: '/api/public/fix-db',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNewsImageSplatRoute = ApiPublicNewsImageSplatRouteImport.update({
   id: '/api/public/news-image/$',
   path: '/api/public/news-image/$',
@@ -192,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
+  '/api/public/fix-db': typeof ApiPublicFixDbRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/post/$slug': typeof PostSlugRoute
   '/admin': typeof AdminIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
+  '/api/public/fix-db': typeof ApiPublicFixDbRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -248,6 +256,7 @@ export interface FileRoutesById {
   '/post/$slug': typeof PostSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
+  '/api/public/fix-db': typeof ApiPublicFixDbRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
 }
@@ -278,6 +287,7 @@ export interface FileRouteTypes {
     | '/post/$slug'
     | '/admin/'
     | '/api/public/cron-sync'
+    | '/api/public/fix-db'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesByTo: FileRoutesByTo
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
     | '/post/$slug'
     | '/admin'
     | '/api/public/cron-sync'
+    | '/api/public/fix-db'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   id:
@@ -333,6 +344,7 @@ export interface FileRouteTypes {
     | '/post/$slug'
     | '/admin/'
     | '/api/public/cron-sync'
+    | '/api/public/fix-db'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
   fileRoutesById: FileRoutesById
@@ -346,6 +358,7 @@ export interface RootRouteChildren {
   NewsIdRoute: typeof NewsIdRoute
   PostSlugRoute: typeof PostSlugRoute
   ApiPublicCronSyncRoute: typeof ApiPublicCronSyncRoute
+  ApiPublicFixDbRoute: typeof ApiPublicFixDbRoute
   ApiPublicNewsImageSplatRoute: typeof ApiPublicNewsImageSplatRoute
   ApiPublicR2SplatRoute: typeof ApiPublicR2SplatRoute
 }
@@ -520,6 +533,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/fix-db': {
+      id: '/api/public/fix-db'
+      path: '/api/public/fix-db'
+      fullPath: '/api/public/fix-db'
+      preLoaderRoute: typeof ApiPublicFixDbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/news-image/$': {
       id: '/api/public/news-image/$'
       path: '/api/public/news-image/$'
@@ -586,6 +606,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsIdRoute: NewsIdRoute,
   PostSlugRoute: PostSlugRoute,
   ApiPublicCronSyncRoute: ApiPublicCronSyncRoute,
+  ApiPublicFixDbRoute: ApiPublicFixDbRoute,
   ApiPublicNewsImageSplatRoute: ApiPublicNewsImageSplatRoute,
   ApiPublicR2SplatRoute: ApiPublicR2SplatRoute,
 }
