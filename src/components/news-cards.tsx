@@ -140,7 +140,7 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
             {article.title}
           </h3>
         </ArticleLink>
-        <span className="mt-1 block text-xs text-muted-foreground">{article.time}</span>
+        <span className="mt-1 block text-xs text-muted-foreground">{(article as any).time ?? (article as any).published_at}</span>
       </div>
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
         <img
@@ -159,9 +159,9 @@ export function Meta({ article }: { article: Article | Post }) {
     <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
       <span className="font-semibold text-primary">{categoryName(article.category)}</span>
       <span>•</span>
-      <span>{article.author}</span>
+      <span>{(article as any).author ?? (article as any).author_name}</span>
       <span>•</span>
-      <span>{article.location}</span>
+      <span>{(article as any).location ?? "ঢাকা"}</span>
       <span>•</span>
       <span>{(article as any).time ?? (article as any).published_at}</span>
     </div>
