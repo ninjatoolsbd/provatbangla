@@ -14,7 +14,7 @@ function ArticleLink({
   children: React.ReactNode;
 }) {
   return (
-    <Link to="/news/$id" params={{ id: String(article.id) }} className={className}>
+    <Link to="/post/$slug" params={{ slug: article.slug ?? String(article.id) }} className={className}>
       {children}
     </Link>
   );
