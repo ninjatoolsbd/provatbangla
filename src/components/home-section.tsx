@@ -1,7 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { BarHeading, GridCard, LeadCard, ThumbRow } from "@/components/news-cards";
+import { GridCard, LeadCard, ThumbRow } from "@/components/news-cards";
+import { BarHeading } from "@/components/home-widgets";
 import { Reveal } from "@/components/reveal";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 
@@ -16,13 +17,13 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   
   const { data: posts } = useSuspenseQuery({
     queryKey: ["home-section", slug],
-    queryFn: () => fetchPosts({ category: slug, limit: layout === "grid" ? 4 : 8 }),
+    queryFn: () => fetchPosts({ data: { category: slug, limit: layout === "grid" ? 4 : 8 } }),
   });
 
-  if (!posts || posts.length === 0) return null;
+  if (!posts || (posts as any[]).length === 0) return null;
 
   // Map DB post to Article-like shape for existing components
-  const mappedPosts = posts.map((p: any) => ({
+  const mappedPosts = (posts as any[]).map((p: any) => ({
     id: p.id,
     title: p.title,
     slug: p.slug,
@@ -42,7 +43,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
             <LeadCard article={mappedPosts[0] as any} />
           </div>
           <div className="min-w-0 lg:col-span-4 lg:px-5">
-            {mappedPosts.slice(1, 4).map((a, i) => (
+            {mappedPosts.slice(1, 4).map((a: any, i: number) => (
               <Reveal key={a.id} delay={i * 60}>
                 <ThumbRow article={a as any} />
               </Reveal>
@@ -50,7 +51,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
           </div>
           <div className="min-w-0 lg:col-span-3 lg:pl-5">
              <ul className="divide-y divide-border border-t border-border">
-              {mappedPosts.slice(4, 9).map((a) => (
+              {mappedPosts.slice(4, 9).map((a: any) => (
                 <li key={a.id}>
                   <Link
                     to="/post/$slug"
@@ -80,7 +81,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
               <LeadCard article={mappedPosts[0] as any} />
             </div>
             <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
-              {mappedPosts.slice(1, 7).map((a, i) => (
+              {mappedPosts.slice(1, 7).map((a: any, i: number) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a as any} compact />
                 </Reveal>
@@ -95,7 +96,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
     <section className="mt-5 border border-border bg-card p-4">
       <BarHeading title={title} slug={slug} />
       <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
-        {mappedPosts.map((a, i) => (
+        {mappedPosts.map((a: any, i: number) => (
           <Reveal key={a.id} delay={i * 60}>
             <GridCard article={a as any} compact />
           </Reveal>
