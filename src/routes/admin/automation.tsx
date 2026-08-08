@@ -197,10 +197,10 @@ function AutomationPage() {
             [
               ["auto_enabled", "অটোমেশন চালু"],
               ["auto_image_ai", "ছবি AI দিয়ে মডিফাই + ওয়াটারমার্ক"],
-              ["auto_spin_rewriter", "Spin Rewriter ব্যবহার করুন"],
-              ["auto_credit", "নিউজের শেষে সোর্স ক্রেডিট"],
+              ["auto_spin_rewriter", "Spin Rewriter ব্যবহার করুন", true],
+              ["auto_credit", "নিউজের শেষে সোর্স ক্রেডিট", true],
             ] as const
-          ).map(([key, label]) => (
+          ).filter(item => !item[2]).map(([key, label]) => (
             <label key={key} className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
