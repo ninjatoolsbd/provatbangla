@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, Eye, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, Eye, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Sparkles, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -327,7 +327,7 @@ function PostsPage() {
           <div className="flex-1 min-w-0">টাইটেল</div>
           <div className="hidden w-24 text-center sm:block shrink-0">স্ট্যাটাস</div>
           <div className="hidden w-40 text-center sm:block shrink-0">তারিখ</div>
-          <div className="w-24 text-right shrink-0">অ্যাকশন</div>
+          <div className="w-40 text-right shrink-0">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
@@ -365,7 +365,7 @@ function PostsPage() {
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
-              <div className="flex w-24 items-center justify-end gap-3 shrink-0">
+              <div className="flex w-40 items-center justify-end gap-3 shrink-0">
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
@@ -375,6 +375,8 @@ function PostsPage() {
                 >
                   <Eye className="size-4" />
                 </a>
+
+                <CategorySuggestion postId={p.id} title={p.title} content={p.content} currentCategory={p.category} />
 
                 <Popover>
                   <PopoverTrigger asChild>
