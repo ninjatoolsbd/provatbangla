@@ -436,7 +436,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
         <div className="mt-4 flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {items.map((a, i) => (
             <button key={a.id} onClick={() => setActive(i)} className="shrink-0">
-              <img
+              <NewsImage
                 src={a.image}
                 alt=""
                 className={cn(
