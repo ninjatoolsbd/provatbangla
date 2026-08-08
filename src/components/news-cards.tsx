@@ -1,9 +1,43 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 
 import type { Article } from "@/lib/news-data";
 import type { Post } from "@/lib/posts";
 import { categoryName } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
+
+export const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1585829365234-781fcd04c838?auto=format&fit=crop&w=800&q=80";
+
+export function NewsImage({ 
+  src, 
+  alt, 
+  className, 
+  loading = "lazy" 
+}: { 
+  src?: string | null; 
+  alt: string; 
+  className?: string;
+  loading?: "lazy" | "eager";
+}) {
+  const [error, setError] = React.useState(false);
+  
+  // Reset error if src changes
+  React.useEffect(() => {
+    setError(false);
+  }, [src]);
+
+  const imageSrc = !src || error ? PLACEHOLDER_IMAGE : src;
+
+  return (
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={className}
+      loading={loading}
+      onError={() => setError(true)}
+    />
+  );
+}
 
 function ArticleLink({
   article,
@@ -31,7 +65,7 @@ export function SplitLead({ article }: { article: Article | Post }) {
   return (
     <article className="group grid gap-4 sm:grid-cols-[1.15fr_1fr]">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
@@ -58,7 +92,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -82,7 +116,7 @@ export function GridCard({ article, compact = false }: { article: Article | Post
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -109,7 +143,7 @@ export function ThumbRow({ article }: { article: Article | Post }) {
   return (
     <article className="group flex gap-3 border-b border-border py-3 transition-all duration-300 last:border-0 hover:translate-x-1">
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="size-[72px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -143,7 +177,7 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
         <span className="mt-1 block text-xs text-muted-foreground">{(article as any).time ?? (article as any).published_at}</span>
       </div>
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="h-16 w-24 object-cover"

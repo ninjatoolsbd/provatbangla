@@ -1,7 +1,8 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { SectionHeading } from "@/components/news-cards";
+import { SectionHeading, NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, fetchPublishedPosts } from "@/lib/posts";
@@ -36,7 +37,7 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                   params={{ slug: p.slug ?? "" }}
                   className="block overflow-hidden"
                 >
-                  <img
+                  <NewsImage
                     src={p.image_url}
                     alt={p.title}
                     className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"

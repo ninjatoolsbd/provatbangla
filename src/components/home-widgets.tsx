@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
+import { NewsImage } from "@/components/news-cards";
 
 /* ---------- shared red section bar (kalbela style) ---------- */
 export function BarHeading({
@@ -100,7 +101,7 @@ export function VideoStrip({ items }: { items: Article[] }) {
             className="group w-[260px] shrink-0 snap-start"
           >
             <div className="relative overflow-hidden">
-              <img
+              <NewsImage
                 src={a.image}
                 alt={a.title}
                 className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
@@ -134,9 +135,9 @@ export function OpinionColumn({ items }: { items: Article[] }) {
             params={{ slug: (a as any).slug ?? String(a.id) }}
             className="group flex gap-3 bg-secondary/50 px-3 py-3 transition-colors hover:bg-secondary"
           >
-            <img
+            <NewsImage
               src={a.image}
-              alt={a.author}
+              alt={a.author ?? ""}
               className="size-14 shrink-0 rounded-full object-cover ring-2 ring-primary/30"
               loading="lazy"
             />
@@ -164,7 +165,7 @@ export function PollWidget({ cover }: { cover?: Article | undefined }) {
       <BarHeading title="অনলাইন জরিপ" />
       <div className="border border-border bg-card p-3">
         {cover && (
-          <img
+          <NewsImage
             src={cover.image}
             alt={cover.title}
             className="aspect-[16/9] w-full object-cover"
@@ -309,7 +310,7 @@ export function EpaperCard({ cover }: { cover?: Article | undefined }) {
         <span className="text-[11px]">আজকের পত্রিকা</span>
       </div>
       <div className="p-3">
-        <img
+        <NewsImage
           src="https://epaper.kalbela.com/2026/08/02/2nd-Edition/pages/page01.jpg"
           alt="আজকের ই-পেপার"
           className="aspect-[3/4] w-full border border-border object-cover"
@@ -402,7 +403,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
         </div>
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="relative lg:col-span-2">
-            <img
+            <NewsImage
               src={main.image}
               alt={main.title}
               className="aspect-[16/9] w-full object-cover"
@@ -419,7 +420,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
                 onClick={() => setActive(i)}
                 className="group relative block text-left"
               >
-                <img
+                <NewsImage
                   src={a.image}
                   alt={a.title}
                   className="aspect-[16/9] w-full object-cover transition-opacity group-hover:opacity-80"
@@ -435,7 +436,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
         <div className="mt-4 flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {items.map((a, i) => (
             <button key={a.id} onClick={() => setActive(i)} className="shrink-0">
-              <img
+              <NewsImage
                 src={a.image}
                 alt=""
                 className={cn(
