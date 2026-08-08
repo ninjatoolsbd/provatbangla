@@ -310,7 +310,7 @@ export function EpaperCard({ cover }: { cover?: Article | undefined }) {
         <span className="text-[11px]">আজকের পত্রিকা</span>
       </div>
       <div className="p-3">
-        <img
+        <NewsImage
           src="https://epaper.kalbela.com/2026/08/02/2nd-Edition/pages/page01.jpg"
           alt="আজকের ই-পেপার"
           className="aspect-[3/4] w-full border border-border object-cover"
