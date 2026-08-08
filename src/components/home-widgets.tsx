@@ -135,9 +135,9 @@ export function OpinionColumn({ items }: { items: Article[] }) {
             params={{ slug: (a as any).slug ?? String(a.id) }}
             className="group flex gap-3 bg-secondary/50 px-3 py-3 transition-colors hover:bg-secondary"
           >
-            <img
+            <NewsImage
               src={a.image}
-              alt={a.author}
+              alt={a.author ?? ""}
               className="size-14 shrink-0 rounded-full object-cover ring-2 ring-primary/30"
               loading="lazy"
             />
