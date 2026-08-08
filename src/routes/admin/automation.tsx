@@ -306,7 +306,7 @@ function AutomationPage() {
               <div className="flex flex-col border-l border-border pl-2">
                 <span className="text-[10px] uppercase text-muted-foreground">Target Cat</span>
                 <span className="text-xs font-medium text-primary">
-                  {import("@/lib/news-data").then(m => m.categoryName(String(s["target_category"]))).catch(() => String(s["target_category"])) && String(s["target_category"])}
+                  {String(s["target_category"])}
                 </span>
               </div>
               <span className="text-xs text-muted-foreground">
@@ -372,10 +372,6 @@ function AutomationPage() {
             className="border border-border bg-background px-3 py-2 text-sm"
           >
             <option value="">টার্গেট ক্যাটাগরি (সিলেক্ট করুন)</option>
-            {import("@/lib/news-data").then(m => m.categories.map(c => (
-              <option key={c.slug} value={c.slug}>{c.name}</option>
-            )))}
-            {/* Fallback manually since async import in JSX is tricky without a separate component or hook */}
             <option value="bangladesh">বাংলাদেশ</option>
             <option value="antorjatik">আন্তর্জাতিক</option>
             <option value="politics">রাজনীতি</option>
