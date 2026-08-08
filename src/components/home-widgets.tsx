@@ -420,7 +420,7 @@ export function PhotoGallery({ items }: { items: Article[] }) {
                 onClick={() => setActive(i)}
                 className="group relative block text-left"
               >
-                <img
+                <NewsImage
                   src={a.image}
                   alt={a.title}
                   className="aspect-[16/9] w-full object-cover transition-opacity group-hover:opacity-80"
