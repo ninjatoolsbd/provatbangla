@@ -167,9 +167,10 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   // Final fallback: try to scrape links from the HTML if it's a page
   try {
     const html = await getText(siteUrl);
-    const links = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+    const links = [...html.matchAll(/<a[^>]+href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)] as [string, string, string][];
     const items: SourceItem[] = [];
     const seen = new Set<string>();
+
     
     // Pick links that look like articles (long paths, not utility links)
     for (const match of links) {
