@@ -173,12 +173,13 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
     
     // Pick links that look like articles (long paths, not utility links)
     for (const match of linkMatches) {
+      if (!match) continue;
       const href = match[1];
       const linkText = match[2];
       
-      if (typeof href !== 'string' || !href) continue;
+      if (!href) continue;
       
-      const cleanUrl = href.split('#')[0].split('?')[0];
+      const cleanUrl = (href as string).split('#')[0].split('?')[0];
       if (seen.has(cleanUrl)) continue;
       
       try {
@@ -193,6 +194,8 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
         }
       } catch (e) {
         continue;
+      }
+
       }
       if (items.length >= limit) break;
     }
