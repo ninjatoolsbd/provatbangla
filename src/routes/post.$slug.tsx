@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { NewsImage } from "@/components/news-cards";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
 import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.functions";
