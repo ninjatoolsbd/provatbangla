@@ -195,13 +195,8 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       } catch (e) {
         continue;
       }
-
-      }
       if (items.length >= limit) break;
     }
-
-
-
 
     if (items.length) return items;
   } catch(e) {
@@ -210,6 +205,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 
   return [];
 }
+
 
 
 /* ---------------- extraction ---------------- */
