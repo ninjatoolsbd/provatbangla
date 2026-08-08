@@ -37,7 +37,7 @@ export function LatestPosts({ category, limit = 8 }: { category?: string; limit?
                   params={{ slug: p.slug ?? "" }}
                   className="block overflow-hidden"
                 >
-                  <img
+                  <NewsImage
                     src={p.image_url}
                     alt={p.title}
                     className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
