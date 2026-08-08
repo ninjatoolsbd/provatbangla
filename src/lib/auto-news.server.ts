@@ -128,13 +128,15 @@ export async function runAutoSync(
     id: string;
     name: string;
     site_url: string;
-    category: string;
+    source_category_url?: string;
+    target_category: string;
     per_run: number;
   }[]) {
     const limit = options.limit ?? source.per_run ?? 5;
+    const fetchUrl = source.source_category_url || source.site_url;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
-      items = await discoverLatest(source.site_url, limit * 2);
+      items = await discoverLatest(fetchUrl, limit * 2);
     } catch (e) {
       result.failed += 1;
       result.details.push({
@@ -168,7 +170,7 @@ export async function runAutoSync(
 
         const news = await rewrite(
           { title, body },
-          source.category === "auto" ? "bangladesh" : source.category,
+          source.target_category || "onnanno",
           useSpin
         );
 

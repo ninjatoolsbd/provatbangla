@@ -46,7 +46,7 @@ function toBase64(file: File): Promise<string> {
 function AutomationPage() {
   const qc = useQueryClient();
   const logoInput = useRef<HTMLInputElement>(null);
-  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5 });
+  const [newSource, setNewSource] = useState({ name: "", site_url: "", source_category_url: "", target_category: "", per_run: 5 });
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<
     { title: string; status: string; message?: string }[] | null
@@ -80,11 +80,12 @@ function AutomationPage() {
       insertRow("auto_sources", {
         name: newSource.name,
         site_url: newSource.site_url.replace(/\/+$/, ""),
+        source_category_url: newSource.source_category_url,
+        target_category: newSource.target_category || "onnanno",
         per_run: newSource.per_run,
-        category: "auto",
       }),
     onSuccess: () => {
-      setNewSource({ name: "", site_url: "", per_run: 5 });
+      setNewSource({ name: "", site_url: "", source_category_url: "", target_category: "", per_run: 5 });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
     },
@@ -292,8 +293,22 @@ function AutomationPage() {
                   toggleSource.mutate({ id: String(s["id"]), enabled: e.target.checked })
                 }
               />
-              <span className="font-semibold">{String(s["name"])}</span>
-              <span className="text-xs text-muted-foreground">{String(s["site_url"])}</span>
+              <div className="flex flex-col">
+                <span className="font-semibold">{String(s["name"])}</span>
+                <span className="text-[10px] text-muted-foreground">{String(s["site_url"])}</span>
+              </div>
+              {s["source_category_url"] && (
+                <div className="flex flex-col border-l border-border pl-2">
+                  <span className="text-[10px] uppercase text-muted-foreground">Source Cat</span>
+                  <span className="max-w-[120px] truncate text-xs">{String(s["source_category_url"])}</span>
+                </div>
+              )}
+              <div className="flex flex-col border-l border-border pl-2">
+                <span className="text-[10px] uppercase text-muted-foreground">Target Cat</span>
+                <span className="text-xs font-medium text-primary">
+                  {String(s["target_category"])}
+                </span>
+              </div>
               <span className="text-xs text-muted-foreground">
                 প্রতি রানে {String(s["per_run"])}টি
               </span>
@@ -332,7 +347,7 @@ function AutomationPage() {
           ))}
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <input
             placeholder="সাইটের নাম (যেমন: প্রথম আলো)"
             value={newSource.name}
@@ -340,24 +355,50 @@ function AutomationPage() {
             className="border border-border bg-background px-3 py-2 text-sm"
           />
           <input
-            placeholder="নিউজ সাইটের মূল লিংক (যেমন: https://prothomalo.com)"
+            placeholder="মূল লিংক (যেমন: https://prothomalo.com)"
             value={newSource.site_url}
             onChange={(e) => setNewSource({ ...newSource, site_url: e.target.value })}
-            className="min-w-[240px] flex-1 border border-border bg-background px-3 py-2 text-sm"
+            className="border border-border bg-background px-3 py-2 text-sm"
           />
+          <input
+            placeholder="সোর্স ক্যাটাগরি URL (ঐচ্ছিক)"
+            value={newSource.source_category_url}
+            onChange={(e) => setNewSource({ ...newSource, source_category_url: e.target.value })}
+            className="border border-border bg-background px-3 py-2 text-sm"
+          />
+          <select
+            value={newSource.target_category}
+            onChange={(e) => setNewSource({ ...newSource, target_category: e.target.value })}
+            className="border border-border bg-background px-3 py-2 text-sm"
+          >
+            <option value="">টার্গেট ক্যাটাগরি (সিলেক্ট করুন)</option>
+            <option value="bangladesh">বাংলাদেশ</option>
+            <option value="antorjatik">আন্তর্জাতিক</option>
+            <option value="politics">রাজনীতি</option>
+            <option value="shikkha">শিক্ষা</option>
+            <option value="apradh">অপরাধ</option>
+            <option value="chakri">চাকরি</option>
+            <option value="prajukti">প্রযুক্তি</option>
+            <option value="khela">খেলা</option>
+            <option value="binodon">বিনোদন</option>
+            <option value="health">স্বাস্থ্য</option>
+            <option value="probas">প্রবাস</option>
+            <option value="orthoniti">অর্থনীতি</option>
+            <option value="onnanno">অন্যান্য</option>
+          </select>
           <input
             type="number"
             min={1}
             max={10}
             value={newSource.per_run}
             onChange={(e) => setNewSource({ ...newSource, per_run: Number(e.target.value) })}
-            className="w-20 border border-border bg-background px-3 py-2 text-sm"
+            className="border border-border bg-background px-3 py-2 text-sm"
           />
           <button
             type="button"
             disabled={!newSource.name || !newSource.site_url}
             onClick={() => addSource.mutate()}
-            className="flex items-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
+            className="flex items-center justify-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
           >
             <Plus className="size-4" /> যোগ করুন
           </button>

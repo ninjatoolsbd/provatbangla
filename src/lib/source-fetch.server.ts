@@ -121,14 +121,22 @@ async function fromAmaderShomoy(siteUrl: string, limit: number): Promise<SourceI
 }
 
 export async function discoverLatest(siteUrl: string, limit: number): Promise<SourceItem[]> {
+  // If the siteUrl is a specific category page, we might want to handle it differently.
+  // But for now, RSS and Sitemap are general enough.
   const h = host(siteUrl);
   if (h.includes("dainikamadershomoy")) {
     const items = await fromAmaderShomoy(siteUrl, limit).catch(() => []);
     if (items.length) return items;
   }
+  
+  // Try the provided URL directly as a potential feed or sitemap source
   const rss = await fromRss(siteUrl, limit);
   if (rss.length) return rss;
-  return fromNewsSitemap(siteUrl, limit);
+  
+  const sitemap = await fromNewsSitemap(siteUrl, limit);
+  if (sitemap.length) return sitemap;
+
+  return [];
 }
 
 /* ---------------- extraction ---------------- */
