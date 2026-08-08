@@ -34,7 +34,10 @@ export async function countRows(table: string): Promise<number> {
 
 export async function insertRow(table: string, values: Row) {
   const { error } = await db.from(table).insert(values);
-  if (error) throw error;
+  if (error) {
+    console.error(`Error inserting into ${table}:`, error);
+    throw error;
+  }
 }
 
 export async function updateRow(table: string, id: string, values: Row, idColumn = "id") {
