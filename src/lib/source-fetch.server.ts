@@ -122,13 +122,42 @@ async function fromAmaderShomoy(siteUrl: string, limit: number): Promise<SourceI
 
 export async function discoverLatest(siteUrl: string, limit: number): Promise<SourceItem[]> {
   const h = host(siteUrl);
+  
+  // Specific handling for common Bengali news sites if RSS/Sitemap fails
   if (h.includes("dainikamadershomoy")) {
     const items = await fromAmaderShomoy(siteUrl, limit).catch(() => []);
     if (items.length) return items;
   }
+  
+  // Generic RSS discovery
   const rss = await fromRss(siteUrl, limit);
   if (rss.length) return rss;
-  return fromNewsSitemap(siteUrl, limit);
+  
+  // News Sitemap discovery
+  const sitemap = await fromNewsSitemap(siteUrl, limit);
+  if (sitemap.length) return sitemap;
+
+  // Final fallback: try to scrape the homepage for links if it's a known news portal
+  try {
+    const html = await getText(siteUrl);
+    const links = [...html.matchAll(/href=["']([^"']+\/(?:bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh)\/[^"']+)["']/gi)];
+    const uniqueLinks = [...new Set(links.map(m => m[1]))];
+    
+    const items: SourceItem[] = [];
+    for (const link of uniqueLinks) {
+      const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
+      // Skip common static assets or irrelevant pages
+      if (/\.(jpg|jpeg|png|gif|css|js|xml)$/i.test(fullUrl)) continue;
+      
+      items.push({ url: fullUrl, title: "" });
+      if (items.length >= limit) break;
+    }
+    return items;
+  } catch (e) {
+    console.error("Scraping fallback failed:", e);
+  }
+
+  return [];
 }
 
 /* ---------------- extraction ---------------- */
