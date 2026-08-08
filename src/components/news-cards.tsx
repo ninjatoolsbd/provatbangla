@@ -65,7 +65,7 @@ export function SplitLead({ article }: { article: Article | Post }) {
   return (
     <article className="group grid gap-4 sm:grid-cols-[1.15fr_1fr]">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
