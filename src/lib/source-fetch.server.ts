@@ -178,8 +178,9 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       
       if (typeof href !== 'string' || !href) continue;
       
-      const parts = href.split('#')[0].split('?')[0];
+      const parts = href.split('#')[0]?.split('?')[0];
       const cleanUrl: string = parts || "";
+
 
 
       if (seen.has(cleanUrl)) continue;
