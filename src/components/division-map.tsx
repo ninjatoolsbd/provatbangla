@@ -34,7 +34,10 @@ const DIVISION_DISTRICTS: Record<string, string[]> = {
 
 function newsOfDivision(en: string, pool: any[]) {
   const list = DIVISION_DISTRICTS[en] ?? [];
-  return pool.filter((a) => list.some((d) => a.location.includes(d)));
+  return pool.filter((a) => {
+    if (!a.location) return false;
+    return list.some((d) => a.location.includes(d));
+  });
 }
 
 export function DivisionMap() {
