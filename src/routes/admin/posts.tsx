@@ -326,8 +326,8 @@ function PostsPage() {
           </button>
           <div className="flex-1 min-w-0">টাইটেল</div>
           <div className="hidden w-24 text-center sm:block shrink-0">স্ট্যাটাস</div>
-          <div className="hidden w-40 text-center sm:block shrink-0">তারিখ</div>
-          <div className="w-40 text-right shrink-0">অ্যাকশন</div>
+          <div className="hidden w-40 text-center sm:block shrink-0 text-nowrap">তারিখ</div>
+          <div className="w-48 text-right shrink-0">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
