@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { DIVISIONS, MAP_H, MAP_W } from "@/lib/bd-divisions-map";
-import { articles as allArticles, type Article } from "@/lib/news-data";
+import { fetchPublishedPosts } from "@/lib/posts";
 import { cn } from "@/lib/utils";
 import { ThumbRow } from "@/components/news-cards";
 import { BarHeading } from "@/components/home-widgets";
@@ -31,12 +32,16 @@ const DIVISION_DISTRICTS: Record<string, string[]> = {
   Mymensingh: ["ময়মনসিংহ", "জামালপুর", "নেত্রকোনা", "শেরপুর"],
 };
 
-function newsOfDivision(en: string, pool: Article[]) {
+function newsOfDivision(en: string, pool: any[]) {
   const list = DIVISION_DISTRICTS[en] ?? [];
   return pool.filter((a) => list.some((d) => a.location.includes(d)));
 }
 
-export function DivisionMap({ pool = allArticles }: { pool?: Article[] }) {
+export function DivisionMap() {
+  const { data: pool = [] } = useQuery({
+    queryKey: ["division-posts"],
+    queryFn: () => fetchPublishedPosts(100),
+  });
   const [active, setActive] = useState("Dhaka");
   const [hover, setHover] = useState<string | null>(null);
 
@@ -118,7 +123,7 @@ export function DivisionMap({ pool = allArticles }: { pool?: Article[] }) {
             <span className="text-primary">{activeDiv.bn}</span> বিভাগের খবর
           </h3>
           {items.map((a, i) => (
-            <ThumbRow key={`${active}-${a.id}-${i}`} article={a} />
+            <ThumbRow key={`${active}-${a.id}-${i}`} article={a as any} />
           ))}
         </div>
       </div>

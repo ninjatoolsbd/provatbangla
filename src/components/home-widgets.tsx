@@ -95,8 +95,8 @@ export function VideoStrip({ items }: { items: Article[] }) {
         {items.map((a) => (
           <Link
             key={a.id}
-            to="/news/$id"
-            params={{ id: String(a.id) }}
+            to="/post/$slug"
+            params={{ slug: (a as any).slug ?? String(a.id) }}
             className="group w-[260px] shrink-0 snap-start"
           >
             <div className="relative overflow-hidden">
@@ -130,8 +130,8 @@ export function OpinionColumn({ items }: { items: Article[] }) {
         {items.slice(0, 3).map((a) => (
           <Link
             key={a.id}
-            to="/news/$id"
-            params={{ id: String(a.id) }}
+            to="/post/$slug"
+            params={{ slug: (a as any).slug ?? String(a.id) }}
             className="group flex gap-3 bg-secondary/50 px-3 py-3 transition-colors hover:bg-secondary"
           >
             <img
@@ -251,8 +251,8 @@ export function LatestPopularTabs({
         {list.map((a) => (
           <li key={a.id}>
             <Link
-              to="/news/$id"
-              params={{ id: String(a.id) }}
+              to="/post/$slug"
+              params={{ slug: (a as any).slug ?? String(a.id) }}
               className="group block px-3 py-2.5"
             >
               <span className="block text-[11px] text-muted-foreground">{a.time}</span>

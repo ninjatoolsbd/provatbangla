@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Pause, Play, Radio } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { articles } from "@/lib/news-data";
-import type { Article } from "@/lib/news-data";
+import { fetchPublishedPosts } from "@/lib/posts";
 import { cn } from "@/lib/utils";
 
 const SPEED = 55; // px per second
@@ -11,8 +11,17 @@ const REFRESH_MS = 7000;
 const VISIBLE = 10;
 
 export function BreakingTicker() {
-  const pool = articles;
-  const [items, setItems] = useState<Article[]>(() => pool.slice(0, VISIBLE));
+  const { data: pool = [] } = useQuery({
+    queryKey: ["breaking-news"],
+    queryFn: () => fetchPublishedPosts(20),
+  });
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (pool.length > 0 && items.length === 0) {
+      setItems(pool.slice(0, VISIBLE));
+    }
+  }, [pool]);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [pulse, setPulse] = useState(false);
@@ -98,8 +107,8 @@ export function BreakingTicker() {
             {loop.map((a, i) => (
               <Link
                 key={`${a.id}-${i}`}
-                to="/news/$id"
-                params={{ id: String(a.id) }}
+                to="/post/$slug"
+                params={{ slug: a.slug ?? "" }}
                 className={cn(
                   "kb-underline text-sm font-semibold transition-colors hover:text-primary",
                   i % items.length === 0 && pulse && "kb-headline-in text-primary",
