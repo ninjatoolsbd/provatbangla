@@ -141,10 +141,11 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   try {
     const html = await getText(siteUrl);
     const links = [...html.matchAll(/href=["']([^"']+\/(?:bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh)\/[^"']+)["']/gi)];
-    const uniqueLinks = [...new Set(links.map(m => m[1]))];
+    const uniqueLinks = [...new Set(links.map(m => m[1] as string))];
     
     const items: SourceItem[] = [];
     for (const link of uniqueLinks) {
+      if (!link) continue;
       const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
       // Skip common static assets or irrelevant pages
       if (/\.(jpg|jpeg|png|gif|css|js|xml)$/i.test(fullUrl)) continue;
