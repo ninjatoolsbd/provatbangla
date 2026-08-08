@@ -1,7 +1,8 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { SectionHeading } from "@/components/news-cards";
+import { SectionHeading, NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, fetchPublishedPosts } from "@/lib/posts";
