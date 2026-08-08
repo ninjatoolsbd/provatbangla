@@ -236,8 +236,9 @@ function PostsPage() {
             </div>
           )}
           <Button asChild size="sm">
-            <Link to="/admin/write">নিউজ লিখুন</Link>
+            <Link to="/admin/write" search={{}}>নিউজ লিখুন</Link>
           </Button>
+
         </div>
       </div>
 
