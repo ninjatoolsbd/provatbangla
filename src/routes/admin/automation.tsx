@@ -90,7 +90,11 @@ function AutomationPage() {
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
       console.log("Source added successfully");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: any) => {
+      console.error("Failed to add source:", e);
+      const msg = e.message || (typeof e === 'string' ? e : JSON.stringify(e));
+      toast.error(`ব্যর্থ: ${msg}`);
+    },
   });
 
   const toggleSource = useMutation({
