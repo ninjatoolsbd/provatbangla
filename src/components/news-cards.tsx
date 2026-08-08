@@ -92,7 +92,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -116,7 +116,7 @@ export function GridCard({ article, compact = false }: { article: Article | Post
   return (
     <article className="group">
       <ArticleLink article={article} className="block overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -143,7 +143,7 @@ export function ThumbRow({ article }: { article: Article | Post }) {
   return (
     <article className="group flex gap-3 border-b border-border py-3 transition-all duration-300 last:border-0 hover:translate-x-1">
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="size-[72px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
@@ -177,7 +177,7 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
         <span className="mt-1 block text-xs text-muted-foreground">{(article as any).time ?? (article as any).published_at}</span>
       </div>
       <ArticleLink article={article} className="shrink-0 overflow-hidden">
-        <img
+        <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
           className="h-16 w-24 object-cover"
