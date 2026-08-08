@@ -172,20 +172,30 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
     const seen = new Set<string>();
     
     // Pick links that look like articles (long paths, not utility links)
-    for (const [, url, text] of links) {
+    for (const match of links) {
+      const url = match[1];
+      const text = match[2];
+      
+      if (!url) continue;
       const cleanUrl = url.split('#')[0].split('?')[0];
       if (seen.has(cleanUrl)) continue;
       
-      const path = new URL(cleanUrl).pathname;
-      const isArticle = path.split('/').length > 2 && path.length > 10;
-      const title = stripTags(text);
-      
-      if (isArticle && title.length > 20) {
-        seen.add(cleanUrl);
-        items.push({ url: cleanUrl, title });
+      try {
+        const urlObj = new URL(cleanUrl);
+        const path = urlObj.pathname;
+        const isArticle = path.split('/').length > 2 && path.length > 10;
+        const title = stripTags(text || "");
+        
+        if (isArticle && title.length > 20) {
+          seen.add(cleanUrl);
+          items.push({ url: cleanUrl, title });
+        }
+      } catch (e) {
+        continue;
       }
       if (items.length >= limit) break;
     }
+
     if (items.length) return items;
   } catch(e) {
     console.error("HTML fallback discovery failed", e);
