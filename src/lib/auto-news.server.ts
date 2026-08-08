@@ -74,7 +74,7 @@ async function rewrite(
     "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়।",
     "- content-এ কমপক্ষে ৪টি অনুচ্ছেদ, ফাঁকা লাইন দিয়ে আলাদা, মার্কডাউন নয়।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, onnanno",
+    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno",
     "",
     'শুধু এই JSON: {"title":"","kicker":"","excerpt":"","content":"","seo_title":"","seo_description":"","category":""}',
     "",

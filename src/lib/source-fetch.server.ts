@@ -140,7 +140,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   // Final fallback: try to scrape the homepage for links if it's a known news portal
   try {
     const html = await getText(siteUrl);
-    const links = [...html.matchAll(/href=["']([^"']+\/(?:bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh)\/[^"']+)["']/gi)];
+    const links = [...html.matchAll(/href=["']([^"']+\/(?:bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery)\/[^"']+)["']/gi)];
     const uniqueLinks = [...new Set(links.map(m => m[1] as string))];
     
     const items: SourceItem[] = [];
