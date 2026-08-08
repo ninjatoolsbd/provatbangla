@@ -14,6 +14,7 @@ import { useRef, useState } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
+import { NewsImage } from "@/components/news-cards";
 
 /* ---------- shared red section bar (kalbela style) ---------- */
 export function BarHeading({
