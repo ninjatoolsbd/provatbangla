@@ -177,20 +177,20 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       const href = match[1];
       const linkText = match[2];
       
-      if (!href) continue;
+      if (typeof href !== 'string' || !href) continue;
       
-      const cleanUrl = (href as string).split('#')[0].split('?')[0];
+      const cleanUrl = href.split('#')[0].split('?')[0];
       if (seen.has(cleanUrl)) continue;
       
       try {
         const urlObj = new URL(cleanUrl);
         const path = urlObj.pathname;
         const isArticle = path.split('/').length > 2 && path.length > 10;
-        const title = stripTags(linkText || "");
+        const titleText = stripTags(linkText || "");
         
-        if (isArticle && title.length > 20) {
+        if (isArticle && titleText.length > 20) {
           seen.add(cleanUrl);
-          items.push({ url: cleanUrl, title });
+          items.push({ url: cleanUrl, title: titleText });
         }
       } catch (e) {
         continue;
@@ -205,6 +205,7 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 
   return [];
 }
+
 
 
 
