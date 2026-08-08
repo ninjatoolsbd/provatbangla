@@ -165,7 +165,7 @@ export function PollWidget({ cover }: { cover?: Article | undefined }) {
       <BarHeading title="অনলাইন জরিপ" />
       <div className="border border-border bg-card p-3">
         {cover && (
-          <img
+          <NewsImage
             src={cover.image}
             alt={cover.title}
             className="aspect-[16/9] w-full object-cover"
