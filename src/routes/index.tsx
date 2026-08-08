@@ -55,6 +55,7 @@ function Home() {
         <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
            <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
            <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
+           <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
            <HomeSection title="চাকরি" slug="chakri" layout="politics" />
            <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
            <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
