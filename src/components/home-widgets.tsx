@@ -101,7 +101,7 @@ export function VideoStrip({ items }: { items: Article[] }) {
             className="group w-[260px] shrink-0 snap-start"
           >
             <div className="relative overflow-hidden">
-              <img
+              <NewsImage
                 src={a.image}
                 alt={a.title}
                 className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
