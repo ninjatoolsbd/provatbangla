@@ -66,20 +66,22 @@ async function rewrite(
 
 
   const system =
-    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে, কোনো ব্যাখ্যা ছাড়া।";
+    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে। কোনো ভূমিকা বা উপসংহার লিখবে না।";
   const prompt = [
     "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বাংলায় পুনর্লিখন করো।",
     "নিয়ম:",
     "- তথ্য অপরিবর্তিত রাখবে, নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
     "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়।",
-    "- content-এ কমপক্ষে ৪টি অনুচ্ছেদ, ফাঁকা লাইন দিয়ে আলাদা, মার্কডাউন নয়।",
+    "- টেক্সটের ভেতর কোনো আসল ডাবল কোট (\") ব্যবহার করবে না, পরিবর্তে সিঙ্গেল কোট (') ব্যবহার করো।",
+    "- অনুচ্ছেদগুলো আলাদা করতে \\n\\n ব্যবহার করো।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno। যদি কোনো নির্দিষ্ট ক্যাটাগরি না পাও তবে bangladesh বা onnanno ব্যবহার করো।",
+    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
     "",
-    'শুধু এই JSON: {"title":"","kicker":"","excerpt":"","content":"","seo_title":"","seo_description":"","category":""}',
+    "শুধু নিচের ফরম্যাটে JSON উত্তর দাও (অন্য কিছু লিখবে না):",
+    '{ "title": "", "kicker": "", "excerpt": "", "content": "", "seo_title": "", "seo_description": "", "category": "" }',
     "",
     `মূল শিরোনাম: ${article.title}`,
-    `মূল সংবাদ:\n${article.body.slice(0, 6000)}`,
+    `মূল সংবাদ:\n${article.body.slice(0, 5000)}`,
   ].join("\n");
 
   const { text } = await generateTextWithFallback({ system, prompt, json: true });
