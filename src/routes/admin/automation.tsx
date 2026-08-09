@@ -47,7 +47,7 @@ function toBase64(file: File): Promise<string> {
 function AutomationPage() {
   const qc = useQueryClient();
   const logoInput = useRef<HTMLInputElement>(null);
-  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5, category: "" });
+  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5, category: "", lang: "bn" });
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<
     { title: string; status: string; message?: string }[] | null
@@ -83,9 +83,10 @@ function AutomationPage() {
         site_url: newSource.site_url.replace(/\/+$/, ""),
         per_run: newSource.per_run,
         category: newSource.category || "auto",
+        lang: newSource.lang,
       }),
     onSuccess: () => {
-      setNewSource({ name: "", site_url: "", per_run: 5, category: "" });
+      setNewSource({ name: "", site_url: "", per_run: 5, category: "", lang: "bn" });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
     },
@@ -294,7 +295,12 @@ function AutomationPage() {
                 }
               />
               <div className="flex flex-col">
-                <span className="font-semibold">{String(s["name"])}</span>
+                <span className="font-semibold">
+                  {String(s["name"])} 
+                  <span className="ml-2 text-[10px] px-1 bg-muted rounded">
+                    {s["lang"] === "en" ? "EN → BN" : "BN"}
+                  </span>
+                </span>
                 <span className="text-[10px] text-muted-foreground uppercase">{String(s["category"] || "auto")}</span>
               </div>
               <span className="text-xs text-muted-foreground">{String(s["site_url"])}</span>
@@ -337,6 +343,14 @@ function AutomationPage() {
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
+          <select
+            value={newSource.lang}
+            onChange={(e) => setNewSource({ ...newSource, lang: e.target.value })}
+            className="border border-border bg-background px-3 py-2 text-sm"
+          >
+            <option value="bn">বাংলা সোর্স</option>
+            <option value="en">ইংরেজি সোর্স (বাংলায় অনুবাদ হবে)</option>
+          </select>
           <input
             placeholder="সাইটের নাম (যেমন: প্রথম আলো)"
             value={newSource.name}
@@ -371,7 +385,7 @@ function AutomationPage() {
           />
           <button
             type="button"
-            disabled={!newSource.name || !newSource.site_url}
+            disabled={!newSource.name || !newSource.site_url || !newSource.lang}
             onClick={() => addSource.mutate()}
             className="flex items-center gap-2 bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
           >
