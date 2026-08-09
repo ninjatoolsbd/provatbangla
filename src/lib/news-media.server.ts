@@ -47,7 +47,7 @@ async function geminiEdit(parts: GeminiParts): Promise<Uint8Array | null> {
   if (!key) return null;
   try {
     const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
       {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
@@ -88,7 +88,7 @@ export async function processSourceImage(opts: {
   if (logo) {
     const parts: GeminiParts = [
       {
-        text: "Place the second image (logo) as a small semi-transparent watermark in the bottom-right corner of the first image. Do not change the first image's content, style, or quality at all. Keep the news photo exactly as it is.",
+        text: "You are an image editor. Your task is to apply a watermark logo to a news photo. \nRules:\n1. Place the second image (the logo) as a small, professional semi-transparent watermark in the bottom-right corner of the first image (the news photo).\n2. The logo should be visible but not obstructive. \n3. DO NOT ALTER THE ORIGINAL PHOTO in any other way. Keep its colors, quality, aspect ratio, and content exactly the same.\n4. Output ONLY the processed image in PNG or JPEG format.",
       },
       { inlineData: { mimeType, data: bytesToBase64(source.bytes) } },
       {
