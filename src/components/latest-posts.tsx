@@ -123,40 +123,32 @@ export function LatestPosts({ category }: { category?: string }) {
           </Reveal>
         </div>
 
-        {/* Right Section: Image Top + Text List (Matching user-uploads://file-23 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-4 flex flex-col">
-          {sidePost && (
-            <Reveal delay={100}>
-              <article className="group mb-5">
-                {sidePost.image_url && (
-                   <Link to="/post/$slug" params={{ slug: sidePost.slug ?? "" }} className="block mb-4 overflow-hidden rounded-sm shadow-sm">
-                     <NewsImage src={sidePost.image_url} alt={sidePost.title} className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                   </Link>
+        {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
+        <div className="lg:col-span-4 lg:pl-4 flex flex-col space-y-6">
+          {sidePosts.map((p, i) => (
+            <Reveal key={p.id} delay={100 + i * 50}>
+              <article className="group flex flex-col sm:flex-row lg:flex-col gap-4">
+                {p.image_url && (
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm shadow-sm w-full sm:w-1/2 lg:w-full">
+                    <NewsImage 
+                      src={p.image_url} 
+                      alt={p.title} 
+                      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    />
+                  </Link>
                 )}
-                <Link to="/post/$slug" params={{ slug: sidePost.slug ?? "" }}>
-                  <h3 className="line-clamp-3 font-display text-[17px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
-                    {sidePost.title} <span className="text-[12px] opacity-40 font-normal ml-1">↙</span>
-                  </h3>
-                </Link>
+                <div className="flex-1">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                    <h3 className="line-clamp-2 font-display text-[17px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
+                      {p.title}
+                    </h3>
+                  </Link>
+                </div>
               </article>
             </Reveal>
-          )}
-
-          {/* Text List below the image */}
-          <div className="space-y-4 border-t border-slate-100 pt-4">
-            {textPosts.map((p, i) => (
-              <Reveal key={p.id} delay={150 + i * 50}>
-                <article className="group border-b border-slate-50 pb-3 last:border-0 last:pb-0">
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
-                      {p.title} <span className="text-[12px] opacity-40 font-normal ml-1">↙</span>
-                    </h4>
-                  </Link>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          ))}
         </div>
+
 
         {/* Bottom Slider Section: Horizontal Scrollable Grid */}
         {sliderPosts.length > 0 && (
