@@ -95,7 +95,7 @@ export function LatestPosts({ category }: { category?: string }) {
         {/* Left Section: Big Feature Post (user-uploads://file-23 style) */}
         <div className="lg:col-span-8">
           <Reveal delay={0}>
-            <article className="group bg-white p-0 shadow-sm border border-slate-100 overflow-hidden rounded-sm">
+            <article className="group bg-white p-0 overflow-hidden rounded-sm">
               {mainPost.image_url && (
                 <Link
                   to="/post/$slug"
