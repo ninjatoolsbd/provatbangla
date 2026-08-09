@@ -90,7 +90,7 @@ function Home() {
         </Suspense>
 
         {/* Video Section integrated from reference user-uploads://file-17 */}
-        <VideoStrip items={photoPosts} />
+        <VideoStrip items={videoPosts} />
 
         <BottomWidgets />
       </main>
