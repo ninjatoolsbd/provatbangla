@@ -161,6 +161,7 @@ export async function runAutoSync(
     per_run: number;
     lang?: string;
   }[]) {
+    const sourceLang = source.lang || "bn";
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
@@ -202,7 +203,7 @@ export async function runAutoSync(
         const news = await rewrite(
           { title, body },
           source.category && source.category !== "auto" ? source.category : "bangladesh",
-          source.lang || "bn",
+          sourceLang,
         );
 
         const sourceImage = article.image ?? item.image ?? null;
