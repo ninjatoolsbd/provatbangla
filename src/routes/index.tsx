@@ -41,7 +41,12 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { data: photoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-photo-gallery"],
-    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 6 } }),
+    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } }),
+  });
+
+  const { data: videoPosts = [] } = useSuspenseQuery({
+    queryKey: ["home-video-gallery"],
+    queryFn: () => getHomeSectionPosts({ data: { category: "video-gallery", limit: 12 } }),
   });
 
   const mappedPhotoPosts = photoPosts.map((p: any) => ({
