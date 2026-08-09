@@ -143,7 +143,8 @@ export function LatestPosts({ category }: { category?: string }) {
             <Reveal key={p.id} delay={100 + i * 50}>
               <article className="group flex gap-4 items-start border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                 {p.image_url && (
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-[110px]">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-[130px]">
+
                     <NewsImage 
                       src={p.image_url} 
                       alt={p.title} 
