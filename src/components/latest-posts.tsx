@@ -138,7 +138,7 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-6 flex flex-col space-y-5">
+        <div className="lg:col-span-5 lg:pl-6 flex flex-col space-y-5">
           {sidePosts.map((p, i) => (
             <Reveal key={p.id} delay={100 + i * 50}>
               <article className="group flex gap-4 items-start border-b border-slate-100 pb-4 last:border-0 last:pb-0">
