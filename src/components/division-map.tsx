@@ -32,11 +32,32 @@ const DIVISION_DISTRICTS: Record<string, string[]> = {
   Mymensingh: ["ময়মনসিংহ", "জামালপুর", "নেত্রকোনা", "শেরপুর"],
 };
 
+/** বিভাগের নিজের নামও ম্যাচ তালিকায় যোগ হয় */
+const DIVISION_NAMES: Record<string, string> = {
+  Dhaka: "ঢাকা",
+  Chattogram: "চট্টগ্রাম",
+  Rajshahi: "রাজশাহী",
+  Khulna: "খুলনা",
+  Barishal: "বরিশাল",
+  Sylhet: "সিলেট",
+  Rangpur: "রংপুর",
+  Mymensingh: "ময়মনসিংহ",
+};
+
+/** খবরের সব লেখা এক জায়গায় (location ফাঁকা থাকলেও অটো শনাক্ত করার জন্য) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function haystack(a: any) {
+  return [a.location, a.title, a.kicker, a.excerpt, a.content]
+    .filter(Boolean)
+    .join(" ");
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function newsOfDivision(en: string, pool: any[]) {
-  const list = DIVISION_DISTRICTS[en] ?? [];
+  const list = [DIVISION_NAMES[en] ?? "", ...(DIVISION_DISTRICTS[en] ?? [])].filter(Boolean);
   return pool.filter((a) => {
-    if (!a.location) return false;
-    return list.some((d) => a.location.includes(d));
+    const text = haystack(a);
+    return list.some((d) => text.includes(d));
   });
 }
 
@@ -53,9 +74,10 @@ export function DivisionMap() {
   const items = useMemo(() => {
     const found = newsOfDivision(active, pool);
     if (found.length) return found.slice(0, 6);
-    // ডেমো ডেটায় ওই বিভাগের খবর না থাকলে সারাবাংলার খবর দেখানো হয়
-    return pool.filter((a) => a.category === "cholonbil").slice(0, 6);
+    // ওই বিভাগের খবর না পেলে সর্বশেষ খবর দেখানো হয়
+    return pool.slice(0, 6);
   }, [active, pool]);
+
 
   return (
     <div className="border border-border bg-card p-4">
