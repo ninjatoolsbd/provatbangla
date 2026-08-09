@@ -112,13 +112,13 @@ export function LatestPosts({ category }: { category?: string }) {
               )}
               <div className="p-0 pt-4">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[22px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[28px]">
+                  <h2 className="font-display text-[20px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[24px]">
                     {mainPost.title}
                   </h2>
                 </Link>
-                <div className="mt-3 text-[15px] leading-relaxed text-slate-700">
-                  <p className="line-clamp-3">
-                    {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 350) : "")}
+                <div className="mt-3 text-[14px] leading-relaxed text-slate-700">
+                  <p className="line-clamp-2">
+                    {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 200) : "")}
                   </p>
                   <Link 
                     to="/post/$slug" 
@@ -129,6 +129,7 @@ export function LatestPosts({ category }: { category?: string }) {
                   </Link>
                 </div>
               </div>
+
 
 
 
