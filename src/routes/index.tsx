@@ -81,17 +81,17 @@ function Home() {
              sideTitle="স্বাস্থ্য"
            />
 
-           <div className="grid gap-6 mt-8 lg:grid-cols-3">
-             <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="grid" />
-             <HomeSection title="রাজনীতি" slug="politics" layout="grid" />
-             <HomeSection title="খেলা" slug="khela" layout="grid" />
-           </div>
+            <div className="grid gap-6 mt-8 lg:grid-cols-3">
+              <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="grid" />
+              <HomeSection title="রাজনীতি" slug="politics" layout="grid" />
+              <HomeSection title="খেলাধুলা" slug="khela" layout="grid" />
+            </div>
 
            <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
            
-           <section className="mt-8">
-             <DivisionMap />
-           </section>
+            <section className="mt-10 border-t border-border pt-10">
+              <DivisionMap />
+            </section>
         </Suspense>
       </main>
 

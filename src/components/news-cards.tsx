@@ -123,7 +123,7 @@ export function GridCard({ article, compact = false, showCategory = true }: { ar
           loading="lazy"
         />
       </ArticleLink>
-      <div className="mt-3 flex flex-col flex-1">
+      <div className="mt-2.5 flex flex-col flex-1">
         <ArticleLink article={article}>
           <h3
             className={cn(
@@ -136,8 +136,12 @@ export function GridCard({ article, compact = false, showCategory = true }: { ar
           </h3>
         </ArticleLink>
         {showCategory && (
-          <div className="mt-auto pt-2 flex items-center gap-1.5 text-[12px] text-muted-foreground border-t border-border/50">
-            <span className="text-primary"><svg className="size-3 inline mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4h2v4h14v-4h2zM12 2 8 6h3v8h2V6h3l-4-4z"/></svg>{categoryName(article.category)}</span>
+          <div className="mt-auto pt-2 flex items-center justify-between text-[12px] border-t border-border/50">
+            <span className="font-bold text-primary">{categoryName(article.category)}</span>
+            <span className="text-muted-foreground flex items-center gap-1">
+              <svg className="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {(article as any).time ?? (article as any).published_at}
+            </span>
           </div>
         )}
       </div>
