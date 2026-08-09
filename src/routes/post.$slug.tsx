@@ -36,6 +36,8 @@ export const Route = createFileRoute("/post/$slug")({
     const p = loaderData.post;
     const title = p.seo_title || `${p.title} — প্রভাতবাংলা`;
     const desc = (p.seo_description || p.excerpt).slice(0, 155);
+    const canonical = `https://provatbangla.com/post/${p.slug}`;
+    
     return {
       meta: [
         { title },
@@ -43,6 +45,9 @@ export const Route = createFileRoute("/post/$slug")({
         { property: "og:title", content: p.title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: canonical },
+        { property: "article:published_time", content: p.published_at || p.created_at },
+        { property: "article:section", content: p.category },
         { name: "twitter:card", content: "summary_large_image" },
         ...(p.image_url?.startsWith("https://")
           ? [
@@ -51,6 +56,9 @@ export const Route = createFileRoute("/post/$slug")({
             ]
           : []),
       ],
+      links: [
+        { rel: "canonical", href: canonical }
+      ]
     };
   },
   component: PostPage,
