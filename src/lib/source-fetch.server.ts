@@ -224,7 +224,7 @@ export async function fetchArticle(url: string): Promise<SourceArticle> {
 
   const paragraphs = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((m) => stripTags(m[1] ?? ""))
-    .filter((p) => p.length > 50 && !/cookie|javascript|©|comment|copyright|advertisement/i.test(p));
+    .filter((p) => p.length > 50 && !/cookie|javascript|©|comment|copyright|advertisement|বিজ্ঞাপন|আমাদের সাথে থাকুন|সাবস্ক্রাইব করুন/i.test(p));
 
   // If no <p> tags found, look for div patterns or main content areas
   if (paragraphs.length < 2) {
