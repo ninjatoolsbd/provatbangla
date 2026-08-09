@@ -94,7 +94,7 @@ export function LatestPosts({ category }: { category?: string }) {
     <section className="mb-12">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Section: Big Feature Post (user-uploads://file-23 style) */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7">
           <Reveal delay={0}>
             <article className="group bg-white p-0 overflow-hidden rounded-sm">
               {mainPost.image_url && (
@@ -112,13 +112,13 @@ export function LatestPosts({ category }: { category?: string }) {
               )}
               <div className="p-0 pt-4">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[22px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[28px]">
+                  <h2 className="font-display text-[20px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[24px]">
                     {mainPost.title}
                   </h2>
                 </Link>
-                <div className="mt-3 text-[15px] leading-relaxed text-slate-700">
-                  <p className="line-clamp-3">
-                    {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 350) : "")}
+                <div className="mt-3 text-[14px] leading-relaxed text-slate-700">
+                  <p className="line-clamp-2">
+                    {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 200) : "")}
                   </p>
                   <Link 
                     to="/post/$slug" 
@@ -132,17 +132,19 @@ export function LatestPosts({ category }: { category?: string }) {
 
 
 
+
             </article>
           </Reveal>
         </div>
 
         {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-6 flex flex-col space-y-5">
+        <div className="lg:col-span-5 lg:pl-6 flex flex-col space-y-5">
           {sidePosts.map((p, i) => (
             <Reveal key={p.id} delay={100 + i * 50}>
               <article className="group flex gap-4 items-start border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                 {p.image_url && (
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-[110px]">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-[130px]">
+
                     <NewsImage 
                       src={p.image_url} 
                       alt={p.title} 
