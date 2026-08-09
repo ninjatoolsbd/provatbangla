@@ -136,22 +136,22 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-4 flex flex-col space-y-6">
+        <div className="lg:col-span-4 lg:pl-4 flex flex-col space-y-4">
           {sidePosts.map((p, i) => (
             <Reveal key={p.id} delay={100 + i * 50}>
-              <article className="group flex flex-col sm:flex-row lg:flex-col gap-4">
+              <article className="group flex gap-3 border-b border-slate-100 pb-3 last:border-0 last:pb-0">
                 {p.image_url && (
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm shadow-sm w-full sm:w-1/2 lg:w-full">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-1/3">
                     <NewsImage 
                       src={p.image_url} 
                       alt={p.title} 
-                      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
                     />
                   </Link>
                 )}
                 <div className="flex-1">
                   <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h3 className="line-clamp-2 font-display text-[17px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
+                    <h3 className="line-clamp-2 font-display text-[15px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
                       {p.title}
                     </h3>
                   </Link>
@@ -160,6 +160,7 @@ export function LatestPosts({ category }: { category?: string }) {
             </Reveal>
           ))}
         </div>
+
 
 
         {/* Bottom Slider Section: Horizontal Scrollable Grid */}
