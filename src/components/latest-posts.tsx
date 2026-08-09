@@ -94,7 +94,7 @@ export function LatestPosts({ category }: { category?: string }) {
     <section className="mb-12">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left Section: Big Feature Post (user-uploads://file-23 style) */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7">
           <Reveal delay={0}>
             <article className="group bg-white p-0 overflow-hidden rounded-sm">
               {mainPost.image_url && (
