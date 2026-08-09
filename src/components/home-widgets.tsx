@@ -35,10 +35,14 @@ export function BarHeading({
         className,
       )}
     >
-      <h2 className="relative flex items-center gap-2 font-display text-[20px] font-bold text-foreground">
-        <span className="inline-block h-[18px] w-[5px] bg-primary" />
+      <h2 className="relative flex items-center gap-2 font-display text-[22px] font-bold text-foreground">
+        <span className="inline-block h-[20px] w-[6px] bg-primary" />
         {title}
+        <div className="absolute -bottom-1.5 left-0 h-[2px] w-full bg-border">
+          <div className="h-full w-[60px] bg-primary" />
+        </div>
       </h2>
+
       <div className="flex items-center gap-2">
         {slug && (
           <Link
@@ -226,52 +230,64 @@ export function LatestPopularTabs({
   const list = tab === "latest" ? latest : popular;
 
   return (
-    <div className="border border-border bg-card">
-      <div className="flex border-b border-border">
+    <div className="border border-border bg-card shadow-sm">
+      <div className="flex bg-[#f3f3f3]">
         {(
           [
             ["latest", "সর্বশেষ"],
-            ["popular", "জনপ্রিয়"],
+            ["popular", "সর্বোচ্চ পঠিত"],
           ] as const
         ).map(([k, label]) => (
           <button
             key={k}
             onClick={() => setTab(k)}
             className={cn(
-              "flex-1 py-2.5 font-display text-[16px] font-bold transition-colors",
+              "flex-1 py-3 font-display text-[16px] font-bold transition-all",
               tab === k
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground",
+                ? "bg-white border-t-2 border-primary text-primary"
+                : "text-muted-foreground hover:text-foreground border-t-2 border-transparent",
             )}
           >
             {label}
           </button>
         ))}
       </div>
-      <ul className="max-h-[430px] divide-y divide-border overflow-y-auto">
-        {list.map((a) => (
+      <ul className="max-h-[500px] divide-y divide-border overflow-y-auto px-3">
+        {list.map((a, idx) => (
           <li key={a.id}>
             <Link
               to="/post/$slug"
               params={{ slug: (a as any).slug ?? String(a.id) }}
-              className="group block px-3 py-2.5"
+              className="group flex gap-3 py-3"
             >
-              <span className="block text-[11px] text-muted-foreground">{a.time}</span>
-              <span className="mt-0.5 line-clamp-2 block font-display text-[14.5px] leading-snug font-bold transition-colors group-hover:text-primary">
-                {a.title}
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-black text-[12px] font-bold text-white transition-colors group-hover:bg-primary">
+                {idx + 1}
               </span>
+              <div className="flex flex-1 gap-3 overflow-hidden">
+                <div className="flex-1 min-w-0">
+                  <h3 className="line-clamp-2 font-display text-[14.5px] leading-[1.4] font-bold transition-colors group-hover:text-primary">
+                    {a.title}
+                  </h3>
+                </div>
+                <NewsImage
+                  src={a.image}
+                  alt={a.title}
+                  className="size-14 shrink-0 rounded-sm object-cover"
+                />
+              </div>
             </Link>
           </li>
         ))}
       </ul>
-      <div className="border-t border-border p-2 text-center">
-        <Link to="/category/$slug" params={{ slug: "bangladesh" }} className="text-xs font-bold text-primary">
-          আরও পড়ুন →
+      <div className="border-t border-border p-3 text-center">
+        <Link to="/category/$slug" params={{ slug: "bangladesh" }} className="text-sm font-bold text-primary hover:underline">
+          আজকের সর্বশেষ সব খবর
         </Link>
       </div>
     </div>
   );
 }
+
 
 /* ---------- district search widget ---------- */
 export function DistrictSearch() {

@@ -112,10 +112,10 @@ export function LeadCard({ article }: { article: Article | Post }) {
   );
 }
 
-export function GridCard({ article, compact = false }: { article: Article | Post; compact?: boolean }) {
+export function GridCard({ article, compact = false, showCategory = true }: { article: Article | Post; compact?: boolean; showCategory?: boolean }) {
   return (
-    <article className="group">
-      <ArticleLink article={article} className="block overflow-hidden">
+    <article className="group flex flex-col h-full bg-[#f8f8f8] p-2 sm:p-0 sm:bg-transparent">
+      <ArticleLink article={article} className="block overflow-hidden relative">
         <NewsImage
           src={(article as any).image ?? (article as any).image_url}
           alt={article.title}
@@ -123,20 +123,28 @@ export function GridCard({ article, compact = false }: { article: Article | Post
           loading="lazy"
         />
       </ArticleLink>
-      <ArticleLink article={article}>
-        <h3
-          className={cn(
-            "mt-2.5 font-display leading-[1.4] font-bold transition-colors group-hover:text-primary",
-            compact ? "text-[17px]" : "text-[19px]",
-          )}
-        >
-          <Kicker article={article} />
-          {article.title}
-        </h3>
-      </ArticleLink>
+      <div className="mt-3 flex flex-col flex-1">
+        <ArticleLink article={article}>
+          <h3
+            className={cn(
+              "font-display leading-[1.4] font-bold transition-colors group-hover:text-primary mb-2",
+              compact ? "text-[16px]" : "text-[18px]",
+            )}
+          >
+            <Kicker article={article} />
+            {article.title}
+          </h3>
+        </ArticleLink>
+        {showCategory && (
+          <div className="mt-auto pt-2 flex items-center gap-1.5 text-[12px] text-muted-foreground border-t border-border/50">
+            <span className="text-primary"><svg className="size-3 inline mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4h2v4h14v-4h2zM12 2 8 6h3v8h2V6h3l-4-4z"/></svg>{categoryName(article.category)}</span>
+          </div>
+        )}
+      </div>
     </article>
   );
 }
+
 
 /** Compact row: small square thumb left, bold headline right. */
 export function ThumbRow({ article }: { article: Article | Post }) {
