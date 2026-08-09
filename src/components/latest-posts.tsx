@@ -76,6 +76,8 @@ export function LatestPosts({ category }: { category?: string }) {
   }
 
   const mainPost = data[0];
+  if (!mainPost) return null;
+
   const sidePosts = data.slice(1, 3);
   const bottomPosts = data.slice(3, 6);
 
@@ -114,7 +116,7 @@ export function LatestPosts({ category }: { category?: string }) {
                      params={{ slug: mainPost.category || "bangladesh" }}
                      className="flex items-center gap-1 text-[13px] font-bold text-slate-500 hover:text-primary"
                    >
-                     {categoryName(mainPost.category)} <span className="text-primary">|</span>
+                     {categoryName(mainPost.category)} <span className="text-primary text-sm ml-1">|</span>
                    </Link>
                 </div>
               </div>
@@ -152,7 +154,7 @@ export function LatestPosts({ category }: { category?: string }) {
                       params={{ slug: p.category || "bangladesh" }}
                       className="flex items-center gap-1 text-[12px] font-bold text-slate-500 hover:text-primary"
                     >
-                      {categoryName(p.category)} <span className="text-primary">|</span>
+                      {categoryName(p.category)} <span className="text-primary text-sm ml-1">|</span>
                     </Link>
                   </div>
                 </div>
@@ -191,7 +193,7 @@ export function LatestPosts({ category }: { category?: string }) {
                       params={{ slug: p.category || "bangladesh" }}
                       className="flex items-center gap-1 text-[12px] font-bold text-slate-500 hover:text-primary"
                     >
-                      {categoryName(p.category)} <span className="text-primary">|</span>
+                      {categoryName(p.category)} <span className="text-primary text-sm ml-1">|</span>
                     </Link>
                   </div>
                 </div>
