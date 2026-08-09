@@ -69,73 +69,82 @@ export function LatestPosts({ category }: { category?: string }) {
   const mainPost = data[0];
   if (!mainPost) return null;
 
-  const sidePosts = data.slice(1, 5);
-  const bottomPosts = data.slice(5);
+  const sidePosts = data.slice(1, 6);
+  const bottomPosts = data.slice(6, 9);
 
   return (
-    <section className="mb-10">
-      <SectionHeading title="সর্বশেষ" />
-      
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {/* Main Large Post (Left) */}
+    <section className="mb-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        {/* Left Section: Big Feature + Bottom Grid */}
         <div className="lg:col-span-8">
           <Reveal delay={0}>
-            <article className="group relative">
+            <article className="group">
               {mainPost.image_url && (
                 <Link
                   to="/post/$slug"
                   params={{ slug: mainPost.slug ?? "" }}
-                  className="block overflow-hidden rounded-sm"
+                  className="block overflow-hidden"
                 >
                   <NewsImage
                     src={mainPost.image_url}
                     alt={mainPost.title}
-                    className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                    className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                   />
                 </Link>
               )}
-              <div className="mt-4">
+              <div className="mt-5">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-2xl font-bold leading-tight transition-colors group-hover:text-primary md:text-3xl lg:text-4xl">
-                    {mainPost.kicker && <span className="text-primary">{mainPost.kicker} / </span>}
+                  <h2 className="font-display text-[30px] font-bold leading-[1.15] text-[#D0021B] transition-colors group-hover:text-primary lg:text-[36px]">
                     {mainPost.title}
                   </h2>
                 </Link>
-                <p className="mt-3 line-clamp-3 text-base text-muted-foreground lg:text-lg">
+                <p className="mt-4 line-clamp-4 text-[16px] leading-relaxed text-[#333]">
                   {mainPost.excerpt}
                 </p>
-                <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="font-medium text-primary">{categoryName(mainPost.category)}</span>
-                  <span>•</span>
-                  <span>{banglaDateTime(mainPost.published_at)}</span>
-                </div>
               </div>
             </article>
           </Reveal>
-        </div>
 
-        {/* Side Posts (Right) */}
-        <div className="lg:col-span-4">
-          <div className="flex flex-col gap-6">
-            {sidePosts.map((p, i) => (
-              <Reveal key={p.id} delay={100 + i * 50}>
-                <article className="group flex gap-4 border-b border-border/50 pb-4 last:border-0 last:pb-0">
-                  <div className="flex-1">
-                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                      <h3 className="line-clamp-2 font-display text-base font-bold leading-snug transition-colors group-hover:text-primary">
-                        {p.title}
-                      </h3>
-                    </Link>
-                    <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                      <span className="text-primary">{categoryName(p.category)}</span>
-                      <span>{banglaDateTime(p.published_at)}</span>
-                    </div>
-                  </div>
+          {/* Bottom 3 Grid Items (Matching user-uploads://file-18) */}
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {bottomPosts.map((p, i) => (
+              <Reveal key={p.id} delay={200 + i * 50}>
+                <article className="group">
                   {p.image_url && (
                     <Link
                       to="/post/$slug"
                       params={{ slug: p.slug ?? "" }}
-                      className="block h-20 w-32 shrink-0 overflow-hidden rounded-sm"
+                      className="mb-3 block overflow-hidden"
+                    >
+                      <NewsImage
+                        src={p.image_url}
+                        alt={p.title}
+                        className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </Link>
+                  )}
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                    <h4 className="line-clamp-3 font-display text-[17px] font-bold leading-tight transition-colors group-hover:text-primary">
+                      {p.title}
+                    </h4>
+                  </Link>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Section: Small List with Images */}
+        <div className="lg:col-span-4 lg:border-l lg:border-border lg:pl-8">
+          <div className="space-y-6">
+            {sidePosts.map((p, i) => (
+              <Reveal key={p.id} delay={100 + i * 50}>
+                <article className="group flex items-start gap-4">
+                  {p.image_url && (
+                    <Link
+                      to="/post/$slug"
+                      params={{ slug: p.slug ?? "" }}
+                      className="block h-16 w-28 shrink-0 overflow-hidden shadow-sm"
                     >
                       <NewsImage
                         src={p.image_url}
@@ -144,45 +153,19 @@ export function LatestPosts({ category }: { category?: string }) {
                       />
                     </Link>
                   )}
+                  <div className="min-w-0 flex-1">
+                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                      <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-[1.3] text-[#1a1a1a] transition-colors group-hover:text-primary">
+                        {p.title}
+                      </h3>
+                    </Link>
+                  </div>
                 </article>
               </Reveal>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Bottom Posts Grid */}
-      {bottomPosts.length > 0 && (
-        <div className="mt-10 grid grid-cols-1 gap-6 border-t border-border pt-8 sm:grid-cols-2 lg:grid-cols-5">
-          {bottomPosts.map((p, i) => (
-            <Reveal key={p.id} delay={300 + i * 50}>
-              <article className="group">
-                {p.image_url && (
-                  <Link
-                    to="/post/$slug"
-                    params={{ slug: p.slug ?? "" }}
-                    className="mb-3 block overflow-hidden rounded-sm"
-                  >
-                    <NewsImage
-                      src={p.image_url}
-                      alt={p.title}
-                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </Link>
-                )}
-                <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                  <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-snug transition-colors group-hover:text-primary">
-                    {p.title}
-                  </h4>
-                </Link>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  {categoryName(p.category)}
-                </p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      )}
     </section>
   );
 }
