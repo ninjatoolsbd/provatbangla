@@ -33,8 +33,18 @@ export async function countRows(table: string): Promise<number> {
 
 
 export async function insertRow(table: string, values: Row) {
+  // If the user's DB doesn't have the 'lang' column yet, PostgREST might throw a 400.
+  // We'll try to insert, and if it fails due to a missing column, we'll retry without it.
   const { error } = await db.from(table).insert(values);
-  if (error) throw error;
+  if (error) {
+    if (error.message.includes("column") && error.message.includes("does not exist") && "lang" in values) {
+      const { lang, ...rest } = values;
+      const { error: secondError } = await db.from(table).insert(rest);
+      if (secondError) throw secondError;
+      return;
+    }
+    throw error;
+  }
 }
 
 export async function updateRow(table: string, id: string, values: Row, idColumn = "id") {
