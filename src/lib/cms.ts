@@ -34,12 +34,31 @@ export async function countRows(table: string): Promise<number> {
 
 export async function insertRow(table: string, values: Row) {
   const { error } = await db.from(table).insert(values);
-  if (error) throw error;
+  if (error) {
+    // If the error is about a missing column, log it and try to strip common new columns
+    // This handles the "schema cache" or missing column issues on existing tables
+    if (error.code === '42703' || (error.message && error.message.includes("column") && error.message.includes("does not exist"))) {
+      console.warn(`Column missing in table ${table}, retrying without 'lang'...`);
+      const { lang, ...rest } = values;
+      const { error: retryError } = await db.from(table).insert(rest);
+      if (retryError) throw retryError;
+      return;
+    }
+    throw error;
+  }
 }
 
 export async function updateRow(table: string, id: string, values: Row, idColumn = "id") {
   const { error } = await db.from(table).update(values).eq(idColumn, id);
-  if (error) throw error;
+  if (error) {
+    if (error.code === '42703' || (error.message && error.message.includes("column") && error.message.includes("does not exist"))) {
+      const { lang, ...rest } = values;
+      const { error: retryError } = await db.from(table).update(rest).eq(idColumn, id);
+      if (retryError) throw retryError;
+      return;
+    }
+    throw error;
+  }
 }
 
 export async function deleteRow(table: string, id: string, idColumn = "id") {
