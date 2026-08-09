@@ -106,13 +106,12 @@ export async function processSourceImage(opts: {
   if (logo) {
     const parts: GeminiParts = [
       {
-        text: `You are an image processing expert. Your task is to apply a watermark to the provided photo.
-1. The first image is the base photo. The second image is the logo to be used as a watermark.
-2. Place the logo in the bottom-right corner of the base photo.
-3. Padding: Leave a small gap (approx 2% of image width) from the right and bottom edges.
-4. Scale: Resize the logo so it takes up about 12% of the base photo's width while maintaining its own aspect ratio.
-5. Opacity: Make the logo slightly semi-transparent (approx 85% opaque) so it looks like a professional news watermark.
-6. Return ONLY the resulting composite image as raw data. Do not add any text, markers, or explanation.`,
+        text: `Apply the second image (logo) as a watermark to the first image (base photo).
+1. Place the logo in the bottom-right corner.
+2. Padding: Leave 20 pixels of space from the right and bottom edges.
+3. Size: Resize the logo to be clearly visible, approximately 15% of the base image width.
+4. Transparency: The logo should be 80-90% opaque (almost solid but slightly blended).
+5. Output: Return ONLY the raw image data. No text.`,
       },
       { inlineData: { mimeType: mimeType, data: bytesToBase64(source.bytes) } },
       {

@@ -224,11 +224,24 @@ export async function fetchArticle(url: string): Promise<SourceArticle> {
 
   const paragraphs = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((m) => stripTags(m[1] ?? ""))
-    .filter((p) => p.length > 60 && !/cookie|javascript|©/i.test(p));
+    .filter((p) => p.length > 50 && !/cookie|javascript|©|comment|copyright|advertisement/i.test(p));
 
-  // দীর্ঘতম ধারাবাহিক অংশটুকুই মূল বডি ধরা হয়
+  // If no <p> tags found, look for div patterns or main content areas
+  if (paragraphs.length < 2) {
+    const mainContent = html.match(/<div[^>]+(?:class|id)=["'][^"']*(?:article-body|entry-content|post-content|main-content|article-content)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
+    if (mainContent?.[1]) {
+      const parts = mainContent[1].split(/<br\s*\/?>/i)
+        .map(p => stripTags(p))
+        .filter(p => p.length > 40);
+      paragraphs.push(...parts);
+    }
+  }
+
   let body = paragraphs.join("\n\n");
-  if (body.length < 200) body = meta(html, "og:description") || meta(html, "description");
+  if (body.length < 300) {
+    const desc = meta(html, "og:description") || meta(html, "description");
+    if (desc && desc.length > body.length) body = desc;
+  }
 
   return { url, title: title.trim(), body: body.trim(), image: image || undefined };
 }

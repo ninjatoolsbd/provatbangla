@@ -68,12 +68,13 @@ async function rewrite(
   const system =
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে। কোনো ভূমিকা বা উপসংহার লিখবে না।";
   const prompt = [
-    "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বাংলায় পুনর্লিখন করো।",
+    "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বিস্তারিতভাবে বাংলায় পুনর্লিখন করো।",
     "নিয়ম:",
-    "- তথ্য অপরিবর্তিত রাখবে, নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
-    "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়।",
+    "- তথ্য অপরিবর্তিত রাখবে, কোনো তথ্য বাদ দেবে না এবং নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
+    "- নিউজটি যথেষ্ট দীর্ঘ (কমপক্ষে ৩০০-৪০০ শব্দ) এবং সাবলীল হতে হবে।",
+    "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়। পেশাদার সাংবাদিকতার ভাষা ব্যবহার করো।",
     "- টেক্সটের ভেতর কোনো আসল ডাবল কোট (\") ব্যবহার করবে না, পরিবর্তে সিঙ্গেল কোট (') ব্যবহার করো।",
-    "- অনুচ্ছেদগুলো আলাদা করতে \\n\\n ব্যবহার করো।",
+    "- অনুচ্ছেদগুলো আলাদা করতে \\n\\n ব্যবহার করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
     "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
     "",
@@ -81,7 +82,7 @@ async function rewrite(
     '{ "title": "", "kicker": "", "excerpt": "", "content": "", "seo_title": "", "seo_description": "", "category": "" }',
     "",
     `মূল শিরোনাম: ${article.title}`,
-    `মূল সংবাদ:\n${article.body.slice(0, 5000)}`,
+    `মূল সংবাদ (বিস্তারিত লিখুন):\n${article.body.slice(0, 8000)}`,
   ].join("\n");
 
   const { text } = await generateTextWithFallback({ system, prompt, json: true });
