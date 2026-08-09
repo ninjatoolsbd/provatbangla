@@ -57,30 +57,33 @@ async function geminiApi(opts: { key: string; system: string; prompt: string }) 
         });
 
         if (res.status === 404) {
-          // If 404, the model or version might be wrong, try next
           continue;
         }
 
         if (!res.ok) {
-    const errorText = await res.text();
-    // Log the actual error code and response for debugging
-    let detail = "";
-    try {
-      const parsed = JSON.parse(errorText);
-      detail = parsed.error?.message || errorText;
-    } catch {
-      detail = errorText;
-    }
-    throw new Error(`Gemini Error: ${res.status} ${detail.slice(0, 200)}`);
+          const errorText = await res.text();
+          let detail = "";
+          try {
+            const parsed = JSON.parse(errorText);
+            detail = parsed.error?.message || errorText;
+          } catch {
+            detail = errorText;
+          }
+          throw new Error(`Gemini Error: ${res.status} ${detail.slice(0, 200)}`);
         }
 
         const data = await res.json();
+        
+        // Check for safety blocks
+        if (data.candidates?.[0]?.finishReason === "SAFETY") {
+          throw new Error("Gemini Safety Block: content flagged");
+        }
+
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
         if (!text) throw new Error("Gemini returned empty response");
         return text;
       } catch (e) {
         lastError = e instanceof Error ? e : new Error(String(e));
-        // If it's a 404 we already 'continue', but for other errors (like 401, 429) we might want to propagate or log
         if (!String(e).includes("404")) {
           throw e; 
         }
@@ -88,7 +91,7 @@ async function geminiApi(opts: { key: string; system: string; prompt: string }) 
     }
   }
 
-  throw lastError || new Error("Gemini model not found (Tried flash, pro, and legacy)");
+  throw lastError || new Error("Gemini model not found");
 }
 
 /**
@@ -269,7 +272,7 @@ export async function generateTextWithFallback(args: {
           try {
             JSON.parse(processedText);
           } catch (e) {
-            // Robust cleaning for literal newlines inside JSON strings
+            // Robust cleaning for literal newlines and unescaped quotes inside JSON strings
             let fixedText = "";
             let inString = false;
             let escaped = false;
@@ -278,6 +281,9 @@ export async function generateTextWithFallback(args: {
               if (char === '"' && !escaped) {
                 inString = !inString;
                 fixedText += char;
+              } else if (inString && !escaped && char === '"') {
+                // This shouldn't happen with inString toggle but double check
+                fixedText += "'";
               } else if (inString && (char === '\n' || char === '\r')) {
                 fixedText += "\\n";
               } else {
@@ -289,11 +295,24 @@ export async function generateTextWithFallback(args: {
             // Remove trailing commas before closing braces/brackets
             fixedText = fixedText.replace(/,\s*([}\]])/g, "$1").trim();
             
+            // Try one more time to fix common quote issues if it still fails
             try {
               JSON.parse(fixedText);
               processedText = fixedText;
             } catch (innerE) {
-               console.warn("JSON fix failed, returning raw processed text", innerE);
+              // If it still fails, it might be due to unescaped double quotes in the content
+              // We'll try to replace content field specifically with a safer version
+              fixedText = fixedText.replace(/"content"\s*:\s*"(.*)"\s*,\s*"seo_title"/s, (m, content) => {
+                const safeContent = content.replace(/"/g, "'");
+                return `"content":"${safeContent}","seo_title"`;
+              });
+              
+              try {
+                JSON.parse(fixedText);
+                processedText = fixedText;
+              } catch (lastE) {
+                console.warn("JSON fix failed, returning raw processed text", lastE);
+              }
             }
           }
         }
