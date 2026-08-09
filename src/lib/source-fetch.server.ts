@@ -137,22 +137,48 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   const sitemap = await fromNewsSitemap(siteUrl, limit);
   if (sitemap.length) return sitemap;
 
-  // Final fallback: try to scrape the homepage for links if it's a known news portal
+  // Final fallback: try to scrape the page for links.
+  // We use a broader regex to capture articles even from homepages.
   try {
     const html = await getText(siteUrl);
-    const links = [...html.matchAll(/href=["']([^"']+\/(?:bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery)\/[^"']+)["']/gi)];
-    const uniqueLinks = [...new Set(links.map(m => m[1] as string))];
+    
+    // Improved regex to find links that look like news articles.
+    // We look for patterns common in Bengali news sites.
+    const linkMatches = [...html.matchAll(/href=["']([^"']+)["']/gi)];
+    const uniqueLinks = [...new Set(linkMatches.map(m => m[1] as string))];
     
     const items: SourceItem[] = [];
     for (const link of uniqueLinks) {
-      if (!link) continue;
-      const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
-      // Skip common static assets or irrelevant pages
-      if (/\.(jpg|jpeg|png|gif|css|js|xml)$/i.test(fullUrl)) continue;
+      if (!link || link === '#' || link.length < 10) continue;
       
-      items.push({ url: fullUrl, title: "" });
-      if (items.length >= limit) break;
+      const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
+      
+      // Skip common static assets, scripts, or obvious non-article pages
+      if (/\.(jpg|jpeg|png|gif|css|js|xml|ico|svg|woff|ttf)$/i.test(fullUrl)) continue;
+      if (fullUrl.includes('/tag/') || fullUrl.includes('/author/') || fullUrl.includes('/search')) continue;
+      
+      // Heuristic: Article URLs usually have categories or date patterns or long slugs
+      const isArticle = /\/(bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery|details|news|article)\//.test(fullUrl) || 
+                        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) || 
+                        (fullUrl.split('/').length > 4 && fullUrl.length > 40);
+
+      if (isArticle) {
+        items.push({ url: fullUrl, title: "" });
+        if (items.length >= limit) break;
+      }
     }
+    
+    // If we still found nothing specific, just take any long links that aren't the site root
+    if (items.length === 0) {
+      for (const link of uniqueLinks) {
+        const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
+        if (fullUrl.length > 40 && !fullUrl.endsWith(h) && !fullUrl.endsWith(h + '/')) {
+          items.push({ url: fullUrl, title: "" });
+          if (items.length >= limit) break;
+        }
+      }
+    }
+    
     return items;
   } catch (e) {
     console.error("Scraping fallback failed:", e);
