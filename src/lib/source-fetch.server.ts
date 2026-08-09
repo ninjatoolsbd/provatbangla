@@ -65,10 +65,16 @@ async function fromRss(siteUrl: string, limit: number): Promise<SourceItem[]> {
       const xml = await getText(base + path);
       if (!/<(item|entry)[\s>]/i.test(xml)) continue;
       const items: SourceItem[] = [];
-      for (const block of xml.split(/<item[\s>]/i).slice(1)) {
-        const link = block.match(/<link>([^<]+)<\/link>/i)?.[1]?.trim();
-        const title = stripTags(block.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-        if (link && title) items.push({ url: link, title });
+      // Split by item or entry tag
+      const blocks = xml.split(/<(item|entry)[\s>]/i).slice(1);
+      for (const block of blocks) {
+        const link = block.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]?.trim() || 
+                     block.match(/<link[^>]+href=["']([^"']+)["']/i)?.[1]?.trim();
+        const title = stripTags(block.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
+        
+        if (link && title) {
+          items.push({ url: link, title });
+        }
         if (items.length >= limit) break;
       }
       if (items.length) return items;
@@ -91,10 +97,23 @@ async function fromNewsSitemap(siteUrl: string, limit: number): Promise<SourceIt
   for (const candidate of candidates) {
     try {
       const xml = await getText(candidate);
-      const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1] ?? "");
-      const articles = locs.filter((u) => /\/[a-zA-Z0-9_-]{6,}$/.test(u) && !u.endsWith(".xml"));
-      if (articles.length) {
-        return articles.slice(-limit).reverse().map((url) => ({ url, title: "" }));
+      // We want the most recent URLs first. Sitemap order varies, so we try to find <lastmod> or just reverse if needed.
+      const urlBlocks = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)];
+      
+      const items: {url: string, date: string}[] = [];
+      for (const block of urlBlocks) {
+        const loc = block[1].match(/<loc>\s*([^<\s]+)\s*<\/loc>/i)?.[1];
+        const lastmod = block[1].match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/i)?.[1] || "";
+        if (loc && /\/[a-zA-Z0-9_-]{6,}$/.test(loc) && !loc.endsWith(".xml")) {
+          items.push({ url: loc, date: lastmod });
+        }
+      }
+      
+      // Sort by date descending if available
+      items.sort((a, b) => b.date.localeCompare(a.date));
+      
+      if (items.length) {
+        return items.slice(0, limit).map(i => ({ url: i.url, title: "" }));
       }
     } catch {
       /* try next */
@@ -123,13 +142,13 @@ async function fromAmaderShomoy(siteUrl: string, limit: number): Promise<SourceI
 export async function discoverLatest(siteUrl: string, limit: number): Promise<SourceItem[]> {
   const h = host(siteUrl);
   
-  // Specific handling for common Bengali news sites if RSS/Sitemap fails
+  // Specific handling for common news sites to ensure we get the absolute latest from their homepage/API
   if (h.includes("dainikamadershomoy")) {
     const items = await fromAmaderShomoy(siteUrl, limit).catch(() => []);
     if (items.length) return items;
   }
   
-  // Generic RSS discovery
+  // Generic RSS discovery (usually carries latest news)
   const rss = await fromRss(siteUrl, limit);
   if (rss.length) return rss;
   
@@ -137,54 +156,31 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
   const sitemap = await fromNewsSitemap(siteUrl, limit);
   if (sitemap.length) return sitemap;
 
-  // Final fallback: try to scrape the page for links.
-  // We use a broader regex to capture articles even from homepages.
+  // Final fallback: Scrape the homepage directly to find the absolute latest headlines.
   try {
     const html = await getText(siteUrl);
-    
-    // Improved regex to find links that look like news articles.
-    // We look for patterns common in Bengali news sites.
     const linkMatches = [...html.matchAll(/href=["']([^"']+)["']/gi)];
     const uniqueLinks = [...new Set(linkMatches.map(m => m[1] as string))];
     
     const items: SourceItem[] = [];
+    // Prioritize links found earlier in the HTML (usually top news/headlines)
     for (const link of uniqueLinks) {
-      if (!link || link === '#' || link.length < 10) continue;
+      if (!link || link === '#' || link.length < 15) continue;
       
       const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
       
-      // Skip common static assets, scripts, or obvious non-article pages
       if (/\.(jpg|jpeg|png|gif|css|js|xml|ico|svg|woff|ttf)$/i.test(fullUrl)) continue;
-      if (fullUrl.includes('/tag/') || fullUrl.includes('/author/') || fullUrl.includes('/search')) continue;
+      if (fullUrl.includes('/tag/') || fullUrl.includes('/author/') || fullUrl.includes('/search') || fullUrl === siteUrl || fullUrl === siteUrl + '/') continue;
       
-      // Heuristic: Article URLs usually have categories or date patterns or long slugs
-      const isArticle = /\/(bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery|details|news|article)\//.test(fullUrl) || 
-                        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) || 
-                        (fullUrl.split('/').length > 4 && fullUrl.length > 40);
+      // Prothom Alo specific pattern: /bangladesh/politics/v1a2b3c
+      // Daily Star specific pattern: /news/bangladesh/politics/slug-12345
+      const isArticle = /\/(bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery|details|news|article|world|views)\//.test(fullUrl) || 
+                        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) ||
+                        (fullUrl.split('/').length > 4 && fullUrl.length > 35);
 
       if (isArticle) {
-        // Try to find image near this link in the HTML
-        const contextRe = new RegExp(`<[^>]+href=["']${link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>[\\s\\S]*?<img[^>]+src=["']([^"']+)["']`, 'i');
-        const imgMatch = html.match(contextRe);
-        let itemImage = imgMatch?.[1];
-        
-        if (itemImage && !itemImage.startsWith("http")) {
-          itemImage = new URL(itemImage, siteUrl).href;
-        }
-
-        items.push({ url: fullUrl, title: "", image: itemImage });
+        items.push({ url: fullUrl, title: "" });
         if (items.length >= limit) break;
-      }
-    }
-    
-    // If we still found nothing specific, just take any long links that aren't the site root
-    if (items.length === 0) {
-      for (const link of uniqueLinks) {
-        const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
-        if (fullUrl.length > 40 && !fullUrl.endsWith(h) && !fullUrl.endsWith(h + '/')) {
-          items.push({ url: fullUrl, title: "" });
-          if (items.length >= limit) break;
-        }
       }
     }
     
