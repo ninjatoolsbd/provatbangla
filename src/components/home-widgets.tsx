@@ -59,64 +59,136 @@ export function BarHeading({
   );
 }
 
-/* ---------- horizontal scroller (video strip) ---------- */
-export function VideoStrip({ items }: { items: Article[] }) {
+/* ---------- horizontal scroller (video strip) - user-uploads://file-17 style ---------- */
+export function VideoStrip({ items }: { items: any[] }) {
+  const [activeTab, setActiveTab] = useState("video-news");
   const ref = useRef<HTMLDivElement>(null);
+  
   const nudge = (dir: number) =>
     ref.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
 
+  const tabs = [
+    { id: "video-news", label: "ভিডিও সংবাদ" },
+    { id: "video-ent", label: "ভিডিও বিনোদন" },
+    { id: "talk-show", label: "বাংলা টকশো" },
+  ];
+
   return (
-    <section className="mt-8 border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between border-b border-border pb-1.5">
-        <h2 className="flex items-center gap-2 font-display text-[20px] font-bold">
-          <span className="inline-block h-[18px] w-[5px] bg-primary" />
-          ভিডিও
-        </h2>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => nudge(-1)}
-            aria-label="আগের"
-            className="grid size-7 place-items-center rounded-full border border-border transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            <ChevronLeft className="size-4" />
-          </button>
-          <button
-            onClick={() => nudge(1)}
-            aria-label="পরের"
-            className="grid size-7 place-items-center rounded-full border border-border transition-colors hover:bg-primary hover:text-primary-foreground"
-          >
-            <ChevronRight className="size-4" />
-          </button>
-        </div>
-      </div>
-      <div
-        ref={ref}
-        className="flex snap-x gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {items.map((a) => (
-          <Link
-            key={a.id}
-            to="/post/$slug"
-            params={{ slug: (a as any).slug ?? String(a.id) }}
-            className="group w-[260px] shrink-0 snap-start"
-          >
-            <div className="relative overflow-hidden">
-              <NewsImage
-                src={a.image}
-                alt={a.title}
-                className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
-                loading="lazy"
-              />
-              <span className="absolute inset-0 bg-ink/25" />
-              <span className="absolute top-1/2 left-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink-foreground/85 transition-transform duration-300 group-hover:scale-110">
-                <Play className="size-4 fill-primary text-primary" />
-              </span>
+    <section className="mt-10 bg-[#0F0F0F] text-white">
+      <div className="mx-auto max-w-[1360px] px-4 py-8">
+        <div className="grid gap-6 lg:grid-cols-4">
+          {/* Left Column: Live TV Box */}
+          <div className="lg:col-span-1">
+            <div className="h-full border-[10px] border-[#990000] bg-[#990000] p-1">
+              <div className="mb-2 flex items-center justify-between px-2 text-white">
+                <h2 className="flex items-center gap-2 text-sm font-bold">
+                  <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                  লাইভ টিভি
+                </h2>
+                <div className="h-1 w-24 bg-white/30" />
+              </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-white">
+                <div className="flex h-full w-full flex-col items-center justify-center p-4">
+                  <div className="relative flex flex-col items-center">
+                    {/* Simplified Live Logo Replica */}
+                    <div className="flex flex-col items-center">
+                       <div className="relative mb-2">
+                         <div className="h-4 w-12 rounded-t-full border-t-4 border-primary" />
+                         <div className="mt-1 h-3 w-8 rounded-t-full border-t-4 border-primary" />
+                         <div className="mt-1 h-2 w-4 rounded-full bg-primary mx-auto" />
+                       </div>
+                       <span className="text-4xl font-black tracking-tighter text-primary">LIVE</span>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/20 text-white">
+                       <Play className="h-6 w-6 fill-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-2 px-2 text-[11px] font-bold text-white/90">Live From Somoy TV</p>
             </div>
-            <h3 className="mt-2 line-clamp-2 font-display text-[15px] leading-snug font-bold transition-colors group-hover:text-primary">
-              {a.title}
-            </h3>
-          </Link>
-        ))}
+          </div>
+
+          {/* Right Column: Tabs and Slider */}
+          <div className="lg:col-span-3">
+            <div className="flex flex-wrap gap-2 mb-6">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "px-4 py-1.5 text-sm font-bold transition-colors",
+                    activeTab === tab.id 
+                      ? "bg-primary text-white" 
+                      : "bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative group">
+              <div
+                ref={ref}
+                className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {items.map((item) => (
+                  <Link
+                    key={item.id}
+                    to="/post/$slug"
+                    params={{ slug: item.slug ?? "" }}
+                    className="w-[280px] shrink-0 snap-start group/item"
+                  >
+                    <div className="relative aspect-video w-full overflow-hidden">
+                      <NewsImage
+                        src={item.image_url || item.image}
+                        alt={item.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover/item:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/20" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                         <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-black/20 text-white backdrop-blur-sm transition-transform group-hover/item:scale-110">
+                            <Play className="h-4 w-4 fill-white" />
+                         </div>
+                      </div>
+                    </div>
+                    <h3 className="mt-3 line-clamp-2 text-[15px] font-bold leading-tight text-white transition-colors group-hover/item:text-primary">
+                      {item.title}
+                    </h3>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Navigation Arrows */}
+              <button
+                onClick={() => nudge(-1)}
+                className="absolute -left-4 top-[35%] z-10 hidden h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-primary group-hover:flex"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => nudge(1)}
+                className="absolute -right-4 top-[35%] z-10 hidden h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-primary group-hover:flex"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="mt-4 flex justify-end">
+              <Link
+                to="/category/$slug"
+                params={{ slug: "video-gallery" }}
+                className="inline-flex items-center gap-2 bg-primary px-5 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90 rounded-l-full relative overflow-hidden"
+              >
+                <span className="absolute left-0 top-0 h-full w-1 bg-white/20" />
+                সকল ভিডিও দেখুন →
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

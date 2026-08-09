@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { EpaperSection } from "@/components/epaper-section";
 import { BreakingTicker } from "@/components/breaking-ticker";
 import { LatestPosts } from "@/components/latest-posts";
-import { PhotoGallery } from "@/components/home-widgets";
+import { PhotoGallery, VideoStrip } from "@/components/home-widgets";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 import { DivisionMap } from "@/components/division-map";
 import { AdBanner } from "@/components/ad-banner";
@@ -83,6 +83,9 @@ function Home() {
            <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
            <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
         </Suspense>
+
+        {/* Video Section integrated from reference user-uploads://file-17 */}
+        <VideoStrip items={photoPosts} />
 
         <BottomWidgets />
       </main>
