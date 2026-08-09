@@ -27,7 +27,7 @@ export const getPostForPreview = createServerFn({ method: "GET" })
       .from("posts")
       .select("*")
       .eq("slug", data.slug)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
     return post;
   });
