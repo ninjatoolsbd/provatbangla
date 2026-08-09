@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { banglaDateTime, Post } from "@/lib/posts";
+import { categoryName } from "@/lib/news-data";
 
 async function fetchFilteredPosts(limit = 12, category?: string) {
   let q = supabase
@@ -16,14 +17,12 @@ async function fetchFilteredPosts(limit = 12, category?: string) {
   if (category) {
     q = q.eq("category", category);
   } else {
-    // If no category specified, fallback to sorboshesh or general news
     q = q.in("category", ["sorboshesh", "bangladesh", "apradh", "politics", "international"]);
   }
 
   const { data, error } = await q.limit(limit);
   if (error) throw error;
 
-  // FALLBACK: If we got nothing from specific categories, just get the absolute latest published posts
   if (!data || data.length === 0) {
     const { data: fallbackData } = await supabase
       .from("posts")
@@ -77,18 +76,16 @@ export function LatestPosts({ category }: { category?: string }) {
   }
 
   const mainPost = data[0];
-  if (!mainPost) return null;
-
-  const sidePosts = data.slice(1, 6);
-  const bottomPosts = data.slice(6, 9);
+  const sidePosts = data.slice(1, 3);
+  const bottomPosts = data.slice(3, 6);
 
   return (
     <section className="mb-12">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-        {/* Left Section: Big Feature + Bottom Grid */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Left: Main Feature (Big) */}
         <div className="lg:col-span-8">
           <Reveal delay={0}>
-            <article className="group">
+            <article className="group bg-white p-0 shadow-sm border border-slate-100">
               {mainPost.image_url && (
                 <Link
                   to="/post/$slug"
@@ -102,78 +99,105 @@ export function LatestPosts({ category }: { category?: string }) {
                   />
                 </Link>
               )}
-              <div className="mt-3">
+              <div className="p-5">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[26px] font-bold leading-[1.2] text-[#D0021B] transition-colors group-hover:text-primary lg:text-[34px]">
+                  <h2 className="font-display text-[28px] font-bold leading-[1.3] text-slate-900 transition-colors group-hover:text-primary lg:text-[32px]">
                     {mainPost.title}
                   </h2>
                 </Link>
-                <p className="mt-2 line-clamp-3 text-[15px] leading-relaxed text-[#555] lg:text-[16px]">
-                  {mainPost.excerpt || mainPost.content?.replace(/<[^>]*>/g, '').slice(0, 200) + "..."}
+                <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">
+                  {mainPost.excerpt || mainPost.content?.replace(/<[^>]*>/g, '').slice(0, 250) + "..."}
                 </p>
+                <div className="mt-6 flex items-center justify-end border-t border-slate-50 pt-3">
+                   <Link 
+                     to="/category/$slug" 
+                     params={{ slug: mainPost.category || "bangladesh" }}
+                     className="flex items-center gap-1 text-[13px] font-bold text-slate-500 hover:text-primary"
+                   >
+                     {categoryName(mainPost.category)} <span className="text-primary">|</span>
+                   </Link>
+                </div>
               </div>
             </article>
           </Reveal>
+        </div>
 
-          {/* Bottom Grid Items */}
-          <div className="mt-6 grid grid-cols-1 gap-5 border-t border-slate-100 pt-6 sm:grid-cols-3">
-            {bottomPosts.map((p, i) => (
-              <Reveal key={p.id} delay={200 + i * 50}>
-                <article className="group">
-                  {p.image_url && (
-                    <Link
-                      to="/post/$slug"
-                      params={{ slug: p.slug ?? "" }}
-                      className="mb-2 block overflow-hidden rounded-sm"
-                    >
-                      <NewsImage
-                        src={p.image_url}
-                        alt={p.title}
-                        className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </Link>
-                  )}
+        {/* Right: Two Stacked Items (user-uploads://file-21 style) */}
+        <div className="lg:col-span-4 flex flex-col gap-6">
+          {sidePosts.map((p, i) => (
+            <Reveal key={p.id} delay={100 + i * 50}>
+              <article className="group bg-white shadow-sm border border-slate-100 h-full flex flex-col">
+                {p.image_url && (
+                  <Link
+                    to="/post/$slug"
+                    params={{ slug: p.slug ?? "" }}
+                    className="block overflow-hidden"
+                  >
+                    <NewsImage
+                      src={p.image_url}
+                      alt={p.title}
+                      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </Link>
+                )}
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-2 font-display text-[16px] font-bold leading-tight transition-colors group-hover:text-primary">
+                    <h3 className="line-clamp-3 font-display text-[18px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
+                      {p.title}
+                    </h3>
+                  </Link>
+                  <div className="mt-4 flex items-center justify-end border-t border-slate-50 pt-2">
+                    <Link 
+                      to="/category/$slug" 
+                      params={{ slug: p.category || "bangladesh" }}
+                      className="flex items-center gap-1 text-[12px] font-bold text-slate-500 hover:text-primary"
+                    >
+                      {categoryName(p.category)} <span className="text-primary">|</span>
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* Bottom 3 Grid Items (Matching user-uploads://file-21) */}
+        <div className="lg:col-span-12 mt-2 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {bottomPosts.map((p, i) => (
+            <Reveal key={p.id} delay={200 + i * 50}>
+              <article className="group bg-white shadow-sm border border-slate-100 flex flex-col h-full">
+                {p.image_url && (
+                  <Link
+                    to="/post/$slug"
+                    params={{ slug: p.slug ?? "" }}
+                    className="block overflow-hidden"
+                  >
+                    <NewsImage
+                      src={p.image_url}
+                      alt={p.title}
+                      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </Link>
+                )}
+                <div className="p-4 flex-1 flex flex-col justify-between">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                    <h4 className="line-clamp-3 font-display text-[17px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
                       {p.title}
                     </h4>
                   </Link>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Section: Small List with Images */}
-        <div className="lg:col-span-4 lg:border-l lg:border-slate-200 lg:pl-6">
-          <div className="flex flex-col gap-5">
-            {sidePosts.map((p, i) => (
-              <Reveal key={p.id} delay={100 + i * 50}>
-                <article className="group flex items-start gap-3 border-b border-slate-50 pb-5 last:border-0 last:pb-0">
-                  <div className="min-w-0 flex-1">
-                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                      <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-[1.35] text-[#1a1a1a] transition-colors group-hover:text-primary">
-                        {p.title}
-                      </h3>
+                  <div className="mt-4 flex items-center justify-end border-t border-slate-50 pt-2">
+                    <Link 
+                      to="/category/$slug" 
+                      params={{ slug: p.category || "bangladesh" }}
+                      className="flex items-center gap-1 text-[12px] font-bold text-slate-500 hover:text-primary"
+                    >
+                      {categoryName(p.category)} <span className="text-primary">|</span>
                     </Link>
                   </div>
-                  {p.image_url && (
-                    <Link
-                      to="/post/$slug"
-                      params={{ slug: p.slug ?? "" }}
-                      className="block h-[70px] w-[110px] shrink-0 overflow-hidden rounded-sm shadow-sm"
-                    >
-                      <NewsImage
-                        src={p.image_url}
-                        alt={p.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    </Link>
-                  )}
-                </article>
-              </Reveal>
-            ))}
-          </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
