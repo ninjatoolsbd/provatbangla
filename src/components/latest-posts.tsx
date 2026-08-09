@@ -85,9 +85,9 @@ export function LatestPosts({ category }: { category?: string }) {
   const mainPost = data[0];
   if (!mainPost) return null;
   
-  const sidePost = data[1]; // The single image item on the right top
-  const textPosts = data.slice(2, 6); // Text list under the right image
-  const sliderPosts = data.slice(6); // The bottom slider
+  const sidePosts = data.slice(1, 3); // Two image items on the right
+  const sliderPosts = data.slice(3); // The bottom slider
+
 
   return (
     <section className="mb-12">
@@ -95,7 +95,7 @@ export function LatestPosts({ category }: { category?: string }) {
         {/* Left Section: Big Feature Post (user-uploads://file-23 style) */}
         <div className="lg:col-span-8">
           <Reveal delay={0}>
-            <article className="group bg-white p-0 shadow-sm border border-slate-100 overflow-hidden rounded-sm">
+            <article className="group bg-white p-0 overflow-hidden rounded-sm">
               {mainPost.image_url && (
                 <Link
                   to="/post/$slug"
@@ -109,54 +109,44 @@ export function LatestPosts({ category }: { category?: string }) {
                   />
                 </Link>
               )}
-              <div className="p-5">
+              <div className="p-0 pt-3">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[26px] font-bold leading-[1.3] text-[#D0021B] transition-colors group-hover:text-primary lg:text-[32px]">
-                    {mainPost.title} <span className="text-[14px] ml-1 opacity-60 text-slate-400">↙</span>
+                  <h2 className="text-center font-display text-[22px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[24px]">
+                    {mainPost.title}
                   </h2>
                 </Link>
-                <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">
-                  {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 300) + "..." : "")}
-                </p>
               </div>
+
             </article>
           </Reveal>
         </div>
 
-        {/* Right Section: Image Top + Text List (Matching user-uploads://file-23 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-4 flex flex-col">
-          {sidePost && (
-            <Reveal delay={100}>
-              <article className="group mb-5">
-                {sidePost.image_url && (
-                   <Link to="/post/$slug" params={{ slug: sidePost.slug ?? "" }} className="block mb-4 overflow-hidden rounded-sm shadow-sm">
-                     <NewsImage src={sidePost.image_url} alt={sidePost.title} className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                   </Link>
+        {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
+        <div className="lg:col-span-4 lg:pl-4 flex flex-col space-y-6">
+          {sidePosts.map((p, i) => (
+            <Reveal key={p.id} delay={100 + i * 50}>
+              <article className="group flex flex-col sm:flex-row lg:flex-col gap-4">
+                {p.image_url && (
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm shadow-sm w-full sm:w-1/2 lg:w-full">
+                    <NewsImage 
+                      src={p.image_url} 
+                      alt={p.title} 
+                      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                    />
+                  </Link>
                 )}
-                <Link to="/post/$slug" params={{ slug: sidePost.slug ?? "" }}>
-                  <h3 className="line-clamp-3 font-display text-[17px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
-                    {sidePost.title} <span className="text-[12px] opacity-40 font-normal ml-1">↙</span>
-                  </h3>
-                </Link>
+                <div className="flex-1">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                    <h3 className="line-clamp-2 font-display text-[17px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
+                      {p.title}
+                    </h3>
+                  </Link>
+                </div>
               </article>
             </Reveal>
-          )}
-
-          {/* Text List below the image */}
-          <div className="space-y-4 border-t border-slate-100 pt-4">
-            {textPosts.map((p, i) => (
-              <Reveal key={p.id} delay={150 + i * 50}>
-                <article className="group border-b border-slate-50 pb-3 last:border-0 last:pb-0">
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
-                      {p.title} <span className="text-[12px] opacity-40 font-normal ml-1">↙</span>
-                    </h4>
-                  </Link>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          ))}
         </div>
+
 
         {/* Bottom Slider Section: Horizontal Scrollable Grid */}
         {sliderPosts.length > 0 && (
