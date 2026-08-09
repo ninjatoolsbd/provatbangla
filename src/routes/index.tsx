@@ -18,15 +18,18 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "জাতীয়, রাজনীতি, খেলা, বিনোদন, অর্থনীতি ও আন্তর্জাতিক অঙ্গনের সর্বশেষ বাংলা সংবাদ এক জায়গায়।",
+          "প্রভাতবাংলা: রাজনীতি, অর্থনীতি, আন্তর্জাতিক, খেলা, বিনোদন ও শিক্ষা বিষয়ক সর্বশেষ সংবাদ। বাংলাদেশ ও বিশ্বের সত্য সংবাদ সবার আগে পেতে প্রভাতবাংলার সাথেই থাকুন।",
       },
-      { property: "og:title", content: "প্রভাতবাংলা — সর্বশেষ বাংলা সংবাদ" },
+      { property: "og:title", content: "প্রভাতবাংলা — সর্বশেষ বাংলা সংবাদ পোর্টাল" },
       {
         property: "og:description",
-        content: "বাংলাদেশ ও বিশ্বের সব খবর — জাতীয়, রাজনীতি, খেলা, বিনোদন ও অর্থনীতি।",
+        content: "বাংলাদেশ ও বিশ্বের সত্য ও নির্ভরযোগ্য সংবাদ সবার আগে পেতে প্রভাতবাংলার সাথেই থাকুন।",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "bn_BD" },
+      { property: "og:site_name", content: "প্রভাতবাংলা" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", content: "@ProvatBangla" },
     ],
   }),
   component: Home,

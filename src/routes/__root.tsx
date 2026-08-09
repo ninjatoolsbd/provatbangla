@@ -89,30 +89,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "প্রভাতবাংলা — বাংলা সংবাদ পোর্টাল (ডেমো)" },
+      { name: "robots", content: "index, follow" },
+      { name: "googlebot", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
+      { name: "bingbot", content: "index, follow" },
+      { name: "theme-color", content: "#941c1c" },
+      { title: "প্রভাতবাংলা — সর্বশেষ সংবাদ" },
       {
         name: "description",
-        content: "জাতীয়, রাজনীতি, খেলা, বিনোদন ও আন্তর্জাতিক সর্বশেষ বাংলা সংবাদ।",
+        content: "জাতীয়, রাজনীতি, খেলা, বিনোদন ও আন্তর্জাতিক সর্বশেষ বাংলা সংবাদ। সত্য ও নির্ভরযোগ্য সংবাদ সবার আগে প্রভাতবাংলায়।",
       },
-      { name: "author", content: "প্রভাতবাংলা ডেমো" },
+      { name: "author", content: "প্রভাতবাংলা" },
       { property: "og:title", content: "প্রভাতবাংলা — বাংলা সংবাদ পোর্টাল" },
       {
         property: "og:description",
         content: "বাংলাদেশ ও বিশ্বের সর্বশেষ খবর এক জায়গায়।",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       ...(import.meta.env.PROD ? [{ rel: "stylesheet", href: appCss }] : []),
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700;800&display=swap",
       },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
     scripts:
       runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
