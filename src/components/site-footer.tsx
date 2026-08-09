@@ -23,21 +23,6 @@ const extraLinks = [
 export function SiteFooter() {
   return (
     <footer className="mt-10">
-      {/* top strip: category link cloud */}
-      <div className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 py-3 text-sm font-semibold">
-          {categories.map((c) => (
-            <Link
-              key={c.slug}
-              to="/category/$slug"
-              params={{ slug: c.slug }}
-              className="transition-opacity hover:opacity-75"
-            >
-              {c.name}
-            </Link>
-          ))}
-        </div>
-      </div>
 
       {/* main dark footer */}
       <div className="bg-ink text-ink-foreground">
