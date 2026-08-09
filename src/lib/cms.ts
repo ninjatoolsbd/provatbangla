@@ -33,14 +33,19 @@ export async function countRows(table: string): Promise<number> {
 
 
 export async function insertRow(table: string, values: Row) {
+  // If we suspect the 'lang' column is missing, strip it preemptively if it's there
+  // This is a more robust fix for the "hynai, new site add kroa jassena" issue
+  const { lang, ...valuesWithoutLang } = values;
+  
+  // Try with all values first
   const { error } = await db.from(table).insert(values);
+  
   if (error) {
-    // If the error is about a missing column, log it and try to strip common new columns
-    // This handles the "schema cache" or missing column issues on existing tables
-    if (error.code === '42703' || (error.message && error.message.includes("column") && error.message.includes("does not exist"))) {
+    console.error(`Error inserting into ${table}:`, error);
+    // If the error is about a missing column, retry without 'lang'
+    if (error.code === '42703' || (error.message && (error.message.includes("column") || error.message.includes("lang")))) {
       console.warn(`Column missing in table ${table}, retrying without 'lang'...`);
-      const { lang, ...rest } = values;
-      const { error: retryError } = await db.from(table).insert(rest);
+      const { error: retryError } = await db.from(table).insert(valuesWithoutLang);
       if (retryError) throw retryError;
       return;
     }
