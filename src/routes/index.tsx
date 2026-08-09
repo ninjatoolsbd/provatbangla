@@ -70,7 +70,10 @@ function Home() {
         </Suspense>
       </main>
 
-      {/* E-paper and Photo Gallery removed as per user request */}
+      <EpaperSection />
+
+      {/* Photo Gallery - could also be connected to DB if needed, but for now placeholder logic or first few posts */}
+      <PhotoGallery items={[]} />
 
       <SiteFooter />
     </div>
