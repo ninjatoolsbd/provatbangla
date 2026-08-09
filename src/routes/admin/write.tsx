@@ -323,11 +323,11 @@ function WritePage() {
           >
             ড্রাফট সেভ
           </Button>
-          {editingId && (
+          {editingId && postsQuery.data?.find(p => p.id === editingId)?.slug && (
             <>
               <Button asChild variant="outline">
                 <a 
-                  href={`/post/${slugify(title)}?preview=true`} 
+                  href={`/post/${postsQuery.data?.find(p => p.id === editingId)?.slug}?preview=true`} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center"
