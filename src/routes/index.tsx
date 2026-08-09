@@ -7,6 +7,7 @@ import { EpaperSection } from "@/components/epaper-section";
 import { BreakingTicker } from "@/components/breaking-ticker";
 import { LatestPosts } from "@/components/latest-posts";
 import { PhotoGallery } from "@/components/home-widgets";
+import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 import { DivisionMap } from "@/components/division-map";
 import { AdBanner } from "@/components/ad-banner";
 import { HomeSection } from "@/components/home-section";
@@ -37,6 +38,18 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { data: photoPosts = [] } = useSuspenseQuery({
+    queryKey: ["home-photo-gallery"],
+    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 6 } }),
+  });
+
+  const mappedPhotoPosts = photoPosts.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    image: p.image_url,
+    slug: p.slug
+  }));
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -75,8 +88,8 @@ function Home() {
 
       <EpaperSection />
 
-      {/* Photo Gallery - could also be connected to DB if needed, but for now placeholder logic or first few posts */}
-      <PhotoGallery items={[]} />
+      {/* Photo Gallery connected to DB */}
+      <PhotoGallery items={mappedPhotoPosts} />
 
       <SiteFooter />
     </div>
