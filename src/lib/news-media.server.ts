@@ -43,9 +43,25 @@ async function fetchBytes(url: string): Promise<{ bytes: Uint8Array; type: strin
 type GeminiParts = ({ text: string } | { inlineData: { mimeType: string; data: string } })[];
 
 async function geminiEdit(parts: GeminiParts): Promise<Uint8Array | null> {
-  const key = process.env["GEMINI_API_KEY"];
-  if (!key) return null;
-  try {
+  const { fetchSettings } = await import("./cms");
+  const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
+  
+  // Try all 5 Gemini keys from settings
+  const keys: string[] = [];
+  for (let i = 1; i <= 5; i++) {
+    const k = settings[`GEMINI_API_KEY_${i}`] || process.env[`GEMINI_API_KEY_${i}`];
+    if (k?.trim()) keys.push(k.trim());
+  }
+  
+  if (keys.length === 0) {
+    const legacy = settings["GEMINI_API_KEY"] || process.env["GEMINI_API_KEY"];
+    if (legacy) keys.push(...legacy.split(",").map(k => k.trim()).filter(Boolean));
+  }
+
+  if (keys.length === 0) return null;
+
+  for (const key of keys) {
+    try {
     const res = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
       {
@@ -61,10 +77,13 @@ async function geminiEdit(parts: GeminiParts): Promise<Uint8Array | null> {
     for (const part of data.candidates?.[0]?.content?.parts ?? []) {
       if (part.inlineData?.data) return base64ToBytes(part.inlineData.data);
     }
-    return null;
-  } catch {
-    return null;
+      return null;
+    } catch (e) {
+      console.error(`Gemini watermark failed with key ${key.slice(0, 5)}...:`, e);
+      continue; // Try next key
+    }
   }
+  return null;
 }
 
 /**
