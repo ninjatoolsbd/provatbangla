@@ -7,31 +7,68 @@ import { Reveal } from "@/components/reveal";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, Post } from "@/lib/posts";
 
-async function fetchSorbosheshPosts(limit = 10) {
-  // We want posts that are either in 'sorboshesh', 'bangladesh', 'apradh', or 'politics'
-  const { data, error } = await supabase
+async function fetchFilteredPosts(limit = 10, category?: string) {
+  let q = supabase
     .from("posts")
     .select("*")
     .eq("status", "published")
-    .in("category", ["sorboshesh", "bangladesh", "apradh", "politics"])
     .order("published_at", { ascending: false })
     .limit(limit);
 
+  if (category) {
+    q = q.eq("category", category);
+  } else {
+    // Default "Latest" view filters for specific sections as requested
+    q = q.in("category", ["sorboshesh", "bangladesh", "apradh", "politics"]);
+  }
+
+  const { data, error } = await q;
   if (error) throw error;
   return (data ?? []) as Post[];
 }
 
-export function LatestPosts() {
+export function LatestPosts({ category }: { category?: string }) {
   const { data } = useQuery({
-    queryKey: ["sorboshesh-hero-posts"],
-    queryFn: () => fetchSorbosheshPosts(10),
+    queryKey: ["sorboshesh-hero-posts", category ?? "all"],
+    queryFn: () => fetchFilteredPosts(12, category),
   });
 
   if (!data || data.length === 0) return null;
 
+  // For category-specific view, use a simpler grid
+  if (category) {
+    return (
+      <div className="mb-10 grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        {data.map((p, i) => (
+          <Reveal key={p.id} delay={i * 50}>
+            <article className="group">
+              {p.image_url && (
+                <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm">
+                  <NewsImage
+                    src={p.image_url}
+                    alt={p.title}
+                    className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                </Link>
+              )}
+              <div className="mt-3">
+                <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                  <h3 className="line-clamp-2 font-display text-[17px] font-bold leading-tight group-hover:text-primary">
+                    {p.title}
+                  </h3>
+                </Link>
+                <p className="mt-1 text-xs text-muted-foreground">{banglaDateTime(p.published_at)}</p>
+              </div>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    );
+  }
+
   const mainPost = data[0];
-  const sidePosts = data.slice(1, 5); // 4 posts for the right side
-  const bottomPosts = data.slice(5); // The rest for the bottom
+  const sidePosts = data.slice(1, 5);
+  const bottomPosts = data.slice(5);
 
   return (
     <section className="mb-10">
