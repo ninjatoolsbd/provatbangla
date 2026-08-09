@@ -85,9 +85,9 @@ export function LatestPosts({ category }: { category?: string }) {
   const mainPost = data[0];
   if (!mainPost) return null;
   
-  const sidePost = data[1]; // The single image item on the right top
-  const textPosts = data.slice(2, 6); // Text list under the right image
-  const sliderPosts = data.slice(6); // The bottom slider
+  const sidePosts = data.slice(1, 3); // Two image items on the right
+  const sliderPosts = data.slice(3); // The bottom slider
+
 
   return (
     <section className="mb-12">
