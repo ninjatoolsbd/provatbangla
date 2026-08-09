@@ -35,6 +35,7 @@ export type AutoPreview = {
   category: string;
   imageUrl: string | null;
   sourceImage: string | null;
+  lang?: string;
 };
 
 async function settings(): Promise<Record<string, string>> {
@@ -59,12 +60,17 @@ type Rewritten = {
 async function rewrite(
   article: { title: string; body: string },
   fallbackCategory: string,
+  sourceLang = "bn",
 ) {
+  const isEnglish = sourceLang === "en";
   const system =
     "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। নির্দেশিত মার্কারগুলো ঠিক রেখে শুধু সম্পাদিত সংবাদটি দেবে।";
   const prompt = [
-    "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বিস্তারিতভাবে বাংলায় পুনর্লিখন করো।",
+    isEnglish 
+      ? "নিচের ইংরেজি সংবাদটি সম্পূর্ণ বাংলায় অনুবাদ ও পুনর্লিখন করো।"
+      : "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বিস্তারিতভাবে বাংলায় পুনর্লিখন করো।",
     "নিয়ম:",
+    isEnglish ? "- ইংরেজি থেকে সরাসরি অনুবাদ না করে সাংবাদিকতার বাংলা ভাষায় ভাবানুবাদ করো।" : "",
     "- তথ্য অপরিবর্তিত রাখবে, কোনো তথ্য বাদ দেবে না এবং নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
     "- নিউজটি যথেষ্ট দীর্ঘ (কমপক্ষে ৩০০-৪০০ শব্দ) এবং সাবলীল হতে হবে।",
     "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়। পেশাদার সাংবাদিকতার ভাষা ব্যবহার করো।",
@@ -153,6 +159,7 @@ export async function runAutoSync(
     site_url: string;
     category: string;
     per_run: number;
+    lang?: string;
   }[]) {
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
@@ -195,6 +202,7 @@ export async function runAutoSync(
         const news = await rewrite(
           { title, body },
           source.category && source.category !== "auto" ? source.category : "bangladesh",
+          source.lang || "bn",
         );
 
         const sourceImage = article.image ?? item.image ?? null;
