@@ -1,10 +1,12 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { GridCard, LeadCard, ThumbRow } from "@/components/news-cards";
+import { ChevronRight } from "lucide-react";
+import { GridCard, LeadCard, ThumbRow, NewsImage } from "@/components/news-cards";
 import { BarHeading } from "@/components/home-widgets";
 import { Reveal } from "@/components/reveal";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
+
 
 interface HomeSectionProps {
   title: string;
