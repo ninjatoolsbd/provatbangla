@@ -43,7 +43,7 @@ function Home() {
 
       <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         {/* HERO Section using LatestPosts or similar logic - currently LatestPosts covers published items */}
-        <LatestPosts limit={10} />
+        <LatestPosts />
 
         <div className="my-6">
           <AdBanner index={0} className="h-24" />
