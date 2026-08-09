@@ -2,9 +2,8 @@ import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/my-supabase/client";
-import { SectionHeading, NewsImage } from "@/components/news-cards";
+import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
-import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, Post } from "@/lib/posts";
 
 async function fetchFilteredPosts(limit = 12, category?: string) {
@@ -18,8 +17,6 @@ async function fetchFilteredPosts(limit = 12, category?: string) {
     q = q.eq("category", category);
   } else {
     // If no category specified, fallback to sorboshesh or general news
-    // To ensure the section isn't empty, we'll try to get ANY latest news if the filtered one is empty
-    // But initially, let's look for these key categories
     q = q.in("category", ["sorboshesh", "bangladesh", "apradh", "politics", "international"]);
   }
 
@@ -105,21 +102,21 @@ export function LatestPosts({ category }: { category?: string }) {
                   />
                 </Link>
               )}
-              <div className="mt-5">
+              <div className="mt-3">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[30px] font-bold leading-[1.15] text-[#D0021B] transition-colors group-hover:text-primary lg:text-[36px]">
+                  <h2 className="font-display text-[26px] font-bold leading-[1.2] text-[#D0021B] transition-colors group-hover:text-primary lg:text-[34px]">
                     {mainPost.title}
                   </h2>
                 </Link>
-                <p className="mt-4 line-clamp-4 text-[16px] leading-relaxed text-[#333]">
-                  {mainPost.excerpt}
+                <p className="mt-2 line-clamp-3 text-[15px] leading-relaxed text-[#555] lg:text-[16px]">
+                  {mainPost.excerpt || mainPost.content?.replace(/<[^>]*>/g, '').slice(0, 200) + "..."}
                 </p>
               </div>
             </article>
           </Reveal>
 
-          {/* Bottom 3 Grid Items (Matching user-uploads://file-18) */}
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {/* Bottom Grid Items */}
+          <div className="mt-6 grid grid-cols-1 gap-5 border-t border-slate-100 pt-6 sm:grid-cols-3">
             {bottomPosts.map((p, i) => (
               <Reveal key={p.id} delay={200 + i * 50}>
                 <article className="group">
@@ -127,17 +124,17 @@ export function LatestPosts({ category }: { category?: string }) {
                     <Link
                       to="/post/$slug"
                       params={{ slug: p.slug ?? "" }}
-                      className="mb-3 block overflow-hidden"
+                      className="mb-2 block overflow-hidden rounded-sm"
                     >
                       <NewsImage
                         src={p.image_url}
                         alt={p.title}
-                        className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </Link>
                   )}
                   <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-3 font-display text-[17px] font-bold leading-tight transition-colors group-hover:text-primary">
+                    <h4 className="line-clamp-2 font-display text-[16px] font-bold leading-tight transition-colors group-hover:text-primary">
                       {p.title}
                     </h4>
                   </Link>
@@ -148,16 +145,23 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right Section: Small List with Images */}
-        <div className="lg:col-span-4 lg:border-l lg:border-border lg:pl-8">
-          <div className="space-y-6">
+        <div className="lg:col-span-4 lg:border-l lg:border-slate-200 lg:pl-6">
+          <div className="flex flex-col gap-5">
             {sidePosts.map((p, i) => (
               <Reveal key={p.id} delay={100 + i * 50}>
-                <article className="group flex items-start gap-4">
+                <article className="group flex items-start gap-3 border-b border-slate-50 pb-5 last:border-0 last:pb-0">
+                  <div className="min-w-0 flex-1">
+                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                      <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-[1.35] text-[#1a1a1a] transition-colors group-hover:text-primary">
+                        {p.title}
+                      </h3>
+                    </Link>
+                  </div>
                   {p.image_url && (
                     <Link
                       to="/post/$slug"
                       params={{ slug: p.slug ?? "" }}
-                      className="block h-16 w-28 shrink-0 overflow-hidden shadow-sm"
+                      className="block h-[70px] w-[110px] shrink-0 overflow-hidden rounded-sm shadow-sm"
                     >
                       <NewsImage
                         src={p.image_url}
@@ -166,13 +170,6 @@ export function LatestPosts({ category }: { category?: string }) {
                       />
                     </Link>
                   )}
-                  <div className="min-w-0 flex-1">
-                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                      <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-[1.3] text-[#1a1a1a] transition-colors group-hover:text-primary">
-                        {p.title}
-                      </h3>
-                    </Link>
-                  </div>
                 </article>
               </Reveal>
             ))}
