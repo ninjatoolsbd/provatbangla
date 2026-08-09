@@ -31,32 +31,39 @@ export function BarHeading({
   return (
     <div
       className={cn(
-        "mb-3 flex items-center justify-between border-b border-border pb-1.5",
+        "mb-4 flex items-center justify-between border-b-2 border-primary/20 pb-1.5",
         className,
       )}
     >
-      <h2 className="relative flex items-center gap-2 font-display text-[22px] font-bold text-foreground">
-        <span className="inline-block h-[20px] w-[6px] bg-primary" />
-        {title}
-        <div className="absolute -bottom-1.5 left-0 h-[2px] w-full bg-border">
-          <div className="h-full w-[60px] bg-primary" />
-        </div>
-      </h2>
+      <div className="flex items-center gap-0">
+        <h2 className="relative bg-primary px-3 py-1 font-display text-[18px] font-bold text-white shadow-sm">
+          {title}
+          <div className="absolute top-0 -right-3 h-full w-3 bg-primary [clip-path:polygon(0_0,0_100%,100%_100%)]" />
+        </h2>
+      </div>
 
       <div className="flex items-center gap-2">
         {slug && (
           <Link
             to="/category/$slug"
             params={{ slug }}
-            className="kb-underline text-xs font-bold text-muted-foreground hover:text-primary"
+            className="group flex items-center gap-1 text-[13px] font-bold text-primary transition-colors hover:text-red-700"
           >
-            সব খবর →
+            আরও খবর 
+            <span className="flex size-5 items-center justify-center rounded-full bg-primary text-white transition-transform group-hover:translate-x-1">
+              <ChevronRight className="size-3" />
+            </span>
           </Link>
         )}
         {arrows && (
-          <span className="grid size-6 place-items-center rounded-full border border-border text-muted-foreground">
-            <ChevronRight className="size-3.5" />
-          </span>
+          <div className="flex gap-1">
+             <button className="grid size-6 place-items-center border border-border bg-white text-muted-foreground transition-colors hover:bg-primary hover:text-white">
+               <ChevronLeft className="size-3" />
+             </button>
+             <button className="grid size-6 place-items-center border border-border bg-white text-muted-foreground transition-colors hover:bg-primary hover:text-white">
+               <ChevronRight className="size-3" />
+             </button>
+          </div>
         )}
       </div>
     </div>
@@ -130,14 +137,14 @@ export function VideoStrip({ items }: { items: Article[] }) {
 export function OpinionColumn({ items }: { items: Article[] }) {
   return (
     <div>
-      <BarHeading title="শিল্প ও সাহিত্য" slug="shilpo-sahitto" />
+      <BarHeading title="মতামত" slug="motamot" />
       <div className="divide-y divide-border border-t border-border">
         {items.slice(0, 3).map((a) => (
           <Link
             key={a.id}
             to="/post/$slug"
             params={{ slug: (a as any).slug ?? String(a.id) }}
-            className="group flex gap-3 bg-secondary/50 px-3 py-3 transition-colors hover:bg-secondary"
+            className="group flex gap-3 border-b border-border bg-white p-3 transition-colors hover:bg-red-50 last:border-0"
           >
             <NewsImage
               src={a.image}
@@ -260,7 +267,7 @@ export function LatestPopularTabs({
               params={{ slug: (a as any).slug ?? String(a.id) }}
               className="group flex gap-3 py-3"
             >
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-black text-[12px] font-bold text-white transition-colors group-hover:bg-primary">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full border border-border bg-white text-[13px] font-bold text-muted-foreground transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary">
                 {idx + 1}
               </span>
               <div className="flex flex-1 gap-3 overflow-hidden">
