@@ -7,23 +7,36 @@ import { Reveal } from "@/components/reveal";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, Post } from "@/lib/posts";
 
-async function fetchFilteredPosts(limit = 10, category?: string) {
+async function fetchFilteredPosts(limit = 12, category?: string) {
   let q = supabase
     .from("posts")
     .select("*")
     .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(limit);
+    .order("published_at", { ascending: false });
 
   if (category) {
     q = q.eq("category", category);
   } else {
-    // Default "Latest" view filters for specific sections as requested
-    q = q.in("category", ["sorboshesh", "bangladesh", "apradh", "politics"]);
+    // If no category specified, fallback to sorboshesh or general news
+    // To ensure the section isn't empty, we'll try to get ANY latest news if the filtered one is empty
+    // But initially, let's look for these key categories
+    q = q.in("category", ["sorboshesh", "bangladesh", "apradh", "politics", "international"]);
   }
 
-  const { data, error } = await q;
+  const { data, error } = await q.limit(limit);
   if (error) throw error;
+
+  // FALLBACK: If we got nothing from specific categories, just get the absolute latest published posts
+  if (!data || data.length === 0) {
+    const { data: fallbackData } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(limit);
+    return (fallbackData ?? []) as Post[];
+  }
+
   return (data ?? []) as Post[];
 }
 
