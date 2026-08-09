@@ -55,19 +55,17 @@ function Home() {
         </section>
 
         {/* Home Sections populated from DB */}
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
-           <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
-           <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
-           <HomeSection title="চাকরি" slug="chakri" layout="politics" />
-           <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
-           <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
-           <HomeSection title="খেলা" slug="khela" layout="grid" />
-           <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
-           <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
-           <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
-           <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
-        </Suspense>
+        <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
+        <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
+        <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
+        <HomeSection title="চাকরি" slug="chakri" layout="politics" />
+        <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
+        <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
+        <HomeSection title="খেলা" slug="khela" layout="grid" />
+        <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
+        <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
+        <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
+        <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
       </main>
 
       <EpaperSection />

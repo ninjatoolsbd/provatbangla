@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { GridCard, LeadCard, ThumbRow } from "@/components/news-cards";
@@ -15,11 +15,12 @@ interface HomeSectionProps {
 export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) {
   const fetchPosts = useServerFn(getHomeSectionPosts);
   
-  const { data: posts } = useSuspenseQuery({
+  const { data: posts, isLoading } = useQuery({
     queryKey: ["home-section", slug],
     queryFn: () => fetchPosts({ data: { category: slug, limit: layout === "grid" ? 4 : 8 } }),
   });
 
+  if (isLoading) return <div className="mt-5 h-64 animate-pulse bg-muted/20" />;
   if (!posts || (posts as any[]).length === 0) return null;
 
   // Map DB post to Article-like shape for existing components
