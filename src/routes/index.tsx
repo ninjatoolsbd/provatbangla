@@ -10,6 +10,7 @@ import { PhotoGallery } from "@/components/home-widgets";
 import { DivisionMap } from "@/components/division-map";
 import { AdBanner } from "@/components/ad-banner";
 import { HomeSection } from "@/components/home-section";
+import { BottomWidgets } from "@/components/bottom-widgets";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,6 +69,8 @@ function Home() {
            <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
            <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
         </Suspense>
+
+        <BottomWidgets />
       </main>
 
       <EpaperSection />
