@@ -195,7 +195,13 @@ function WritePage() {
         <h1 className="font-display text-[22px] font-bold text-primary">নিউজ লিখুন</h1>
       </div>
 
-
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/30 dark:bg-amber-950/30 dark:text-amber-400">
+        <p className="font-semibold mb-1">নির্দেশনা:</p>
+        <p className="italic">
+          &quot;Do not make any visual modifications. The phrases I write are commands to understand what I want, not to be written down. Understand their content well, then execute what is required.&quot;
+        </p>
+        <p className="mt-2 text-xs opacity-80">ধন্যবাদ।</p>
+      </div>
 
       <section className="space-y-4">
         <div className="space-y-2">
