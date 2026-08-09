@@ -163,7 +163,16 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
                         (fullUrl.split('/').length > 4 && fullUrl.length > 40);
 
       if (isArticle) {
-        items.push({ url: fullUrl, title: "" });
+        // Try to find image near this link in the HTML
+        const contextRe = new RegExp(`<[^>]+href=["']${link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["'][^>]*>[\\s\\S]*?<img[^>]+src=["']([^"']+)["']`, 'i');
+        const imgMatch = html.match(contextRe);
+        let itemImage = imgMatch?.[1];
+        
+        if (itemImage && !itemImage.startsWith("http")) {
+          itemImage = new URL(itemImage, siteUrl).href;
+        }
+
+        items.push({ url: fullUrl, title: "", image: itemImage });
         if (items.length >= limit) break;
       }
     }
@@ -192,7 +201,26 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 export async function fetchArticle(url: string): Promise<SourceArticle> {
   const html = await getText(url);
   const title = meta(html, "og:title") || stripTags(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-  const image = meta(html, "og:image") || undefined;
+  
+  // Scrape images more aggressively
+  let image = meta(html, "og:image") || meta(html, "twitter:image") || "";
+  
+  if (!image) {
+    // Look for article main image pattern
+    const imgMatch = html.match(/<article[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) || 
+                   html.match(/<div[^>]+class=["'][^"']*featured[^"']*["'][^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) ||
+                   html.match(/<img[^>]+class=["'][^"']*main-image[^"']*["'][^>]*src=["']([^"']+)["']/i);
+    image = imgMatch?.[1] || "";
+  }
+
+  // Handle relative image URLs
+  if (image && !image.startsWith("http")) {
+    try {
+      image = new URL(image, url).href;
+    } catch {
+      image = "";
+    }
+  }
 
   const paragraphs = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((m) => stripTags(m[1] ?? ""))
@@ -202,7 +230,7 @@ export async function fetchArticle(url: string): Promise<SourceArticle> {
   let body = paragraphs.join("\n\n");
   if (body.length < 200) body = meta(html, "og:description") || meta(html, "description");
 
-  return { url, title: title.trim(), body: body.trim(), image };
+  return { url, title: title.trim(), body: body.trim(), image: image || undefined };
 }
 
 export { host as sourceHost };
