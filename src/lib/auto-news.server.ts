@@ -92,7 +92,7 @@ async function rewrite(
     content: parsed.content,
     seo_title: parsed.seo_title ?? "",
     seo_description: parsed.seo_description ?? "",
-    category: parsed.category || fallbackCategory,
+    category: (fallbackCategory && fallbackCategory !== "bangladesh") ? fallbackCategory : (parsed.category || fallbackCategory),
   } satisfies Rewritten;
 }
 
