@@ -28,7 +28,7 @@ async function fetchFilteredPosts(limit = 10, category?: string) {
 }
 
 export function LatestPosts({ category }: { category?: string }) {
-  const { data } = useQuery({
+  const { data = [] } = useQuery({
     queryKey: ["sorboshesh-hero-posts", category ?? "all"],
     queryFn: () => fetchFilteredPosts(12, category),
   });
@@ -67,6 +67,8 @@ export function LatestPosts({ category }: { category?: string }) {
   }
 
   const mainPost = data[0];
+  if (!mainPost) return null;
+
   const sidePosts = data.slice(1, 5);
   const bottomPosts = data.slice(5);
 
