@@ -45,8 +45,8 @@ async function geminiApi(opts: { key: string; system: string; prompt: string }) 
             parts: [{ text: `${opts.system}\n\n${opts.prompt}` }]
           }],
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 2048,
+            temperature: 0.5,
+            maxOutputTokens: 8192,
           }
         };
 
@@ -170,21 +170,21 @@ async function groqApi(opts: { key: string; system: string; prompt: string }) {
  * Lovable AI Gateway Implementation
  */
 async function lovableApi(opts: { system: string; prompt: string }) {
-  // We use the internal Lovable AI Gateway which is available via standard fetch
-  // but since we want to follow the user's preference of "fallback", 
-  // we can use a mock/wrapper that would represent Lovable's native AI capability if exposed via server functions.
-  // In this environment, Lovable's AI is best accessed via generateText (from ai package) 
-  // but to keep it consistent with this file's architecture, we'll implement it as a fetch to the gateway if keys were available.
-  
-  // Since there is no specific "LOVABLE_API_KEY" yet, we'll use a placeholder logic 
-  // or simply call a known-working OpenRouter model as a proxy for "High Quality AI"
-  // For now, let's assume it's a fallback to a robust model.
-  return openrouterApi({ 
-    key: process.env["OPENROUTER_API_KEY"] || "", 
-    system: opts.system, 
-    prompt: opts.prompt, 
-    json: false 
+  const key = process.env["LOVABLE_API_KEY"];
+  if (!key) throw new Error("Lovable AI key is unavailable");
+
+  const [{ generateText }, { createLovableAiGatewayProvider }] = await Promise.all([
+    import("ai"),
+    import("./ai-gateway.server"),
+  ]);
+  const gateway = createLovableAiGatewayProvider(key);
+  const result = await generateText({
+    model: gateway("google/gemini-3.6-flash"),
+    system: opts.system,
+    prompt: opts.prompt,
   });
+  if (!result.text.trim()) throw new Error("Lovable AI returned empty response");
+  return result.text;
 }
 
 export async function generateTextWithFallback(args: {
@@ -317,6 +317,7 @@ export async function generateTextWithFallback(args: {
           }
         }
         
+        if (json) JSON.parse(processedText);
         return { text: processedText, provider: provider.name };
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);

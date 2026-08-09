@@ -59,35 +59,56 @@ type Rewritten = {
 async function rewrite(
   article: { title: string; body: string },
   fallbackCategory: string,
-  useSpinRewriter = false,
 ) {
-  // Preferred AI providers are Gemini and OpenRouter.
-
-
-
   const system =
-    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। সবসময় শুধুমাত্র বৈধ JSON আউটপুট দেবে। কোনো ভূমিকা বা উপসংহার লিখবে না।";
+    "তুমি একজন অভিজ্ঞ বাংলা সংবাদ সম্পাদক। নির্দেশিত মার্কারগুলো ঠিক রেখে শুধু সম্পাদিত সংবাদটি দেবে।";
   const prompt = [
     "নিচের সংবাদটি সম্পূর্ণ নতুন ভাষায় বিস্তারিতভাবে বাংলায় পুনর্লিখন করো।",
     "নিয়ম:",
     "- তথ্য অপরিবর্তিত রাখবে, কোনো তথ্য বাদ দেবে না এবং নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
     "- নিউজটি যথেষ্ট দীর্ঘ (কমপক্ষে ৩০০-৪০০ শব্দ) এবং সাবলীল হতে হবে।",
     "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়। পেশাদার সাংবাদিকতার ভাষা ব্যবহার করো।",
-    "- টেক্সটের ভেতর কোনো আসল ডাবল কোট (\") ব্যবহার করবে না, পরিবর্তে সিঙ্গেল কোট (') ব্যবহার করো।",
-    "- অনুচ্ছেদগুলো আলাদা করতে \\n\\n ব্যবহার করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
+    "- অনুচ্ছেদগুলো আসল ফাঁকা লাইন দিয়ে আলাদা করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
     "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
     "",
-    "শুধু নিচের ফরম্যাটে JSON উত্তর দাও (অন্য কিছু লিখবে না):",
-    '{ "title": "", "kicker": "", "excerpt": "", "content": "", "seo_title": "", "seo_description": "", "category": "" }',
+    "নিচের মার্কারগুলো হুবহু রেখে উত্তর দাও। JSON বা Markdown ব্যবহার করবে না:",
+    "[TITLE]শিরোনাম[/TITLE]",
+    "[KICKER]ছোট কিকার[/KICKER]",
+    "[EXCERPT]সংক্ষিপ্ত সারাংশ[/EXCERPT]",
+    "[CONTENT]পূর্ণ সংবাদ, একাধিক অনুচ্ছেদসহ[/CONTENT]",
+    "[SEO_TITLE]SEO শিরোনাম[/SEO_TITLE]",
+    "[SEO_DESCRIPTION]SEO বর্ণনা[/SEO_DESCRIPTION]",
+    "[CATEGORY]category-slug[/CATEGORY]",
     "",
     `মূল শিরোনাম: ${article.title}`,
     `মূল সংবাদ (বিস্তারিত লিখুন):\n${article.body.slice(0, 8000)}`,
   ].join("\n");
 
-  const { text } = await generateTextWithFallback({ system, prompt, json: true });
-  const parsed = JSON.parse(text) as Partial<Rewritten>;
-  if (!parsed.title || !parsed.content) throw new Error("AI সঠিক ফরম্যাটে উত্তর দেয়নি");
+  const { text } = await generateTextWithFallback({ system, prompt, json: false });
+  const field = (name: string) => {
+    const match = text.match(new RegExp(`\\[${name}\\]([\\s\\S]*?)\\[\\/${name}\\]`, "i"));
+    return match?.[1]?.trim() ?? "";
+  };
+  const parsed: Partial<Rewritten> = {
+    title: field("TITLE"),
+    kicker: field("KICKER"),
+    excerpt: field("EXCERPT"),
+    content: field("CONTENT"),
+    seo_title: field("SEO_TITLE"),
+    seo_description: field("SEO_DESCRIPTION"),
+    category: field("CATEGORY"),
+  };
+
+  if (!parsed.content) {
+    const plain = text
+      .replace(/```[a-z]*|```/gi, "")
+      .replace(/\[(?:\/?)(?:TITLE|KICKER|EXCERPT|CONTENT|SEO_TITLE|SEO_DESCRIPTION|CATEGORY)\]/gi, "")
+      .trim();
+    if (plain.length < 200) throw new Error("AI থেকে পূর্ণ সংবাদ পাওয়া যায়নি");
+    parsed.content = plain;
+  }
+  if (!parsed.title) parsed.title = article.title;
   return {
     title: parsed.title,
     kicker: parsed.kicker ?? "",
@@ -125,7 +146,6 @@ export async function runAutoSync(
   const withCredit = cfg["auto_credit"] !== "false";
   const aiImage = cfg["auto_image_ai"] !== "false";
   const logoUrl = cfg["watermark_logo_url"] || undefined;
-  const useSpin = cfg["auto_spin_rewriter"] === "true";
 
   for (const source of (sources ?? []) as {
     id: string;
@@ -154,12 +174,15 @@ export async function runAutoSync(
 
       const { data: existing } = await admin
         .from("auto_items")
-        .select("id")
+        .select("id,status")
         .eq("source_url", item.url)
         .maybeSingle();
-      if (existing) {
+      if (existing && existing.status !== "failed") {
         result.skipped += 1;
         continue;
+      }
+      if (existing?.status === "failed") {
+        await admin.from("auto_items").delete().eq("id", existing.id);
       }
 
       processed += 1;
@@ -172,7 +195,6 @@ export async function runAutoSync(
         const news = await rewrite(
           { title, body },
           source.category && source.category !== "auto" ? source.category : "bangladesh",
-          useSpin
         );
 
         const sourceImage = article.image ?? item.image ?? null;
