@@ -107,11 +107,12 @@ export async function processSourceImage(opts: {
     const parts: GeminiParts = [
       {
         text: `Apply the second image (logo) as a watermark to the first image (base photo).
-1. Place the logo in the bottom-right corner.
-2. Padding: Leave 20 pixels of space from the right and bottom edges.
-3. Size: Resize the logo to be clearly visible, approximately 15% of the base image width.
-4. Transparency: The logo should be 80-90% opaque (almost solid but slightly blended).
-5. Output: Return ONLY the raw image data. No text.`,
+1. REMOVE any existing watermarks or logos from the base photo (like "The Daily Star" logo).
+2. Place the second image (logo) in the bottom-right corner.
+3. Padding: Leave 20 pixels of space from the right and bottom edges.
+4. Size: Resize the logo to be clearly visible, approximately 15% of the base image width.
+5. Transparency: The logo should be 85-90% opaque (almost solid).
+6. Output: Return ONLY the raw image data. No text.`,
       },
       { inlineData: { mimeType: mimeType, data: bytesToBase64(source.bytes) } },
       {
