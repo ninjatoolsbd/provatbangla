@@ -6,8 +6,7 @@
 import { getFromR2, uploadToR2 } from "@/lib/r2.server";
 
 function bytesToBase64(bytes: Uint8Array) {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i] ?? 0);
+  const binary = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
   return btoa(binary);
 }
 
@@ -107,9 +106,9 @@ export async function processSourceImage(opts: {
   if (logo) {
     const parts: GeminiParts = [
       {
-        text: "You are an image editor. Your task is to apply a watermark logo to a news photo. \nRules:\n1. Place the second image (the logo) as a small, professional semi-transparent watermark in the bottom-right corner of the first image (the news photo).\n2. The logo should be visible but not obstructive. \n3. DO NOT ALTER THE ORIGINAL PHOTO in any other way. Keep its colors, quality, aspect ratio, and content exactly the same.\n4. Output ONLY the processed image in PNG or JPEG format.",
+        text: "Add a watermark to the first image using the second image. Placement: Bottom-Right corner. Style: Professional, semi-transparent. The watermark logo must be small but clearly visible. Return ONLY the final watermarked image as data.",
       },
-      { inlineData: { mimeType, data: bytesToBase64(source.bytes) } },
+      { inlineData: { mimeType: mimeType, data: bytesToBase64(source.bytes) } },
       {
         inlineData: {
           mimeType: logo.type.startsWith("image/") ? logo.type : "image/png",
