@@ -45,7 +45,7 @@ export const getHomeSectionPosts = createServerFn({ method: "GET" })
     let query = supabase
       .from("posts")
       .select("*")
-      .or(`status.eq.published${data.category === 'sorboshesh' || !data.category ? ',status.eq.draft' : ''}`)
+      .eq("status", "published")
       .order("published_at", { ascending: false })
       .limit(data.limit);
 

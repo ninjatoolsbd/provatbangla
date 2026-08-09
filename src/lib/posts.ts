@@ -47,7 +47,7 @@ export async function fetchPublishedPosts(limit = 12, category?: string) {
   let q = supabase
     .from("posts")
     .select("*")
-    .or("status.eq.published,status.eq.draft")
+    .eq("status", "published")
     .order("published_at", { ascending: false })
     .limit(limit);
   if (category) q = q.eq("category", category);
