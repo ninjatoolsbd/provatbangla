@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-background shadow-[0_1px_0_0_var(--border)]">
       <div className="mx-auto flex max-w-[1240px] items-center gap-6 px-4 py-3">
         <button
           className="p-1 lg:hidden"

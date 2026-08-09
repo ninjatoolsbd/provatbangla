@@ -6,7 +6,6 @@ import { GridCard, LeadCard, ThumbRow, NewsImage } from "@/components/news-cards
 import { BarHeading } from "@/components/home-widgets";
 import { Reveal } from "@/components/reveal";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
-import { OpinionColumn } from "@/components/home-widgets";
 
 
 interface HomeSectionProps {
@@ -101,11 +100,11 @@ export function HomeSection({ title, slug, layout = "grid", sideCategory, sideTi
   if (layout === "two-col-with-side") {
     return (
       <section className="mt-8">
-        <div className="grid gap-8 lg:grid-cols-12">
-          {/* Main Left content */}
+        <div className="grid gap-6 lg:grid-cols-12">
+          {/* Main Left content (e.g., Bangladesh) */}
           <div className="lg:col-span-8">
             <BarHeading title={title} slug={slug} />
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-5 md:grid-cols-2">
               <div className="md:col-span-2">
                 <LeadCard article={mappedPosts[0] as any} />
               </div>
@@ -117,14 +116,11 @@ export function HomeSection({ title, slug, layout = "grid", sideCategory, sideTi
             </div>
           </div>
 
-          {/* Right sidebar content */}
-          <div className="lg:col-span-4 space-y-8">
+          {/* Right sidebar content (e.g., Islam/Sidebar widget) */}
+          <div className="lg:col-span-4">
             {sideCategory && (
               <SidebarListSection category={sideCategory} title={sideTitle ?? "অন্যান্য"} />
             )}
-            <div className="hidden lg:block">
-              <OpinionColumn items={[]} />
-            </div>
           </div>
         </div>
       </section>
@@ -164,33 +160,35 @@ function SidebarListSection({ category, title }: { category: string; title: stri
   const main = mapped[0];
 
   return (
-    <div className="border border-border bg-white overflow-hidden">
-      <div className="bg-primary px-4 py-2 font-display text-[17px] font-bold text-white flex items-center justify-between">
+    <div className="bg-[#2a4d8c] text-white">
+      <div className="bg-[#365ca3] px-4 py-3 font-display text-lg font-bold text-center">
         {title}
-        <Link to="/category/$slug" params={{ slug: category }} className="text-[11px] font-normal hover:underline opacity-80">আরও খবর →</Link>
       </div>
-      <div className="p-4 bg-[#f9f9f9]">
+      <div className="p-3">
         {main && (
-          <Link to="/post/$slug" params={{ slug: main.slug ?? "" }} className="group block mb-4 border-b border-border pb-4">
-            <div className="relative overflow-hidden aspect-video">
+          <Link to="/post/$slug" params={{ slug: main.slug ?? "" }} className="group block mb-4">
+            <div className="relative overflow-hidden aspect-[16/10]">
               <NewsImage src={main.image} alt={main.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
             </div>
-            <h3 className="mt-3 line-clamp-2 font-display text-[16px] font-bold leading-snug group-hover:text-primary">
+            <h3 className="mt-2 line-clamp-2 font-display font-bold leading-tight group-hover:text-blue-200">
               {main.title}
             </h3>
           </Link>
         )}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {mapped.slice(1).map((item) => (
-            <Link key={item.id} to="/post/$slug" params={{ slug: item.slug ?? "" }} className="group flex gap-3 transition-all hover:translate-x-1">
-              <NewsImage src={item.image} alt={item.title} className="size-14 shrink-0 object-cover rounded-sm border border-border" />
-              <h4 className="line-clamp-2 text-[14px] font-bold leading-tight group-hover:text-primary">
+            <Link key={item.id} to="/post/$slug" params={{ slug: item.slug ?? "" }} className="group flex gap-3 border-t border-white/20 pt-3">
+              <NewsImage src={item.image} alt={item.title} className="size-16 shrink-0 object-cover rounded-sm" />
+              <h4 className="line-clamp-2 text-sm font-bold group-hover:text-blue-200">
                 {item.title}
               </h4>
             </Link>
           ))}
         </div>
       </div>
+      <Link to="/category/$slug" params={{ slug: category }} className="block bg-black/20 py-2 text-center text-xs font-bold transition-colors hover:bg-black/30">
+        আরও পড়ুন <ChevronRight className="inline size-3" />
+      </Link>
     </div>
   );
 }

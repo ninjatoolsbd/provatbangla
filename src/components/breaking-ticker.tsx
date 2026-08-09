@@ -87,7 +87,7 @@ export function BreakingTicker() {
   const loop = [...items, ...items];
 
   return (
-    <div className="border-b border-border bg-[#f1f1f1]">
+    <div className="border-b border-border bg-secondary">
       <div className="mx-auto flex max-w-[1240px] items-center gap-3 px-4 py-2">
         <span className="flex shrink-0 items-center gap-1.5 bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
           <Radio className={cn("size-3.5", pulse && "animate-pulse")} />
