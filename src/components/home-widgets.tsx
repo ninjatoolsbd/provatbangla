@@ -389,7 +389,7 @@ export function SocialFollow() {
 }
 
 /* ---------- dark photo gallery band ---------- */
-export function PhotoGallery({ items }: { items: Article[] }) {
+export function PhotoGallery({ items }: { items: any[] }) {
   const [active, setActive] = useState(0);
   const main = items[active] ?? items[0];
   if (!main) return null;
