@@ -77,14 +77,17 @@ function AutomationPage() {
   });
 
   const addSource = useMutation({
-    mutationFn: () =>
-      insertRow("auto_sources", {
+    mutationFn: async () => {
+      const values: Row = {
         name: newSource.name,
         site_url: newSource.site_url.replace(/\/+$/, ""),
         per_run: newSource.per_run,
         category: newSource.category || "auto",
         lang: newSource.lang,
-      }),
+        enabled: true,
+      };
+      return insertRow("auto_sources", values);
+    },
     onSuccess: () => {
       setNewSource({ name: "", site_url: "", per_run: 5, category: "", lang: "bn" });
       toast.success("সোর্স যোগ হয়েছে");
