@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
