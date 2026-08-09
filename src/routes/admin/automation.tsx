@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Bot, Eye, Play, Plus, Trash2, Upload } from "lucide-react";
+import { Bot, ChevronDown, Eye, Play, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { publishAutoPreview, runAutoImport } from "@/lib/auto-news.functions";
@@ -15,6 +15,7 @@ import {
   type Row,
 } from "@/lib/cms";
 import { uploadMedia } from "@/lib/media.functions";
+import { categories } from "@/lib/news-data";
 
 export const Route = createFileRoute("/admin/automation")({
   head: () => ({
@@ -46,7 +47,7 @@ function toBase64(file: File): Promise<string> {
 function AutomationPage() {
   const qc = useQueryClient();
   const logoInput = useRef<HTMLInputElement>(null);
-  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5 });
+  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5, category: "" });
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<
     { title: string; status: string; message?: string }[] | null
@@ -81,10 +82,10 @@ function AutomationPage() {
         name: newSource.name,
         site_url: newSource.site_url.replace(/\/+$/, ""),
         per_run: newSource.per_run,
-        category: "auto",
+        category: newSource.category || "auto",
       }),
     onSuccess: () => {
-      setNewSource({ name: "", site_url: "", per_run: 5 });
+      setNewSource({ name: "", site_url: "", per_run: 5, category: "" });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
     },
@@ -292,7 +293,10 @@ function AutomationPage() {
                   toggleSource.mutate({ id: String(s["id"]), enabled: e.target.checked })
                 }
               />
-              <span className="font-semibold">{String(s["name"])}</span>
+              <div className="flex flex-col">
+                <span className="font-semibold">{String(s["name"])}</span>
+                <span className="text-[10px] text-muted-foreground uppercase">{String(s["category"] || "auto")}</span>
+              </div>
               <span className="text-xs text-muted-foreground">{String(s["site_url"])}</span>
               <span className="text-xs text-muted-foreground">
                 প্রতি রানে {String(s["per_run"])}টি
@@ -345,6 +349,18 @@ function AutomationPage() {
             onChange={(e) => setNewSource({ ...newSource, site_url: e.target.value })}
             className="min-w-[240px] flex-1 border border-border bg-background px-3 py-2 text-sm"
           />
+          <select
+            value={newSource.category}
+            onChange={(e) => setNewSource({ ...newSource, category: e.target.value })}
+            className="border border-border bg-background px-3 py-2 text-sm text-muted-foreground focus:text-foreground"
+          >
+            <option value="">অটো ক্যাটাগরি (AI সিলেক্ট করবে)</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           <input
             type="number"
             min={1}
