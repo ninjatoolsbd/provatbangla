@@ -84,6 +84,9 @@ function Home() {
            <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
         </Suspense>
 
+        {/* Video Section integrated from reference user-uploads://file-17 */}
+        <VideoStrip items={photoPosts} />
+
         <BottomWidgets />
       </main>
 
