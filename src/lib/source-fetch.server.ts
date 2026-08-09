@@ -102,8 +102,9 @@ async function fromNewsSitemap(siteUrl: string, limit: number): Promise<SourceIt
       
       const items: {url: string, date: string}[] = [];
       for (const block of urlBlocks) {
-        const loc = block[1].match(/<loc>\s*([^<\s]+)\s*<\/loc>/i)?.[1];
-        const lastmod = block[1].match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/i)?.[1] || "";
+        const content = block[1] || "";
+        const loc = content.match(/<loc>\s*([^<\s]+)\s*<\/loc>/i)?.[1];
+        const lastmod = content.match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/i)?.[1] || "";
         if (loc && /\/[a-zA-Z0-9_-]{6,}$/.test(loc) && !loc.endsWith(".xml")) {
           items.push({ url: loc, date: lastmod });
         }
