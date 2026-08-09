@@ -46,7 +46,7 @@ function toBase64(file: File): Promise<string> {
 function AutomationPage() {
   const qc = useQueryClient();
   const logoInput = useRef<HTMLInputElement>(null);
-  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5 });
+  const [newSource, setNewSource] = useState({ name: "", site_url: "", per_run: 5, category: "" });
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<
     { title: string; status: string; message?: string }[] | null
@@ -81,10 +81,10 @@ function AutomationPage() {
         name: newSource.name,
         site_url: newSource.site_url.replace(/\/+$/, ""),
         per_run: newSource.per_run,
-        category: "auto",
+        category: newSource.category || "auto",
       }),
     onSuccess: () => {
-      setNewSource({ name: "", site_url: "", per_run: 5 });
+      setNewSource({ name: "", site_url: "", per_run: 5, category: "" });
       toast.success("সোর্স যোগ হয়েছে");
       void qc.invalidateQueries({ queryKey: ["cms", "auto_sources"] });
     },
