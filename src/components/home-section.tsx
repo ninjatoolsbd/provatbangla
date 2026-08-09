@@ -164,7 +164,7 @@ function SidebarListSection({ category, title }: { category: string; title: stri
   const main = mapped[0];
 
   return (
-    <div className="border border-border bg-white shadow-sm overflow-hidden">
+    <div className="border border-border bg-white overflow-hidden">
       <div className="bg-primary px-4 py-2 font-display text-[17px] font-bold text-white flex items-center justify-between">
         {title}
         <Link to="/category/$slug" params={{ slug: category }} className="text-[11px] font-normal hover:underline opacity-80">আরও খবর →</Link>

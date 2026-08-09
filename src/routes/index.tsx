@@ -43,7 +43,7 @@ function Home() {
       <SiteHeader />
       <BreakingTicker />
 
-      <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
+      <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4 bg-background">
         <div className="grid gap-6 lg:grid-cols-12">
           {/* Main Hero & Latest */}
           <div className="lg:col-span-9">

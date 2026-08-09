@@ -114,7 +114,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
 
 export function GridCard({ article, compact = false, showCategory = true }: { article: Article | Post; compact?: boolean; showCategory?: boolean }) {
   return (
-    <article className="group flex flex-col h-full bg-[#f8f8f8] p-2 sm:p-0 sm:bg-transparent">
+    <article className="group flex flex-col h-full bg-white border border-border/40 p-2 sm:p-0 sm:bg-transparent sm:border-0">
       <ArticleLink article={article} className="block overflow-hidden relative">
         <NewsImage
           src={(article as any).image ?? (article as any).image_url}

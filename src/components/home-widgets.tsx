@@ -36,9 +36,9 @@ export function BarHeading({
       )}
     >
       <div className="flex items-center gap-0">
-        <h2 className="relative bg-primary px-3 py-1 font-display text-[18px] font-bold text-white shadow-sm">
+        <h2 className="relative bg-primary px-3 py-1 font-display text-[19px] font-bold text-white uppercase tracking-tight">
           {title}
-          <div className="absolute top-0 -right-3 h-full w-3 bg-primary [clip-path:polygon(0_0,0_100%,100%_100%)]" />
+          <div className="absolute top-0 -right-4 h-full w-4 bg-primary [clip-path:polygon(0_0,0_100%,100%_100%)]" />
         </h2>
       </div>
 
