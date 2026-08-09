@@ -112,12 +112,12 @@ export function LatestPosts({ category }: { category?: string }) {
               )}
               <div className="p-0 pt-4">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-[22px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[26px]">
+                  <h2 className="font-display text-[22px] font-bold leading-[1.3] text-black transition-colors group-hover:text-primary lg:text-[28px]">
                     {mainPost.title}
                   </h2>
                 </Link>
                 <div className="mt-3 text-[15px] leading-relaxed text-slate-700">
-                  <p className="line-clamp-4">
+                  <p className="line-clamp-3">
                     {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 350) : "")}
                   </p>
                   <Link 
@@ -131,27 +131,28 @@ export function LatestPosts({ category }: { category?: string }) {
               </div>
 
 
+
             </article>
           </Reveal>
         </div>
 
         {/* Right Section: Two Image Posts Stacked (Matching user-uploads://file-24 perfectly) */}
-        <div className="lg:col-span-4 lg:pl-4 flex flex-col space-y-4">
+        <div className="lg:col-span-4 lg:pl-6 flex flex-col space-y-5">
           {sidePosts.map((p, i) => (
             <Reveal key={p.id} delay={100 + i * 50}>
-              <article className="group flex gap-3 border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+              <article className="group flex gap-4 items-start border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                 {p.image_url && (
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-1/3">
+                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block shrink-0 overflow-hidden rounded-sm shadow-sm w-[110px]">
                     <NewsImage 
                       src={p.image_url} 
                       alt={p.title} 
-                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" 
                     />
                   </Link>
                 )}
                 <div className="flex-1">
                   <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h3 className="line-clamp-2 font-display text-[15px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
+                    <h3 className="line-clamp-3 font-display text-[16px] font-bold leading-[1.4] text-slate-900 transition-colors group-hover:text-primary">
                       {p.title}
                     </h3>
                   </Link>
@@ -160,6 +161,7 @@ export function LatestPosts({ category }: { category?: string }) {
             </Reveal>
           ))}
         </div>
+
 
 
 
