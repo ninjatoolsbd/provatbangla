@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { banglaDateTime, Post } from "@/lib/posts";
-import { categoryName } from "@/lib/news-data";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 async function fetchFilteredPosts(limit = 20, category?: string) {
@@ -17,9 +16,6 @@ async function fetchFilteredPosts(limit = 20, category?: string) {
 
   if (category) {
     q = q.eq("category", category);
-  } else {
-    // Priority to 'sorboshesh', then others
-    q = q.order('category', { ascending: false }); // Rough way to prioritize if 'sorboshesh' is alphabetically favored or similar, but better to filter and sort in JS
   }
 
   const { data, error } = await q.limit(limit);
@@ -88,7 +84,9 @@ export function LatestPosts({ category }: { category?: string }) {
   }
 
   const mainPost = data[0];
-  const sidePosts = data.slice(1, 4); // Take 3 for the right side (matching user-uploads://file-22)
+  if (!mainPost) return null;
+  
+  const sidePosts = data.slice(1, 4);
   const sliderPosts = data.slice(4);
 
   return (
@@ -118,7 +116,7 @@ export function LatestPosts({ category }: { category?: string }) {
                   </h2>
                 </Link>
                 <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">
-                  {mainPost.excerpt || mainPost.content?.replace(/<[^>]*>/g, '').slice(0, 250) + "..."}
+                  {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 250) + "..." : "")}
                 </p>
               </div>
             </article>
@@ -149,55 +147,57 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Slider Section: Horizontal Scrollable Grid */}
-        <div className="lg:col-span-12 mt-6 relative group/slider">
-          <div className="mb-4 flex items-center justify-between border-t border-slate-100 pt-6">
-             <h3 className="font-display text-lg font-bold text-slate-800">সর্বশেষ খবর</h3>
-             <div className="flex gap-2">
-                <button 
-                  onClick={() => scroll("left")}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button 
-                  onClick={() => scroll("right")}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-             </div>
-          </div>
+        {sliderPosts.length > 0 && (
+          <div className="lg:col-span-12 mt-6 relative group/slider">
+            <div className="mb-4 flex items-center justify-between border-t border-slate-100 pt-6">
+               <h3 className="font-display text-lg font-bold text-slate-800">সর্বশেষ খবর</h3>
+               <div className="flex gap-2">
+                  <button 
+                    onClick={() => scroll("left")}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button 
+                    onClick={() => scroll("right")}
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm hover:bg-slate-50"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+               </div>
+            </div>
 
-          <div 
-            ref={scrollRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
-          >
-            {sliderPosts.map((p, i) => (
-              <Reveal key={p.id} delay={i * 50}>
-                <article className="group w-[280px] shrink-0 snap-start bg-white p-0">
-                  {p.image_url && (
-                    <Link
-                      to="/post/$slug"
-                      params={{ slug: p.slug ?? "" }}
-                      className="mb-3 block overflow-hidden rounded-sm shadow-sm"
-                    >
-                      <NewsImage
-                        src={p.image_url}
-                        alt={p.title}
-                        className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+            <div 
+              ref={scrollRef}
+              className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+            >
+              {sliderPosts.map((p, i) => (
+                <Reveal key={p.id} delay={i * 50}>
+                  <article className="group w-[280px] shrink-0 snap-start bg-white p-0">
+                    {p.image_url && (
+                      <Link
+                        to="/post/$slug"
+                        params={{ slug: p.slug ?? "" }}
+                        className="mb-3 block overflow-hidden rounded-sm shadow-sm"
+                      >
+                        <NewsImage
+                          src={p.image_url}
+                          alt={p.title}
+                          className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </Link>
+                    )}
+                    <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
+                      <h4 className="line-clamp-3 font-display text-[16px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
+                        {p.title} <span className="text-[12px] opacity-40">↙</span>
+                      </h4>
                     </Link>
-                  )}
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-3 font-display text-[16px] font-bold leading-[1.4] text-slate-800 transition-colors group-hover:text-primary">
-                      {p.title} <span className="text-[12px] opacity-40">↙</span>
-                    </h4>
-                  </Link>
-                </article>
-              </Reveal>
-            ))}
+                  </article>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
