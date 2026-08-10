@@ -13,17 +13,20 @@ import { cn } from "@/lib/utils";
  */
 export function BottomWidgets() {
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
+  const [opinionPage, setOpinionPage] = React.useState(0);
   
-  const { data: opinionPosts = [] } = useQuery({
+  const { data: allOpinionPosts = [] } = useQuery({
     queryKey: ["bottom-opinions"],
-    queryFn: () => fetchPublishedPosts(8, "motamot"),
+    queryFn: () => fetchPublishedPosts(12, "motamot"),
   });
+
+  const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
+  const opinionPosts = allOpinionPosts.slice(opinionPage * 3, (opinionPage + 1) * 3);
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
     queryFn: () => fetchPublishedPosts(8),
   });
-
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["bottom-popular"],
@@ -31,6 +34,7 @@ export function BottomWidgets() {
   });
 
   const tabPosts = activeTab === "latest" ? latestPosts : popularPosts;
+
 
   const toBanglaNumber = (n: number) => {
     return String(n).split("").map(d => "০১২৩৪৫৬৭৮৯"[parseInt(d)]).join("");
@@ -85,8 +89,23 @@ export function BottomWidgets() {
             </Link>
           ))}
         </div>
-        
+        {/* Pagination Dots */}
+        {totalPages > 1 && (
+          <div className="pb-4 flex justify-center gap-2">
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setOpinionPage(idx)}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all duration-300",
+                  opinionPage === idx ? "bg-slate-800 w-4" : "bg-slate-300 hover:bg-slate-400"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
 
 
       {/* Column 2: অনলাইন জরিপ (Online Poll) */}
