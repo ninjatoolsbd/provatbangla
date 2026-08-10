@@ -64,6 +64,8 @@ export function LatestPosts({ category }: { category?: string }) {
                     src={p.image_url}
                     alt={p.title}
                     className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    width="400"
+                    height="250"
                   />
                 </Link>
               )}
@@ -108,6 +110,9 @@ export function LatestPosts({ category }: { category?: string }) {
                       src={mainPost.image_url}
                       alt={mainPost.title}
                       className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                      loading="eager"
+                      width="800"
+                      height="450"
                     />
                   </Link>
                 )}
@@ -162,6 +167,8 @@ export function LatestPosts({ category }: { category?: string }) {
                             src={p.image_url} 
                             alt={p.title} 
                             className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                            width="100"
+                            height="100"
                           />
                         </Link>
                       )}
@@ -196,6 +203,8 @@ export function LatestPosts({ category }: { category?: string }) {
                       src={p.image_url}
                       alt={p.title}
                       className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      width="400"
+                      height="225"
                     />
                   </Link>
                 )}
@@ -253,6 +262,8 @@ export function LatestPosts({ category }: { category?: string }) {
                         src={p.image_url}
                         alt={p.title}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        width="320"
+                        height="200"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     </Link>

@@ -489,6 +489,8 @@ export function EpaperCard({ cover }: { cover?: Article | undefined }) {
           alt="আজকের ই-পেপার"
           className="aspect-[3/4] w-full border border-border object-cover"
           loading="lazy"
+          width="300"
+          height="400"
         />
         <button className="mt-3 w-full border border-primary py-2 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
           ই-পেপার পড়ুন
@@ -588,6 +590,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
                 alt={main.title}
                 className="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
+                width="800"
+                height="450"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-6 w-full">
@@ -620,6 +624,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
                       alt={a.title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
+                      width="300"
+                      height="169"
                     />
                     <div className="absolute inset-0 bg-black/40 transition-opacity group-hover:opacity-20" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -656,6 +662,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
                   alt=""
                   className="h-full w-full object-cover"
                   loading="lazy"
+                  width="112"
+                  height="64"
                 />
                 {i === active && (
                   <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">

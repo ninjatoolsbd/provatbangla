@@ -12,12 +12,16 @@ export function NewsImage({
   src, 
   alt, 
   className, 
-  loading = "lazy" 
+  loading = "lazy",
+  width,
+  height
 }: { 
   src?: string | null; 
   alt: string; 
   className?: string;
   loading?: "lazy" | "eager";
+  width?: string | number;
+  height?: string | number;
 }) {
   const [error, setError] = React.useState(false);
   
@@ -32,9 +36,11 @@ export function NewsImage({
     <img
       src={imageSrc}
       alt={alt}
-      className={className}
+      className={cn("bg-muted", className)}
       loading={loading}
       onError={() => setError(true)}
+      width={width}
+      height={height}
     />
   );
 }
@@ -70,6 +76,8 @@ export function SplitLead({ article }: { article: Article | Post }) {
           alt={article.title}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           loading="eager"
+          width="600"
+          height="450"
         />
       </ArticleLink>
       <div className="min-w-0">
@@ -97,6 +105,8 @@ export function LeadCard({ article }: { article: Article | Post }) {
           alt={article.title}
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="400"
+          height="225"
         />
       </ArticleLink>
       <ArticleLink article={article}>
@@ -121,6 +131,8 @@ export function GridCard({ article, compact = false }: { article: Article | Post
           alt={article.title}
           className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="300"
+          height="188"
         />
       </ArticleLink>
       <ArticleLink article={article}>
@@ -148,6 +160,8 @@ export function ThumbRow({ article }: { article: Article | Post }) {
           alt={article.title}
           className="size-[72px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="72"
+          height="72"
         />
       </ArticleLink>
       <ArticleLink article={article} className="min-w-0 flex-1">
@@ -182,6 +196,8 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
           alt={article.title}
           className="h-16 w-24 object-cover"
           loading="lazy"
+          width="96"
+          height="64"
         />
       </ArticleLink>
     </article>
