@@ -103,7 +103,7 @@ export function VideoStrip({ items }: { items: any[] }) {
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
-            <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
+            <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -111,7 +111,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
                   src="https://www.btvlive.gov.bd/channel/BTV-News"
                   title="BTV News Live"
@@ -126,7 +126,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             {/* Live TV Box 2 (NTV) */}
-            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
+            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -134,7 +134,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
                   src="https://www.youtube.com/embed/D1N5sp_pv_M?si=-0g1NTSFhctb-I0D&autoplay=1&mute=1"
                   title="NTV Live"
@@ -151,7 +151,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
             
             {/* Live TV Box 3 (Channel 24) */}
-            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
+            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -159,7 +159,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
                   src="https://www.youtube.com/embed/rzC3S-0niV0?si=coIEKVknbnd02SkY&autoplay=1&mute=1"
                   title="YouTube video player"
@@ -176,7 +176,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             {/* Live TV Box 4 (RTV) */}
-            <div className="border-[10px] border-[#003399] bg-[#003399] p-1 shadow-lg">
+            <div className="border-[10px] border-[#003399] bg-[#003399] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -184,7 +184,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
                   src="https://www.youtube.com/embed/PtztZQi5hCg?si=sOxiaL6vPNUovcyh&autoplay=1&mute=1"
                   title="YouTube video player"
@@ -201,7 +201,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             {/* Live TV Box 5 (71 TV) */}
-            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
+            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -209,7 +209,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
                   src="https://www.youtube.com/embed/9L9ymmaPIS0?si=NKC15SV0HWcGD6JM&autoplay=1&mute=1"
                   title="71 TV Live"
@@ -225,8 +225,8 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
-            {/* Live TV Box 3 (Sananda TV) */}
-            <div className="border-[10px] border-[#660066] bg-[#660066] p-1 shadow-lg">
+            {/* Live TV Box 6 (Sananda TV) */}
+            <div className="border-[10px] border-[#660066] bg-[#660066] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
@@ -234,7 +234,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <video
                   className="absolute inset-0 h-full w-full"
                   controls
