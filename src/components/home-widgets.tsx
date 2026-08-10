@@ -10,7 +10,7 @@ import {
   Search,
   Youtube,
 } from "lucide-react";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
@@ -63,9 +63,24 @@ export function BarHeading({
 export function VideoStrip({ items }: { items: any[] }) {
   const [activeTab, setActiveTab] = useState("video-news");
   const ref = useRef<HTMLDivElement>(null);
+  const liveTvRef = useRef<HTMLDivElement>(null);
   
   const nudge = (dir: number) =>
     ref.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+
+  const scrollToLiveTv = () => {
+    if (liveTvRef.current) {
+      liveTvRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  useEffect(() => {
+    // Only scroll if we're on the homepage and not just navigating internally
+    const timer = setTimeout(() => {
+      scrollToLiveTv();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const tabs = [
     { id: "video-news", label: "ভিডিও সংবাদ", keyword: "সংবাদ" },
@@ -95,7 +110,7 @@ export function VideoStrip({ items }: { items: any[] }) {
   return (
     <>
       {/* ---------- Live TV Section ---------- */}
-      <section className="mt-10 bg-[#0F0F0F] text-white">
+      <section ref={liveTvRef} className="mt-10 bg-[#0F0F0F] text-white">
         <div className="mx-auto max-w-[1360px] px-4 py-8">
           <div className="mb-6 flex items-center gap-3">
             <span className="inline-block h-[24px] w-[6px] bg-primary" />
