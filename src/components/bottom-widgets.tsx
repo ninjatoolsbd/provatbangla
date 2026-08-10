@@ -142,13 +142,14 @@ export function BottomWidgets() {
 
             <div className="flex items-center justify-center gap-2">
               {[
-                { icon: Facebook, bg: "bg-[#3b5998]" },
-                { icon: MessageCircle, bg: "bg-[#0088cc]" },
-                { icon: Send, bg: "bg-[#25D366]" },
+                { icon: Facebook, bg: "bg-[#4267B2]" },
+                { icon: MessageCircle, bg: "bg-[#42A5F5]" },
+                { icon: Send, bg: "bg-[#00C853]" },
                 { icon: Twitter, bg: "bg-black" },
                 { icon: Linkedin, bg: "bg-[#0077b5]" },
-                { icon: Share2, bg: "bg-[#075e54]" }
+                { icon: Share2, bg: "bg-[#1B5E20]" }
               ].map((social, idx) => (
+
                 <button key={idx} className={cn("flex h-8 w-8 items-center justify-center rounded-full text-white transition-all hover:scale-105 active:scale-95 shadow-sm", social.bg)}>
                   <social.icon className="h-4 w-4" />
                 </button>
