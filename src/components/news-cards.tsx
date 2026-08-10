@@ -76,6 +76,8 @@ export function SplitLead({ article }: { article: Article | Post }) {
           alt={article.title}
           className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           loading="eager"
+          width="600"
+          height="450"
         />
       </ArticleLink>
       <div className="min-w-0">
