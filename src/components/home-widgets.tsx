@@ -125,7 +125,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
-            {/* Live TV Box 2 (Deepto TV) */}
+            {/* Live TV Box 2 (Deepto TV - YouTube Fallback for iFrame restrictions) */}
             <div className="border-[10px] border-[#ed1c24] bg-[#ed1c24] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
@@ -136,7 +136,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.deeptoplay.com/live-tvs/deepto-tv-live"
+                  src="https://www.youtube.com/embed/live_stream?channel=UCuG1a_9HIsrZ3n9Wn4XQJ2A"
                   title="Deepto TV Live"
                   className="absolute inset-0 h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
