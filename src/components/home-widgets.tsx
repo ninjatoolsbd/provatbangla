@@ -148,14 +148,29 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
             
-            {/* Optional 3rd Slot for balance or logo/info */}
-            <div className="hidden lg:flex items-center justify-center border border-white/10 bg-white/5 p-4 rounded-md">
-              <div className="text-center">
-                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary">
-                  <Play className="h-6 w-6 fill-current" />
-                </div>
-                <h3 className="text-lg font-bold">প্রভাতবাংলা লাইভ</h3>
-                <p className="text-xs text-white/60">দেশ বিদেশের খবর সবার আগে</p>
+            {/* Live TV Box 3 (Sananda TV) */}
+            <div className="border-[10px] border-[#660066] bg-[#660066] p-1 shadow-lg">
+              <div className="mb-2 flex items-center justify-between px-2 text-white">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                  সানন্দা টিভি
+                </h2>
+                <div className="h-1 w-10 bg-white/20 rounded-full" />
+              </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+                <video
+                  className="absolute inset-0 h-full w-full"
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                >
+                  <source src="https://live.sanandatelevision.in/sananda/index.m3u8" type="application/x-mpegURL" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div className="mt-2 px-2 flex items-center justify-between">
+                <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
               </div>
             </div>
           </div>
