@@ -13,17 +13,20 @@ import { cn } from "@/lib/utils";
  */
 export function BottomWidgets() {
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
+  const [opinionPage, setOpinionPage] = React.useState(0);
   
-  const { data: opinionPosts = [] } = useQuery({
+  const { data: allOpinionPosts = [] } = useQuery({
     queryKey: ["bottom-opinions"],
-    queryFn: () => fetchPublishedPosts(8, "motamot"),
+    queryFn: () => fetchPublishedPosts(12, "motamot"),
   });
+
+  const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
+  const opinionPosts = allOpinionPosts.slice(opinionPage * 3, (opinionPage + 1) * 3);
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
     queryFn: () => fetchPublishedPosts(8),
   });
-
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["bottom-popular"],
@@ -31,6 +34,7 @@ export function BottomWidgets() {
   });
 
   const tabPosts = activeTab === "latest" ? latestPosts : popularPosts;
+
 
   const toBanglaNumber = (n: number) => {
     return String(n).split("").map(d => "০১২৩৪৫৬৭৮৯"[parseInt(d)]).join("");
@@ -49,7 +53,7 @@ export function BottomWidgets() {
           </h2>
         </div>
         
-        <div className="flex-1 p-3 space-y-4 max-h-[580px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+        <div className="flex-1 p-3 space-y-3 min-h-[580px]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
@@ -85,12 +89,27 @@ export function BottomWidgets() {
             </Link>
           ))}
         </div>
-        
+        {/* Pagination Dots */}
+        {totalPages > 1 && (
+          <div className="pb-4 flex justify-center gap-2">
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setOpinionPage(idx)}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all duration-300",
+                  opinionPage === idx ? "bg-slate-800 w-4" : "bg-slate-300 hover:bg-slate-400"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
 
+
       {/* Column 2: অনলাইন জরিপ (Online Poll) */}
-      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden">
+      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
         <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-slate-100">
           <h2 className="flex items-center gap-2 font-display text-lg font-bold">
             <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-[#D0021B] text-white">
@@ -100,7 +119,7 @@ export function BottomWidgets() {
           </h2>
         </div>
 
-        <div className="flex-1 p-5 border-t border-slate-100">
+        <div className="flex-1 px-5 py-4 border-t border-slate-100 flex flex-col">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[13px] text-slate-500">
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -123,30 +142,33 @@ export function BottomWidgets() {
             সংসদ সদস্যদের সরকারি গাড়ি এবং মন্ত্রীদের মাসিক বেতন ন্যূনতম ১০ লাখ টাকা ও সংসদ সদস্যদের ৫ লাখ টাকা করা উচিত বলে প্রবাসী কল্যাণ ও বৈদেশিক কর্মসংস্থান প্রতিমন্ত্রী নুরুল হক নূর যে বক্তব্য দিয়েছেন, সেটির সঙ্গে আপনি কি একমত?
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             {[
               { label: "হ্যাঁ", value: "yes" },
               { label: "না", value: "no" },
               { label: "মন্তব্য নেই", value: "none" }
             ].map((opt) => (
-              <label key={opt.value} className="flex cursor-pointer items-center gap-3 border border-slate-400 rounded-sm px-4 py-2 transition-all hover:bg-slate-50">
-                <input type="radio" name="poll-vote" className="h-4 w-4 rounded-full border-slate-400 text-[#D0021B] focus:ring-[#D0021B]" />
-                <span className="text-[15px] font-medium text-slate-700">{opt.label}</span>
+              <label key={opt.value} className="flex cursor-pointer items-center gap-3 border border-slate-300 rounded-sm px-4 py-1.5 transition-all hover:bg-slate-50 group">
+                <input type="radio" name="poll-vote" className="h-4 w-4 rounded-full border-slate-300 text-[#D0021B] focus:ring-[#D0021B]" />
+                <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">{opt.label}</span>
               </label>
             ))}
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="mb-4 text-[13px] font-bold text-slate-500">মোট ভোটদাতা: ৩,২৬৫ জন</p>
+
+          <div className="mt-auto pt-4 border-t border-slate-50 text-center">
+            <p className="mb-3 text-[13px] font-bold text-slate-500">মোট ভোটদাতা: ৩,২৮৮ জন</p>
+
             <div className="flex items-center justify-center gap-2">
               {[
-                { icon: Facebook, bg: "bg-[#3b5998]" },
-                { icon: MessageCircle, bg: "bg-[#0088cc]" },
-                { icon: Send, bg: "bg-[#25D366]" },
+                { icon: Facebook, bg: "bg-[#4267B2]" },
+                { icon: MessageCircle, bg: "bg-[#42A5F5]" },
+                { icon: Send, bg: "bg-[#00C853]" },
                 { icon: Twitter, bg: "bg-black" },
                 { icon: Linkedin, bg: "bg-[#0077b5]" },
-                { icon: Share2, bg: "bg-[#075e54]" }
+                { icon: Share2, bg: "bg-[#1B5E20]" }
               ].map((social, idx) => (
+
                 <button key={idx} className={cn("flex h-8 w-8 items-center justify-center rounded-full text-white transition-all hover:scale-105 active:scale-95 shadow-sm", social.bg)}>
                   <social.icon className="h-4 w-4" />
                 </button>
