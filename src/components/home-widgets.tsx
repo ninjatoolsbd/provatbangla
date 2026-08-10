@@ -200,19 +200,19 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
-            {/* Live TV Box 5 (Independent TV) */}
+            {/* Live TV Box 5 (71 TV) */}
             <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                  ইনডিপেনডেন্ট টিভি
+                  ৭১ টিভি
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.youtube.com/embed/rzC3S-0niV0?si=I86ZCpODeZoHC-H3&autoplay=1&mute=1"
-                  title="YouTube video player"
+                  src="https://www.youtube.com/embed/9L9ymmaPIS0?si=NKC15SV0HWcGD6JM&autoplay=1&mute=1"
+                  title="71 TV Live"
                   className="absolute inset-0 h-full w-full"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
