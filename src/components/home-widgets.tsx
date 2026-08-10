@@ -285,95 +285,10 @@ export function VideoStrip({ items }: { items: any[] }) {
         </div>
       </section>
 
-      {/* ---------- Video News Section ---------- */}
-      <section className="bg-[#121212] text-white">
-        <div className="mx-auto max-w-[1360px] px-4 py-12">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-            <div className="flex flex-wrap gap-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    "px-5 py-2 text-sm font-bold transition-all rounded-sm",
-                    activeTab === tab.id 
-                      ? "bg-primary text-white shadow-[0_4px_12px_rgba(var(--primary-rgb),0.3)]" 
-                      : "bg-[#2A2A2A] text-white/80 hover:bg-[#3A3A3A] hover:text-white"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            
-            <Link
-              to="/category/$slug"
-              params={{ slug: "video-gallery" }}
-              className="text-sm font-bold text-primary hover:underline underline-offset-4"
-            >
-              সকল ভিডিও দেখুন →
-            </Link>
-          </div>
-
-          <div className="relative group">
-            {filteredItems.length > 0 ? (
-              <div
-                ref={ref}
-                className="flex snap-x gap-6 overflow-x-auto pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                {filteredItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    to="/post/$slug"
-                    params={{ slug: item.slug || `demo-${item.id}` }}
-                    className="w-[300px] shrink-0 snap-start group/item"
-                  >
-                    <div className="relative aspect-video w-full overflow-hidden rounded-md">
-                      <NewsImage
-                        src={item.image_url || item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover/item:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 transition-opacity group-hover/item:opacity-80" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                         <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/80 bg-black/30 text-white backdrop-blur-sm transition-all duration-300 group-hover/item:scale-110 group-hover/item:bg-primary group-hover/item:border-primary">
-                            <Play className="h-5 w-5 fill-white" />
-                         </div>
-                      </div>
-                      <div className="absolute bottom-3 right-3 bg-black/70 px-1.5 py-0.5 text-[10px] font-bold rounded">
-                        ভিডিও
-                      </div>
-                    </div>
-                    <h3 className="mt-4 line-clamp-2 text-base font-bold leading-snug text-white transition-colors group-hover/item:text-primary">
-                      {item.title}
-                    </h3>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="flex gap-6 overflow-x-auto pb-6">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-[300px] shrink-0 bg-[#2A2A2A] aspect-video animate-pulse rounded-md" />
-                ))}
-              </div>
-            )}
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => nudge(-1)}
-              className="absolute -left-5 top-[35%] z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white border border-white/10 backdrop-blur-md transition-all hover:bg-primary hover:border-primary group-hover:flex"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-              onClick={() => nudge(1)}
-              className="absolute -right-5 top-[35%] z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white border border-white/10 backdrop-blur-md transition-all hover:bg-primary hover:border-primary group-hover:flex"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* Video section removed from standalone position as requested */}
+    </>
+  );
+}
     </>
   );
 }
@@ -657,50 +572,94 @@ export function PhotoGallery({ items }: { items: any[] }) {
           <Camera className="size-4 text-primary" />
           <h2 className="font-display text-[20px] font-bold">ফটোগ্যালারি</h2>
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-4">
+          {/* Large Main Feature */}
           <div className="relative lg:col-span-2">
-            <NewsImage
-              src={main.image}
-              alt={main.title}
-              className="aspect-[16/9] w-full object-cover"
-              loading="lazy"
-            />
-            <span className="absolute right-0 bottom-0 left-0 bg-ink/70 p-3 font-display text-[16px] font-bold">
-              {main.title}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-            {items.slice(0, 2).map((a, i) => (
-              <button
-                key={a.id}
-                onClick={() => setActive(i)}
-                className="group relative block text-left"
-              >
-                <NewsImage
-                  src={a.image}
-                  alt={a.title}
-                  className="aspect-[16/9] w-full object-cover transition-opacity group-hover:opacity-80"
-                  loading="lazy"
-                />
-                <span className="absolute right-0 bottom-0 left-0 line-clamp-2 bg-ink/70 p-2 text-[13px] font-bold">
-                  {a.title}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="mt-4 flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {items.map((a, i) => (
-            <button key={a.id} onClick={() => setActive(i)} className="shrink-0">
+            <Link 
+              to="/post/$slug" 
+              params={{ slug: main.slug || String(main.id) }} 
+              className="group relative block overflow-hidden rounded-lg shadow-2xl"
+            >
               <NewsImage
-                src={a.image}
-                alt=""
-                className={cn(
-                  "h-14 w-24 object-cover transition-all",
-                  i === active ? "ring-2 ring-primary" : "opacity-60 hover:opacity-100",
-                )}
+                src={main.image}
+                alt={main.title}
+                className="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-6 w-full">
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-4 ring-primary/20">
+                    <Play className="h-4 w-4 fill-white" />
+                  </div>
+                  <span className="bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white rounded-sm">গ্যালারি</span>
+                </div>
+                <h3 className="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors">
+                  {main.title}
+                </h3>
+              </div>
+            </Link>
+          </div>
+
+          {/* Side Grid Items */}
+          <div className="grid grid-cols-1 gap-4 lg:col-span-2">
+            <div className="grid grid-cols-2 gap-4">
+              {items.slice(1, 5).map((a) => (
+                <Link
+                  key={a.id}
+                  to="/post/$slug"
+                  params={{ slug: a.slug || String(a.id) }}
+                  className="group relative block overflow-hidden rounded-md bg-[#1A1A1A] border border-white/5 shadow-lg"
+                >
+                  <div className="relative aspect-video overflow-hidden">
+                    <NewsImage
+                      src={a.image}
+                      alt={a.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/40 transition-opacity group-hover:opacity-20" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white scale-75 group-hover:scale-100 transition-transform">
+                        <Play className="h-3 w-3 fill-white" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <h4 className="line-clamp-2 text-sm font-bold leading-snug text-white/90 group-hover:text-primary transition-colors">
+                      {a.title}
+                    </h4>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Thumbnail Navigation */}
+        <div className="mt-8 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] scrollbar-thumb-primary/50">
+          {items.map((a, i) => (
+            <button 
+              key={a.id} 
+              onClick={() => setActive(i)} 
+              className="shrink-0 transition-transform hover:-translate-y-1"
+            >
+              <div className={cn(
+                "relative h-16 w-28 overflow-hidden rounded-md border-2 transition-all",
+                i === active ? "border-primary scale-105 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" : "border-white/10 opacity-60 hover:opacity-100"
+              )}>
+                <NewsImage
+                  src={a.image}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                {i === active && (
+                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                    <Play className="h-4 w-4 fill-white animate-pulse" />
+                  </div>
+                )}
+              </div>
             </button>
           ))}
         </div>
