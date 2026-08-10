@@ -125,19 +125,19 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
-            {/* Live TV Box 2 (Channel i) */}
-            <div className="border-[10px] border-[#006633] bg-[#006633] p-1 shadow-lg">
+            {/* Live TV Box 2 (RTV Live) */}
+            <div className="border-[10px] border-[#003399] bg-[#003399] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                  চ্যানেল আই
+                  আরটিভি লাইভ
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.jagobd.com/channeli"
-                  title="Channel i Live"
+                  src="https://www.youtube.com/embed/live_stream?channel=UCuG1a_9HIsrZ3n9Wn4XQJ2A"
+                  title="RTV Live"
                   className="absolute inset-0 h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
