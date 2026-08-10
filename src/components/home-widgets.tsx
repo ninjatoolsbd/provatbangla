@@ -101,7 +101,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             <span className="inline-block h-[24px] w-[6px] bg-primary" />
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight">লাইভ টিভি</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
             <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
