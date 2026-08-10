@@ -108,12 +108,12 @@ function Home() {
         <BottomWidgets />
       </main>
 
-      <EpaperSection />
-
       <VideoStrip items={videoPosts} />
       
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
+
+      <EpaperSection />
 
       <SiteFooter />
     </div>
