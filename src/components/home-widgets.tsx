@@ -74,6 +74,14 @@ export function VideoStrip({ items }: { items: any[] }) {
     }
   };
 
+  useEffect(() => {
+    // Only scroll if we're on the homepage and not just navigating internally
+    const timer = setTimeout(() => {
+      scrollToLiveTv();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const tabs = [
     { id: "video-news", label: "ভিডিও সংবাদ", keyword: "সংবাদ" },
     { id: "video-ent", label: "ভিডিও বিনোদন", keyword: "বিনোদন" },
