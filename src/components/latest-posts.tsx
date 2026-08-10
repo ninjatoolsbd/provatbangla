@@ -201,6 +201,8 @@ export function LatestPosts({ category }: { category?: string }) {
                       src={p.image_url}
                       alt={p.title}
                       className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      width="400"
+                      height="225"
                     />
                   </Link>
                 )}
