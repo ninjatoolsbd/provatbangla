@@ -68,11 +68,9 @@ export function BottomWidgets() {
                   <span className="text-[12px] font-bold text-slate-800 text-center leading-tight">
                     {p.author_name || "আহমেদ সোহেল বাপ্পী"}
                   </span>
-                  {p.author_title && (
-                    <span className="text-[10px] text-slate-500 text-center leading-none">
-                      {p.author_title}
-                    </span>
-                  )}
+                  <span className="text-[10px] text-slate-500 text-center leading-none">
+                    বার্তা সম্পাদক, কালবেলা
+                  </span>
                 </div>
                 <div className="flex-1 pt-1">
                   <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-tight group-hover:text-[#D0021B] transition-colors text-slate-900 mb-2">
