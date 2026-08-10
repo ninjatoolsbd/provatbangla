@@ -17,7 +17,25 @@ export function BottomWidgets() {
   
   const { data: allOpinionPosts = [] } = useQuery({
     queryKey: ["bottom-opinions"],
-    queryFn: () => fetchPublishedPosts(12, "motamot"),
+    queryFn: async () => {
+      const posts = await fetchPublishedPosts(12, "motamot");
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return articles.filter(a => a.category === "motamot").map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          author_name: a.author,
+          kicker: a.kicker,
+          excerpt: a.excerpt,
+          content: a.body.join("\n"),
+          status: "published",
+          published_at: new Date().toISOString()
+        }));
+      }
+      return posts;
+    },
   });
 
   const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
@@ -25,12 +43,42 @@ export function BottomWidgets() {
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
-    queryFn: () => fetchPublishedPosts(8),
+    queryFn: async () => {
+      const posts = await fetchPublishedPosts(8);
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return articles.slice(0, 8).map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          author_name: a.author,
+          status: "published",
+          published_at: new Date().toISOString()
+        }));
+      }
+      return posts;
+    },
   });
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["bottom-popular"],
-    queryFn: () => fetchPublishedPosts(8, undefined, "popular"),
+    queryFn: async () => {
+      const posts = await fetchPublishedPosts(8, undefined, "popular");
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return [...articles].reverse().slice(0, 8).map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          author_name: a.author,
+          status: "published",
+          published_at: new Date().toISOString()
+        }));
+      }
+      return posts;
+    },
   });
 
   const tabPosts = activeTab === "latest" ? latestPosts : popularPosts;
@@ -71,10 +119,10 @@ export function BottomWidgets() {
                     />
                   </div>
                   <span className="text-[12px] font-bold text-slate-800 text-center leading-tight">
-                    {p.author_name || "আহমেদ সোহেল বাপ্পী"}
+                    {p.author_name || (p as any).author || "আহমেদ সোহেল বাপ্পী"}
                   </span>
                   <span className="text-[10px] text-slate-500 text-center leading-none">
-                    বার্তা সম্পাদক, কালবেলা
+                    { (p as any).kicker || "বার্তা সম্পাদক, প্রভাতবাংলা" }
                   </span>
                 </div>
                 <div className="flex-1 pt-1">
