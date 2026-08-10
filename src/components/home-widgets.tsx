@@ -10,7 +10,7 @@ import {
   Search,
   Youtube,
 } from "lucide-react";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
