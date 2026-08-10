@@ -214,5 +214,3 @@ export function BottomWidgets() {
     </div>
   );
 }
-  );
-}
