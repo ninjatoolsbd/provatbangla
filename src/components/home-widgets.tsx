@@ -146,7 +146,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                   src="https://www.btvlive.gov.bd/channel/BTV-News"
                   title="BTV News Live"
                   className="absolute inset-0 h-full w-full"
-                  style={{ top: '-45px', height: 'calc(100% + 45px)' }}
+                  style={{ top: '-85px', height: 'calc(100% + 85px)' }}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
