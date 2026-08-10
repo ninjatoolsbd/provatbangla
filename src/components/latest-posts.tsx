@@ -108,6 +108,9 @@ export function LatestPosts({ category }: { category?: string }) {
                       src={mainPost.image_url}
                       alt={mainPost.title}
                       className="h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                      loading="eager"
+                      width="800"
+                      height="450"
                     />
                   </Link>
                 )}
