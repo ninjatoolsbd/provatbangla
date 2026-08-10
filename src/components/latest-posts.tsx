@@ -151,13 +151,13 @@ export function LatestPosts({ category }: { category?: string }) {
               <span className="h-6 w-1 rounded-full bg-primary"></span>
               খবরগুলো পড়ুন
             </h3>
-            <div className="space-y-6">
+            <div className="flex-1 space-y-5 overflow-hidden">
               {sidePosts.map((p, i) => (
                 <Reveal key={p.id} delay={100 + i * 50}>
-                  <article className="group grid grid-cols-3 gap-4 border-b border-slate-100 pb-6 last:border-0 last:pb-0">
+                  <article className="group grid grid-cols-3 gap-3 border-b border-slate-100 pb-5 last:border-0 last:pb-0">
                     <div className="col-span-1">
                       {p.image_url && (
-                        <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-md shadow-sm">
+                        <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm shadow-sm">
                           <NewsImage 
                             src={p.image_url} 
                             alt={p.title} 
@@ -168,11 +168,11 @@ export function LatestPosts({ category }: { category?: string }) {
                     </div>
                     <div className="col-span-2">
                       <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                        <h3 className="line-clamp-2 font-display text-base font-bold leading-snug text-slate-800 transition-colors group-hover:text-primary">
+                        <h3 className="line-clamp-2 font-display text-[15px] font-bold leading-snug text-slate-800 transition-colors group-hover:text-primary">
                           {p.title}
                         </h3>
                       </Link>
-                      <div className="mt-2 text-xs text-slate-400">
+                      <div className="mt-1 text-[11px] text-slate-400">
                         {banglaDateTime(p.published_at)}
                       </div>
                     </div>
