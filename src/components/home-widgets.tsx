@@ -75,25 +75,26 @@ export function VideoStrip({ items }: { items: any[] }) {
   };
 
   useEffect(() => {
-    // Scroll logic: wait for iframes to start loading, then scroll to the exact position
-    const timer = setTimeout(() => {
+    const handleScroll = () => {
       if (liveTvRef.current) {
-        // We target the top of the BTV frame (Box 1) more accurately
         const element = liveTvRef.current;
         const rect = element.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Offset to show the red title bar and BTV frame perfectly
-        // Adjusting from -80 to something more precise based on typical header height
         const targetY = rect.top + scrollTop + 20; 
-        
-        window.scrollTo({
-          top: targetY,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: targetY, behavior: 'auto' });
       }
-    }, 1500); // Slightly longer delay to ensure initial layout shifts are done
-    return () => clearTimeout(timer);
+    };
+
+    // Try multiple times to catch the right moment after hydration and rendering
+    const t1 = setTimeout(handleScroll, 100);
+    const t2 = setTimeout(handleScroll, 800);
+    const t3 = setTimeout(handleScroll, 2000);
+    
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, []);
 
   const tabs = [
