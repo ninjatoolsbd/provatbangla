@@ -68,10 +68,21 @@ export function VideoStrip({ items }: { items: any[] }) {
     ref.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
 
   const tabs = [
-    { id: "video-news", label: "ভিডিও সংবাদ" },
-    { id: "video-ent", label: "ভিডিও বিনোদন" },
-    { id: "talk-show", label: "বাংলা টকশো" },
+    { id: "video-news", label: "ভিডিও সংবাদ", keyword: "সংবাদ" },
+    { id: "video-ent", label: "ভিডিও বিনোদন", keyword: "বিনোদন" },
+    { id: "talk-show", label: "বাংলা টকশো", keyword: "টকশো" },
   ];
+
+  const filteredItems = React.useMemo(() => {
+    const currentTab = tabs.find(t => t.id === activeTab);
+    if (!currentTab) return items;
+    
+    // Filter by keyword in title if no specific metadata is available
+    return items.filter(item => 
+      item.title.includes(currentTab.keyword) || 
+      (items.length < 10) // fallback if too few items
+    );
+  }, [items, activeTab]);
 
   return (
     <section className="mt-10 bg-[#0F0F0F] text-white">
@@ -131,12 +142,12 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             <div className="relative group">
-              {items.length > 0 ? (
+              {filteredItems.length > 0 ? (
                 <div
                   ref={ref}
                   className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                 >
-                  {items.map((item) => (
+                  {filteredItems.map((item) => (
                     <Link
                       key={item.id}
                       to="/post/$slug"
