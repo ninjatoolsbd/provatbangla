@@ -135,11 +135,11 @@ export function VideoStrip({ items }: { items: any[] }) {
                 ref={ref}
                 className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               >
-                {items.map((item) => (
+                {items.length > 0 ? items.map((item) => (
                   <Link
                     key={item.id}
                     to="/post/$slug"
-                    params={{ slug: item.slug ?? "" }}
+                    params={{ slug: item.slug || `demo-${item.id}` }}
                     className="w-[280px] shrink-0 snap-start group/item"
                   >
                     <div className="relative aspect-video w-full overflow-hidden">
@@ -161,6 +161,13 @@ export function VideoStrip({ items }: { items: any[] }) {
                   </Link>
                 ))}
               </div>
+              ) : (
+                <div className="flex gap-4 overflow-x-auto pb-4">
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="w-[280px] shrink-0 bg-[#2A2A2A] aspect-video animate-pulse rounded-sm" />
+                  ))}
+                </div>
+              )}
 
               {/* Navigation Arrows */}
               <button

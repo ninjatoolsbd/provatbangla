@@ -46,7 +46,20 @@ function Home() {
 
   const { data: videoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-video-gallery"],
-    queryFn: () => getHomeSectionPosts({ data: { category: "video-gallery", limit: 12 } }),
+    queryFn: async () => {
+      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 12 } });
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return articles.filter(a => a.category === "video-gallery").map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          status: "published"
+        }));
+      }
+      return posts;
+    },
   });
 
   const mappedPhotoPosts = photoPosts.map((p: any) => ({
