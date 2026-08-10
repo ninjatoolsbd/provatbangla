@@ -105,12 +105,13 @@ function Home() {
 
         {/* Video Strip removed and merged into Photo Gallery below */}
 
-        <VideoStrip items={videoPosts} />
         <BottomWidgets />
       </main>
 
       <EpaperSection />
 
+      <VideoStrip items={videoPosts} />
+      
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
 
