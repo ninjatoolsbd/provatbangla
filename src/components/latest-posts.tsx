@@ -260,6 +260,8 @@ export function LatestPosts({ category }: { category?: string }) {
                         src={p.image_url}
                         alt={p.title}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        width="320"
+                        height="200"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                     </Link>
