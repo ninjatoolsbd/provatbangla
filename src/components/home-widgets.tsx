@@ -97,14 +97,15 @@ export function VideoStrip({ items }: { items: any[] }) {
       <div className="mx-auto max-w-[1360px] px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Left Column: Live TV Box */}
-          <div className="lg:col-span-1">
-            <div className="h-full border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
+          <div className="lg:col-span-1 flex flex-col gap-4">
+            {/* Live TV Box 1 */}
+            <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                  লাইভ টিভি
+                  বিটিভি লাইভ
                 </h2>
-                <div className="h-1 w-20 bg-white/20 rounded-full" />
+                <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
@@ -114,15 +115,32 @@ export function VideoStrip({ items }: { items: any[] }) {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
-                {/* Overlay removed to allow interaction with the Toffee player if needed, or kept for styling */}
-                <div className="absolute inset-0 bg-transparent pointer-events-none z-10" />
               </div>
               <div className="mt-2 px-2 flex items-center justify-between">
-                <p className="text-[11px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
-                <div className="flex gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
-                </div>
+                <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
+              </div>
+            </div>
+
+            {/* Live TV Box 2 (Channel i) */}
+            <div className="border-[10px] border-[#006633] bg-[#006633] p-1 shadow-lg">
+              <div className="mb-2 flex items-center justify-between px-2 text-white">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                  চ্যানেল আই
+                </h2>
+                <div className="h-1 w-10 bg-white/20 rounded-full" />
+              </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+                <iframe
+                  src="https://www.jagobd.com/channeli"
+                  title="Channel i Live"
+                  className="absolute inset-0 h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="mt-2 px-2 flex items-center justify-between">
+                <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
               </div>
             </div>
           </div>
