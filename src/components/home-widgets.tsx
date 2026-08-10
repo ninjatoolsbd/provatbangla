@@ -489,6 +489,8 @@ export function EpaperCard({ cover }: { cover?: Article | undefined }) {
           alt="আজকের ই-পেপার"
           className="aspect-[3/4] w-full border border-border object-cover"
           loading="lazy"
+          width="300"
+          height="400"
         />
         <button className="mt-3 w-full border border-primary py-2 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-foreground">
           ই-পেপার পড়ুন
