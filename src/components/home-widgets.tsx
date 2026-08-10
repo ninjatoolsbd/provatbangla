@@ -93,11 +93,15 @@ export function VideoStrip({ items }: { items: any[] }) {
   }, [items, activeTab]);
 
   return (
-    <section className="mt-10 bg-[#0F0F0F] text-white">
-      <div className="mx-auto max-w-[1360px] px-4 py-8">
-        <div className="grid gap-6 lg:grid-cols-4">
-          {/* Left Column: Live TV Box */}
-          <div className="lg:col-span-1 flex flex-col gap-4">
+    <>
+      {/* ---------- Live TV Section ---------- */}
+      <section className="mt-10 bg-[#0F0F0F] text-white">
+        <div className="mx-auto max-w-[1360px] px-4 py-8">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="inline-block h-[24px] w-[6px] bg-primary" />
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight">লাইভ টিভি</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
             <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
@@ -143,96 +147,111 @@ export function VideoStrip({ items }: { items: any[] }) {
                 <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
               </div>
             </div>
+            
+            {/* Optional 3rd Slot for balance or logo/info */}
+            <div className="hidden lg:flex items-center justify-center border border-white/10 bg-white/5 p-4 rounded-md">
+              <div className="text-center">
+                <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary">
+                  <Play className="h-6 w-6 fill-current" />
+                </div>
+                <h3 className="text-lg font-bold">প্রভাতবাংলা লাইভ</h3>
+                <p className="text-xs text-white/60">দেশ বিদেশের খবর সবার আগে</p>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          {/* Right Column: Tabs and Slider */}
-          <div className="lg:col-span-3">
-            <div className="flex flex-wrap gap-2 mb-6">
+      {/* ---------- Video News Section ---------- */}
+      <section className="bg-[#121212] text-white">
+        <div className="mx-auto max-w-[1360px] px-4 py-12">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div className="flex flex-wrap gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "px-4 py-1.5 text-sm font-bold transition-colors",
+                    "px-5 py-2 text-sm font-bold transition-all rounded-sm",
                     activeTab === tab.id 
-                      ? "bg-primary text-white" 
-                      : "bg-[#2A2A2A] text-white hover:bg-[#3A3A3A]"
+                      ? "bg-primary text-white shadow-[0_4px_12px_rgba(var(--primary-rgb),0.3)]" 
+                      : "bg-[#2A2A2A] text-white/80 hover:bg-[#3A3A3A] hover:text-white"
                   )}
                 >
                   {tab.label}
                 </button>
               ))}
             </div>
-
-            <div className="relative group">
-              {filteredItems.length > 0 ? (
-                <div
-                  ref={ref}
-                  className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                >
-                  {filteredItems.map((item) => (
-                    <Link
-                      key={item.id}
-                      to="/post/$slug"
-                      params={{ slug: item.slug || `demo-${item.id}` }}
-                      className="w-[280px] shrink-0 snap-start group/item"
-                    >
-                      <div className="relative aspect-video w-full overflow-hidden">
-                        <NewsImage
-                          src={item.image_url || item.image}
-                          alt={item.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover/item:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/20" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                           <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-black/20 text-white backdrop-blur-sm transition-transform group-hover/item:scale-110">
-                              <Play className="h-4 w-4 fill-white" />
-                           </div>
-                        </div>
-                      </div>
-                      <h3 className="mt-3 line-clamp-2 text-[15px] font-bold leading-tight text-white transition-colors group-hover/item:text-primary">
-                        {item.title}
-                      </h3>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex gap-4 overflow-x-auto pb-4">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className="w-[280px] shrink-0 bg-[#2A2A2A] aspect-video animate-pulse rounded-sm" />
-                  ))}
-                </div>
-              )}
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={() => nudge(-1)}
-                className="absolute -left-4 top-[35%] z-10 hidden h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-primary group-hover:flex"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => nudge(1)}
-                className="absolute -right-4 top-[35%] z-10 hidden h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-primary group-hover:flex"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
             
-            <div className="mt-4 flex justify-end">
-              <Link
-                to="/category/$slug"
-                params={{ slug: "video-gallery" }}
-                className="inline-flex items-center gap-2 bg-primary px-5 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90 rounded-l-full relative overflow-hidden"
+            <Link
+              to="/category/$slug"
+              params={{ slug: "video-gallery" }}
+              className="text-sm font-bold text-primary hover:underline underline-offset-4"
+            >
+              সকল ভিডিও দেখুন →
+            </Link>
+          </div>
+
+          <div className="relative group">
+            {filteredItems.length > 0 ? (
+              <div
+                ref={ref}
+                className="flex snap-x gap-6 overflow-x-auto pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               >
-                <span className="absolute left-0 top-0 h-full w-1 bg-white/20" />
-                সকল ভিডিও দেখুন →
-              </Link>
-            </div>
+                {filteredItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    to="/post/$slug"
+                    params={{ slug: item.slug || `demo-${item.id}` }}
+                    className="w-[300px] shrink-0 snap-start group/item"
+                  >
+                    <div className="relative aspect-video w-full overflow-hidden rounded-md">
+                      <NewsImage
+                        src={item.image_url || item.image}
+                        alt={item.title}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover/item:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 transition-opacity group-hover/item:opacity-80" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                         <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/80 bg-black/30 text-white backdrop-blur-sm transition-all duration-300 group-hover/item:scale-110 group-hover/item:bg-primary group-hover/item:border-primary">
+                            <Play className="h-5 w-5 fill-white" />
+                         </div>
+                      </div>
+                      <div className="absolute bottom-3 right-3 bg-black/70 px-1.5 py-0.5 text-[10px] font-bold rounded">
+                        ভিডিও
+                      </div>
+                    </div>
+                    <h3 className="mt-4 line-clamp-2 text-base font-bold leading-snug text-white transition-colors group-hover/item:text-primary">
+                      {item.title}
+                    </h3>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex gap-6 overflow-x-auto pb-6">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="w-[300px] shrink-0 bg-[#2A2A2A] aspect-video animate-pulse rounded-md" />
+                ))}
+              </div>
+            )}
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => nudge(-1)}
+              className="absolute -left-5 top-[35%] z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white border border-white/10 backdrop-blur-md transition-all hover:bg-primary hover:border-primary group-hover:flex"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={() => nudge(1)}
+              className="absolute -right-5 top-[35%] z-10 hidden h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white border border-white/10 backdrop-blur-md transition-all hover:bg-primary hover:border-primary group-hover:flex"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
