@@ -196,6 +196,8 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
           alt={article.title}
           className="h-16 w-24 object-cover"
           loading="lazy"
+          width="96"
+          height="64"
         />
       </ArticleLink>
     </article>
