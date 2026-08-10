@@ -105,6 +105,8 @@ export function LeadCard({ article }: { article: Article | Post }) {
           alt={article.title}
           className="aspect-[16/9] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="400"
+          height="225"
         />
       </ArticleLink>
       <ArticleLink article={article}>
