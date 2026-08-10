@@ -108,7 +108,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://toffeelive.com/en/watch/Xi_Ga5oBNnOkwJLWkhKP"
+                  src="https://www.youtube.com/embed/live_stream?channel=UC7fV_N-X8Y7C9uL_DpxR9fA&autoplay=1&mute=1"
                   title="Live TV"
                   className="absolute inset-0 h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
