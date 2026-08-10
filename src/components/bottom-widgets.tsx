@@ -26,7 +26,7 @@ export function BottomWidgets() {
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["bottom-popular"],
-    queryFn: () => fetchPublishedPosts(8), // In a real app, this would be filtered by views
+    queryFn: () => fetchPublishedPosts(8, undefined, "popular"),
   });
 
   const tabPosts = activeTab === "latest" ? latestPosts : popularPosts;
