@@ -12,12 +12,16 @@ export function NewsImage({
   src, 
   alt, 
   className, 
-  loading = "lazy" 
+  loading = "lazy",
+  width,
+  height
 }: { 
   src?: string | null; 
   alt: string; 
   className?: string;
   loading?: "lazy" | "eager";
+  width?: string | number;
+  height?: string | number;
 }) {
   const [error, setError] = React.useState(false);
   
