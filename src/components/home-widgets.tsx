@@ -108,10 +108,11 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.youtube.com/embed/g3m7x2W-h44?autoplay=1&mute=1&rel=0"
-                  title="Somoy TV Live"
+                  src="https://ok.ru/videoembed/7918820003504?autoplay=1"
+                  title="Live TV"
                   className="absolute inset-0 h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
                   allowFullScreen
                 ></iframe>
                 {/* Overlay removed to allow interaction with the Toffee player if needed, or kept for styling */}
