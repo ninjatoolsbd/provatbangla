@@ -10,7 +10,7 @@ import {
   Search,
   Youtube,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
@@ -73,7 +73,7 @@ export function VideoStrip({ items }: { items: any[] }) {
     { id: "talk-show", label: "বাংলা টকশো", keyword: "টকশো" },
   ];
 
-  const filteredItems = React.useMemo(() => {
+  const filteredItems = useMemo(() => {
     const currentTab = tabs.find(t => t.id === activeTab);
     if (!currentTab) return items;
     
