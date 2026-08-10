@@ -131,36 +131,37 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             <div className="relative group">
-              <div
-                ref={ref}
-                className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-              >
-                {items.length > 0 ? items.map((item) => (
-                  <Link
-                    key={item.id}
-                    to="/post/$slug"
-                    params={{ slug: item.slug || `demo-${item.id}` }}
-                    className="w-[280px] shrink-0 snap-start group/item"
-                  >
-                    <div className="relative aspect-video w-full overflow-hidden">
-                      <NewsImage
-                        src={item.image_url || item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover/item:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/20" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                         <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-black/20 text-white backdrop-blur-sm transition-transform group-hover/item:scale-110">
-                            <Play className="h-4 w-4 fill-white" />
-                         </div>
+              {items.length > 0 ? (
+                <div
+                  ref={ref}
+                  className="flex snap-x gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                >
+                  {items.map((item) => (
+                    <Link
+                      key={item.id}
+                      to="/post/$slug"
+                      params={{ slug: item.slug || `demo-${item.id}` }}
+                      className="w-[280px] shrink-0 snap-start group/item"
+                    >
+                      <div className="relative aspect-video w-full overflow-hidden">
+                        <NewsImage
+                          src={item.image_url || item.image}
+                          alt={item.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover/item:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/20" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                           <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-black/20 text-white backdrop-blur-sm transition-transform group-hover/item:scale-110">
+                              <Play className="h-4 w-4 fill-white" />
+                           </div>
+                        </div>
                       </div>
-                    </div>
-                    <h3 className="mt-3 line-clamp-2 text-[15px] font-bold leading-tight text-white transition-colors group-hover/item:text-primary">
-                      {item.title}
-                    </h3>
-                  </Link>
-                ))}
-              </div>
+                      <h3 className="mt-3 line-clamp-2 text-[15px] font-bold leading-tight text-white transition-colors group-hover/item:text-primary">
+                        {item.title}
+                      </h3>
+                    </Link>
+                  ))}
+                </div>
               ) : (
                 <div className="flex gap-4 overflow-x-auto pb-4">
                   {[1,2,3,4].map(i => (
