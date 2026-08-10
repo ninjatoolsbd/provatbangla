@@ -75,15 +75,24 @@ export function VideoStrip({ items }: { items: any[] }) {
   };
 
   useEffect(() => {
-    // Only scroll if we're on the homepage and not just navigating internally
+    // Scroll logic: wait for iframes to start loading, then scroll to the exact position
     const timer = setTimeout(() => {
       if (liveTvRef.current) {
-        const yOffset = -80; // Small offset to show a bit of the red frame top
+        // We target the top of the BTV frame (Box 1) more accurately
         const element = liveTvRef.current;
-        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Offset to show the red title bar and BTV frame perfectly
+        // Adjusting from -80 to something more precise based on typical header height
+        const targetY = rect.top + scrollTop + 20; 
+        
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        });
       }
-    }, 1200);
+    }, 1500); // Slightly longer delay to ensure initial layout shifts are done
     return () => clearTimeout(timer);
   }, []);
 
