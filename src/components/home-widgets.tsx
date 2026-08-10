@@ -108,20 +108,17 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.youtube.com/embed/S2pEsh14bWk?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0"
-                  title="Somoy TV Live"
-                  className="absolute inset-0 h-full w-full pointer-events-none"
+                  src="https://toffeelive.com/en/watch/Xi_Ga5oBNnOkwJLWkhKP"
+                  title="Live TV"
+                  className="absolute inset-0 h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
-                {/* Overlay to catch clicks and redirect to a real player or just styling */}
-                <div className="absolute inset-0 bg-transparent cursor-pointer z-10" />
-                <div className="absolute bottom-2 right-2 z-20 opacity-0 group-hover/player:opacity-100 transition-opacity">
-                   <div className="px-2 py-0.5 bg-black/60 rounded text-[10px] text-white backdrop-blur-sm">YouTube Live</div>
-                </div>
+                {/* Overlay removed to allow interaction with the Toffee player if needed, or kept for styling */}
+                <div className="absolute inset-0 bg-transparent pointer-events-none z-10" />
               </div>
               <div className="mt-2 px-2 flex items-center justify-between">
-                <p className="text-[11px] font-bold text-white/90 italic">সময় টিভি লাইভ</p>
+                <p className="text-[11px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
                 <div className="flex gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
                   <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
