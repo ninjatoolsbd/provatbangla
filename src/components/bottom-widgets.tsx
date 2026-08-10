@@ -54,7 +54,7 @@ export function BottomWidgets() {
         </div>
         
         <div className="flex-1 p-3 space-y-4">
-          {opinionPosts.slice(0, 3).map((p) => (
+          {opinionPosts.map((p) => (
             <Link
               key={p.id}
               to="/post/$slug"
