@@ -63,9 +63,16 @@ export function BarHeading({
 export function VideoStrip({ items }: { items: any[] }) {
   const [activeTab, setActiveTab] = useState("video-news");
   const ref = useRef<HTMLDivElement>(null);
+  const liveTvRef = useRef<HTMLDivElement>(null);
   
   const nudge = (dir: number) =>
     ref.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+
+  const scrollToLiveTv = () => {
+    if (liveTvRef.current) {
+      liveTvRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
 
   const tabs = [
     { id: "video-news", label: "ভিডিও সংবাদ", keyword: "সংবাদ" },
