@@ -75,16 +75,26 @@ export function VideoStrip({ items }: { items: any[] }) {
   };
 
   useEffect(() => {
-    // Only scroll if we're on the homepage and not just navigating internally
-    const timer = setTimeout(() => {
+    const handleScroll = () => {
       if (liveTvRef.current) {
-        const yOffset = -80; // Small offset to show a bit of the red frame top
         const element = liveTvRef.current;
-        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = rect.top + scrollTop + 20; 
+        window.scrollTo({ top: targetY, behavior: 'auto' });
       }
-    }, 1200);
-    return () => clearTimeout(timer);
+    };
+
+    // Try multiple times to catch the right moment after hydration and rendering
+    const t1 = setTimeout(handleScroll, 100);
+    const t2 = setTimeout(handleScroll, 800);
+    const t3 = setTimeout(handleScroll, 2000);
+    
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, []);
 
   const tabs = [
