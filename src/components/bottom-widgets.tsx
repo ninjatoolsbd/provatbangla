@@ -13,11 +13,16 @@ import { cn } from "@/lib/utils";
  */
 export function BottomWidgets() {
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
+  const [opinionPage, setOpinionPage] = React.useState(0);
   
-  const { data: opinionPosts = [] } = useQuery({
+  const { data: allOpinionPosts = [] } = useQuery({
     queryKey: ["bottom-opinions"],
-    queryFn: () => fetchPublishedPosts(4, "motamot"),
+    queryFn: () => fetchPublishedPosts(12, "motamot"),
   });
+
+  const opinionPosts = allOpinionPosts.slice(opinionPage * 3, (opinionPage + 1) * 3);
+  const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
+
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
