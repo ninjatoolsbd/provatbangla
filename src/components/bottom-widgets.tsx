@@ -71,10 +71,10 @@ export function BottomWidgets() {
                     />
                   </div>
                   <span className="text-[12px] font-bold text-slate-800 text-center leading-tight">
-                    {p.author_name || "আহমেদ সোহেল বাপ্পী"}
+                    {p.author_name || (p as any).author || "আহমেদ সোহেল বাপ্পী"}
                   </span>
                   <span className="text-[10px] text-slate-500 text-center leading-none">
-                    বার্তা সম্পাদক, কালবেলা
+                    { (p as any).kicker || "বার্তা সম্পাদক, প্রভাতবাংলা" }
                   </span>
                 </div>
                 <div className="flex-1 pt-1">
