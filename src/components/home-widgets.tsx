@@ -80,8 +80,8 @@ export function VideoStrip({ items }: { items: any[] }) {
         const element = liveTvRef.current;
         const rect = element.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = rect.top + scrollTop + 20; 
-        window.scrollTo({ top: targetY, behavior: 'auto' });
+        const targetY = rect.top + scrollTop - 100; // Offset to keep some context above
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
       }
     };
 
