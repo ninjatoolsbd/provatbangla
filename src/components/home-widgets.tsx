@@ -143,7 +143,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
-                  src="https://www.btvlive.gov.bd/channel/BTV-News"
+                  src="https://www.btvlive.gov.bd/channel/BTV-News?autoplay=1&mute=1"
                   title="BTV News Live"
                   className="absolute inset-0 h-full w-full"
                   style={{ top: '-85px', height: 'calc(100% + 85px)' }}
