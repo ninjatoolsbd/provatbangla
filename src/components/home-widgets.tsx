@@ -125,19 +125,19 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
-            {/* Live TV Box 2 (Channel 24) */}
+            {/* Live TV Box 2 (NTV) */}
             <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-                  চ্যানেল ২৪
+                  এনটিভি
                 </h2>
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
                   src="https://www.youtube.com/embed/D1N5sp_pv_M?si=-0g1NTSFhctb-I0D&autoplay=1&mute=1"
-                  title="YouTube video player"
+                  title="NTV Live"
                   className="absolute inset-0 h-full w-full"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
