@@ -98,35 +98,35 @@ export function VideoStrip({ items }: { items: any[] }) {
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Left Column: Live TV Box */}
           <div className="lg:col-span-1">
-            <div className="h-full border-[10px] border-[#990000] bg-[#990000] p-1">
+            <div className="h-full border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
-                <h2 className="flex items-center gap-2 text-sm font-bold">
-                  <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                   লাইভ টিভি
                 </h2>
-                <div className="h-1 w-24 bg-white/30" />
+                <div className="h-1 w-20 bg-white/20 rounded-full" />
               </div>
-              <div className="relative aspect-video w-full overflow-hidden bg-white">
-                <div className="flex h-full w-full flex-col items-center justify-center p-4">
-                  <div className="relative flex flex-col items-center">
-                    {/* Simplified Live Logo Replica */}
-                    <div className="flex flex-col items-center">
-                       <div className="relative mb-2">
-                         <div className="h-4 w-12 rounded-t-full border-t-4 border-primary" />
-                         <div className="mt-1 h-3 w-8 rounded-t-full border-t-4 border-primary" />
-                         <div className="mt-1 h-2 w-4 rounded-full bg-primary mx-auto" />
-                       </div>
-                       <span className="text-4xl font-black tracking-tighter text-primary">LIVE</span>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black/20 text-white">
-                       <Play className="h-6 w-6 fill-white" />
-                    </div>
-                  </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+                <iframe
+                  src="https://www.youtube.com/embed/S2pEsh14bWk?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0"
+                  title="Somoy TV Live"
+                  className="absolute inset-0 h-full w-full pointer-events-none"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+                {/* Overlay to catch clicks and redirect to a real player or just styling */}
+                <div className="absolute inset-0 bg-transparent cursor-pointer z-10" />
+                <div className="absolute bottom-2 right-2 z-20 opacity-0 group-hover/player:opacity-100 transition-opacity">
+                   <div className="px-2 py-0.5 bg-black/60 rounded text-[10px] text-white backdrop-blur-sm">YouTube Live</div>
                 </div>
               </div>
-              <p className="mt-2 px-2 text-[11px] font-bold text-white/90">Live From Somoy TV</p>
+              <div className="mt-2 px-2 flex items-center justify-between">
+                <p className="text-[11px] font-bold text-white/90 italic">সময় টিভি লাইভ</p>
+                <div className="flex gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/40" />
+                </div>
+              </div>
             </div>
           </div>
 
