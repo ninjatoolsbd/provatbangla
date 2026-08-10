@@ -78,10 +78,18 @@ export function VideoStrip({ items }: { items: any[] }) {
     if (!currentTab) return items;
     
     // Filter by keyword in title if no specific metadata is available
-    return items.filter(item => 
-      item.title.includes(currentTab.keyword) || 
-      (items.length < 10) // fallback if too few items
+    const filtered = items.filter(item => 
+      item.title.includes(currentTab.keyword)
     );
+    
+    // If no specific keyword match, just show different slice of items for demo
+    if (filtered.length === 0 && items.length > 0) {
+      const index = tabs.findIndex(t => t.id === activeTab);
+      const start = (index * 4) % items.length;
+      return [...items.slice(start), ...items.slice(0, start)].slice(0, 8);
+    }
+    
+    return filtered;
   }, [items, activeTab]);
 
   return (
