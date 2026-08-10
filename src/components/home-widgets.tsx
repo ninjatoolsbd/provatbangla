@@ -108,10 +108,10 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.youtube.com/embed/n42o3L8c4r0?autoplay=1&mute=1"
-                  title="Jamuna TV Live"
+                  src="https://www.dailymotion.com/embed/video/x7x4r9a?autoplay=1&mute=1"
+                  title="Independent TV Live"
                   className="absolute inset-0 h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
                 ></iframe>
                 {/* Overlay removed to allow interaction with the Toffee player if needed, or kept for styling */}
