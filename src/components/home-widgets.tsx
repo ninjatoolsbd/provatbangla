@@ -101,7 +101,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             <span className="inline-block h-[24px] w-[6px] bg-primary" />
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight">লাইভ টিভি</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Live TV Box 1 */}
             <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
@@ -150,6 +150,31 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
             
+            {/* Live TV Box 3 (Channel 24) */}
+            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg">
+              <div className="mb-2 flex items-center justify-between px-2 text-white">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                  চ্যানেল ২৪
+                </h2>
+                <div className="h-1 w-10 bg-white/20 rounded-full" />
+              </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+                <iframe
+                  src="https://www.youtube.com/embed/rzC3S-0niV0?si=coIEKVknbnd02SkY&autoplay=1&mute=1"
+                  title="YouTube video player"
+                  className="absolute inset-0 h-full w-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="mt-2 px-2 flex items-center justify-between">
+                <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
+              </div>
+            </div>
+
             {/* Live TV Box 3 (Sananda TV) */}
             <div className="border-[10px] border-[#660066] bg-[#660066] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
