@@ -47,7 +47,7 @@ function Home() {
   const { data: videoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-video-gallery"],
     queryFn: async () => {
-      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 12 } });
+      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
       if (posts.length === 0) {
         const { articles } = await import("@/lib/news-data");
         return articles.filter(a => a.category === "video-gallery").map(a => ({
@@ -55,6 +55,7 @@ function Home() {
           title: a.title,
           slug: `demo-${a.id}`,
           image_url: a.image,
+          category: a.category,
           status: "published"
         }));
       }
