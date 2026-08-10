@@ -160,6 +160,8 @@ export function ThumbRow({ article }: { article: Article | Post }) {
           alt={article.title}
           className="size-[72px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="72"
+          height="72"
         />
       </ArticleLink>
       <ArticleLink article={article} className="min-w-0 flex-1">
