@@ -136,10 +136,12 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
                 <iframe
-                  src="https://www.youtube.com/embed/D1N5sp_pv_M?autoplay=1&mute=1"
-                  title="Channel 24 Live"
+                  src="https://www.youtube.com/embed/D1N5sp_pv_M?si=-0g1NTSFhctb-I0D&autoplay=1&mute=1"
+                  title="YouTube video player"
                   className="absolute inset-0 h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
               </div>
