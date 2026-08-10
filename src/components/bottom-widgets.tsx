@@ -91,11 +91,21 @@ export function BottomWidgets() {
         </div>
         
         {/* Pagination Dots */}
-        <div className="pb-4 flex justify-center gap-2">
-          <button className="h-2 w-2 rounded-full bg-slate-800" />
-          <button className="h-2 w-2 rounded-full bg-slate-300" />
-          <button className="h-2 w-2 rounded-full bg-slate-300" />
-        </div>
+        {totalPages > 1 && (
+          <div className="pb-4 flex justify-center gap-2">
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setOpinionPage(idx)}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all duration-300",
+                  opinionPage === idx ? "bg-slate-800 w-4" : "bg-slate-300 hover:bg-slate-400"
+                )}
+              />
+            ))}
+          </div>
+        )}
+
       </div>
 
       {/* Column 2: অনলাইন জরিপ (Online Poll) */}
