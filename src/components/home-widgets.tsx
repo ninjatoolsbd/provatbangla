@@ -662,6 +662,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
                   alt=""
                   className="h-full w-full object-cover"
                   loading="lazy"
+                  width="112"
+                  height="64"
                 />
                 {i === active && (
                   <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
