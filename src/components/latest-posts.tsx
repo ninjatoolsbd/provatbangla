@@ -145,9 +145,9 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right: Sidebar Feed */}
-        <div className="lg:col-span-4">
-          <div className="flex flex-col gap-6">
-            <h3 className="flex items-center gap-3 font-display text-xl font-bold text-slate-900">
+        <div className="lg:col-span-4 flex flex-col">
+          <div className="flex flex-col gap-6 h-full">
+            <h3 className="flex items-center gap-3 font-display text-xl font-bold text-slate-900 shrink-0">
               <span className="h-6 w-1 rounded-full bg-primary"></span>
               খবরগুলো পড়ুন
             </h3>
