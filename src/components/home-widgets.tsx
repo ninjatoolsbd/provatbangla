@@ -142,6 +142,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                 <div className="h-1 w-10 bg-white/20 rounded-full" />
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
+                {/* Lazy loaded iframe to improve page load performance */}
                 <iframe
                   src="https://www.btvlive.gov.bd/channel/BTV-News?autoplay=1&mute=1"
                   title="BTV News Live"
@@ -149,6 +150,7 @@ export function VideoStrip({ items }: { items: any[] }) {
                   style={{ top: '-85px', height: 'calc(100% + 85px)' }}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  loading="lazy"
                 ></iframe>
               </div>
               <div className="mt-2 px-2 flex items-center justify-between">
