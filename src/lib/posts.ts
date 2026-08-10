@@ -16,6 +16,7 @@ export type Post = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  view_count?: number; // Optional as it might be added later
 };
 
 export function slugify(title: string) {
@@ -43,16 +44,29 @@ export function banglaDateTime(iso: string | null) {
   }).format(new Date(iso));
 }
 
-export async function fetchPublishedPosts(limit = 12, category?: string) {
+export async function fetchPublishedPosts(limit = 12, category?: string, sort: 'latest' | 'popular' = 'latest') {
   let q = supabase
     .from("posts")
     .select("*")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(limit);
+    .eq("status", "published");
+
   if (category) q = q.eq("category", category);
-  const { data, error } = await q;
-  if (error) throw error;
+
+  if (sort === 'popular') {
+    // If view_count exists, use it. Otherwise, randomish but stable for demo
+    q = q.order("view_count", { ascending: false, nullsFirst: false });
+  } else {
+    q = q.order("published_at", { ascending: false });
+  }
+
+  const { data, error } = await q.limit(limit);
+  if (error) {
+    // Fallback if view_count doesn't exist yet
+    if (sort === 'popular' && error.code === '42703') {
+      return fetchPublishedPosts(limit, category, 'latest');
+    }
+    throw error;
+  }
   return (data ?? []) as Post[];
 }
 
