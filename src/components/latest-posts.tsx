@@ -85,9 +85,9 @@ export function LatestPosts({ category }: { category?: string }) {
   const mainPost = data[0];
   if (!mainPost) return null;
   
-  const sidePosts = data.slice(1, 5); // Right sidebar posts
-  const secondaryPosts = data.slice(5, 8); // Three-column grid posts
-  const sliderPosts = data.slice(8); // Slider posts
+  const sidePosts = data.slice(1, 6); // Right sidebar posts (increased to 5)
+  const secondaryPosts = data.slice(6, 9); // Three-column grid posts
+  const sliderPosts = data.slice(9); // Slider posts
 
   return (
     <section className="mb-12">
