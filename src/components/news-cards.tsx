@@ -131,6 +131,8 @@ export function GridCard({ article, compact = false }: { article: Article | Post
           alt={article.title}
           className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
           loading="lazy"
+          width="300"
+          height="188"
         />
       </ArticleLink>
       <ArticleLink article={article}>
