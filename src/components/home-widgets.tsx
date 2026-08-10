@@ -77,8 +77,13 @@ export function VideoStrip({ items }: { items: any[] }) {
   useEffect(() => {
     // Only scroll if we're on the homepage and not just navigating internally
     const timer = setTimeout(() => {
-      scrollToLiveTv();
-    }, 1000);
+      if (liveTvRef.current) {
+        const yOffset = -80; // Small offset to show a bit of the red frame top
+        const element = liveTvRef.current;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 
