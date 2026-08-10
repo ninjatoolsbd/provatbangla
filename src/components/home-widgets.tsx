@@ -289,9 +289,6 @@ export function VideoStrip({ items }: { items: any[] }) {
     </>
   );
 }
-    </>
-  );
-}
 
 /* ---------- opinion / মতামত with author chips ---------- */
 export function OpinionColumn({ items }: { items: Article[] }) {
