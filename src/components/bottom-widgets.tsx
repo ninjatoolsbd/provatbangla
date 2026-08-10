@@ -13,21 +13,17 @@ import { cn } from "@/lib/utils";
  */
 export function BottomWidgets() {
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
-  const [opinionPage, setOpinionPage] = React.useState(0);
   
-  const { data: allOpinionPosts = [] } = useQuery({
+  const { data: opinionPosts = [] } = useQuery({
     queryKey: ["bottom-opinions"],
-    queryFn: () => fetchPublishedPosts(12, "motamot"),
+    queryFn: () => fetchPublishedPosts(8, "motamot"),
   });
-
-  const opinionPosts = allOpinionPosts.slice(opinionPage * 3, (opinionPage + 1) * 3);
-  const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
-
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
     queryFn: () => fetchPublishedPosts(8),
   });
+
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["bottom-popular"],
@@ -53,7 +49,7 @@ export function BottomWidgets() {
           </h2>
         </div>
         
-        <div className="flex-1 p-3 space-y-4 min-h-[480px]">
+        <div className="flex-1 p-3 space-y-4 max-h-[580px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
@@ -90,23 +86,8 @@ export function BottomWidgets() {
           ))}
         </div>
         
-        {/* Pagination Dots */}
-        {totalPages > 1 && (
-          <div className="pb-4 flex justify-center gap-2">
-            {Array.from({ length: totalPages }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setOpinionPage(idx)}
-                className={cn(
-                  "h-2 w-2 rounded-full transition-all duration-300",
-                  opinionPage === idx ? "bg-slate-800 w-4" : "bg-slate-300 hover:bg-slate-400"
-                )}
-              />
-            ))}
-          </div>
-        )}
-
       </div>
+
 
       {/* Column 2: অনলাইন জরিপ (Online Poll) */}
       <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden">
