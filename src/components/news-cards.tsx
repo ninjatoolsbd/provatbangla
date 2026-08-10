@@ -32,9 +32,11 @@ export function NewsImage({
     <img
       src={imageSrc}
       alt={alt}
-      className={className}
+      className={cn("bg-muted", className)}
       loading={loading}
       onError={() => setError(true)}
+      width="800"
+      height="450"
     />
   );
 }
