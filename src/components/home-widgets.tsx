@@ -201,7 +201,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             </div>
 
             {/* Live TV Box 5 (71 TV) */}
-            <div className="border-[10px] border-[#000000] bg-[#000000] p-1 shadow-lg h-full flex flex-col">
+            <div className="border-[10px] border-[#333333] bg-[#333333] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
                 <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
                   <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
