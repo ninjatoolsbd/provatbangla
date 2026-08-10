@@ -102,7 +102,7 @@ export function VideoStrip({ items }: { items: any[] }) {
   return (
     <>
       {/* ---------- Live TV Section ---------- */}
-      <section className="mt-10 bg-[#0F0F0F] text-white">
+      <section ref={liveTvRef} className="mt-10 bg-[#0F0F0F] text-white">
         <div className="mx-auto max-w-[1360px] px-4 py-8">
           <div className="mb-6 flex items-center gap-3">
             <span className="inline-block h-[24px] w-[6px] bg-primary" />
