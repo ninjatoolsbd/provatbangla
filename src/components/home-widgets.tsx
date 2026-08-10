@@ -175,6 +175,31 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
             </div>
 
+            {/* Live TV Box 4 (RTV) */}
+            <div className="border-[10px] border-[#003399] bg-[#003399] p-1 shadow-lg">
+              <div className="mb-2 flex items-center justify-between px-2 text-white">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                  আরটিভি লাইভ
+                </h2>
+                <div className="h-1 w-10 bg-white/20 rounded-full" />
+              </div>
+              <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player">
+                <iframe
+                  src="https://www.youtube.com/embed/PtztZQi5hCg?si=sOxiaL6vPNUovcyh&autoplay=1&mute=1"
+                  title="YouTube video player"
+                  className="absolute inset-0 h-full w-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="mt-2 px-2 flex items-center justify-between">
+                <p className="text-[10px] font-bold text-white/90 italic">সরাসরি সম্প্রচার</p>
+              </div>
+            </div>
+
             {/* Live TV Box 3 (Sananda TV) */}
             <div className="border-[10px] border-[#660066] bg-[#660066] p-1 shadow-lg">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
