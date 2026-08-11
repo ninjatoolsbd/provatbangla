@@ -75,30 +75,7 @@ export function VideoStrip({ items }: { items: any[] }) {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (liveTvRef.current) {
-        const element = liveTvRef.current;
-        const rect = element.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // If we are at the very top (fresh load), jump to the live TV section
-        if (scrollTop < 300) {
-          const targetY = rect.top + scrollTop - 100;
-          window.scrollTo({ top: targetY, behavior: 'instant' });
-        }
-      }
-    };
-
-    // Use multiple triggers to ensure we catch the layout after images/iframes load
-    const t1 = setTimeout(handleScroll, 50);
-    const t2 = setTimeout(handleScroll, 500);
-    const t3 = setTimeout(handleScroll, 1500);
-    
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
+    // Auto-scroll logic removed as user wants the page to load from the top normally
   }, []);
 
   const tabs = [
