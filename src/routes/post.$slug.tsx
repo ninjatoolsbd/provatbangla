@@ -1,12 +1,16 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { NewsImage } from "@/components/news-cards";
+import { NewsImage, GridCard } from "@/components/news-cards";
 import { categoryName } from "@/lib/news-data";
 import { banglaDateTime, paragraphs, type Post } from "@/lib/posts";
 import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.functions";
+import { getRelatedPosts } from "@/lib/related-posts.functions";
+import { Reveal } from "@/components/reveal";
 
 type PostSearch = {
   preview?: boolean;
@@ -66,59 +70,119 @@ export const Route = createFileRoute("/post/$slug")({
 
 function PostPage() {
   const { post, isPreview } = Route.useLoaderData();
+  const fetchRelated = useServerFn(getRelatedPosts);
+
+  const { data: relatedPosts = [] } = useSuspenseQuery({
+    queryKey: ["related-posts", post.slug],
+    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug, limit: 6 } }),
+  });
+
+  const mappedRelated = (relatedPosts as any[]).map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    image: p.image_url,
+    category: p.category,
+    time: new Date(p.published_at || p.created_at).toLocaleDateString("bn-BD"),
+  }));
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-[900px] px-4 py-6">
-        {isPreview && (
-          <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
-            এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
-          </div>
-        )}
-        <nav className="mb-4 text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-primary">
-            প্রচ্ছদ
-          </Link>
-          <span className="mx-2">/</span>
-          <Link
-            to="/category/$slug"
-            params={{ slug: post.category }}
-            className="hover:text-primary"
-          >
-            {categoryName(post.category)}
-          </Link>
-        </nav>
+      <main className="mx-auto max-w-[1200px] px-4 py-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          {/* Main Content */}
+          <div className="lg:col-span-8">
+            {isPreview && (
+              <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
+              </div>
+            )}
+            <nav className="mb-4 text-xs text-muted-foreground">
+              <Link to="/" className="hover:text-primary">
+                প্রচ্ছদ
+              </Link>
+              <span className="mx-2">/</span>
+              <Link
+                to="/category/$slug"
+                params={{ slug: post.category }}
+                className="hover:text-primary"
+              >
+                {categoryName(post.category)}
+              </Link>
+            </nav>
 
-        <article>
-          <h1 className="font-display text-3xl leading-tight font-bold sm:text-4xl">
-            {post.kicker && <span className="block text-lg text-primary">{post.kicker}</span>}
-            {post.title}
-          </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-            <span className="font-semibold text-primary">{categoryName(post.category)}</span>
-            <span>•</span>
-            <span>{post.author_name}</span>
-            <span>•</span>
-            <span>{banglaDateTime(post.published_at ?? post.created_at)}</span>
+            <article>
+              <h1 className="font-display text-3xl font-bold leading-tight sm:text-4xl">
+                {post.kicker && (
+                  <span className="block text-lg text-primary">
+                    {post.kicker}
+                  </span>
+                )}
+                {post.title}
+              </h1>
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                <span className="font-semibold text-primary">
+                  {categoryName(post.category)}
+                </span>
+                <span>•</span>
+                <span>{post.author_name}</span>
+                <span>•</span>
+                <span>
+                  {banglaDateTime(post.published_at ?? post.created_at)}
+                </span>
+              </div>
+
+              {post.image_url && (
+                <NewsImage
+                  src={post.image_url}
+                  alt={post.title}
+                  className="mt-5 aspect-[16/9] w-full object-cover rounded-sm"
+                  loading="eager"
+                  width="800"
+                  height="450"
+                />
+              )}
+
+              <div className="mt-6 space-y-4 text-[18px] leading-[1.8] text-foreground/90">
+                <p className="font-semibold">{post.excerpt}</p>
+                {paragraphs(post.content).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            </article>
+
+            {/* Related News Section */}
+            {mappedRelated.length > 0 && (
+              <div className="mt-12 border-t border-border pt-8">
+                <h3 className="mb-6 font-display text-2xl font-bold text-slate-900">
+                  আরও পড়ুন
+                </h3>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {mappedRelated.map((a: any, i: number) => (
+                    <Reveal key={a.id} delay={i * 50}>
+                      <GridCard article={a as any} compact />
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {post.image_url && (
-            <NewsImage
-              src={post.image_url}
-              alt={post.title}
-              className="mt-5 aspect-[16/9] w-full object-cover"
-              loading="eager"
-            />
-          )}
-
-          <div className="mt-6 space-y-4 text-[17px] leading-[1.9] text-foreground/90">
-            <p className="font-semibold">{post.excerpt}</p>
-            {paragraphs(post.content).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
-        </article>
+          {/* Sidebar */}
+          <aside className="lg:col-span-4">
+            <div className="sticky top-24 space-y-8">
+              {/* You can add Latest News, Ads or Polls here to match Kalbela */}
+              <div className="rounded-sm border border-border bg-card p-4">
+                <h4 className="mb-4 border-b-2 border-primary pb-2 font-display text-lg font-bold">
+                  সদ্য সংবাদ
+                </h4>
+                {/* Simplified sidebar items could go here */}
+                <p className="text-sm text-muted-foreground">সর্বশেষ খবরের আপডেট পেতে আমাদের সাথেই থাকুন।</p>
+              </div>
+            </div>
+          </aside>
+        </div>
       </main>
       <SiteFooter />
     </div>
