@@ -80,15 +80,19 @@ export function VideoStrip({ items }: { items: any[] }) {
         const element = liveTvRef.current;
         const rect = element.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const targetY = rect.top + scrollTop - 100; // Offset to keep some context above
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
+        
+        // If we are at the very top (fresh load), jump to the live TV section
+        if (scrollTop < 300) {
+          const targetY = rect.top + scrollTop - 100;
+          window.scrollTo({ top: targetY, behavior: 'instant' });
+        }
       }
     };
 
-    // Try multiple times to catch the right moment after hydration and rendering
-    const t1 = setTimeout(handleScroll, 100);
-    const t2 = setTimeout(handleScroll, 800);
-    const t3 = setTimeout(handleScroll, 2000);
+    // Use multiple triggers to ensure we catch the layout after images/iframes load
+    const t1 = setTimeout(handleScroll, 50);
+    const t2 = setTimeout(handleScroll, 500);
+    const t3 = setTimeout(handleScroll, 1500);
     
     return () => {
       clearTimeout(t1);
