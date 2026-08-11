@@ -83,10 +83,6 @@ function Home() {
           <AdBanner index={0} className="h-24" />
         </div>
 
-        {/* Division Map */}
-        <section>
-          <DivisionMap />
-        </section>
 
         {/* Home Sections populated from DB */}
         <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
@@ -95,6 +91,18 @@ function Home() {
            <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
            <HomeSection title="চাকরি" slug="chakri" layout="politics" />
            <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
+        </Suspense>
+
+        <div className="my-6">
+          <AdBanner index={1} className="h-24" />
+        </div>
+
+        {/* Division Map moved here so it appears after the first few sections */}
+        <section>
+          <DivisionMap />
+        </section>
+
+        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
            <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
            <HomeSection title="খেলা" slug="khela" layout="grid" />
            <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
