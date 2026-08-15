@@ -174,8 +174,8 @@ function PostPage() {
                     width="800"
                     height="450"
                   />
-                  {post.image_caption && (
-                    <p className="mt-2 text-sm text-muted-foreground italic">{post.image_caption}</p>
+                  {(post as any).image_caption && (
+                    <p className="mt-2 text-sm text-muted-foreground italic">{(post as any).image_caption}</p>
                   )}
                 </div>
               )}
