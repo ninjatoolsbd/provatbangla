@@ -178,9 +178,9 @@ export function BottomWidgets() {
             </button>
           </div>
 
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm mb-5">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm mb-5 bg-slate-100">
             <NewsImage 
-              src="https://www.kalbela.com/assets/poll_cover_photos/photo-295.jpg" 
+              src="https://provatbangla.news/assets/poll_cover_photos/photo-295.jpg" 
               alt="Poll"
               className="h-full w-full object-cover"
             />
