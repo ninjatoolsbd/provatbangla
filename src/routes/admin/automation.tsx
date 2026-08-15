@@ -257,26 +257,39 @@ function AutomationPage() {
             />
           </div>
 
-          <h2 className="pt-2 font-display text-base font-bold">দৈনিক ক্রন লিংক</h2>
-          <p className="text-xs text-muted-foreground">
-            দিনে একবার এই লিংকে হিট করলেই অটো-সিঙ্ক চলবে (এটি আপনার হোস্টিং বা ক্রন সার্ভারে সেট করুন)।
-          </p>
-          <div className="flex gap-2">
-            <input
-              readOnly
-              value={cronUrl}
-              className="w-full border border-border bg-muted px-2 py-1.5 text-xs"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                void navigator.clipboard.writeText(cronUrl);
-                toast.success("কপি হয়েছে");
-              }}
-              className="shrink-0 border border-border px-3 text-xs"
-            >
-              কপি
-            </button>
+          <h2 className="pt-2 font-display text-base font-bold">অটোমেশন স্ট্যাটাস</h2>
+          <div className="flex flex-col gap-2 rounded-sm border border-border/50 bg-muted/30 p-3">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">লাস্ট ক্রন রান:</span>
+              <span className="font-mono font-medium">
+                {cfg["auto_last_cron_run"] 
+                  ? new Date(cfg["auto_last_cron_run"]).toLocaleString('bn-BD') 
+                  : "এখনো চলেনি"}
+              </span>
+            </div>
+            <div className="mt-1 flex flex-col gap-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase">দৈনিক ক্রন লিংক</span>
+              <p className="text-[10px] leading-tight text-muted-foreground">
+                নিচের লিঙ্কে প্রতিদিন একবার হিট করলে অটো-সিঙ্ক চলবে। এটি আপনার হোস্টিং বা ক্রন সার্ভারে (যেমন: cron-job.org) সেট করুন।
+              </p>
+              <div className="mt-1 flex gap-2">
+                <input
+                  readOnly
+                  value={cronUrl}
+                  className="w-full border border-border bg-background px-2 py-1 text-[10px] font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(cronUrl);
+                    toast.success("কপি হয়েছে");
+                  }}
+                  className="shrink-0 border border-border bg-background px-2 py-1 text-[10px] hover:bg-muted"
+                >
+                  কপি
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
