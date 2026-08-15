@@ -31,6 +31,12 @@ export const Route = createFileRoute("/api/public/cron-sync")({
             headers: { "Content-Type": "application/json" },
           });
         }
+        
+        // Update the last_run_at setting for visibility
+        await admin.from("site_settings").upsert(
+          { key: "auto_last_cron_run", value: new Date().toISOString(), updated_at: new Date().toISOString() },
+          { onConflict: "key" }
+        );
 
         const { runAutoSync } = await import("@/lib/auto-news.server");
         const result = await runAutoSync(dryRun ? { dryRun: true } : {});
