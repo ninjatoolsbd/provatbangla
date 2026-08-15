@@ -150,7 +150,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
-                  src="https://www.youtube.com/embed/D1N5sp_pv_M?si=-0g1NTSFhctb-I0D&autoplay=1&mute=1"
+                  src="https://www.youtube.com/embed/g2J1rYmK9-c?si=hTqgR_9R5N1-Y_7P&autoplay=1&mute=1"
                   title="NTV Live"
                   className="absolute inset-0 h-full w-full"
                   frameBorder="0"
