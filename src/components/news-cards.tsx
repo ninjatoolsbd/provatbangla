@@ -32,13 +32,19 @@ export function NewsImage({
 
   const imageSrc = !src || error ? PLACEHOLDER_IMAGE : src;
 
+  // Add a special check for empty or broken URLs
+  const effectiveSrc = (imageSrc && imageSrc !== 'null' && imageSrc !== 'undefined') ? imageSrc : PLACEHOLDER_IMAGE;
+
   return (
     <img
-      src={imageSrc}
+      src={effectiveSrc}
       alt={alt}
       className={cn("bg-muted", className)}
       loading={loading}
-      onError={() => setError(true)}
+      onError={() => {
+        console.warn(`Image failed to load: ${effectiveSrc}`);
+        setError(true);
+      }}
       width={width}
       height={height}
     />

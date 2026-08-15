@@ -12,17 +12,10 @@ export const Route = createFileRoute("/api/public/r2/$")({
         
         if (!res) return new Response("Not found", { status: 404 });
 
-        // Clone the response to modify headers if needed, ensuring correct display
-        const newRes = new Response(res.body, {
-          status: res.status,
-          statusText: res.statusText,
-          headers: new Headers(res.headers),
-        });
-        
+        // Return the response directly to avoid body streaming issues
         // Ensure standard browser behavior for images
-        newRes.headers.set("Access-Control-Allow-Origin", "*");
-        
-        return newRes;
+        res.headers.set("Access-Control-Allow-Origin", "*");
+        return res;
       },
     },
   },
