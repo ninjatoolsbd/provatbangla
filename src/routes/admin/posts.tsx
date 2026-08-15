@@ -140,7 +140,24 @@ function PostsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const bulkPublish = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase
+        .from("posts")
+        .update({ status: "published", published_at: new Date().toISOString() })
+        .in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(`${selectedIds.length} টি নিউজ প্রকাশিত করা হয়েছে`);
+      setSelectedIds([]);
+      void qc.invalidateQueries({ queryKey: ["admin-posts"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const toggleSelection = (id: string) => {
+
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
