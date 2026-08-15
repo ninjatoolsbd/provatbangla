@@ -220,23 +220,7 @@ function PostsPage() {
                   </p>
                   <div className="grid gap-1">
                     {categories.map((c) => (
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
-                onClick={() => {
-                  if (confirm(`${selectedIds.length} টি নিউজ প্রকাশিত করতে চান?`)) {
-                    bulkPublish.mutate(selectedIds);
-                  }
-                }}
-                disabled={bulkPublish.isPending}
-              >
-                <FileCheck className="mr-2 size-4" />
-                নির্বাচিতগুলো প্রকাশ করুন ({selectedIds.length})
-              </Button>
-
-              <Button
-
+                      <Button
                         key={c.slug}
                         variant="ghost"
                         size="sm"
@@ -252,6 +236,22 @@ function PostsPage() {
                   </div>
                 </PopoverContent>
               </Popover>
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
+                onClick={() => {
+                  if (confirm(`${selectedIds.length} টি নিউজ প্রকাশিত করতে চান?`)) {
+                    bulkPublish.mutate(selectedIds);
+                  }
+                }}
+                disabled={bulkPublish.isPending}
+              >
+                <FileCheck className="mr-2 size-4" />
+                নির্বাচিতগুলো প্রকাশ করুন ({selectedIds.length})
+              </Button>
+
 
               <Button
                 variant="destructive"
