@@ -176,7 +176,7 @@ export function VideoStrip({ items }: { items: any[] }) {
               </div>
               <div className="relative aspect-video w-full overflow-hidden bg-black rounded-sm shadow-inner group/player flex-grow">
                 <iframe
-                  src="https://www.youtube.com/embed/gD5r78M2s-k?si=p8K4_o_e9z_3_4_5&autoplay=1&mute=1"
+                  src="https://www.youtube.com/embed/hjQluVY6EzQ?si=xO6TBSJTqzOLX9_s&autoplay=1&mute=1"
                   title="YouTube video player"
                   className="absolute inset-0 h-full w-full"
                   frameBorder="0"
