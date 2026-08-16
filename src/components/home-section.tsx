@@ -39,33 +39,29 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
       <section className="mt-5 border border-border bg-card p-4">
         <BarHeading title={title} slug={slug} />
         <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
-          <div className="min-w-0 lg:col-span-5 lg:pr-5">
+          {/* Big Hero - Top Left */}
+          <div className="min-w-0 lg:col-span-6 lg:pr-5">
             <LeadCard article={mappedPosts[0] as any} />
-          </div>
-          <div className="min-w-0 lg:col-span-4 lg:px-5">
-            {mappedPosts.slice(1, 4).map((a: any, i: number) => (
-              <Reveal key={a.id} delay={i * 60}>
-                <ThumbRow article={a as any} />
-              </Reveal>
-            ))}
-          </div>
-          <div className="min-w-0 lg:col-span-3 lg:pl-5">
-             <ul className="divide-y divide-border border-t border-border">
-              {mappedPosts.slice(4, 9).map((a: any) => (
-                <li key={a.id}>
-                  <Link
-                    to="/post/$slug"
-                    params={{ slug: a.slug ?? "" }}
-                    className="group block py-2.5 transition-transform duration-300 hover:translate-x-1"
-                  >
-                    <span className="line-clamp-3 font-display text-[14px] leading-[1.4] font-bold transition-colors group-hover:text-primary sm:text-[15px] sm:leading-snug">
-                      {a.kicker && <span className="text-primary">{a.kicker} / </span>}
-                      {a.title}
-                    </span>
-                  </Link>
-                </li>
+            <div className="mt-4 grid grid-cols-3 gap-4 border-t border-border pt-4">
+              {mappedPosts.slice(1, 4).map((a: any, i: number) => (
+                <Reveal key={a.id} delay={i * 60}>
+                  <GridCard article={a as any} compact />
+                </Reveal>
               ))}
-            </ul>
+            </div>
+          </div>
+
+          {/* Right side - 2 columns of 3 items each */}
+          <div className="min-w-0 lg:col-span-6 lg:pl-5">
+             <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+                {mappedPosts.slice(4, 10).map((a: any, i: number) => (
+                  <Reveal key={a.id} delay={i * 60}>
+                    <div className="border-b border-border pb-2 last:border-0">
+                      <GridCard article={a as any} compact showImage={false} />
+                    </div>
+                  </Reveal>
+                ))}
+             </div>
           </div>
         </div>
       </section>
@@ -73,23 +69,39 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   }
 
   if (layout === "politics") {
-      return (
-        <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title={title} slug={slug} />
-          <div className="grid gap-5 lg:grid-cols-12">
-            <div className="min-w-0 lg:col-span-4">
-              <LeadCard article={mappedPosts[0] as any} />
-            </div>
-            <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
-              {mappedPosts.slice(1, 7).map((a: any, i: number) => (
+    return (
+      <section className="mt-5 border border-border bg-card p-4">
+        <BarHeading title={title} slug={slug} />
+        <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+          {/* Main big story */}
+          <div className="min-w-0 lg:col-span-4 lg:pr-5">
+            <LeadCard article={mappedPosts[0] as any} />
+          </div>
+          
+          {/* Middle column: 3 items with horizontal layout */}
+          <div className="min-w-0 lg:col-span-5 lg:px-5">
+            <div className="flex flex-col gap-1">
+              {mappedPosts.slice(1, 4).map((a: any, i: number) => (
                 <Reveal key={a.id} delay={i * 60}>
-                  <GridCard article={a as any} compact />
+                  <ThumbRow article={a as any} />
                 </Reveal>
               ))}
             </div>
           </div>
-        </section>
-      );
+
+          {/* Right column: 3 items, small grid with images */}
+          <div className="min-w-0 lg:col-span-3 lg:pl-5">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              {mappedPosts.slice(4, 7).map((a: any, i: number) => (
+                <Reveal key={a.id} delay={i * 60}>
+                  <GridCard article={a as any} compact showImage />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
