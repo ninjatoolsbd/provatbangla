@@ -6,12 +6,12 @@ import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
 
 const utility = [
-  { icon: Newspaper, label: "আজকের পত্রিকা", to: "/newspaper" },
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
-  { icon: Bell, label: "আর্কাইভ", to: "/archive" },
+  { icon: Bell, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
   { icon: Languages, label: "English", to: "/english" },
+  { icon: Bell, label: "আর্কাইভ", to: "/archive" },
 ];
 
 export function SiteHeader() {
