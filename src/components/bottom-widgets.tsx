@@ -229,25 +229,27 @@ export function BottomWidgets() {
       </div>
 
       {/* Column 3: Tabs (Latest/Popular) */}
-      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden">
-        <div className="flex bg-white px-2 pt-2">
+      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
+        <div className="flex bg-white px-2 pt-2 border-b border-slate-200">
           <button 
             onClick={() => setActiveTab("latest")}
             className={cn(
-              "flex-1 py-2 text-[17px] font-bold transition-all relative z-10",
-              activeTab === "latest" ? "text-slate-900 border-b-2 border-[#D0021B]" : "text-slate-400"
+              "px-6 py-2.5 text-[17px] font-bold transition-all relative",
+              activeTab === "latest" ? "text-slate-900" : "text-slate-400"
             )}
           >
             সর্বশেষ
+            {activeTab === "latest" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-slate-900"></div>}
           </button>
           <button 
             onClick={() => setActiveTab("popular")}
             className={cn(
-              "flex-1 py-2 text-[17px] font-bold transition-all relative z-10",
-              activeTab === "popular" ? "text-slate-900 border-b-2 border-[#D0021B]" : "text-slate-400"
+              "px-6 py-2.5 text-[17px] font-bold transition-all relative",
+              activeTab === "popular" ? "text-slate-900" : "text-slate-400"
             )}
           >
             জনপ্রিয়
+            {activeTab === "popular" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-slate-900"></div>}
           </button>
         </div>
 
