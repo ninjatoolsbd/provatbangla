@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -176,6 +182,7 @@ const ApiPublicR2SplatRoute = ApiPublicR2SplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/archive'
     | '/auth'
     | '/epaper'
     | '/admin/ads'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/archive'
     | '/auth'
     | '/epaper'
     | '/admin/ads'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/archive'
     | '/auth'
     | '/epaper'
     | '/admin/ads'
@@ -352,6 +364,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   EpaperRoute: typeof EpaperRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -377,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -600,6 +620,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   EpaperRoute: EpaperRoute,
   CategorySlugRoute: CategorySlugRoute,

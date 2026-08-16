@@ -7,6 +7,7 @@ export const Route = createFileRoute('/archive')({
     const { data: posts, error } = await supabase
       .from('posts')
       .select('id, title, created_at, slug')
+      .eq('status', 'published')
       .order('created_at', { ascending: false });
     
     return { posts: posts || [] };
