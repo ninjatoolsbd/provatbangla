@@ -145,7 +145,7 @@ export function SiteHeader() {
       window.removeEventListener("scroll", handleScroll);
       clearInterval(langInterval);
     };
-  }, [getBanglaDate, currentLang]);
+  }, [currentLang]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]">
