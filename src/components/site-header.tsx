@@ -14,8 +14,18 @@ const utility = [
   { icon: Languages, label: "English", onClick: () => {
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (select) {
-      select.value = select.value === 'en' ? 'bn' : 'en';
+      // Toggle logic
+      const currentVal = select.value;
+      const targetVal = currentVal === 'en' ? 'bn' : 'en';
+      select.value = targetVal;
       select.dispatchEvent(new Event('change'));
+      
+      // Update the URL hash to trigger Google Translate if not already set
+      if (targetVal === 'en') {
+        window.location.hash = '#googtrans(bn|en)';
+      } else {
+        window.location.hash = '';
+      }
     }
   }},
 ];
