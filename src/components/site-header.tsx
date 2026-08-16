@@ -283,7 +283,8 @@ export function SiteHeader() {
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className="hidden flex-1 items-center flex-wrap lg:flex lg:justify-start gap-1 overflow-hidden">
+          <div className={`hidden flex-1 items-center flex-wrap lg:flex gap-1 overflow-hidden ${isScrolled ? 'lg:justify-start' : 'lg:justify-center'}`}>
+
             <Link
               to="/"
               className={`flex shrink-0 items-center px-2 sm:px-3 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-3' : 'py-3.5'}`}
