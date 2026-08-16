@@ -84,9 +84,9 @@ function PostPage() {
   const fetchRelated = useServerFn(getRelatedPosts);
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
 
-  const { data: relatedPosts = [] } = useSuspenseQuery({
-    queryKey: ["related-posts", post.slug],
-    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug, limit: 12 } }),
+  const { data: relatedPosts = [] } = useQuery({
+    queryKey: ["related-posts", post.slug, post.category],
+    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug || "", limit: 12 } }),
   });
 
   const { data: latestPosts = [] } = useQuery({
