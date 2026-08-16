@@ -30,9 +30,9 @@ export const Route = createFileRoute("/post/$slug")({
     let post;
     try {
       if (preview) {
-        post = await getPostForPreview({ data: { slug: params.slug } });
+        post = await getPostForPreview({ data: { slug: decodeURIComponent(params.slug) } });
       } else {
-        post = await getPublishedPost({ data: { slug: params.slug } });
+        post = await getPublishedPost({ data: { slug: decodeURIComponent(params.slug) } });
       }
     } catch (e) {
       console.error("Loader fetch error:", e);
