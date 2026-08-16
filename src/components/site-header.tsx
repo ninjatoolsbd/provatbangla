@@ -170,7 +170,7 @@ export function SiteHeader() {
       {/* Top Header - Hides on Scroll */}
       <div 
         className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ease-in-out sm:px-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-2 sm:h-[90px] sm:py-3"
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[60px] py-1 sm:h-[80px] sm:py-2"
         }`}
       >
         <button
