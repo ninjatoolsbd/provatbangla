@@ -123,6 +123,8 @@ function Home() {
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
 
+      <MoreNewsSection />
+
       <EpaperSection />
 
       <SiteFooter />
