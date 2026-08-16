@@ -125,7 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
               pageLanguage: 'bn',
-              includedLanguages: 'en,bn',
+              includedLanguages: 'en,bn,ar,hi,es,fr,de',
               layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element');
@@ -134,8 +134,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
-        async: true,
-        defer: true
+        async: true
       },
       ...(runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
         ? [
