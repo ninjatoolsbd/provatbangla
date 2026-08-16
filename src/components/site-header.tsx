@@ -283,7 +283,7 @@ export function SiteHeader() {
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-6' : 'justify-center'}`}>
+          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-2 xl:ml-6' : 'justify-center'}`}>
             <div className="flex flex-wrap items-center gap-x-0.5 xl:gap-x-1">
               <Link
                 to="/"
