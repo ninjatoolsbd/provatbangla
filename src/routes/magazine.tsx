@@ -12,12 +12,12 @@ import logoAsset from "@/assets/logo.png.asset.json";
 export const Route = createFileRoute('/magazine')({
   component: MagazinePage,
   loader: async () => {
-    const { data: posts, error } = await supabase
+    const { data: posts } = await supabase
       .from('posts')
       .select('id, title, created_at, slug, category, image_url, excerpt')
       .eq('status', 'published')
-      .order('created_at', { ascending: false })
-      .limit(50);
+      .ilike('category', '%বিনোদন%')
+      .order('created_at', { ascending: false });
     
     return { posts: posts || [] };
   },
