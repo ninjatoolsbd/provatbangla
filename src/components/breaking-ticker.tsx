@@ -88,8 +88,8 @@ export function BreakingTicker() {
 
   return (
     <div className="border-b border-border bg-secondary">
-      <div className="mx-auto flex max-w-[1240px] items-center gap-3 px-4 py-2">
-        <span className="flex shrink-0 items-center gap-1.5 bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
+      <div className="mx-auto flex max-w-[1360px] items-center gap-3 px-4 py-1.5">
+        <span className="flex shrink-0 items-center gap-1.5 bg-primary px-3 py-1.5 text-xs font-black text-primary-foreground shadow-sm">
           <Radio className={cn("size-3.5", pulse && "animate-pulse")} />
           সর্বশেষ
         </span>

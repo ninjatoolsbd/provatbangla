@@ -205,7 +205,7 @@ export function BottomWidgets() {
 
 
           <div className="mt-auto pt-4 border-t border-slate-50 text-center">
-            <p className="mb-3 text-[13px] font-bold text-slate-500">মোট ভোটদাতা: ৩,২৮৮ জন</p>
+            <p className="mb-3 text-[13px] font-black text-slate-600">মোট ভোটদাতা: ৩,২৮৮ জন</p>
 
             <div className="flex items-center justify-center gap-2">
               {[

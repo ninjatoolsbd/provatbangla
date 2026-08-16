@@ -6,12 +6,12 @@ import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
 
 const utility = [
-  { icon: Newspaper, label: "আজকের পত্রিকা" },
-  { icon: BookOpen, label: "ই-পেপার" },
-  { icon: Newspaper, label: "ম্যাগাজিন" },
-  { icon: BookOpen, label: "আর্কাইভ" },
-  { icon: Share2, label: "সোশ্যাল মিডিয়া" },
-  { icon: Languages, label: "বাংলা কনভার্টার" },
+  { icon: Newspaper, label: "আজকের পত্রিকা", to: "/newspaper" },
+  { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
+  { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
+  { icon: Bell, label: "আর্কাইভ", to: "/archive" },
+  { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
+  { icon: Languages, label: "বাংলা কনভার্টার", to: "/converter" },
 ];
 
 export function SiteHeader() {
@@ -38,13 +38,14 @@ export function SiteHeader() {
 
         <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
           {utility.map((u) => (
-            <span
+            <Link
               key={u.label}
+              to={u.to as any}
               className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
             >
               <u.icon className="size-4 text-muted-foreground" />
               {u.label}
-            </span>
+            </Link>
           ))}
         </nav>
 
@@ -95,7 +96,7 @@ export function SiteHeader() {
               activeProps={{ className: "text-primary" }}
             >
               অন্যান্য
-              <Menu className="size-3.5" />
+              <ChevronRight className="size-3.5 rotate-90" />
             </Link>
             <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
               {categories.filter(c => [

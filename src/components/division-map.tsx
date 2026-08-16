@@ -102,8 +102,9 @@ export function DivisionMap() {
                   className={cn(
                     "cursor-pointer transition-all duration-300",
                     "stroke-card",
-                    on ? "fill-primary" : "fill-primary/70 hover:fill-primary",
+                    on ? "fill-primary" : "fill-slate-200 hover:fill-primary/60",
                   )}
+                  style={{ stroke: on ? 'white' : '#cbd5e1' }}
                   strokeWidth={on ? 3 : 1.5}
                   vectorEffect="non-scaling-stroke"
                 />
@@ -117,7 +118,7 @@ export function DivisionMap() {
                 textAnchor="middle"
                 className="pointer-events-none select-none fill-primary-foreground font-display"
                 fontSize={22}
-                fontWeight={700}
+                fontWeight={800}
                 paintOrder="stroke"
               >
                 {d.bn}

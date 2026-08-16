@@ -95,7 +95,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   return (
     <section className="mt-5 border border-border bg-card p-4">
       <BarHeading title={title} slug={slug} />
-      <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
         {mappedPosts.map((a: any, i: number) => (
           <Reveal key={a.id} delay={i * 60}>
             <GridCard article={a as any} compact />
