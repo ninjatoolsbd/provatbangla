@@ -128,27 +128,24 @@ export function LeadCard({ article }: { article: Article | Post }) {
   );
 }
 
-export function GridCard({ article, compact = false, showImage = true }: { article: Article | Post; compact?: boolean; showImage?: boolean }) {
+export function GridCard({ article, compact = false }: { article: Article | Post; compact?: boolean }) {
   return (
     <article className="group">
-      {showImage && (
-        <ArticleLink article={article} className="block overflow-hidden">
-          <NewsImage
-            src={(article as any).image ?? (article as any).image_url}
-            alt={article.title}
-            className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-            loading="lazy"
-            width="300"
-            height="188"
-          />
-        </ArticleLink>
-      )}
+      <ArticleLink article={article} className="block overflow-hidden">
+        <NewsImage
+          src={(article as any).image ?? (article as any).image_url}
+          alt={article.title}
+          className="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
+          loading="lazy"
+          width="300"
+          height="188"
+        />
+      </ArticleLink>
       <ArticleLink article={article}>
         <h3
           className={cn(
-            "font-display leading-[1.4] font-bold transition-colors group-hover:text-primary",
-            compact ? "text-[15px]" : "text-[18px]",
-            showImage ? "mt-2.5" : "mt-0"
+            "mt-2.5 font-display leading-[1.4] font-extrabold transition-colors group-hover:text-primary",
+            compact ? "text-[16px]" : "text-[20px]",
           )}
         >
           <Kicker article={article} />
