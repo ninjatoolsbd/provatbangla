@@ -88,7 +88,7 @@ export function SplitLead({ article }: { article: Article | Post }) {
       </ArticleLink>
       <div className="min-w-0">
         <ArticleLink article={article}>
-          <h2 className="font-display text-[28px] leading-[1.2] font-extrabold transition-colors group-hover:text-primary sm:text-[42px]">
+          <h2 className="font-display text-[24px] leading-[1.2] font-bold transition-colors group-hover:text-primary sm:text-[34px]">
             <Kicker article={article} />
             {article.title}
           </h2>
@@ -116,7 +116,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
         />
       </ArticleLink>
       <ArticleLink article={article}>
-        <h2 className="mt-3 font-display text-[22px] leading-snug font-extrabold transition-colors group-hover:text-primary">
+        <h2 className="mt-3 font-display text-[20px] leading-snug font-bold transition-colors group-hover:text-primary">
           <Kicker article={article} />
           {article.title}
         </h2>
@@ -145,7 +145,7 @@ export function GridCard({ article, compact = false }: { article: Article | Post
         <h3
           className={cn(
             "mt-2.5 font-display leading-[1.4] font-extrabold transition-colors group-hover:text-primary",
-            compact ? "text-[18px]" : "text-[22px]",
+            compact ? "text-[16px]" : "text-[20px]",
           )}
         >
           <Kicker article={article} />
@@ -171,7 +171,7 @@ export function ThumbRow({ article }: { article: Article | Post }) {
         />
       </ArticleLink>
       <ArticleLink article={article} className="min-w-0 flex-1">
-        <h3 className="font-display text-[17px] leading-[1.45] font-extrabold transition-colors group-hover:text-primary">
+        <h3 className="font-display text-[16px] leading-[1.4] font-bold transition-colors group-hover:text-primary">
           <Kicker article={article} />
           {article.title}
         </h3>
@@ -227,7 +227,7 @@ export function Meta({ article }: { article: Article | Post }) {
 export function SectionHeading({ title, slug }: { title: string; slug?: string }) {
   return (
     <div className="mb-4 flex items-center justify-between border-b-2 border-primary pb-1">
-      <h2 className="font-display text-[22px] font-bold text-primary">{title}</h2>
+      <h2 className="font-display text-[20px] font-bold text-primary">{title}</h2>
       {slug && (
         <Link
           to="/category/$slug"
