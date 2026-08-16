@@ -115,7 +115,6 @@ function Home() {
         {/* Video Strip removed and merged into Photo Gallery below */}
 
         <BottomWidgets />
-        <MoreNewsSection />
       </main>
 
       {/* VideoStrip (Live TV section) removed from homepage as per user request */}
@@ -123,7 +122,6 @@ function Home() {
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
 
-      <MoreNewsSection />
 
       <EpaperSection />
 
