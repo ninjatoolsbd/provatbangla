@@ -89,27 +89,28 @@ export function BottomWidgets() {
   };
 
   return (
-    <div className="mt-12 grid gap-6 border-t border-border pt-8 lg:grid-cols-3 max-w-7xl mx-auto px-4">
+    <div className="mt-12 grid gap-6 border-t border-border pt-8 lg:grid-cols-3 max-w-[1360px] mx-auto px-4">
       {/* Column 1: মতামত (Opinion) */}
-      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden">
-        <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-slate-100">
-          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
+      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
+        <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-[#D0021B] relative">
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold text-slate-900">
             <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-[#D0021B] text-white">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="h-3 w-3"><path d="M12 20h.01M7 20h.01M17 20h.01M12 4v12M7 8l5-4 5 4" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </span>
             মতামত
           </h2>
+          <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#D0021B]"></div>
         </div>
         
-        <div className="flex-1 p-2 space-y-2.5 min-h-[350px] lg:min-h-[450px]">
+        <div className="flex-1 p-3 space-y-4 min-h-[350px] lg:min-h-[450px] bg-[#FFFBF0]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
               to="/post/$slug"
               params={{ slug: p.slug ?? "" }}
-              className="group block bg-[#FFFBEB] rounded-sm overflow-hidden border-b-2 border-[#D0021B] pb-3"
+              className="group block bg-white rounded-md overflow-hidden border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.05)] transition-transform hover:-translate-y-0.5"
             >
-              <div className="p-2.5 flex gap-3">
+              <div className="p-4 flex gap-4">
                 <div className="flex flex-col items-center gap-2 shrink-0">
                   <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-[#D0021B]">
                     <NewsImage
@@ -158,13 +159,14 @@ export function BottomWidgets() {
 
       {/* Column 2: অনলাইন জরিপ (Online Poll) */}
       <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
-        <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-slate-100">
-          <h2 className="flex items-center gap-2 font-display text-lg font-bold">
+        <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-[#D0021B] relative">
+          <h2 className="flex items-center gap-2 font-display text-lg font-bold text-slate-900">
             <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-[#D0021B] text-white">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="h-3 w-3"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </span>
             অনলাইন জরিপ
           </h2>
+          <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#D0021B]"></div>
         </div>
 
         <div className="flex-1 px-5 py-4 border-t border-slate-100 flex flex-col">
@@ -196,7 +198,7 @@ export function BottomWidgets() {
               { label: "না", value: "no" },
               { label: "মন্তব্য নেই", value: "none" }
             ].map((opt) => (
-              <label key={opt.value} className="flex cursor-pointer items-center gap-2.5 border border-slate-200 rounded-sm px-3 py-1 transition-all hover:bg-slate-50 group">
+              <label key={opt.value} className="flex cursor-pointer items-center gap-3 border border-slate-200 rounded-full px-4 py-1.5 transition-all hover:border-[#D0021B] group">
                 <input type="radio" name="poll-vote" className="h-4 w-4 rounded-full border-slate-300 text-[#D0021B] focus:ring-[#D0021B]" />
                 <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">{opt.label}</span>
               </label>
