@@ -120,7 +120,7 @@ function PostPage() {
       <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           {/* Main Content */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-9">
             {isPreview && (
               <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
                 এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
@@ -281,7 +281,7 @@ function PostPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="lg:col-span-4">
+          <aside className="lg:col-span-3">
             <div className="space-y-6">
               {/* Latest in category list style */}
               <div className="border border-slate-200 bg-white p-3">
