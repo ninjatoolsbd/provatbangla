@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BookOpen, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
+import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
 import { useState } from "react";
 
 import { categories } from "@/lib/news-data";
