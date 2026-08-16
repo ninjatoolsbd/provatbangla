@@ -25,16 +25,16 @@ export function SiteFooter() {
     <footer className="mt-10">
 
       {/* main dark footer */}
-      <div className="bg-ink text-ink-foreground">
-        <div className="mx-auto max-w-[1240px] px-4 py-9">
-          <div className="grid gap-8 md:grid-cols-12">
+      <div className="bg-ink text-ink-foreground border-t-4 border-primary">
+        <div className="mx-auto max-w-[1360px] px-4 py-12">
+          <div className="grid gap-12 md:grid-cols-12">
             {/* brand + editor info */}
             <div className="md:col-span-4">
-              <Link to="/" className="inline-block transition-transform duration-300 hover:scale-[1.03]">
+              <Link to="/" className="inline-block transition-transform duration-300 hover:scale-[1.03] mb-6">
                 <img 
                   src={logoAsset.url} 
                   alt="প্রভাতবাংলা" 
-                  className="h-12 w-auto object-contain brightness-0 invert" 
+                  className="h-14 w-auto object-contain brightness-0 invert" 
                 />
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
@@ -59,8 +59,8 @@ export function SiteFooter() {
             </div>
 
             {/* contact */}
-            <div className="md:col-span-4">
-              <h3 className="mb-3 border-b border-white/10 pb-2 font-display text-base font-bold">
+            <div className="md:col-span-4 lg:pl-8">
+              <h3 className="mb-6 border-b-2 border-primary/30 pb-2 font-display text-lg font-bold">
                 যোগাযোগ
               </h3>
               <ul className="space-y-2.5 text-sm text-ink-muted">
@@ -80,8 +80,8 @@ export function SiteFooter() {
             </div>
 
             {/* other links + epaper */}
-            <div className="md:col-span-4">
-              <h3 className="mb-3 border-b border-white/10 pb-2 font-display text-base font-bold">
+            <div className="md:col-span-4 lg:pl-8">
+              <h3 className="mb-6 border-b-2 border-primary/30 pb-2 font-display text-lg font-bold">
                 অন্যান্য
               </h3>
               <ul className="grid grid-cols-2 gap-y-2 text-sm text-ink-muted">
@@ -109,9 +109,9 @@ export function SiteFooter() {
         </div>
 
         {/* bottom bar */}
-        <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-[1240px] flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-ink-muted md:flex-row">
-            <span>© ২০২৬ প্রভাতবাংলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
+        <div className="border-t border-white/5 bg-black/20">
+          <div className="mx-auto flex max-w-[1360px] flex-col items-center justify-between gap-4 px-4 py-6 text-[13px] text-ink-muted md:flex-row">
+            <span className="font-medium">© ২০২৬ প্রভাতবাংলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
             <span>
               এটি একটি ডেমো সংবাদমাধ্যম — সব সংবাদ, ছবি ও নাম কেবল উদাহরণ হিসেবে ব্যবহৃত।
             </span>

@@ -143,7 +143,7 @@ export function SiteHeader() {
       {/* Top Header - Hides on Scroll */}
       <div 
         className={`mx-auto flex max-w-[1360px] items-center gap-4 px-4 transition-all duration-300 ease-in-out sm:gap-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[64px] py-2 sm:h-[80px] sm:py-3"
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-2 sm:h-[84px] sm:py-3"
         }`}
       >
         <button
@@ -154,11 +154,11 @@ export function SiteHeader() {
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[160px] sm:max-w-[220px]">
+        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[180px] sm:max-w-[240px]">
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-auto w-full max-h-[36px] object-contain sm:max-h-[44px]" 
+            className="h-auto w-full max-h-[44px] object-contain sm:max-h-[52px]" 
           />
         </Link>
 
