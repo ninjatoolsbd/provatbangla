@@ -86,19 +86,6 @@ export function SiteHeader() {
 
       {/* Bottom Tier: Main Nav */}
       <div className="border-t border-slate-100 shadow-sm">
-          <button
-            className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
-            aria-label="অনুসন্ধান"
-          >
-            <Search className="size-4" />
-          </button>
-          <button className="relative rounded-full border border-border p-2 transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary" aria-label="নোটিফিকেশন">
-            <Bell className="size-4" />
-            <span className="kb-live-dot absolute top-1 right-1 size-2 rounded-full bg-primary text-primary" />
-          </button>
-        </div>
-      </div>
-
         <div className="mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex">
           <Link
             to="/"
@@ -150,7 +137,6 @@ export function SiteHeader() {
               ))}
             </div>
           </div>
-          
         </div>
 
         {open && (
