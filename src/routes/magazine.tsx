@@ -3,34 +3,55 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Calendar, Clock, ChevronRight, Hash } from "lucide-react";
+import { BookOpen, Calendar, Clock, ChevronRight, Hash, ChevronLeft } from "lucide-react";
 import { NewsImage } from "@/components/news-cards";
+import HTMLFlipBook from 'react-pageflip';
+import { useState, useRef, forwardRef } from 'react';
+import logoAsset from "@/assets/logo.png.asset.json";
 
 export const Route = createFileRoute('/magazine')({
   component: MagazinePage,
   loader: async () => {
-    // We'll treat a specific category as magazine or just filter posts with a magazine tag/category
-    // For now, let's fetch latest published posts as demo content for the magazine
     const { data: posts, error } = await supabase
       .from('posts')
       .select('id, title, created_at, slug, category, image_url, excerpt')
       .eq('status', 'published')
       .order('created_at', { ascending: false })
-      .limit(12);
+      .limit(10);
     
     return { posts: posts || [] };
   },
   head: () => ({
     meta: [
       { title: "ম্যাগাজিন — প্রভাতবাংলা" },
-      { name: "description", content: "প্রভাতবাংলা ম্যাগাজিন - সাহিত্য, সংস্কৃতি এবং বিশেষ প্রতিবেদন।" }
+      { name: "description", content: "প্রভাতবাংলা ম্যাগাজিন - বইয়ের মতো উল্টে পড়ার এক অনন্য অভিজ্ঞতা।" }
     ]
   })
 });
 
+const Page = forwardRef<HTMLDivElement, { children: React.ReactNode; number: number }>((props, ref) => {
+  return (
+    <div className="bg-[#fdfcf8] shadow-2xl border-x border-slate-200" ref={ref}>
+      <div className="h-full flex flex-col p-6 sm:p-10 relative">
+        <div className="flex-1 flex flex-col">
+          {props.children}
+        </div>
+        <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          <span>প্রভাতবাংলা ম্যাগাজিন</span>
+          <span>পৃষ্ঠা {props.number}</span>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+Page.displayName = 'Page';
+
 function MagazinePage() {
   const { posts } = Route.useLoaderData();
-  
+  const bookRef = useRef<any>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+
   const toBanglaDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('bn-BD', {
       year: 'numeric',
@@ -40,105 +61,121 @@ function MagazinePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8]">
+    <div className="min-h-screen bg-[#F4F1EA] flex flex-col">
       <SiteHeader />
       
-      {/* Magazine Hero Section */}
-      <div className="bg-slate-900 text-white py-16 mb-12 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/notebook.png')] pointer-events-none"></div>
-        <main className="mx-auto max-w-[1360px] px-4 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/30 mb-6 text-sm font-bold animate-in fade-in slide-in-from-bottom-2 duration-700">
-            <BookOpen className="size-4" />
-            বিশেষ সাহিত্য ও সংস্কৃতি সংখ্যা
+      <main className="flex-1 container mx-auto px-4 py-8 flex flex-col items-center justify-center">
+        <div className="w-full max-w-[1200px] mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl font-bold font-display text-slate-900">ম্যাগাজিন এডিশন</h1>
+            <p className="text-slate-500 font-medium italic">ভার্চুয়াল ম্যাগাজিন - উল্টে পড়তে থাকুন</p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold font-display mb-6 tracking-tight">
-            প্রভাতবাংলা <span className="text-primary">ম্যাগাজিন</span>
-          </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            গল্প, কবিতা, প্রবন্ধ এবং বিশেষ সংবাদ ভাষ্যের এক অনন্য সমাহার। ঐতিহ্যের সঙ্গে আধুনিকতার মেলবন্ধন।
-          </p>
-        </main>
-      </div>
-
-      <main className="mx-auto max-w-[1360px] px-4 pb-20">
-        {posts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-            {posts.map((post, index) => (
-              <Link 
-                key={post.id} 
-                to="/post/$slug"
-                params={{ slug: post.slug || post.id }}
-                className={`group flex flex-col bg-white border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 rounded-lg overflow-hidden ${index === 0 ? 'md:col-span-2 lg:col-span-2 md:flex-row' : ''}`}
-              >
-                <div className={`relative overflow-hidden ${index === 0 ? 'md:w-3/5 shrink-0' : 'aspect-[16/9]'}`}>
-                  <NewsImage 
-                    src={post.image_url} 
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-primary text-white text-[12px] font-bold px-3 py-1 rounded shadow-lg uppercase tracking-wider">
-                      {post.category || 'ফিচার'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-6 md:p-8 flex flex-col justify-between flex-1">
-                  <div>
-                    <div className="flex items-center gap-4 text-slate-500 text-[13px] font-medium mb-4">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="size-3.5" />
-                        {toBanglaDate(post.created_at)}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="size-3.5" />
-                        ৫ মিনিট পাঠ
-                      </span>
-                    </div>
-                    
-                    <h2 className={`font-bold text-slate-900 group-hover:text-primary transition-colors leading-tight mb-4 ${index === 0 ? 'text-2xl md:text-3xl lg:text-4xl' : 'text-xl md:text-2xl'}`}>
-                      {post.title}
-                    </h2>
-                    
-                    <p className="text-slate-600 line-clamp-3 text-[15px] leading-relaxed mb-6">
-                      {post.excerpt || 'এই বিশেষ প্রতিবেদনটির বিস্তারিত খবর পড়তে ক্লিক করুন। প্রভাতবাংলা ম্যাগাজিনে নিয়মিতভাবে আমরা সমসাময়িক বিষয় নিয়ে গভীর বিশ্লেষণধর্মী লেখা প্রকাশ করে থাকি।'}
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center text-primary font-bold text-sm gap-1 group-hover:translate-x-2 transition-transform duration-300">
-                    পুরোটা পড়ুন
-                    <ChevronRight className="size-4" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-slate-300">
-            <div className="bg-slate-50 size-24 rounded-full flex items-center justify-center mx-auto mb-6">
-              <BookOpen className="size-12 text-slate-300" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-700 mb-2">ম্যাগাজিনে কোনো লেখা নেই</h3>
-            <p className="text-slate-500">অনুগ্রহ করে পরে আবার ভিজিট করুন।</p>
-          </div>
-        )}
-        
-        {/* Newsletter Signup in Magazine Style */}
-        <div className="mt-20 bg-primary/5 rounded-3xl p-8 md:p-16 border border-primary/10 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">ম্যাগাজিনের নতুন সংখ্যা পেতে চান?</h2>
-          <p className="text-slate-600 mb-8 max-w-md mx-auto">
-            আপনার ইমেইল ঠিকানা দিয়ে সাবস্ক্রাইব করুন। নতুন লেখা প্রকাশের সাথে সাথেই আপনাকে জানিয়ে দেওয়া হবে।
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-            <input 
-              type="email" 
-              placeholder="আপনার ইমেইল লিখুন" 
-              className="flex-1 px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-800"
-            />
-            <button className="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-primary/20">
-              সাবস্ক্রাইব
+          
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => bookRef.current.pageFlip().flipPrev()}
+              className="size-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-primary hover:text-white transition-colors border border-slate-200"
+            >
+              <ChevronLeft className="size-6" />
+            </button>
+            <span className="text-sm font-bold text-slate-600 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+              পেজ {currentPage + 1} / {posts.length + 2}
+            </span>
+            <button 
+              onClick={() => bookRef.current.pageFlip().flipNext()}
+              className="size-10 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-primary hover:text-white transition-colors border border-slate-200"
+            >
+              <ChevronRight className="size-6" />
             </button>
           </div>
+        </div>
+
+        <div className="relative w-full flex justify-center py-4 sm:py-10">
+          {/* @ts-ignore */}
+          <HTMLFlipBook
+            width={550}
+            height={733}
+            size="stretch"
+            minWidth={315}
+            maxWidth={1000}
+            minHeight={420}
+            maxHeight={1333}
+            maxShadowOpacity={0.5}
+            showCover={true}
+            mobileScrollSupport={true}
+            onFlip={(e) => setCurrentPage(e.data)}
+            className="shadow-2xl mx-auto"
+            ref={bookRef}
+          >
+            {/* Cover Page */}
+            <div className="bg-slate-900 text-white shadow-2xl overflow-hidden relative" ref={null as any}>
+              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
+              <div className="h-full flex flex-col items-center justify-center p-12 text-center border-8 border-primary/30 relative z-10">
+                <img src={logoAsset.url} alt="Logo" className="w-48 mb-12 brightness-0 invert" />
+                <div className="w-16 h-1 bg-primary mb-6"></div>
+                <h2 className="text-5xl font-bold font-display mb-4 tracking-tighter">ম্যাগাজিন</h2>
+                <p className="text-xl text-primary font-bold uppercase tracking-[0.2em] mb-12">বিশেষ সংখ্যা</p>
+                <div className="mt-auto text-slate-400 font-bold uppercase tracking-widest text-sm">
+                  আগস্ট ২০২৬
+                </div>
+              </div>
+            </div>
+
+            {/* Articles Pages */}
+            {posts.map((post, i) => (
+              <Page key={post.id} number={i + 1}>
+                <div className="flex-1 flex flex-col">
+                  <div className="mb-6 aspect-[4/3] w-full overflow-hidden rounded shadow-sm">
+                    <NewsImage 
+                      src={post.image_url} 
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2 text-primary font-bold text-xs mb-3 uppercase tracking-wider">
+                    <Hash className="size-3" />
+                    {post.category}
+                  </div>
+                  
+                  <h2 className="text-2xl font-bold text-slate-900 mb-4 leading-tight font-display">
+                    {post.title}
+                  </h2>
+                  
+                  <div className="text-slate-600 text-sm leading-[1.8] mb-6 line-clamp-[12] whitespace-pre-wrap">
+                    {post.excerpt || 'এই বিশেষ প্রতিবেদনটির বিস্তারিত খবর প্রভাতবাংলা ম্যাগাজিনে নিয়মিতভাবে আমরা সমসাময়িক বিষয় নিয়ে গভীর বিশ্লেষণধর্মী লেখা প্রকাশ করে থাকি। এ বিষয়ে সংশ্লিষ্ট কর্তৃপক্ষ জানিয়েছে পরিস্থিতি নিয়মিত পর্যবেক্ষণে রাখা হয়েছে।'}
+                  </div>
+                  
+                  <div className="mt-auto flex items-center justify-between text-[12px] text-slate-400">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="size-3" />
+                      {toBanglaDate(post.created_at)}
+                    </span>
+                    <Link 
+                      to="/post/$slug" 
+                      params={{ slug: post.slug || post.id }}
+                      className="text-primary font-bold hover:underline"
+                    >
+                      মূল প্রতিবেদন
+                    </Link>
+                  </div>
+                </div>
+              </Page>
+            ))}
+
+            {/* Back Cover */}
+            <div className="bg-slate-900 text-white shadow-2xl relative" ref={null as any}>
+              <div className="h-full flex flex-col items-center justify-center p-12 text-center relative z-10">
+                <img src={logoAsset.url} alt="Logo" className="w-32 mb-8 opacity-30 grayscale" />
+                <p className="text-slate-500 text-sm italic">ধন্যবাদ আমাদের সাথে থাকার জন্য</p>
+                <div className="mt-20 flex gap-4">
+                  <div className="size-8 rounded bg-white/10"></div>
+                  <div className="size-8 rounded bg-white/10"></div>
+                  <div className="size-8 rounded bg-white/10"></div>
+                </div>
+              </div>
+            </div>
+          </HTMLFlipBook>
         </div>
       </main>
 
@@ -146,3 +183,4 @@ function MagazinePage() {
     </div>
   );
 }
+
