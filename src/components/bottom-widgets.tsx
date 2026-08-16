@@ -266,7 +266,7 @@ export function BottomWidgets() {
                 </span>
                 <h4 className={cn(
                   "line-clamp-2 font-display text-[15px] font-bold leading-[1.4] transition-colors group-hover:text-[#D0021B]",
-                  i === 3 ? "text-[#D0021B]" : "text-slate-800 group-hover:text-[#D0021B]"
+                  i === 2 ? "text-[#D0021B]" : "text-slate-800"
                 )}>
                   {p.title}
                 </h4>
