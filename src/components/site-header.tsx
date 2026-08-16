@@ -61,7 +61,7 @@ function SocialMegaMenu() {
           <div className="grid grid-cols-4 gap-x-6 gap-y-3">
             {row.length === 1 ? (
               (() => {
-                const g = row[0];
+                const g = row[0]!;
                 const Icon = g.Icon;
                 return (
                   <div className="col-span-4">
