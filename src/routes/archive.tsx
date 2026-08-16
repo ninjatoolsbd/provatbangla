@@ -3,19 +3,12 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Link } from "@tanstack/react-router";
-import { Calendar, ChevronRight, Hash } from "lucide-react";
+import { Calendar, ChevronRight, Hash, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 
 export const Route = createFileRoute('/archive')({
   component: ArchivePage,
-  loader: async () => {
-    const { data: posts, error } = await supabase
-      .from('posts')
-      .select('id, title, created_at, slug, category')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false });
-    
-    return { posts: posts || [] };
-  },
   head: () => ({
     meta: [
       { title: "আর্কাইভ — প্রভাতবাংলা" },
@@ -24,9 +17,59 @@ export const Route = createFileRoute('/archive')({
   })
 });
 
+const PAGE_SIZE = 50;
+
 function ArchivePage() {
-  const { posts } = Route.useLoaderData();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  const fetchPosts = async (pageNumber: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    const from = pageNumber * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    const { data, error } = await supabase
+      .from('posts')
+      .select('id, title, created_at, slug, category')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error("Error fetching archive:", error);
+      setIsLoading(false);
+      return;
+    }
+
+    if (data) {
+      if (data.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+      setPosts(prev => [...prev, ...data]);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPosts(0);
+  }, []);
+
+  useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchPosts(nextPage);
+    }
+  }, [inView, hasMore, isLoading]);
+
   const toBanglaDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('bn-BD', {
       year: 'numeric',
