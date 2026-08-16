@@ -107,6 +107,7 @@ function SocialMegaMenu() {
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentLang, setCurrentLang] = useState("bn");
   
   const getBanglaDate = useCallback(() => {
     const date = new Date();
@@ -138,11 +139,22 @@ export function SiteHeader() {
       setIsScrolled(window.scrollY > 120);
     };
     window.addEventListener("scroll", handleScroll);
+
+    // Monitor Google Translate changes
+    const checkLang = () => {
+      const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (select && select.value !== currentLang) {
+        setCurrentLang(select.value || "bn");
+      }
+    };
+    const langInterval = setInterval(checkLang, 1000);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       clearInterval(timer);
+      clearInterval(langInterval);
     };
-  }, [getBanglaDate]);
+  }, [getBanglaDate, currentLang]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
@@ -194,13 +206,19 @@ export function SiteHeader() {
             );
 
             if ('onClick' in u) {
+              const isEnglish = u.label === "English";
+              const isActive = isEnglish ? currentLang === 'en' : false;
+              
               return (
                 <button
                   key={u.label}
                   onClick={u.onClick}
-                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+                  className={`kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold transition-colors hover:text-primary ${
+                    isActive ? "text-primary ring-1 ring-primary/20 bg-primary/5 px-2 rounded-sm" : "text-slate-700"
+                  }`}
                 >
-                  {content}
+                  <u.icon className={`size-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                  {isEnglish && currentLang === 'en' ? "Bangla" : u.label}
                 </button>
               );
             }
