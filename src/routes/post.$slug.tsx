@@ -197,7 +197,7 @@ function PostPage() {
               <div className="post-content mb-8 text-[18px] leading-[1.8] text-slate-800 space-y-5">
                 <div className="flex items-center gap-1.5 text-[15px] font-bold text-slate-700 mb-4">
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span>{post.location || "ঢাকা"}, প্রতিনিধি:</span>
+                  <span>{(post as any).location || "ঢাকা"}, প্রতিনিধি:</span>
                 </div>
                 {post.excerpt && <p className="font-bold text-[19px] leading-[1.7]">{post.excerpt}</p>}
                 {paragraphs(post.content).map((p, i) => (
