@@ -135,7 +135,17 @@ export function SiteHeader() {
                   {c.name}
                 </Link>
               ))}
+          {isScrolled && (
+            <div className="ml-4 flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300">
+              <button
+                className="p-1.5 transition-colors hover:text-primary"
+                aria-label="অনুসন্ধান"
+              >
+                <Search className="size-4" />
+              </button>
             </div>
+          )}
+        </div>
           </div>
           
         </div>
