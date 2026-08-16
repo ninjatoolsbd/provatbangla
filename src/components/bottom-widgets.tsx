@@ -101,7 +101,7 @@ export function BottomWidgets() {
           </h2>
         </div>
         
-        <div className="flex-1 p-3 space-y-3 min-h-[580px]">
+        <div className="flex-1 p-3 space-y-3 min-h-[600px] lg:min-h-[720px]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
