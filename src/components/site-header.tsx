@@ -320,7 +320,7 @@ export function SiteHeader() {
                   অন্যান্য
                   <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3.5' : 'size-4'}`} />
                 </Link>
-                <div className="absolute top-full left-0 hidden group-hover:block w-52 bg-card border border-border shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
+                <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-xl py-1.5 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
                   {categories.filter(c => [
                     'health', 'probas', 'orthoniti', 'ain-adalat', 
                     'motamot', 'bishesh-protibedon', 'photo-gallery'
