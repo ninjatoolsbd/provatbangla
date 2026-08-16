@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { NewsImage } from "@/components/news-cards";
-import { Calendar, Eye, Download, Share2 } from "lucide-react";
+import { Calendar, Eye, Download, Share2, Newspaper } from "lucide-react";
 import { useState } from 'react';
 
 export const Route = createFileRoute('/epaper')({
