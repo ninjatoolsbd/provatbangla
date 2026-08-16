@@ -186,17 +186,15 @@ export function SiteHeader() {
               </>
             );
 
-            if ('onClick' in u) {
-              return (
-                <button
-                  key={u.label}
-                  onClick={u.onClick}
-                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
-                >
-                  {content}
-                </button>
-              );
-            }
+            return (
+              <Link
+                key={u.label}
+                to={u.to as any}
+                className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+              >
+                {content}
+              </Link>
+            );
 
             return (
               <Link
