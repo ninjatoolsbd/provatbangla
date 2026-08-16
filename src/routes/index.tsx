@@ -118,7 +118,7 @@ function Home() {
         <MoreNewsSection />
       </main>
 
-      <VideoStrip items={videoPosts} />
+      {/* VideoStrip (Live TV section) removed from homepage as per user request */}
       
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
