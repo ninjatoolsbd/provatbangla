@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
@@ -16,10 +16,24 @@ const utility = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 120);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
-      <div className="mx-auto flex max-w-[1360px] items-center gap-6 px-4 py-4">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
+      {/* Top Header - Hides on Scroll */}
+      <div 
+        className={`mx-auto flex max-w-[1360px] items-center gap-6 px-4 transition-all duration-300 ease-in-out ${
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[90px] py-4"
+        }`}
+      >
         <button
           className="p-1 lg:hidden text-slate-800"
           onClick={() => setOpen((v) => !v)}
@@ -63,61 +77,100 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className="border-y border-border">
-        <div className="mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex">
-          <Link
-            to="/"
-            className="flex items-center px-3 py-2.5 text-[15px] font-bold transition-transform duration-300 hover:scale-110 hover:text-primary"
-            activeOptions={{ exact: true }}
-            activeProps={{ className: "text-primary" }}
-            aria-label="প্রচ্ছদ"
+      {/* Main Navigation - Stays Sticky */}
+      <div className="border-y border-border bg-white">
+        <div className={`mx-auto flex max-w-[1360px] items-center justify-center gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1' : ''}`}>
+          
+          {/* Mobile Menu Button - Visible when scrolled on mobile */}
+          <button
+            className={`p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? 'block' : 'hidden'}`}
+            onClick={() => setOpen((v) => !v)}
+            aria-label="মেনু"
           >
-            <Home className="size-[20px] stroke-[2.5]" />
-          </Link>
-          {categories.filter(c => ![
-            'health', 'probas', 'orthoniti', 'ain-adalat', 
-            'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
-          ].includes(c.slug)).map((c) => (
-            <Link
-              key={c.slug}
-              to="/category/$slug"
-              params={{ slug: c.slug }}
-              className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary"
-              activeProps={{ className: "text-primary" }}
-            >
-              {c.name}
+            {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+
+          {/* Scrolled Logo */}
+          {isScrolled && (
+            <Link to="/" className="mr-auto lg:mr-4 flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300">
+              <img 
+                src={logoAsset.url} 
+                alt="প্রভাতবাংলা" 
+                className="h-8 w-auto object-contain" 
+              />
             </Link>
-          ))}
-          <div className="relative group">
+          )}
+
+          {/* Desktop Nav Items */}
+          <div className="hidden items-center justify-center lg:flex">
             <Link
-              to="/category/$slug"
-              params={{ slug: 'onnanno' }}
-              className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary flex items-center gap-1"
+              to="/"
+              className={`flex items-center px-3 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+              activeOptions={{ exact: true }}
               activeProps={{ className: "text-primary" }}
+              aria-label="প্রচ্ছদ"
             >
-              অন্যান্য
-              <ChevronRight className="size-3.5 rotate-90" />
+              <Home className={`${isScrolled ? 'size-[18px]' : 'size-[20px]'} stroke-[2.5]`} />
             </Link>
-            <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
-              {categories.filter(c => [
-                'health', 'probas', 'orthoniti', 'ain-adalat', 
-                'motamot', 'bishesh-protibedon', 'photo-gallery'
-              ].includes(c.slug)).map((c) => (
-                <Link
-                  key={c.slug}
-                  to="/category/$slug"
-                  params={{ slug: c.slug }}
-                  className="block px-4 py-2 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors"
-                  activeProps={{ className: "text-primary bg-accent" }}
-                >
-                  {c.name}
-                </Link>
-              ))}
+            
+            {categories.filter(c => ![
+              'health', 'probas', 'orthoniti', 'ain-adalat', 
+              'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+            ].includes(c.slug)).map((c) => (
+              <Link
+                key={c.slug}
+                to="/category/$slug"
+                params={{ slug: c.slug }}
+                className={`kb-underline px-3 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                activeProps={{ className: "text-primary" }}
+              >
+                {c.name}
+              </Link>
+            ))}
+
+            <div className="relative group">
+              <Link
+                to="/category/$slug"
+                params={{ slug: 'onnanno' }}
+                className={`kb-underline px-3 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                activeProps={{ className: "text-primary" }}
+              >
+                অন্যান্য
+                <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3' : 'size-3.5'}`} />
+              </Link>
+              <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                {categories.filter(c => [
+                  'health', 'probas', 'orthoniti', 'ain-adalat', 
+                  'motamot', 'bishesh-protibedon', 'photo-gallery'
+                ].includes(c.slug)).map((c) => (
+                  <Link
+                    key={c.slug}
+                    to="/category/$slug"
+                    params={{ slug: c.slug }}
+                    className="block px-4 py-2 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors"
+                    activeProps={{ className: "text-primary bg-accent" }}
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-          
+
+          {/* Scrolled Search/Utility */}
+          {isScrolled && (
+            <div className="ml-auto flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300">
+              <button
+                className="p-1.5 transition-colors hover:text-primary"
+                aria-label="অনুসন্ধান"
+              >
+                <Search className="size-4" />
+              </button>
+            </div>
+          )}
         </div>
 
+        {/* Mobile Nav Menu */}
         {open && (
           <div className="kb-slide-down grid grid-cols-2 gap-px bg-border lg:hidden">
             <Link
