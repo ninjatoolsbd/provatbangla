@@ -266,30 +266,30 @@ export function SiteHeader() {
 
       {/* Main Navigation - Stays Sticky */}
       <div className="border-y border-border bg-white">
-        <div className={`mx-auto flex max-w-[1360px] items-center justify-between gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[50px]' : ''}`}>
+        <div className={`mx-auto flex max-w-[1360px] items-center gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[50px]' : ''}`}>
           
           {/* Mobile Menu Button - Left aligned when scrolled */}
           <button
-            className={`p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? 'order-1' : 'hidden'}`}
+            className={`p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? '' : 'hidden'}`}
             onClick={() => setOpen((v) => !v)}
             aria-label="মেনু"
           >
             {open ? <X className="size-6" /> : <Menu className="size-6" />}
           </button>
 
-          {/* Scrolled Logo - Centered or responsive */}
+          {/* Scrolled Logo - Standard sizing and position */}
           {isScrolled && (
-            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[100px] sm:max-w-[140px] order-2 lg:order-none lg:mr-4">
+            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[110px] sm:max-w-[130px] lg:mr-4">
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
-                className="h-auto w-full max-h-[24px] sm:max-h-[28px] object-contain" 
+                className="h-auto w-full max-h-[26px] sm:max-h-[30px] object-contain" 
               />
             </Link>
           )}
 
-          {/* Desktop Nav Items - Responsive Wrapping instead of scroll */}
-          <div className="flex flex-1 items-center flex-wrap lg:justify-center overflow-hidden">
+          {/* Desktop Nav Items - Responsive Wrapping */}
+          <div className="hidden flex-1 items-center flex-wrap lg:flex lg:justify-center overflow-hidden">
             <Link
               to="/"
               className={`flex shrink-0 items-center px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
@@ -346,7 +346,7 @@ export function SiteHeader() {
 
           {/* Scrolled Search/Utility */}
           {isScrolled && (
-            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300 order-3 ml-auto lg:ml-0">
+            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300 ml-auto lg:ml-0">
               <button
                 className="p-1.5 transition-colors hover:text-primary"
                 aria-label="অনুসন্ধান"
