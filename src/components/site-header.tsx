@@ -77,15 +77,24 @@ export function SiteHeader() {
       </div>
 
       <div className="border-y border-border">
-        <div className="mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex">
+        <div className={`mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex transition-all duration-300 ${isScrolled ? 'py-1' : ''}`}>
+          {isScrolled && (
+            <Link to="/" className="mr-4 flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300">
+              <img 
+                src={logoAsset.url} 
+                alt="প্রভাতবাংলা" 
+                className="h-8 w-auto object-contain" 
+              />
+            </Link>
+          )}
           <Link
             to="/"
-            className="flex items-center px-3 py-2.5 text-[15px] font-bold transition-transform duration-300 hover:scale-110 hover:text-primary"
+            className={`flex items-center px-3 py-2.5 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-2.5'}`}
             activeOptions={{ exact: true }}
             activeProps={{ className: "text-primary" }}
             aria-label="প্রচ্ছদ"
           >
-            <Home className="size-[20px] stroke-[2.5]" />
+            <Home className={`${isScrolled ? 'size-[18px]' : 'size-[20px]'} stroke-[2.5]`} />
           </Link>
           {categories.filter(c => ![
             'health', 'probas', 'orthoniti', 'ain-adalat', 
