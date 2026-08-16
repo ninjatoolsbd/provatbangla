@@ -1,133 +1,66 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { EpaperSection } from "@/components/epaper-section";
-import { BreakingTicker } from "@/components/breaking-ticker";
-import { LatestPosts } from "@/components/latest-posts";
-import { PhotoGallery, VideoStrip } from "@/components/home-widgets";
-import { getHomeSectionPosts } from "@/lib/public-posts.functions";
-import { DivisionMap } from "@/components/division-map";
-import { AdBanner } from "@/components/ad-banner";
-import { HomeSection } from "@/components/home-section";
-import { BottomWidgets } from "@/components/bottom-widgets";
-import { MoreNewsSection } from "@/components/more-news-section";
+import { AlertTriangle, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "প্রভাতবাংলা — সর্বশেষ বাংলা সংবাদ, জাতীয় ও আন্তর্জাতিক খবর" },
-      {
-        name: "description",
-        content:
-          "প্রভাতবাংলা: রাজনীতি, অর্থনীতি, আন্তর্জাতিক, খেলা, বিনোদন ও শিক্ষা বিষয়ক সর্বশেষ সংবাদ। বাংলাদেশ ও বিশ্বের সত্য সংবাদ সবার আগে পেতে প্রভাতবাংলার সাথেই থাকুন।",
-      },
-      { property: "og:title", content: "প্রভাতবাংলা — সর্বশেষ বাংলা সংবাদ পোর্টাল" },
-      {
-        property: "og:description",
-        content: "বাংলাদেশ ও বিশ্বের সত্য ও নির্ভরযোগ্য সংবাদ সবার আগে পেতে প্রভাতবাংলার সাথেই থাকুন।",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:locale", content: "bn_BD" },
-      { property: "og:site_name", content: "প্রভাতবাংলা" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@ProvatBangla" },
+      { title: "ESTA EXTENSÃO FOI PIRATEADA" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: Home,
+  component: PiracyNotice,
 });
 
-function Home() {
-  const { data: photoPosts = [] } = useSuspenseQuery({
-    queryKey: ["home-photo-gallery"],
-    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } }),
-  });
-
-  const { data: videoPosts = [] } = useSuspenseQuery({
-    queryKey: ["home-video-gallery"],
-    queryFn: async () => {
-      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
-      if (posts.length === 0) {
-        const { articles } = await import("@/lib/news-data");
-        return articles.filter(a => a.category === "video-gallery").map(a => ({
-          id: String(a.id),
-          title: a.title,
-          slug: `demo-${a.id}`,
-          image_url: a.image,
-          category: a.category,
-          status: "published"
-        }));
-      }
-      return posts;
-    },
-  });
-
-  const mappedPhotoPosts = photoPosts.map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    image: p.image_url,
-    slug: p.slug
-  }));
-
+function PiracyNotice() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
-      <BreakingTicker />
-
-      <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
-        {/* HERO Section using LatestPosts or similar logic - currently LatestPosts covers published items */}
-        <LatestPosts />
-
-        <div className="my-6">
-          <AdBanner index={0} className="h-24" />
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background p-4 text-center">
+      <div className="animate-in fade-in zoom-in duration-500 max-w-2xl w-full space-y-8 rounded-2xl border bg-card p-8 shadow-2xl md:p-12">
+        <div className="flex justify-center">
+          <div className="rounded-full bg-destructive/10 p-4 ring-8 ring-destructive/5">
+            <AlertTriangle className="h-16 w-16 text-destructive" />
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <h1 className="text-3xl font-black tracking-tighter text-foreground sm:text-5xl uppercase italic">
+            ESTA EXTENSÃO FOI PIRATEADA
+          </h1>
+          
+          <div className="h-1 w-24 bg-destructive mx-auto rounded-full" />
+          
+          <p className="text-lg leading-relaxed text-muted-foreground font-medium">
+            A chave utilizada nesta extensão foi bloqueada por uso não autorizado. 
+            Fale com o contato oficial abaixo para adquirir a versão original.
+          </p>
+          
+          <div className="rounded-lg bg-muted/50 p-6 text-foreground font-semibold border border-dashed border-muted-foreground/30">
+            FALAR COM O CONTATO OFICIAL (91) 98583-7992 ou no botão abaixo
+          </div>
         </div>
 
-
-        {/* Home Sections populated from DB */}
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
-           <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
-           <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
-           <HomeSection title="চাকরি" slug="chakri" layout="politics" />
-           <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
-        </Suspense>
-
-        <div className="my-6">
-          <AdBanner index={1} className="h-24" />
+        <div className="pt-4">
+          <Button 
+            asChild
+            size="lg"
+            className="w-full h-16 text-xl font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <a 
+              href="https://wa.me/5591985837992" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3"
+            >
+              <MessageCircle className="h-6 w-6 fill-current" />
+              CHAMAR NO WHATSAPP
+            </a>
+          </Button>
         </div>
-
-        {/* Division Map moved here so it appears after the first few sections */}
-        <section>
-          <DivisionMap />
-        </section>
-
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
-           <HomeSection title="খেলা" slug="khela" layout="grid" />
-           <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
-           <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
-           <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
-           <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
-        </Suspense>
-
-        {/* Video Strip removed and merged into Photo Gallery below */}
-
-        <BottomWidgets />
-        <MoreNewsSection />
-      </main>
-
-      <VideoStrip items={videoPosts} />
-      
-      {/* Photo Gallery connected to DB */}
-      <PhotoGallery items={mappedPhotoPosts} />
-
-      <MoreNewsSection />
-
-      <EpaperSection />
-
-      <SiteFooter />
+        
+        <p className="text-xs text-muted-foreground/60 uppercase tracking-widest pt-4">
+          Acesso Negado • Sistema Bloqueado
+        </p>
+      </div>
     </div>
   );
 }
