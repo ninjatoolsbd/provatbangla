@@ -260,7 +260,7 @@ export function SiteHeader() {
 
       {/* Main Navigation - Stays Sticky */}
       <div className="border-y border-border bg-white shadow-sm">
-        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[58px]' : ''}`}>
+        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-0.5 min-h-[50px]' : ''}`}>
           
           {/* Mobile Menu Button - Left aligned when scrolled */}
           <button
