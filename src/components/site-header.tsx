@@ -166,54 +166,47 @@ export function SiteHeader() {
   }, [getBanglaDate, currentLang]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]">
       {/* Top Header - Hides on Scroll */}
       <div 
-        className={`mx-auto flex max-w-[1360px] items-center gap-4 px-4 transition-all duration-300 ease-in-out sm:gap-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-2 sm:h-[84px] sm:py-3"
+        className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ease-in-out sm:px-6 ${
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-2 sm:h-[90px] sm:py-3"
         }`}
       >
         <button
-          className="p-1 lg:hidden text-slate-800"
+          className="mr-4 p-1 lg:hidden text-slate-800"
           onClick={() => setOpen((v) => !v)}
           aria-label="মেনু"
         >
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[180px] sm:max-w-[240px]">
+        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-95 max-w-[180px] sm:max-w-[260px]">
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-auto w-full max-h-[44px] object-contain sm:max-h-[52px]" 
+            className="h-auto w-full max-h-[48px] object-contain sm:max-h-[58px]" 
           />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex px-4">
           {utility.map((u) => {
             if ("mega" in u && u.mega) {
               return (
-                <div key={u.label} className="group relative">
+                <div key={u.label} className="group relative py-2">
                   <Link
                     to={u.to as any}
-                    className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+                    className="kb-underline flex cursor-pointer items-center gap-1.5 text-[14px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
                   >
-                    <u.icon className="size-4 text-muted-foreground group-hover:text-primary" />
+                    <u.icon className="size-[18px] text-muted-foreground group-hover:text-primary" />
                     {u.label}
-                    <ChevronDown className="size-3" />
+                    <ChevronDown className="size-3.5" />
                   </Link>
                   <SocialMegaMenu />
                 </div>
               );
             }
             
-            const content = (
-              <>
-                <u.icon className="size-4 text-muted-foreground" />
-                {u.label}
-              </>
-            );
-
             if ('onClick' in u) {
               const isEnglish = u.label === "English";
               const isActive = isEnglish ? currentLang === 'en' : false;
@@ -222,11 +215,11 @@ export function SiteHeader() {
                 <button
                   key={u.label}
                   onClick={u.onClick}
-                  className={`kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold transition-colors hover:text-primary ${
+                  className={`kb-underline flex cursor-pointer items-center gap-1.5 text-[14px] font-bold transition-colors hover:text-primary py-2 ${
                     isActive ? "text-primary ring-1 ring-primary/20 bg-primary/5 px-2 rounded-sm" : "text-slate-700"
                   }`}
                 >
-                  <u.icon className={`size-4 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+                  <u.icon className={`size-[18px] ${isActive ? "text-primary" : "text-muted-foreground"}`} />
                   {isEnglish && currentLang === 'en' ? "Bangla" : u.label}
                 </button>
               );
@@ -236,41 +229,42 @@ export function SiteHeader() {
               <Link
                 key={u.label}
                 to={u.to as any}
-                className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+                className="kb-underline flex cursor-pointer items-center gap-1.5 text-[14px] font-bold text-slate-700 transition-colors hover:text-primary py-2"
               >
-                {content}
+                <u.icon className="size-[18px] text-muted-foreground" />
+                {u.label}
               </Link>
             );
           })}
         </nav>
 
 
-        <div className="ml-auto flex items-center gap-4 xl:ml-0">
+        <div className="ml-auto flex items-center gap-3 sm:gap-4 xl:ml-0">
           <div id="google_translate_element" className="google-translate-container"></div>
           
-          <div className="hidden text-[13px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1">
+          <div className="hidden text-[14px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1 h-5 leading-5">
             {banglaDate}
           </div>
           <button
-            className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
+            className="rounded-full border border-border p-2.5 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary shadow-sm"
             aria-label="অনুসন্ধান"
           >
-            <Search className="size-4" />
+            <Search className="size-[18px]" />
           </button>
-          <button className="relative rounded-full border border-border p-2 transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary" aria-label="নোটিফিকেশন">
-            <Bell className="size-4" />
-            <span className="kb-live-dot absolute top-1 right-1 size-2 rounded-full bg-primary text-primary" />
+          <button className="relative rounded-full border border-border p-2.5 transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary shadow-sm" aria-label="নোটিফিকেশন">
+            <Bell className="size-[18px]" />
+            <span className="kb-live-dot absolute top-1.5 right-1.5 size-2.5 rounded-full bg-primary ring-2 ring-white" />
           </button>
         </div>
       </div>
 
       {/* Main Navigation - Stays Sticky */}
-      <div className="border-y border-border bg-white">
-        <div className={`mx-auto flex max-w-[1360px] items-center gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[50px]' : ''}`}>
+      <div className="border-y border-border bg-white shadow-sm">
+        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[58px]' : ''}`}>
           
           {/* Mobile Menu Button - Left aligned when scrolled */}
           <button
-            className={`p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? '' : 'hidden'}`}
+            className={`mr-4 p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? '' : 'hidden'}`}
             onClick={() => setOpen((v) => !v)}
             aria-label="মেনু"
           >
@@ -279,25 +273,25 @@ export function SiteHeader() {
 
           {/* Scrolled Logo - Standard sizing and position */}
           {isScrolled && (
-            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[110px] sm:max-w-[130px] lg:mr-4">
+            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[120px] sm:max-w-[150px] mr-6">
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
-                className="h-auto w-full max-h-[26px] sm:max-h-[30px] object-contain" 
+                className="h-auto w-full max-h-[32px] sm:max-h-[38px] object-contain" 
               />
             </Link>
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className="hidden flex-1 items-center flex-wrap lg:flex lg:justify-center overflow-hidden">
+          <div className="hidden flex-1 items-center flex-wrap lg:flex lg:justify-start gap-1 overflow-hidden">
             <Link
               to="/"
-              className={`flex shrink-0 items-center px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+              className={`flex shrink-0 items-center px-2 sm:px-3 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-3' : 'py-3.5'}`}
               activeOptions={{ exact: true }}
               activeProps={{ className: "text-primary" }}
               aria-label="প্রচ্ছদ"
             >
-              <Home className={`${isScrolled ? 'size-[15px] sm:size-[18px]' : 'size-[16px] sm:size-[20px]'} stroke-[2.5]`} />
+              <Home className={`${isScrolled ? 'size-[18px]' : 'size-[20px]'} stroke-[2.5]`} />
             </Link>
             
             {categories.filter(c => ![
@@ -308,7 +302,7 @@ export function SiteHeader() {
                 key={c.slug}
                 to="/category/$slug"
                 params={{ slug: c.slug }}
-                className={`kb-underline px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                className={`kb-underline px-2.5 sm:px-3.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-3' : 'py-3.5'}`}
                 activeProps={{ className: "text-primary" }}
               >
                 {c.name}
@@ -319,13 +313,13 @@ export function SiteHeader() {
               <Link
                 to="/category/$slug"
                 params={{ slug: 'onnanno' }}
-                className={`kb-underline px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                className={`kb-underline px-2.5 sm:px-3.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-3' : 'py-3.5'}`}
                 activeProps={{ className: "text-primary" }}
               >
                 অন্যান্য
-                <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3' : 'size-3.5'}`} />
+                <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3.5' : 'size-4'}`} />
               </Link>
-              <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
+              <div className="absolute top-full left-0 hidden group-hover:block w-52 bg-card border border-border shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
                 {categories.filter(c => [
                   'health', 'probas', 'orthoniti', 'ain-adalat', 
                   'motamot', 'bishesh-protibedon', 'photo-gallery'
@@ -334,7 +328,7 @@ export function SiteHeader() {
                     key={c.slug}
                     to="/category/$slug"
                     params={{ slug: c.slug }}
-                    className="block px-4 py-2 text-[13px] sm:text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors"
+                    className="block px-4 py-2.5 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
                     activeProps={{ className: "text-primary bg-accent" }}
                   >
                     {c.name}
@@ -346,12 +340,12 @@ export function SiteHeader() {
 
           {/* Scrolled Search/Utility */}
           {isScrolled && (
-            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300 ml-auto lg:ml-0">
+            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-2 duration-300 ml-auto">
               <button
-                className="p-1.5 transition-colors hover:text-primary"
+                className="p-2 transition-colors hover:text-primary rounded-full hover:bg-slate-100"
                 aria-label="অনুসন্ধান"
               >
-                <Search className="size-4" />
+                <Search className="size-[18px]" />
               </button>
             </div>
           )}
@@ -359,12 +353,13 @@ export function SiteHeader() {
 
         {/* Mobile Nav Menu */}
         {open && (
-          <div className="kb-slide-down grid grid-cols-2 gap-px bg-border lg:hidden">
+          <div className="kb-slide-down grid grid-cols-2 gap-px bg-border lg:hidden border-t border-border shadow-inner">
             <Link
               to="/"
               onClick={() => setOpen(false)}
-              className="bg-background px-4 py-2.5 text-sm font-bold"
+              className="bg-background px-4 py-3 text-sm font-bold flex items-center gap-2"
             >
+              <Home className="size-4" />
               প্রচ্ছদ
             </Link>
             {categories.map((c) => (
@@ -373,7 +368,7 @@ export function SiteHeader() {
                 to="/category/$slug"
                 params={{ slug: c.slug }}
                 onClick={() => setOpen(false)}
-                className="bg-background px-4 py-2.5 text-sm font-bold"
+                className="bg-background px-4 py-3 text-sm font-bold"
               >
                 {c.name}
               </Link>
@@ -384,3 +379,4 @@ export function SiteHeader() {
     </header>
   );
 }
+
