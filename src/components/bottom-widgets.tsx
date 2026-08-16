@@ -101,7 +101,7 @@ export function BottomWidgets() {
           </h2>
         </div>
         
-        <div className="flex-1 p-3 space-y-3 min-h-[580px]">
+        <div className="flex-1 p-3 space-y-3 min-h-[600px] lg:min-h-[720px]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
@@ -178,9 +178,9 @@ export function BottomWidgets() {
             </button>
           </div>
 
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm mb-5 bg-slate-100">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm mb-5 bg-slate-100">
             <NewsImage 
-              src="https://images.unsplash.com/photo-1540910419892-f0c976c70c5f?auto=format&fit=crop&w=800&q=80" 
+              src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=800&q=80" 
               alt="Poll"
               className="h-full w-full object-cover"
             />
@@ -250,7 +250,7 @@ export function BottomWidgets() {
         </div>
 
         <div className="flex-1 border-t border-slate-100">
-          <div className="space-y-0.5 overflow-y-auto max-h-[520px] scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="space-y-0.5 overflow-y-auto max-h-[580px] lg:max-h-[660px] scrollbar-thin scrollbar-thumb-slate-200">
             {tabPosts.slice(0, 8).map((p, i) => (
               <Link
                 key={p.id}
@@ -265,8 +265,8 @@ export function BottomWidgets() {
                   {toBanglaNumber(i + 1)}
                 </span>
                 <h4 className={cn(
-                  "line-clamp-2 font-display text-[15px] font-bold leading-[1.4] transition-colors",
-                  i === 3 ? "text-[#D0021B]" : "text-slate-800 group-hover:text-[#D0021B]"
+                  "line-clamp-2 font-display text-[15px] font-bold leading-[1.4] transition-colors group-hover:text-[#D0021B]",
+                  i === 2 ? "text-[#D0021B]" : "text-slate-800"
                 )}>
                   {p.title}
                 </h4>
