@@ -5,6 +5,7 @@ import type { Article } from "@/lib/news-data";
 import type { Post } from "@/lib/posts";
 import { categoryName } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
+import { banglaDateTime } from "@/lib/posts";
 
 export const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1585829365234-781fcd04c838?auto=format&fit=crop&w=800&q=80";
 
@@ -211,6 +212,8 @@ export function ListRow({ article, index }: { article: Article | Post; index?: n
 }
 
 export function Meta({ article }: { article: Article | Post }) {
+  const dateStr = (article as any).published_at || (article as any).time;
+  
   return (
     <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
       <span className="font-semibold text-primary">{categoryName(article.category)}</span>
@@ -219,7 +222,7 @@ export function Meta({ article }: { article: Article | Post }) {
       <span>•</span>
       <span>{(article as any).location ?? "ঢাকা"}</span>
       <span>•</span>
-      <span>{(article as any).time ?? (article as any).published_at}</span>
+      <span>{dateStr ? banglaDateTime(dateStr) : ""}</span>
     </div>
   );
 }
