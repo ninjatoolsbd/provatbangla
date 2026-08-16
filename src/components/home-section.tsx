@@ -58,7 +58,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
                     params={{ slug: a.slug ?? "" }}
                     className="group block py-2.5 transition-transform duration-300 hover:translate-x-1"
                   >
-                    <span className="line-clamp-2 font-display text-[15px] leading-snug font-bold transition-colors group-hover:text-primary">
+                    <span className="line-clamp-3 font-display text-[15px] leading-snug font-extrabold transition-colors group-hover:text-primary">
                       {a.kicker && <span className="text-primary">{a.kicker} / </span>}
                       {a.title}
                     </span>
