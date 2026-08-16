@@ -5,7 +5,7 @@ import { VideoStrip } from "@/components/home-widgets";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 
-export const Route = createFileRoute("/live-tv/index")({
+export const Route = createFileRoute("/live-tv/")({
   component: LiveTVPage,
 });
 
