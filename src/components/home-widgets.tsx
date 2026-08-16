@@ -35,7 +35,7 @@ export function BarHeading({
         className,
       )}
     >
-      <h2 className="relative flex items-center gap-2 font-display text-[22px] font-extrabold text-slate-900">
+      <h2 className="relative flex items-center gap-2 font-display text-[20px] font-bold text-slate-900">
         <span className="inline-block h-[24px] w-[5px] bg-primary" />
         {title}
       </h2>

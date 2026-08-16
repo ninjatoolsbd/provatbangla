@@ -125,7 +125,7 @@ export function LatestPosts({ category }: { category?: string }) {
               
               <div className="p-6 lg:p-8">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-2xl font-extrabold leading-[1.2] text-slate-900 transition-colors group-hover:text-primary lg:text-[40px]">
+                  <h2 className="font-display text-2xl font-bold leading-[1.2] text-slate-900 transition-colors group-hover:text-primary lg:text-[32px]">
                     {mainPost.title}
                   </h2>
                 </Link>
@@ -152,7 +152,7 @@ export function LatestPosts({ category }: { category?: string }) {
         {/* Right: Sidebar Feed */}
         <div className="lg:col-span-4 flex flex-col border border-slate-100 rounded-md bg-slate-50/50 p-4">
           <div className="flex flex-col gap-6 h-full">
-            <h3 className="flex items-center gap-3 font-display text-[22px] font-bold text-slate-900 shrink-0">
+            <h3 className="flex items-center gap-3 font-display text-[20px] font-bold text-slate-900 shrink-0">
               <span className="h-[22px] w-[5px] bg-primary"></span>
               খবরগুলো পড়ুন
             </h3>
