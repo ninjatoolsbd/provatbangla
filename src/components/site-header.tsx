@@ -60,17 +60,23 @@ function SocialMegaMenu() {
         <div key={ri} className={`px-6 py-4 ${ri > 0 ? "border-t border-border" : ""}`}>
           <div className="grid grid-cols-4 gap-x-6 gap-y-3">
             {row.length === 1 ? (
-              <div className="col-span-4">
-                <div className="mb-2 text-[13px] font-bold text-slate-800">{row[0].title}</div>
-                <div className="grid grid-cols-4 gap-x-6 gap-y-2">
-                  {row[0].items.map((it) => (
-                    <a key={it} href="#" className="flex items-center gap-2 text-[13px] text-slate-700 transition-colors hover:text-primary">
-                      <row[0].Icon className={`size-4 shrink-0 ${row[0].iconClass}`} />
-                      <span className="truncate">{it}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
+              (() => {
+                const g = row[0];
+                const Icon = g.Icon;
+                return (
+                  <div className="col-span-4">
+                    <div className="mb-2 text-[13px] font-bold text-slate-800">{g.title}</div>
+                    <div className="grid grid-cols-4 gap-x-6 gap-y-2">
+                      {g.items.map((it) => (
+                        <a key={it} href="#" className="flex items-center gap-2 text-[13px] text-slate-700 transition-colors hover:text-primary">
+                          <Icon className={`size-4 shrink-0 ${g.iconClass}`} />
+                          <span className="truncate">{it}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()
             ) : (
               row.map((g, gi) => (
                 <div key={gi}>
