@@ -169,30 +169,52 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
-          {utility.map((u) =>
-            "mega" in u && u.mega ? (
-              <div key={u.label} className="group relative">
-                <Link
-                  to={u.to as any}
-                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+          {utility.map((u) => {
+            if ("mega" in u && u.mega) {
+              return (
+                <div key={u.label} className="group relative">
+                  <Link
+                    to={u.to as any}
+                    className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+                  >
+                    <u.icon className="size-4 text-muted-foreground group-hover:text-primary" />
+                    {u.label}
+                    <ChevronDown className="size-3" />
+                  </Link>
+                  <SocialMegaMenu />
+                </div>
+              );
+            }
+            
+            const content = (
+              <>
+                <u.icon className="size-4 text-muted-foreground" />
+                {u.label}
+              </>
+            );
+
+            if ('onClick' in u) {
+              return (
+                <button
+                  key={u.label}
+                  onClick={u.onClick}
+                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
                 >
-                  <u.icon className="size-4 text-muted-foreground group-hover:text-primary" />
-                  {u.label}
-                  <ChevronDown className="size-3" />
-                </Link>
-                <SocialMegaMenu />
-              </div>
-            ) : (
+                  {content}
+                </button>
+              );
+            }
+
+            return (
               <Link
                 key={u.label}
                 to={u.to as any}
                 className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
               >
-                <u.icon className="size-4 text-muted-foreground" />
-                {u.label}
+                {content}
               </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
 
 
