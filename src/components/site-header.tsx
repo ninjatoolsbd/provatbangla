@@ -288,16 +288,16 @@ export function SiteHeader() {
             </Link>
           )}
 
-          {/* Desktop Nav Items - Responsive scrolling and font sizing */}
-          <div className="flex flex-1 items-center overflow-x-auto no-scrollbar lg:justify-center">
+          {/* Desktop Nav Items - Responsive Wrapping instead of scroll */}
+          <div className="flex flex-1 items-center flex-wrap lg:justify-center overflow-hidden">
             <Link
               to="/"
-              className={`flex shrink-0 items-center px-2 sm:px-3 text-[13px] sm:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+              className={`flex shrink-0 items-center px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
               activeOptions={{ exact: true }}
               activeProps={{ className: "text-primary" }}
               aria-label="প্রচ্ছদ"
             >
-              <Home className={`${isScrolled ? 'size-[16px] sm:size-[18px]' : 'size-[18px] sm:size-[20px]'} stroke-[2.5]`} />
+              <Home className={`${isScrolled ? 'size-[15px] sm:size-[18px]' : 'size-[16px] sm:size-[20px]'} stroke-[2.5]`} />
             </Link>
             
             {categories.filter(c => ![
@@ -308,7 +308,7 @@ export function SiteHeader() {
                 key={c.slug}
                 to="/category/$slug"
                 params={{ slug: c.slug }}
-                className={`kb-underline px-2 sm:px-3 text-[13px] sm:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                className={`kb-underline px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-2.5'}`}
                 activeProps={{ className: "text-primary" }}
               >
                 {c.name}
@@ -319,7 +319,7 @@ export function SiteHeader() {
               <Link
                 to="/category/$slug"
                 params={{ slug: 'onnanno' }}
-                className={`kb-underline px-2 sm:px-3 text-[13px] sm:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-2' : 'py-2.5'}`}
+                className={`kb-underline px-1.5 sm:px-3 text-[12px] sm:text-[14px] md:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-2' : 'py-2.5'}`}
                 activeProps={{ className: "text-primary" }}
               >
                 অন্যান্য
