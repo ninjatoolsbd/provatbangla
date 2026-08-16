@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronsRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -8,24 +9,28 @@ interface SidebarSectionProps {
   title: string;
   category: string;
   articles: Article[];
-  variant?: 'list' | 'grid' | 'featured-grid';
+  variant?: 'list' | 'grid' | 'featured-grid' | 'tabs';
 }
 
 export function SidebarSection({ title, category, articles, variant = 'list' }: SidebarSectionProps) {
-  if (articles.length === 0) return null;
+  const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
+  
+  if (articles.length === 0 && variant !== 'tabs') return null;
+
+  const toBanglaNumber = (n: number) => {
+    return String(n).split("").map(d => "০১২৩৪৫৬৭৮৯"[parseInt(d)]).join("");
+  };
 
   return (
     <div className="mb-8 overflow-hidden bg-white last:mb-0">
       {/* Header style matching screenshot: Double black horizontal bars */}
-      {variant !== 'featured-grid' && (
+      {variant !== 'featured-grid' && variant !== 'tabs' && (
         <div className="relative mb-4 flex h-[32px] items-center border-y-[3px] border-black bg-white px-0">
           <div className="flex w-full items-center">
-            {/* Small square bullet before text */}
             <div className="h-[18px] w-[18px] bg-black" />
             <h3 className="ml-2 font-display text-[18px] font-bold text-black leading-none">
               {title} {category ? `- ${category}` : ''}
             </h3>
-            {/* Black block at the far right */}
             <div className="ml-auto h-[18px] w-2.5 bg-black" />
           </div>
         </div>
@@ -52,7 +57,6 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
 
         {variant === 'grid' && (
           <div>
-            {/* Top featured item in the grid section */}
             {articles[0] && (
               <Link 
                 to="/news/$id" 
@@ -72,7 +76,6 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
               </Link>
             )}
             
-            {/* 2x2 grid for the rest */}
             <div className="grid grid-cols-2 gap-x-3 gap-y-5">
               {articles.slice(1, 5).map((article) => (
                 <Link 
@@ -120,6 +123,54 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
                       {article.title}
                     </h4>
                   </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {variant === 'tabs' && (
+          <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden">
+            <div className="flex bg-slate-50 border-b border-slate-200">
+              <button 
+                onClick={() => setActiveTab("latest")}
+                className={cn(
+                  "flex-1 py-3 text-[18px] font-bold transition-all relative border-r border-slate-200",
+                  activeTab === "latest" ? "text-[#D0021B] bg-white" : "text-slate-500 bg-slate-50"
+                )}
+              >
+                সর্বশেষ
+                {activeTab === "latest" && <div className="absolute top-0 left-0 w-full h-[3px] bg-[#D0021B]"></div>}
+              </button>
+              <button 
+                onClick={() => setActiveTab("popular")}
+                className={cn(
+                  "flex-1 py-3 text-[18px] font-bold transition-all relative",
+                  activeTab === "popular" ? "text-[#D0021B] bg-white" : "text-slate-500 bg-slate-50"
+                )}
+              >
+                জনপ্রিয়
+                {activeTab === "popular" && <div className="absolute top-0 left-0 w-full h-[3px] bg-[#D0021B]"></div>}
+              </button>
+            </div>
+
+            <div className="bg-white">
+              {articles.slice(0, 8).map((p, i) => (
+                <Link
+                  key={p.id}
+                  to="/news/$id"
+                  params={{ id: String(p.id) }}
+                  className="group flex items-center gap-3 border-b border-slate-100 py-3.5 px-4 hover:bg-slate-50 transition-colors last:border-0"
+                >
+                  <span className={cn(
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[14px] font-bold shadow-sm transition-colors",
+                    i < 3 ? "bg-[#e8f0fe] text-[#1a73e8]" : "bg-slate-100 text-slate-500"
+                  )}>
+                    {toBanglaNumber(i + 1)}
+                  </span>
+                  <h4 className="line-clamp-2 font-display text-[14px] font-bold leading-[1.5] transition-colors group-hover:text-[#D0021B] text-slate-800">
+                    {p.title}
+                  </h4>
                 </Link>
               ))}
             </div>
