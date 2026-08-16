@@ -170,7 +170,7 @@ export function SiteHeader() {
       {/* Top Header - Hides on Scroll */}
       <div 
         className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ease-in-out sm:px-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-2 sm:h-[90px] sm:py-3"
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[60px] py-1 sm:h-[80px] sm:py-2"
         }`}
       >
         <button
@@ -260,7 +260,7 @@ export function SiteHeader() {
 
       {/* Main Navigation - Stays Sticky */}
       <div className="border-y border-border bg-white shadow-sm">
-        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[58px]' : ''}`}>
+        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-0.5 min-h-[50px]' : ''}`}>
           
           {/* Mobile Menu Button - Left aligned when scrolled */}
           <button
@@ -273,21 +273,21 @@ export function SiteHeader() {
 
           {/* Scrolled Logo - Standard sizing and position */}
           {isScrolled && (
-            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[120px] sm:max-w-[150px] mr-6">
+            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[100px] sm:max-w-[140px] mr-2 xl:mr-6">
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
-                className="h-auto w-full max-h-[32px] sm:max-h-[38px] object-contain" 
+                className="h-auto w-full max-h-[28px] sm:max-h-[34px] object-contain" 
               />
             </Link>
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-6' : 'justify-center'}`}>
-            <div className="flex flex-wrap items-center gap-x-1">
+          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-2 xl:ml-6' : 'justify-center'}`}>
+            <div className="flex flex-wrap items-center gap-x-0.5 xl:gap-x-1">
               <Link
                 to="/"
-                className={`flex shrink-0 items-center px-2 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-3'}`}
+                className={`flex shrink-0 items-center px-1.5 xl:px-2 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
                 activeOptions={{ exact: true }}
                 activeProps={{ className: "text-primary" }}
                 aria-label="প্রচ্ছদ"
@@ -303,7 +303,7 @@ export function SiteHeader() {
                   key={c.slug}
                   to="/category/$slug"
                   params={{ slug: c.slug }}
-                  className={`kb-underline px-2 text-[14px] xl:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-3'}`}
+                  className={`kb-underline px-1.5 xl:px-2 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
                   activeProps={{ className: "text-primary" }}
                 >
                   {c.name}
@@ -314,13 +314,13 @@ export function SiteHeader() {
                 <Link
                   to="/category/$slug"
                   params={{ slug: 'onnanno' }}
-                  className={`kb-underline px-2 text-[14px] xl:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-2' : 'py-3'}`}
+                  className={`kb-underline px-1.5 xl:px-2 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-1.5' : 'py-3'}`}
                   activeProps={{ className: "text-primary" }}
                 >
                   অন্যান্য
                   <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3.5' : 'size-4'}`} />
                 </Link>
-                <div className="absolute top-full left-0 hidden group-hover:block w-52 bg-card border border-border shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
+                <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-xl py-1.5 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
                   {categories.filter(c => [
                     'health', 'probas', 'orthoniti', 'ain-adalat', 
                     'motamot', 'bishesh-protibedon', 'photo-gallery'
@@ -329,7 +329,7 @@ export function SiteHeader() {
                       key={c.slug}
                       to="/category/$slug"
                       params={{ slug: c.slug }}
-                      className="block px-4 py-2.5 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
+                      className="block px-3 py-2 text-[13px] xl:text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
                       activeProps={{ className: "text-primary bg-accent" }}
                     >
                       {c.name}
