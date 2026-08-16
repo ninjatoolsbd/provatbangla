@@ -157,19 +157,19 @@ function LiveTvPage() {
                       onClick={() => setActiveChannel(channel)}
                       className={cn(
                         "flex w-full items-center gap-4 px-4 py-4 text-left transition-all duration-200 hover:bg-slate-50",
-                        activeChannel.id === channel.id ? "bg-slate-50 border-l-4 border-primary" : "border-l-4 border-transparent"
+                        activeChannel?.id === channel.id ? "bg-slate-50 border-l-4 border-primary" : "border-l-4 border-transparent"
                       )}
                     >
                       <div 
                         className="flex size-12 shrink-0 items-center justify-center rounded-lg shadow-sm"
                         style={{ backgroundColor: channel.color }}
                       >
-                        <Play className={cn("size-6 text-white", activeChannel.id === channel.id ? "animate-pulse" : "")} />
+                        <Play className={cn("size-6 text-white", activeChannel?.id === channel.id ? "animate-pulse" : "")} />
                       </div>
                       <div className="min-w-0">
                         <span className={cn(
                           "block font-display text-[15px] font-extrabold transition-colors",
-                          activeChannel.id === channel.id ? "text-primary" : "text-slate-900"
+                          activeChannel?.id === channel.id ? "text-primary" : "text-slate-900"
                         )}>
                           {channel.name}
                         </span>
