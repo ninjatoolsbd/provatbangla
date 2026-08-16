@@ -42,7 +42,7 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="flex items-center gap-4 text-[12px] font-bold text-slate-600">
-            <Link to="/converter" className="hover:text-primary">বাংলা কনভার্টার</Link>
+            <Link to={"/converter" as any} className="hover:text-primary">বাংলা কনভার্টার</Link>
             <span>{new Date().toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
           </div>
         </div>
