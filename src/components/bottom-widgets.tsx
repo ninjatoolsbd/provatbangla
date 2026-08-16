@@ -101,7 +101,7 @@ export function BottomWidgets() {
           </h2>
         </div>
         
-        <div className="flex-1 p-3 space-y-3 min-h-[400px] lg:min-h-[500px]">
+        <div className="flex-1 p-2 space-y-2.5 min-h-[350px] lg:min-h-[450px]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
@@ -109,7 +109,7 @@ export function BottomWidgets() {
               params={{ slug: p.slug ?? "" }}
               className="group block bg-[#FFFBEB] rounded-sm overflow-hidden border-b-2 border-[#D0021B] pb-3"
             >
-              <div className="p-3 flex gap-4">
+              <div className="p-2.5 flex gap-3">
                 <div className="flex flex-col items-center gap-2 shrink-0">
                   <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-[#D0021B]">
                     <NewsImage
@@ -126,10 +126,10 @@ export function BottomWidgets() {
                   </span>
                 </div>
                 <div className="flex-1 pt-1">
-                  <h3 className="line-clamp-2 font-display text-[15px] font-bold leading-tight group-hover:text-[#D0021B] transition-colors text-slate-900 mb-1.5">
+                  <h3 className="line-clamp-2 font-display text-[14px] font-bold leading-tight group-hover:text-[#D0021B] transition-colors text-slate-900 mb-1">
                     {p.title}
                   </h3>
-                  <p className="line-clamp-3 text-[12px] leading-snug text-slate-600">
+                  <p className="line-clamp-2 text-[11px] leading-snug text-slate-600">
                     {p.excerpt || p.content?.replace(/<[^>]*>/g, '').slice(0, 120)}
                   </p>
                 </div>
@@ -196,7 +196,7 @@ export function BottomWidgets() {
               { label: "না", value: "no" },
               { label: "মন্তব্য নেই", value: "none" }
             ].map((opt) => (
-              <label key={opt.value} className="flex cursor-pointer items-center gap-3 border border-slate-200 rounded-sm px-4 py-1.5 transition-all hover:bg-slate-50 group">
+              <label key={opt.value} className="flex cursor-pointer items-center gap-2.5 border border-slate-200 rounded-sm px-3 py-1 transition-all hover:bg-slate-50 group">
                 <input type="radio" name="poll-vote" className="h-4 w-4 rounded-full border-slate-300 text-[#D0021B] focus:ring-[#D0021B]" />
                 <span className="text-[14px] font-medium text-slate-700 group-hover:text-slate-900">{opt.label}</span>
               </label>
@@ -250,13 +250,13 @@ export function BottomWidgets() {
         </div>
 
         <div className="flex-1 border-t border-slate-100">
-          <div className="space-y-0.5 overflow-y-auto max-h-[400px] lg:max-h-[480px] scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="space-y-0 overflow-y-auto max-h-[350px] lg:max-h-[430px] scrollbar-thin scrollbar-thumb-slate-200">
             {tabPosts.slice(0, 8).map((p, i) => (
               <Link
                 key={p.id}
                 to="/post/$slug"
                 params={{ slug: p.slug ?? "" }}
-                className="group flex items-start gap-4 border-b border-slate-100 py-3.5 px-4 hover:bg-slate-50 transition-colors last:border-0"
+                className="group flex items-start gap-3 border-b border-slate-100 py-3 px-4 hover:bg-slate-50 transition-colors last:border-0"
               >
                 <span className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[15px] font-bold mt-0.5 shadow-sm transition-colors",
