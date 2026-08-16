@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as EnglishRouteImport } from './routes/english'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAdsRouteImport } from './routes/admin/ads'
@@ -56,6 +57,11 @@ const ArchiveRoute = ArchiveRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnglishRoute = EnglishRouteImport.update({
+  id: '/english',
+  path: '/english',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EpaperRoute = EpaperRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/archive'
     | '/auth'
+    | '/english'
     | '/epaper'
     | '/admin/ads'
     | '/admin/automation'
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
     | '/'
     | '/archive'
     | '/auth'
+    | '/english'
     | '/epaper'
     | '/admin/ads'
     | '/admin/automation'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/archive'
     | '/auth'
+    | '/english'
     | '/epaper'
     | '/admin/ads'
     | '/admin/automation'
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  EnglishRoute: typeof EnglishRoute
   EpaperRoute: typeof EpaperRoute
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/english': {
+      id: '/english'
+      path: '/english'
+      fullPath: '/english'
+      preLoaderRoute: typeof EnglishRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/epaper': {
@@ -622,6 +642,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  EnglishRoute: EnglishRoute,
   EpaperRoute: EpaperRoute,
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
