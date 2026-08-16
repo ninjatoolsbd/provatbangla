@@ -86,17 +86,17 @@ function PostPage() {
 
   const { data: relatedPosts = [] } = useSuspenseQuery({
     queryKey: ["related-posts", post.slug],
-    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug, limit: 6 } }),
+    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug, limit: 12 } }),
   });
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["post-sidebar-latest"],
-    queryFn: () => fetchPublishedPosts(8),
+    queryFn: () => fetchPublishedPosts(10),
   });
 
   const { data: popularPosts = [] } = useQuery({
     queryKey: ["post-sidebar-popular"],
-    queryFn: () => fetchPublishedPosts(8, undefined, "popular"),
+    queryFn: () => fetchPublishedPosts(10, undefined, "popular"),
   });
 
   const sidebarPosts = activeTab === "latest" ? latestPosts : popularPosts;
@@ -231,45 +231,7 @@ function PostPage() {
                 </div>
               </div>
             </article>
-
-            {/* Bottom Widgets - "Latest News" horizontal row - FULL WIDTH placeholder if needed, 
-                but user wants it outside the 9:3 grid or just full width within the article container? 
-                Actually, they said "Freedom News Sorbosesh section ta full width hbe".
-                In a 9:3 grid, "full width" usually means taking the whole screen or just outside the grid.
-                Since it's currently inside the `lg:col-span-9`, I should probably move it out of that div 
-                to be a sibling of the grid or just make it full width relative to the page.
-            */}
           </div>
-
-          {/* Sidebar */}
-          <aside className="lg:col-span-3">
-            {/* ... sidebar content ... */}
-          </aside>
-        </div>
-
-        {/* Full Width "Freedom News Sorbosesh" Section */}
-        <div className="mt-8 border border-border bg-card p-4">
-          <div className="relative mb-6 flex h-[32px] items-center border-y-[3px] border-black bg-white">
-            <div className="h-[18px] w-[18px] bg-black" />
-            <h3 className="ml-2 font-display text-[18px] font-bold text-black leading-none">
-              ফ্রিডম নিউজ সর্বশেষ
-            </h3>
-            <div className="ml-auto h-[18px] w-2.5 bg-black" />
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-            {latestPosts.slice(0, 6).map((a) => (
-              <Link key={a.id} to="/post/$slug" params={{ slug: a.slug || "" }} className="group block">
-                <NewsImage src={a.image_url || ""} alt={a.title} className="aspect-[16/9] w-full object-cover mb-2" />
-                <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-snug group-hover:text-primary">
-                  {a.title}
-                </h4>
-                <span className="mt-1 block text-xs text-muted-foreground flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-slate-300" /> {categoryName(a.category)}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
 
           {/* Sidebar */}
           <aside className="lg:col-span-3">
@@ -347,6 +309,30 @@ function PostPage() {
               </div>
             </div>
           </aside>
+        </div>
+
+        {/* Full Width "Freedom News Sorbosesh" Section */}
+        <div className="mt-8 border border-border bg-card p-4">
+          <div className="relative mb-6 flex h-[32px] items-center border-y-[3px] border-black bg-white">
+            <div className="h-[18px] w-[18px] bg-black" />
+            <h3 className="ml-2 font-display text-[18px] font-bold text-black leading-none">
+              ফ্রিডম নিউজ সর্বশেষ
+            </h3>
+            <div className="ml-auto h-[18px] w-2.5 bg-black" />
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+            {latestPosts.slice(0, 6).map((a) => (
+              <Link key={a.id} to="/post/$slug" params={{ slug: a.slug || "" }} className="group block">
+                <NewsImage src={a.image_url || ""} alt={a.title} className="aspect-[16/9] w-full object-cover mb-2" />
+                <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-snug group-hover:text-primary">
+                  {a.title}
+                </h4>
+                <span className="mt-1 block text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-slate-300" /> {categoryName(a.category)}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </main>
       <SiteFooter />
