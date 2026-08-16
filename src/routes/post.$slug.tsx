@@ -81,12 +81,19 @@ export const Route = createFileRoute("/post/$slug")({
 
 function PostPage() {
   const { post, isPreview } = Route.useLoaderData();
-  const fetchRelated = useServerFn(getRelatedPosts);
   const [activeTab, setActiveTab] = React.useState<"latest" | "popular">("latest");
 
-  const { data: relatedPosts = [] } = useSuspenseQuery({
-    queryKey: ["related-posts", post.slug],
-    queryFn: () => fetchRelated({ data: { category: post.category, excludeSlug: post.slug, limit: 12 } }),
+  const { data: relatedPosts = [] } = useQuery({
+    queryKey: ["related-posts", post.slug, post.category],
+    queryFn: async () => {
+      const url = new URL("/api/public/related-posts", window.location.origin);
+      url.searchParams.set("category", post.category);
+      url.searchParams.set("excludeSlug", post.slug || "");
+      url.searchParams.set("limit", "12");
+      const res = await fetch(url.toString());
+      if (!res.ok) return [];
+      return res.json();
+    },
   });
 
   const { data: latestPosts = [] } = useQuery({

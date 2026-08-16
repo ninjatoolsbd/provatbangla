@@ -1,7 +1,29 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-
 import { createPublicServerClient } from "@/integrations/my-supabase/client";
+
+function pickPostFields(p: any) {
+  if (!p) return null;
+  return {
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    kicker: p.kicker,
+    excerpt: p.excerpt,
+    content: p.content,
+    image_url: p.image_url,
+    category: p.category,
+    seo_title: p.seo_title,
+    seo_description: p.seo_description,
+    status: p.status,
+    author_name: p.author_name,
+    published_at: p.published_at,
+    created_at: p.created_at,
+    updated_at: p.updated_at,
+    location: p.location,
+    image_caption: p.image_caption
+  };
+}
 
 export const getPublishedPost = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: z.string().min(1) }).parse(input))
@@ -15,7 +37,7 @@ export const getPublishedPost = createServerFn({ method: "GET" })
       .eq("status", "published")
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return post;
+    return pickPostFields(post);
   });
 
 export const getPostForPreview = createServerFn({ method: "GET" })
@@ -29,7 +51,7 @@ export const getPostForPreview = createServerFn({ method: "GET" })
       .eq("slug", data.slug)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return post;
+    return pickPostFields(post);
   });
 
 export const getHomeSectionPosts = createServerFn({ method: "GET" })
@@ -55,5 +77,5 @@ export const getHomeSectionPosts = createServerFn({ method: "GET" })
 
     const { data: posts, error } = await query;
     if (error) throw new Error(error.message);
-    return posts || [];
+    return (posts || []).map(pickPostFields);
   });
