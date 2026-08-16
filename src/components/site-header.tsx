@@ -1,16 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X, Facebook, Youtube, Instagram, Linkedin } from "lucide-react";
+import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
 import { useState } from "react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
-
-const socials = [
-  { Icon: Facebook, label: "Facebook" },
-  { Icon: Youtube, label: "YouTube" },
-  { Icon: Instagram, label: "Instagram" },
-  { Icon: Linkedin, label: "LinkedIn" },
-];
 
 const utility = [
   { icon: Newspaper, label: "আজকের পত্রিকা", to: "/newspaper" },
@@ -25,30 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
-      {/* Top Tier: Utility & Links */}
-      <div className="border-b border-slate-100 bg-slate-50/50">
-        <div className="mx-auto flex max-w-[1360px] items-center justify-between px-4 py-2">
-          <nav className="flex items-center gap-5">
-            {utility.slice(0, 4).map((u) => (
-              <Link
-                key={u.label}
-                to={u.to as any}
-                className="flex items-center gap-1.5 text-[12px] font-bold text-slate-600 transition-colors hover:text-primary"
-              >
-                <u.icon className="size-3.5 text-slate-400" />
-                {u.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-4 text-[12px] font-bold text-slate-600">
-            <Link to={"/converter" as any} className="hover:text-primary">বাংলা কনভার্টার</Link>
-            <span>{new Date().toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Middle Tier: Logo & Actions */}
+    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
       <div className="mx-auto flex max-w-[1360px] items-center gap-6 px-4 py-4">
         <button
           className="p-1 lg:hidden text-slate-800"
@@ -61,31 +31,39 @@ export function SiteHeader() {
         <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90">
           <img 
             src={logoAsset.url} 
-            alt="প্রভ্যতবাংলা" 
+            alt="প্রভাতবাংলা" 
             className="h-14 w-auto object-contain sm:h-16" 
           />
         </Link>
 
-        <div className="ml-auto flex items-center gap-4">
-          <div className="hidden items-center gap-2 md:flex">
-             {socials.map(({ Icon, label }) => (
-                <a key={label} href="#" className="text-slate-400 hover:text-primary transition-colors">
-                  <Icon className="size-5" />
-                </a>
-             ))}
-          </div>
-          <div className="h-6 w-px bg-slate-200 hidden md:block" />
+        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
+          {utility.map((u) => (
+            <Link
+              key={u.label}
+              to={u.to as any}
+              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+            >
+              <u.icon className="size-4 text-muted-foreground" />
+              {u.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-3 xl:ml-0">
           <button
-            className="rounded-full border border-slate-200 p-2 text-slate-600 transition-all hover:border-primary hover:text-primary"
+            className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
             aria-label="অনুসন্ধান"
           >
             <Search className="size-4" />
           </button>
+          <button className="relative rounded-full border border-border p-2 transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary" aria-label="নোটিফিকেশন">
+            <Bell className="size-4" />
+            <span className="kb-live-dot absolute top-1 right-1 size-2 rounded-full bg-primary text-primary" />
+          </button>
         </div>
       </div>
 
-      {/* Bottom Tier: Main Nav */}
-      <div className="border-t border-slate-100 shadow-sm">
+      <div className="border-y border-border">
         <div className="mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex">
           <Link
             to="/"
@@ -137,6 +115,7 @@ export function SiteHeader() {
               ))}
             </div>
           </div>
+          
         </div>
 
         {open && (
