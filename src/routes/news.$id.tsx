@@ -76,7 +76,7 @@ function NewsPage() {
         </nav>
 
         <div className="grid gap-5 lg:grid-cols-12">
-          <article className="border border-border bg-card p-4 sm:p-6 lg:col-span-12">
+          <article className="border border-border bg-card p-4 sm:p-6 lg:col-span-9">
             {article.kicker && (
               <span className="mb-2 block font-display text-lg font-bold text-primary">
                 {article.kicker}
@@ -142,6 +142,40 @@ function NewsPage() {
               ))}
             </div>
           </article>
+
+          <aside className="lg:col-span-3">
+            <div className="lg:sticky lg:top-20">
+              <SidebarSection 
+                title="" 
+                category="" 
+                articles={latestInCategory} 
+                variant="tabs"
+              />
+              
+              <SidebarSection 
+                title="সর্বশেষ" 
+                category={categoryName(article.category)} 
+                articles={latestInCategory.slice(0, 5)} 
+                variant="list"
+              />
+              
+              <SidebarSection 
+                title="সর্বোচ্চ পঠিত" 
+                category={categoryName(article.category)} 
+                articles={popularInCategory} 
+                variant="grid"
+              />
+
+              <SidebarSection 
+                title="আপনার জন্য নির্বাচিত" 
+                category="" 
+                articles={editorChoices.slice(0, 6)} 
+                variant="featured-grid"
+              />
+              
+              <AdBanner index={1} variant="box" className="mt-4 h-[250px]" />
+            </div>
+          </aside>
         </div>
 
         {/* ============ MORE FROM THIS SECTION ============ */}
