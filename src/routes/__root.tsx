@@ -125,11 +125,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
               pageLanguage: 'bn',
-              includedLanguages: 'en,bn,ar,hi,es,fr,de',
+              includedLanguages: 'en,bn',
               layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element');
           }
+        
         `
       },
       {

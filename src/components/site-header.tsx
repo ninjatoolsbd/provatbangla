@@ -14,8 +14,15 @@ const utility = [
   { icon: Languages, label: "English", onClick: () => {
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (select) {
-      select.value = select.value === 'en' ? 'bn' : 'en';
+      console.log('Found select, current value:', select.value);
+      // Toggle between 'en' (English) and 'bn' (original Bengali)
+      // Note: If value is empty string, it usually means the page language (bn)
+      const targetLang = select.value === 'en' ? 'bn' : 'en';
+      select.value = targetLang;
       select.dispatchEvent(new Event('change'));
+      console.log('Dispatched change event to', targetLang);
+    } else {
+      console.error('Google Translate dropdown (.goog-te-combo) not found');
     }
   }},
 ];
