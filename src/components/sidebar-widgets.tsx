@@ -163,8 +163,8 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
                   className="group flex items-center gap-3 border-b border-slate-100 py-3.5 px-4 hover:bg-slate-50 transition-colors last:border-0"
                 >
                   <span className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[14px] font-bold shadow-sm transition-colors",
-                    i < 3 ? "bg-[#e8f0fe] text-[#1a73e8]" : "bg-slate-100 text-slate-500"
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-[14px] font-bold shadow-sm transition-colors",
+                    activeTab === "latest" ? "bg-[#e8f0fe] text-[#1a73e8]" : "bg-slate-100 text-slate-500"
                   )}>
                     {toBanglaNumber(i + 1)}
                   </span>
