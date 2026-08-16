@@ -125,7 +125,7 @@ export function LatestPosts({ category }: { category?: string }) {
               
               <div className="p-6 lg:p-8">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-2xl font-extrabold leading-[1.2] text-slate-900 transition-colors group-hover:text-primary lg:text-[40px]">
+                  <h2 className="font-display text-2xl font-extrabold leading-[1.2] text-slate-900 transition-colors group-hover:text-primary lg:text-[42px]">
                     {mainPost.title}
                   </h2>
                 </Link>

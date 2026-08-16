@@ -116,7 +116,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
         />
       </ArticleLink>
       <ArticleLink article={article}>
-        <h2 className="mt-3 font-display text-[22px] leading-snug font-extrabold transition-colors group-hover:text-primary">
+        <h2 className="mt-3 font-display text-[22px] leading-snug font-extrabold text-slate-900 transition-colors group-hover:text-primary">
           <Kicker article={article} />
           {article.title}
         </h2>
@@ -144,7 +144,7 @@ export function GridCard({ article, compact = false }: { article: Article | Post
       <ArticleLink article={article}>
         <h3
           className={cn(
-            "mt-2.5 font-display leading-[1.4] font-extrabold transition-colors group-hover:text-primary",
+            "mt-2.5 font-display leading-[1.4] font-extrabold text-slate-900 transition-colors group-hover:text-primary",
             compact ? "text-[18px]" : "text-[22px]",
           )}
         >

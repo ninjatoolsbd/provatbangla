@@ -36,9 +36,9 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
 
   if (layout === "national") {
     return (
-      <section className="mt-5 border border-border bg-card p-4">
-        <BarHeading title={title} slug={slug} />
-        <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+      <section className="mt-8 border border-slate-200 bg-white p-5 shadow-sm">
+        <BarHeading title={title} slug={slug} className="mb-5" />
+        <div className="grid gap-6 lg:grid-cols-12 lg:divide-x lg:divide-slate-200">
           <div className="min-w-0 lg:col-span-5 lg:pr-5">
             <LeadCard article={mappedPosts[0] as any} />
           </div>
@@ -49,8 +49,8 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
               </Reveal>
             ))}
           </div>
-          <div className="min-w-0 lg:col-span-3 lg:pl-5">
-             <ul className="divide-y divide-border border-t border-border">
+          <div className="min-w-0 lg:col-span-3 lg:pl-6">
+             <ul className="divide-y divide-slate-100 border-t border-slate-100">
               {mappedPosts.slice(4, 9).map((a: any) => (
                 <li key={a.id}>
                   <Link
@@ -74,9 +74,9 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
 
   if (layout === "politics") {
       return (
-        <section className="mt-5 border border-border bg-card p-4">
-          <BarHeading title={title} slug={slug} />
-          <div className="grid gap-5 lg:grid-cols-12">
+        <section className="mt-8 border border-slate-200 bg-white p-5 shadow-sm">
+          <BarHeading title={title} slug={slug} className="mb-5" />
+          <div className="grid gap-6 lg:grid-cols-12">
             <div className="min-w-0 lg:col-span-4">
               <LeadCard article={mappedPosts[0] as any} />
             </div>
@@ -93,9 +93,9 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   }
 
   return (
-    <section className="mt-5 border border-border bg-card p-4">
-      <BarHeading title={title} slug={slug} />
-      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
+    <section className="mt-8 border border-slate-200 bg-white p-5 shadow-sm">
+      <BarHeading title={title} slug={slug} className="mb-5" />
+      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
         {mappedPosts.map((a: any, i: number) => (
           <Reveal key={a.id} delay={i * 60}>
             <GridCard article={a as any} compact />
