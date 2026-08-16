@@ -13,6 +13,7 @@ import { DivisionMap } from "@/components/division-map";
 import { AdBanner } from "@/components/ad-banner";
 import { HomeSection } from "@/components/home-section";
 import { BottomWidgets } from "@/components/bottom-widgets";
+import { MoreNewsSection } from "@/components/more-news-section";
 
 export const Route = createFileRoute("/")({
   head: () => ({
