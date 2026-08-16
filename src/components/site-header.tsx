@@ -277,7 +277,7 @@ export function SiteHeader() {
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
-                className="h-auto w-full max-h-[32px] sm:max-h-[38px] object-contain" 
+                className="h-auto w-full max-h-[28px] sm:max-h-[34px] object-contain" 
               />
             </Link>
           )}
