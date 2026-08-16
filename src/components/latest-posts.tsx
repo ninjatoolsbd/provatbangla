@@ -94,7 +94,7 @@ export function LatestPosts({ category }: { category?: string }) {
   return (
     <section className="mb-12">
       {/* Top Section: Hero + Sidebar */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
         {/* Left: Featured Hero */}
         <div className="lg:col-span-8">
           <Reveal delay={0}>
@@ -150,7 +150,7 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right: Sidebar Feed */}
-        <div className="lg:col-span-4 flex flex-col">
+        <div className="lg:col-span-4 flex flex-col border border-slate-100 rounded-md bg-slate-50/50 p-4">
           <div className="flex flex-col gap-6 h-full">
             <h3 className="flex items-center gap-3 font-display text-[22px] font-bold text-slate-900 shrink-0">
               <span className="h-[22px] w-[5px] bg-primary"></span>
@@ -193,7 +193,7 @@ export function LatestPosts({ category }: { category?: string }) {
 
       {/* Middle: Secondary Grid */}
       {secondaryPosts.length > 0 && (
-        <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
           {secondaryPosts.map((p, i) => (
             <Reveal key={p.id} delay={200 + i * 50}>
               <article className="group flex flex-col gap-4 overflow-hidden rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition-all hover:shadow-lg hover:ring-primary/20">

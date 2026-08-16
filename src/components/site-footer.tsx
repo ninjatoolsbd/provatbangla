@@ -50,7 +50,7 @@ export function SiteFooter() {
                     key={label}
                     href="#"
                     aria-label={label}
-                    className="flex size-9 items-center justify-center border border-white/15 transition-colors hover:bg-primary"
+                    className="flex size-9 items-center justify-center border border-white/20 rounded-md transition-all hover:bg-primary hover:border-primary hover:scale-110"
                   >
                     <Icon className="size-4" />
                   </a>

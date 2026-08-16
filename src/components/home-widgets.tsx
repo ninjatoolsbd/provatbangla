@@ -35,8 +35,8 @@ export function BarHeading({
         className,
       )}
     >
-      <h2 className="relative flex items-center gap-2 font-display text-[22px] font-bold text-slate-900">
-        <span className="inline-block h-[22px] w-[5px] bg-primary" />
+      <h2 className="relative flex items-center gap-2 font-display text-[22px] font-extrabold text-slate-900">
+        <span className="inline-block h-[24px] w-[5px] bg-primary" />
         {title}
       </h2>
       <div className="flex items-center gap-2">
@@ -109,8 +109,8 @@ export function VideoStrip({ items }: { items: any[] }) {
       <section ref={liveTvRef} className="mt-10 bg-[#0F0F0F] text-white">
         <div className="mx-auto max-w-[1360px] px-4 py-8">
           <div className="mb-6 flex items-center gap-3">
-            <span className="inline-block h-[24px] w-[6px] bg-primary" />
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight">লাইভ টিভি</h2>
+            <span className="inline-block h-[24px] w-[6px] bg-primary animate-pulse" />
+            <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">লাইভ টিভি</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
@@ -577,8 +577,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-6 w-full">
                 <div className="mb-2 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-4 ring-primary/20">
-                    <Play className="h-4 w-4 fill-white" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-4 ring-white/20">
+                    <Camera className="h-5 w-5" />
                   </div>
                   <span className="bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white rounded-sm">গ্যালারি</span>
                 </div>
@@ -609,9 +609,9 @@ export function PhotoGallery({ items }: { items: any[] }) {
                       height="169"
                     />
                     <div className="absolute inset-0 bg-black/40 transition-opacity group-hover:opacity-20" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white scale-75 group-hover:scale-100 transition-transform">
-                        <Play className="h-3 w-3 fill-white" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                      <div className="h-10 w-10 rounded-full bg-primary/90 flex items-center justify-center text-white ring-4 ring-white/10">
+                        <Camera className="h-4 w-4" />
                       </div>
                     </div>
                   </div>
