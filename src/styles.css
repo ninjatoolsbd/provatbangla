@@ -176,7 +176,7 @@
 
 /* Google Translate UI Overrides */
 .google-translate-container {
-  min-width: 140px;
+  display: none;
 }
 
 #google_translate_element select {
