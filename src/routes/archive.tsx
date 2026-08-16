@@ -126,14 +126,30 @@ function ArchivePage() {
                     )}
                   </Link>
                 ))}
+
+                {/* Loading indicator / Intersection Ref */}
+                {hasMore && (
+                  <div ref={ref} className="bg-white p-8 flex justify-center items-center">
+                    {isLoading && (
+                      <div className="flex items-center gap-2 text-slate-500 font-bold">
+                        <Loader2 className="size-5 animate-spin" />
+                        লোড হচ্ছে...
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            ) : (
+            ) : !isLoading ? (
               <div className="text-center py-20 bg-white">
                 <div className="bg-slate-50 size-20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="size-10 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-700 mb-1">কোনো সংবাদ পাওয়া যায়নি</h3>
                 <p className="text-slate-500">বর্তমানে আর্কাইভে কোনো সংবাদ নেই। অনুগ্রহ করে পরে চেষ্টা করুন।</p>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center py-20 bg-white">
+                <Loader2 className="size-10 animate-spin text-primary" />
               </div>
             )}
           </div>
