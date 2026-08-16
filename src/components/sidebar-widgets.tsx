@@ -17,13 +17,15 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
   return (
     <div className="mb-6 overflow-hidden bg-white last:mb-0">
       {/* Header style matching screenshot: Dark bar with square bullet and lines */}
-      <div className="relative mb-4 flex h-[34px] items-center border-y-4 border-black px-3 bg-white">
-        <div className="mr-2 h-3 w-4 bg-black" />
-        <h3 className="font-display text-[17px] font-bold text-black">
-          {title} {category ? `- ${category}` : ''}
-        </h3>
-        <div className="absolute right-0 top-0 h-full w-2 bg-black" />
-      </div>
+      {variant !== 'featured-grid' && (
+        <div className="relative mb-4 flex h-[34px] items-center border-y-4 border-black px-3 bg-white">
+          <div className="mr-2 h-3 w-4 bg-black" />
+          <h3 className="font-display text-[17px] font-bold text-black uppercase">
+            {title} {category ? `- ${category}` : ''}
+          </h3>
+          <div className="absolute right-0 top-0 h-full w-2 bg-black" />
+        </div>
+      )}
       
       <div>
         {variant === 'list' && (
@@ -47,7 +49,7 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
         {variant === 'grid' && (
           <div className="px-1">
             {/* Top featured item in the grid section */}
-            {articles.length > 0 && (
+            {articles[0] && (
               <Link 
                 to="/news/$id" 
                 params={{ id: String(articles[0].id) }}
@@ -93,7 +95,7 @@ export function SidebarSection({ title, category, articles, variant = 'list' }: 
 
         {variant === 'featured-grid' && (
           <div className="px-1">
-             <div className="mb-4 bg-[#b20000] py-2 px-3 text-white font-bold text-[18px]">
+             <div className="mb-4 bg-[#b20000] py-2 px-3 text-white font-bold text-[18px] text-center">
                 {title}
               </div>
             <div className="grid grid-cols-2 gap-2">
