@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, ChevronDown, ChevronRight, Facebook, Home, Instagram, Languages, Linkedin, MessageCircle, Menu, Newspaper, Music2, Rss, Search, Send, Share2, Tv, Twitter, X, Youtube } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { getCurrentBanglaDate } from "@/lib/posts";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
@@ -118,32 +119,14 @@ export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentLang, setCurrentLang] = useState("bn");
   
-  const getBanglaDate = useCallback(() => {
-    const date = new Date();
-    const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
-    const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
-    
-    const banglaNumbers: Record<string, string> = {
-      "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯"
-    };
-
-    const toBanglaNum = (num: number) => num.toString().split("").map(d => banglaNumbers[d] || d).join("");
-    
-    const day = days[date.getDay()];
-    const dateNum = toBanglaNum(date.getDate());
-    const month = months[date.getMonth()];
-    const year = toBanglaNum(date.getFullYear());
-    
-    return `${day}, ${dateNum} ${month} ${year}`;
-  }, []);
-
-  const [banglaDate, setBanglaDate] = useState(getBanglaDate());
+  // Use useMemo for stable date display that matches SSR
+  const banglaDate = useMemo(() => {
+    // Return empty or fixed placeholder for SSR if needed, 
+    // but getCurrentBanglaDate is now more robust.
+    return getCurrentBanglaDate();
+  }, []); // Only compute once on mount/render
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setBanglaDate(getBanglaDate());
-    }, 60000); // Check every minute
-    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 120);
     };
@@ -160,7 +143,6 @@ export function SiteHeader() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      clearInterval(timer);
       clearInterval(langInterval);
     };
   }, [getBanglaDate, currentLang]);
