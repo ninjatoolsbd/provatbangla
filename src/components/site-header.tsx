@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
+import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, Tv, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import { categories } from "@/lib/news-data";
@@ -8,7 +8,7 @@ import logoAsset from "@/assets/logo.png.asset.json";
 const utility = [
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
-  { icon: Bell, label: "লাইভ টিভি", to: "/live-tv" },
+  { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
   { icon: Languages, label: "English", to: "/english" },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
