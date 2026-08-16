@@ -163,17 +163,32 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
-          {utility.map((u) => (
-            <Link
-              key={u.label}
-              to={u.to as any}
-              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
-            >
-              <u.icon className="size-4 text-muted-foreground" />
-              {u.label}
-            </Link>
-          ))}
+          {utility.map((u) =>
+            "mega" in u && u.mega ? (
+              <div key={u.label} className="group relative">
+                <Link
+                  to={u.to as any}
+                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+                >
+                  <u.icon className="size-4 text-muted-foreground group-hover:text-primary" />
+                  {u.label}
+                  <ChevronDown className="size-3" />
+                </Link>
+                <SocialMegaMenu />
+              </div>
+            ) : (
+              <Link
+                key={u.label}
+                to={u.to as any}
+                className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+              >
+                <u.icon className="size-4 text-muted-foreground" />
+                {u.label}
+              </Link>
+            ),
+          )}
         </nav>
+
 
         <div className="ml-auto flex items-center gap-4 xl:ml-0">
           <div className="hidden text-[13px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1">
