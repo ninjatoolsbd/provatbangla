@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "robots", content: "index, follow" },
       { name: "googlebot", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
       { name: "bingbot", content: "index, follow" },
-      { name: "theme-color", content: "#941c1c" },
+      { name: "theme-color", content: "#ED1C24" },
       { title: "প্রভাতবাংলা — সর্বশেষ সংবাদ" },
       {
         name: "description",
