@@ -329,7 +329,7 @@ export function SiteHeader() {
                       key={c.slug}
                       to="/category/$slug"
                       params={{ slug: c.slug }}
-                      className="block px-4 py-2.5 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
+                      className="block px-3 py-2 text-[13px] xl:text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
                       activeProps={{ className: "text-primary bg-accent" }}
                     >
                       {c.name}
