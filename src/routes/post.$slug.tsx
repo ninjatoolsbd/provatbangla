@@ -222,19 +222,24 @@ function PostPage() {
 
               {/* Tags/Categories */}
               <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-5 mt-8">
-                <span className="flex h-8 items-center bg-black px-3 text-[13px] font-bold text-white">
-                  ফ্রিডম নিউজ সর্বশেষ
-                </span>
                 <div className="flex flex-wrap gap-2">
-                  <Link to="/" className="flex h-8 items-center border border-slate-200 bg-slate-50 px-3 text-[13px] hover:bg-slate-100">
+                  <Link 
+                    to="/category/$slug" 
+                    params={{ slug: post.category }} 
+                    className="flex h-8 items-center border border-slate-200 bg-slate-50 px-3 text-[13px] font-bold text-slate-700 hover:bg-slate-100"
+                  >
                     {categoryName(post.category)}
                   </Link>
-                  <Link to="/" className="flex h-8 items-center border border-slate-200 bg-slate-50 px-3 text-[13px] hover:bg-slate-100">
-                    বিশেষ প্রতিবেদন
-                  </Link>
-                  <Link to="/" className="flex h-8 items-center border border-slate-200 bg-slate-50 px-3 text-[13px] hover:bg-slate-100">
-                    বাংলাদেশ
-                  </Link>
+                  {relatedPosts.slice(0, 2).map((rp: any) => (
+                    <Link 
+                      key={rp.id}
+                      to="/post/$slug" 
+                      params={{ slug: rp.slug || "" }} 
+                      className="flex h-8 items-center border border-slate-200 bg-slate-50 px-3 text-[13px] text-slate-600 hover:bg-slate-100"
+                    >
+                      {rp.title}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </article>
