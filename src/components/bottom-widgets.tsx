@@ -38,8 +38,8 @@ export function BottomWidgets() {
     },
   });
 
-  const totalPages = Math.ceil(allOpinionPosts.length / 3) || 1;
-  const opinionPosts = allOpinionPosts.slice(opinionPage * 3, (opinionPage + 1) * 3);
+  const totalPages = Math.ceil(allOpinionPosts.length / 4) || 1;
+  const opinionPosts = allOpinionPosts.slice(opinionPage * 4, (opinionPage + 1) * 4);
 
   const { data: latestPosts = [] } = useQuery({
     queryKey: ["bottom-latest"],
@@ -102,7 +102,7 @@ export function BottomWidgets() {
           <div className="absolute bottom-0 left-0 h-[2px] w-full bg-[#D0021B]"></div>
         </div>
         
-        <div className="flex-1 p-3 space-y-4 min-h-[350px] lg:min-h-[450px] bg-[#FFFBF0]">
+        <div className="flex-1 p-3 space-y-3 min-h-[350px] lg:min-h-[450px] bg-[#FFFBF0]">
           {opinionPosts.map((p) => (
             <Link
               key={p.id}
@@ -110,16 +110,16 @@ export function BottomWidgets() {
               params={{ slug: p.slug ?? "" }}
               className="group block bg-white rounded-md overflow-hidden border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.05)] transition-transform hover:-translate-y-0.5"
             >
-              <div className="p-4 flex gap-4">
+              <div className="p-3 flex gap-3">
                 <div className="flex flex-col items-center gap-2 shrink-0">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-[#D0021B]">
+                  <div className="relative h-14 w-14 overflow-hidden rounded-full border-2 border-[#D0021B]">
                     <NewsImage
                       src={p.image_url}
                       alt={p.author_name}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <span className="text-[12px] font-bold text-slate-800 text-center leading-tight">
+                  <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">
                     {p.author_name || (p as any).author || "আহমেদ সোহেল বাপ্পী"}
                   </span>
                   <span className="text-[10px] text-slate-500 text-center leading-none">
@@ -130,7 +130,7 @@ export function BottomWidgets() {
                   <h3 className="line-clamp-2 font-display text-[14px] font-bold leading-tight group-hover:text-[#D0021B] transition-colors text-slate-900 mb-1">
                     {p.title}
                   </h3>
-                  <p className="line-clamp-2 text-[11px] leading-snug text-slate-600">
+                  <p className="line-clamp-2 text-[10.5px] leading-snug text-slate-600">
                     {p.excerpt || p.content?.replace(/<[^>]*>/g, '').slice(0, 120)}
                   </p>
                 </div>
