@@ -94,7 +94,7 @@ function LiveTvPage() {
               <div className="flex items-center justify-between bg-slate-900 px-4 py-3 text-white">
                 <div className="flex items-center gap-3">
                   <span className="kb-live-dot size-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(237,28,36,0.8)]" />
-                  <span className="font-display text-lg font-bold">{activeChannel.name}</span>
+                  <span className="font-display text-lg font-bold">{activeChannel?.name}</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <button className="text-slate-400 transition-colors hover:text-white" aria-label="শেয়ার">
@@ -107,11 +107,11 @@ function LiveTvPage() {
               </div>
               
               <div className="relative aspect-video w-full bg-slate-950">
-                {activeChannel.isYoutube ? (
+                {activeChannel?.isYoutube ? (
                   <iframe
-                    key={activeChannel.id}
-                    src={activeChannel.url}
-                    title={activeChannel.name}
+                    key={activeChannel?.id}
+                    src={activeChannel?.url}
+                    title={activeChannel?.name}
                     className="absolute inset-0 h-full w-full"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -121,9 +121,9 @@ function LiveTvPage() {
                 ) : (
                   <div className="h-full w-full overflow-hidden">
                     <iframe
-                      key={activeChannel.id}
-                      src={activeChannel.url}
-                      title={activeChannel.name}
+                      key={activeChannel?.id}
+                      src={activeChannel?.url}
+                      title={activeChannel?.name}
                       className="absolute inset-0 h-full w-full"
                       style={{ top: '-85px', height: 'calc(100% + 85px)' }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -135,8 +135,8 @@ function LiveTvPage() {
             </div>
 
             <div className="mt-6 rounded-lg border border-border bg-white p-6 shadow-sm">
-              <h2 className="mb-2 font-display text-xl font-extrabold text-slate-900">{activeChannel.name} সম্পর্কে</h2>
-              <p className="text-slate-600 leading-relaxed">{activeChannel.description}</p>
+              <h2 className="mb-2 font-display text-xl font-extrabold text-slate-900">{activeChannel?.name} সম্পর্কে</h2>
+              <p className="text-slate-600 leading-relaxed">{activeChannel?.description}</p>
             </div>
           </div>
 
