@@ -38,10 +38,30 @@ export function paragraphs(content: string) {
 
 export function banglaDateTime(iso: string | null) {
   if (!iso) return "";
-  return new Intl.DateTimeFormat("bn-BD", {
-    dateStyle: "long",
-    timeStyle: "short",
-  }).format(new Date(iso));
+  
+  // Use a fixed locale to prevent hydration mismatch
+  // banglaDateTime is often used in SSR, so we must be careful with locale formatting
+  try {
+    const date = new Date(iso);
+    return new Intl.DateTimeFormat("bn-BD", {
+      dateStyle: "long",
+      timeStyle: "short",
+      timeZone: "Asia/Dhaka", // Use a fixed timezone to prevent mismatch
+    }).format(date);
+  } catch (e) {
+    return "";
+  }
+}
+
+export function getCurrentBanglaDate() {
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Dhaka",
+  };
+  return new Intl.DateTimeFormat("bn-BD", options).format(new Date());
 }
 
 export async function fetchPublishedPosts(limit = 12, category?: string, sort: 'latest' | 'popular' = 'latest') {
