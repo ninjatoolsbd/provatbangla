@@ -16,10 +16,23 @@ const utility = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 120);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
-      <div className="mx-auto flex max-w-[1360px] items-center gap-6 px-4 py-4">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
+      <div 
+        className={`mx-auto flex max-w-[1360px] items-center gap-6 px-4 transition-all duration-300 ${
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[90px] py-4"
+        }`}
+      >
         <button
           className="p-1 lg:hidden text-slate-800"
           onClick={() => setOpen((v) => !v)}
