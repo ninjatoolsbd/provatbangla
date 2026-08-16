@@ -30,8 +30,30 @@ export const Route = createFileRoute('/epaper')({
   })
 });
 
+const DEMO_ISSUES = [
+  {
+    id: 'demo-1',
+    title: 'আজকের প্রভাতবাংলা - ১৬ আগস্ট ২০২৬',
+    created_at: new Date().toISOString(),
+    image_url: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-2',
+    title: 'প্রভাতবাংলা - ১৫ আগস্ট ২০২৬',
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    image_url: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?q=80&w=1974&auto=format&fit=crop'
+  },
+  {
+    id: 'demo-3',
+    title: 'প্রভাতবাংলা - ১৪ আগস্ট ২০২৬',
+    created_at: new Date(Date.now() - 172800000).toISOString(),
+    image_url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=2070&auto=format&fit=crop'
+  }
+];
+
 function EPaperPage() {
-  const { issues } = Route.useLoaderData();
+  const { issues: fetchedIssues } = Route.useLoaderData();
+  const issues = fetchedIssues.length > 0 ? fetchedIssues : DEMO_ISSUES;
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   const toBanglaDate = (dateStr: string) => {
