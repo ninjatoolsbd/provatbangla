@@ -25,10 +25,9 @@ export const getRelatedPosts = createServerFn({ method: "GET" })
 
       if (error) {
         console.error("Supabase error in getRelatedPosts:", error);
-        throw new Error(error.message);
+        return [];
       }
       
-      // Return a plain POJO array
       return (posts || []).map(p => ({
         id: p.id,
         title: p.title,
@@ -41,7 +40,7 @@ export const getRelatedPosts = createServerFn({ method: "GET" })
         excerpt: p.excerpt
       }));
     } catch (err: any) {
-      console.error("Error in getRelatedPosts handler:", err);
-      throw new Error(err.message || "Failed to fetch related posts");
+      console.error("Critical error in getRelatedPosts handler:", err);
+      return [];
     }
   });
