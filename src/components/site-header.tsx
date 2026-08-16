@@ -18,21 +18,21 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-background shadow-[0_1px_0_0_var(--border)]">
-      <div className="mx-auto flex max-w-[1240px] items-center gap-6 px-4 py-3">
+    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
+      <div className="mx-auto flex max-w-[1360px] items-center gap-6 px-4 py-4">
         <button
-          className="p-1 lg:hidden"
+          className="p-1 lg:hidden text-slate-800"
           onClick={() => setOpen((v) => !v)}
           aria-label="মেনু"
         >
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-transform duration-300 hover:scale-[1.03]">
+        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90">
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-12 w-auto object-contain sm:h-16" 
+            className="h-14 w-auto object-contain sm:h-16" 
           />
         </Link>
 
@@ -40,7 +40,7 @@ export function SiteHeader() {
           {utility.map((u) => (
             <span
               key={u.label}
-              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-foreground/80 transition-colors hover:text-primary"
+              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
             >
               <u.icon className="size-4 text-muted-foreground" />
               {u.label}
@@ -63,7 +63,7 @@ export function SiteHeader() {
       </div>
 
       <div className="border-y border-border">
-        <div className="mx-auto hidden max-w-[1240px] items-center justify-center gap-1 px-4 lg:flex">
+        <div className="mx-auto hidden max-w-[1360px] items-center justify-center gap-1 px-4 lg:flex">
           <Link
             to="/"
             className="flex items-center px-3 py-2.5 text-[15px] font-bold transition-transform duration-300 hover:scale-110 hover:text-primary"
