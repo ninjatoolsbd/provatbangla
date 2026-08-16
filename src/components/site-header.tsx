@@ -13,20 +13,19 @@ const utility = [
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
   { icon: Languages, label: "English", onClick: () => {
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (select) {
-      // Toggle logic
-      const currentVal = select.value;
-      const targetVal = currentVal === 'en' ? 'bn' : 'en';
-      select.value = targetVal;
-      select.dispatchEvent(new Event('change'));
-      
-      // Update the URL hash to trigger Google Translate if not already set
-      if (targetVal === 'en') {
-        window.location.hash = '#googtrans(bn|en)';
-      } else {
-        window.location.hash = '';
-      }
+    
+    // Toggle logic
+    const currentLang = select ? select.value : (window.location.hash.includes('en') ? 'en' : 'bn');
+    const targetLang = currentLang === 'en' ? 'bn' : 'en';
+
+    if (targetLang === 'en') {
+      window.location.hash = '#googtrans(bn|en)';
+    } else {
+      window.location.hash = '#googtrans(bn|bn)';
     }
+
+    // Refresh to force Google Translate to pick up the hash change immediately
+    window.location.reload();
   }},
 ];
 
