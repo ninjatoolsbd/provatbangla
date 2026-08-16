@@ -12,17 +12,37 @@ export const getRelatedPosts = createServerFn({ method: "GET" })
     }).parse(input)
   )
   .handler(async ({ data }) => {
-    const supabase = createPublicServerClient();
-    
-    const { data: posts, error } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("status", "published")
-      .eq("category", data.category)
-      .neq("slug", data.excludeSlug)
-      .order("published_at", { ascending: false })
-      .limit(data.limit);
+    try {
+      const supabase = createPublicServerClient();
+      
+      const { data: posts, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("status", "published")
+        .eq("category", data.category)
+        .neq("slug", data.excludeSlug)
+        .order("published_at", { ascending: false })
+        .limit(data.limit);
 
-    if (error) throw new Error(error.message);
-    return posts || [];
+      if (error) {
+        console.error("Supabase error in getRelatedPosts:", error);
+        throw new Error(error.message);
+      }
+      
+      // Ensure we return a plain array that can be serialized
+      return (posts || []).map(p => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        image_url: p.image_url,
+        category: p.category,
+        published_at: p.published_at,
+        created_at: p.created_at,
+        author_name: p.author_name,
+        excerpt: p.excerpt
+      }));
+    } catch (err: any) {
+      console.error("Error in getRelatedPosts handler:", err);
+      throw new Error(err.message || "Failed to fetch related posts");
+    }
   });
