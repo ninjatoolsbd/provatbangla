@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
