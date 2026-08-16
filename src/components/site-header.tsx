@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, Tv, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
@@ -17,6 +17,25 @@ const utility = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  const banglaDate = useMemo(() => {
+    const date = new Date();
+    const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+    const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+    
+    const banglaNumbers: Record<string, string> = {
+      "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯"
+    };
+
+    const toBanglaNum = (num: number) => num.toString().split("").map(d => banglaNumbers[d] || d).join("");
+    
+    const day = days[date.getDay()];
+    const dateNum = toBanglaNum(date.getDate());
+    const month = months[date.getMonth()];
+    const year = toBanglaNum(date.getFullYear());
+    
+    return `${day}, ${dateNum} ${month} ${year}`;
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,7 +82,10 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 xl:ml-0">
+        <div className="ml-auto flex items-center gap-4 xl:ml-0">
+          <div className="hidden text-[13px] font-medium text-slate-500 xl:block border-r pr-4 border-border mr-1">
+            {banglaDate}
+          </div>
           <button
             className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
             aria-label="অনুসন্ধান"
