@@ -311,17 +311,17 @@ function PostPage() {
           </aside>
         </div>
 
-        {/* Full Width "Freedom News Sorbosesh" Section */}
+        {/* Full Width "Aro Khobor" Section */}
         <div className="mt-8 border border-border bg-card p-4">
           <div className="relative mb-6 flex h-[32px] items-center border-y-[3px] border-black bg-white">
             <div className="h-[18px] w-[18px] bg-black" />
             <h3 className="ml-2 font-display text-[18px] font-bold text-black leading-none">
-              ফ্রিডম নিউজ সর্বশেষ
+              আরও খবর
             </h3>
             <div className="ml-auto h-[18px] w-2.5 bg-black" />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-            {latestPosts.slice(0, 6).map((a) => (
+            {relatedPosts.slice(0, 12).map((a: any) => (
               <Link key={a.id} to="/post/$slug" params={{ slug: a.slug || "" }} className="group block">
                 <NewsImage src={a.image_url || ""} alt={a.title} className="aspect-[16/9] w-full object-cover mb-2" />
                 <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-snug group-hover:text-primary">
