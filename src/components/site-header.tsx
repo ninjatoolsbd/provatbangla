@@ -11,25 +11,6 @@ const utility = [
   { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
-  { icon: Languages, label: "English", onClick: () => {
-    // Attempt multiple selectors if one fails
-    const select = (document.querySelector('.goog-te-combo') || 
-                    document.querySelector('#google_translate_element select')) as HTMLSelectElement;
-    
-    if (select) {
-      // Toggle between 'en' and 'bn'
-      // Google Translate uses 'en' for English and 'bn' for Bengali
-      const currentVal = select.value;
-      const targetLang = (currentVal === 'en') ? 'bn' : 'en';
-      
-      select.value = targetLang;
-      // Google Translate listens for 'change'
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-    } else {
-      console.error('Google Translate widget not ready');
-      // If the widget isn't ready, we can try to re-initialize or notify
-    }
-  }},
 ];
 
 type SocialGroup = { title: string; Icon: React.ComponentType<{ className?: string }>; iconClass: string; items: string[] };

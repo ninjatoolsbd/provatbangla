@@ -176,7 +176,7 @@
 
 /* Google Translate UI Overrides */
 .google-translate-container {
-  display: none;
+  display: block;
 }
 
 #google_translate_element select {
