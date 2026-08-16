@@ -159,31 +159,12 @@ function NewsPage() {
                 variant="grid"
               />
 
-              <div className="mb-4 bg-[#b20000] p-2 text-center text-white font-bold text-lg">
-                আপনার জন্য নির্বাচিত
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2 mb-6">
-                {editorChoices.map((a) => (
-                  <Link 
-                    key={a.id} 
-                    to="/news/$id" 
-                    params={{ id: String(a.id) }}
-                    className="group relative overflow-hidden block"
-                  >
-                    <NewsImage 
-                      src={a.image} 
-                      alt={a.title} 
-                      className="aspect-video w-full object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 to-transparent p-1.5">
-                      <h4 className="line-clamp-2 font-display text-[11px] leading-tight text-white group-hover:text-primary">
-                        {a.title}
-                      </h4>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <SidebarSection 
+                title="আপনার জন্য নির্বাচিত" 
+                category="" 
+                articles={editorChoices} 
+                variant="featured-grid"
+              />
               
               <AdBanner index={1} variant="box" className="mt-4 h-[250px]" />
             </div>
