@@ -114,11 +114,11 @@ export function SiteHeader() {
             <Link
               to="/category/$slug"
               params={{ slug: 'onnanno' }}
-              className="kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-colors hover:text-primary flex items-center gap-1"
+              className={`kb-underline px-3 py-2.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-1.5' : 'py-2.5'}`}
               activeProps={{ className: "text-primary" }}
             >
               অন্যান্য
-              <ChevronRight className="size-3.5 rotate-90" />
+              <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3' : 'size-3.5'}`} />
             </Link>
             <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-card border border-border shadow-lg py-2 animate-in fade-in slide-in-from-top-1 duration-200">
               {categories.filter(c => [
