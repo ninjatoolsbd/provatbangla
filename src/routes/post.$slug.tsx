@@ -112,7 +112,7 @@ function PostPage() {
       <main className="mx-auto max-w-[1240px] px-4 py-6">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           {/* Main Content */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-12">
             {isPreview && (
               <div className="mb-6 rounded-md bg-yellow-100 p-3 text-center text-sm font-semibold text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
                 এটি একটি প্রিভিউ। এই নিউজটি এখনও প্রকাশিত হয়নি।
@@ -207,65 +207,6 @@ function PostPage() {
               </div>
             )}
           </div>
-
-          {/* Sidebar */}
-          <aside className="lg:col-span-4">
-            <div className="sticky top-24 space-y-8">
-              {/* Tabs Widget */}
-              <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
-                <div className="flex bg-slate-50 border-b border-slate-200">
-                  <button 
-                    onClick={() => setActiveTab("latest")}
-                    className={cn(
-                      "flex-1 py-3 text-[16px] font-bold transition-all relative",
-                      activeTab === "latest" ? "text-primary bg-white border-t-2 border-primary" : "text-slate-500 hover:text-slate-700"
-                    )}
-                  >
-                    সর্বশেষ
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab("popular")}
-                    className={cn(
-                      "flex-1 py-3 text-[16px] font-bold transition-all relative",
-                      activeTab === "popular" ? "text-primary bg-white border-t-2 border-primary" : "text-slate-500 hover:text-slate-700"
-                    )}
-                  >
-                    জনপ্রিয়
-                  </button>
-                </div>
-                <div className="p-2 space-y-0.5 max-h-[600px] overflow-y-auto">
-                  {sidebarPosts.map((p, i) => (
-                    <Link
-                      key={p.id}
-                      to="/post/$slug"
-                      params={{ slug: p.slug ?? "" }}
-                      className="group flex items-start gap-3 border-b border-slate-50 py-3.5 px-3 hover:bg-slate-50 transition-colors last:border-0"
-                    >
-                      <span className={cn(
-                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold mt-0.5",
-                        i < 3 ? "bg-slate-200 text-slate-700" : "bg-slate-100 text-slate-400"
-                      )}>
-                        {toBanglaNumber(i + 1)}
-                      </span>
-                      <h4 className="line-clamp-2 font-display text-[15px] font-bold leading-snug text-slate-800 group-hover:text-primary transition-colors">
-                        {p.title}
-                      </h4>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Newsletter or Ad Mockup */}
-              <div className="rounded-lg bg-slate-900 p-6 text-white text-center">
-                <h4 className="font-display text-xl font-bold mb-2">প্রভাতবাংলা নিউজলেটার</h4>
-                <p className="text-sm text-slate-400 mb-4">দেশ বিদেশের সব খবর সবার আগে আপনার ইমেইলে পেতে সাবস্ক্রাইব করুন।</p>
-                <div className="flex gap-2">
-                  <input type="email" placeholder="আপনার ইমেইল" className="flex-1 rounded-sm bg-white/10 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-primary" />
-                  <button className="bg-primary px-4 py-2 rounded-sm text-sm font-bold hover:bg-primary/90 transition-colors">সাবস্ক্রাইব</button>
-                </div>
-              </div>
-            </div>
-          </aside>
         </div>
       </main>
       <SiteFooter />
