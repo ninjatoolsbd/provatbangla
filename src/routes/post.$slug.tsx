@@ -28,14 +28,16 @@ export const Route = createFileRoute("/post/$slug")({
   loaderDeps: ({ search: { preview } }) => ({ preview }),
   loader: async ({ params, deps: { preview } }) => {
     let post;
+    const decodedSlug = decodeURIComponent(params.slug);
     try {
       if (preview) {
-        post = await getPostForPreview({ data: { slug: decodeURIComponent(params.slug) } });
+        post = await getPostForPreview({ data: { slug: decodedSlug } });
       } else {
-        post = await getPublishedPost({ data: { slug: decodeURIComponent(params.slug) } });
+        post = await getPublishedPost({ data: { slug: decodedSlug } });
       }
     } catch (e) {
       console.error("Loader fetch error:", e);
+      // Fallback for demo news or not found
       throw notFound();
     }
     
