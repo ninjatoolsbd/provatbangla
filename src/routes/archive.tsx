@@ -3,19 +3,12 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Link } from "@tanstack/react-router";
-import { Calendar, ChevronRight, Hash } from "lucide-react";
+import { Calendar, ChevronRight, Hash, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 
 export const Route = createFileRoute('/archive')({
   component: ArchivePage,
-  loader: async () => {
-    const { data: posts, error } = await supabase
-      .from('posts')
-      .select('id, title, created_at, slug, category')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false });
-    
-    return { posts: posts || [] };
-  },
   head: () => ({
     meta: [
       { title: "আর্কাইভ — প্রভাতবাংলা" },
@@ -24,9 +17,59 @@ export const Route = createFileRoute('/archive')({
   })
 });
 
+const PAGE_SIZE = 50;
+
 function ArchivePage() {
-  const { posts } = Route.useLoaderData();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  const fetchPosts = async (pageNumber: number) => {
+    if (isLoading) return;
+    setIsLoading(true);
+    
+    const from = pageNumber * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    const { data, error } = await supabase
+      .from('posts')
+      .select('id, title, created_at, slug, category')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      console.error("Error fetching archive:", error);
+      setIsLoading(false);
+      return;
+    }
+
+    if (data) {
+      if (data.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+      setPosts(prev => [...prev, ...data]);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPosts(0);
+  }, []);
+
+  useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchPosts(nextPage);
+    }
+  }, [inView, hasMore, isLoading]);
+
   const toBanglaDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('bn-BD', {
       year: 'numeric',
@@ -83,14 +126,30 @@ function ArchivePage() {
                     )}
                   </Link>
                 ))}
+
+                {/* Loading indicator / Intersection Ref */}
+                {hasMore && (
+                  <div ref={ref} className="bg-white p-8 flex justify-center items-center">
+                    {isLoading && (
+                      <div className="flex items-center gap-2 text-slate-500 font-bold">
+                        <Loader2 className="size-5 animate-spin" />
+                        লোড হচ্ছে...
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            ) : (
+            ) : !isLoading ? (
               <div className="text-center py-20 bg-white">
                 <div className="bg-slate-50 size-20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="size-10 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-700 mb-1">কোনো সংবাদ পাওয়া যায়নি</h3>
                 <p className="text-slate-500">বর্তমানে আর্কাইভে কোনো সংবাদ নেই। অনুগ্রহ করে পরে চেষ্টা করুন।</p>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center py-20 bg-white">
+                <Loader2 className="size-10 animate-spin text-primary" />
               </div>
             )}
           </div>
