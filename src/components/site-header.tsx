@@ -10,8 +10,8 @@ const utility = [
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
   { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
-  { icon: Languages, label: "English", to: "/english" },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
+  { icon: Languages, label: "English", to: "/english" },
 ];
 
 export function SiteHeader() {
