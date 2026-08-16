@@ -191,6 +191,8 @@ export function SiteHeader() {
 
 
         <div className="ml-auto flex items-center gap-4 xl:ml-0">
+          <div id="google_translate_element" className="google-translate-container"></div>
+          
           <div className="hidden text-[13px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1">
             {banglaDate}
           </div>
