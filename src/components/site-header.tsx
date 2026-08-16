@@ -72,7 +72,7 @@ export function SiteHeader() {
             activeProps={{ className: "text-primary" }}
             aria-label="প্রচ্ছদ"
           >
-            <Home className="size-[18px]" />
+            <Home className="size-[20px] stroke-[2.5]" />
           </Link>
           {categories.filter(c => ![
             'health', 'probas', 'orthoniti', 'ain-adalat', 

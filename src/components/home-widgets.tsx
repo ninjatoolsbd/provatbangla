@@ -109,8 +109,8 @@ export function VideoStrip({ items }: { items: any[] }) {
       <section ref={liveTvRef} className="mt-10 bg-[#0F0F0F] text-white">
         <div className="mx-auto max-w-[1360px] px-4 py-8">
           <div className="mb-6 flex items-center gap-3">
-            <span className="inline-block h-[24px] w-[6px] bg-primary" />
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight">লাইভ টিভি</h2>
+            <span className="inline-block h-[24px] w-[6px] bg-primary animate-pulse" />
+            <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">লাইভ টিভি</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
