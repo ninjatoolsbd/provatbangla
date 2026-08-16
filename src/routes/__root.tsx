@@ -119,14 +119,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
-    scripts:
-      runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
+    scripts: [
+      {
+        children: `
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'bn',
+              includedLanguages: 'en,bn,ar,hi,es,fr,de',
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: false
+            }, 'google_translate_element');
+          }
+        `
+      },
+      {
+        src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
+        async: true
+      },
+      ...(runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
         ? [
             {
               children: `window.__MY_SUPABASE_CONFIG__=${JSON.stringify(runtimeSupabaseConfig).replaceAll("<", "\\u003c")}`,
             },
           ]
-        : [],
+        : [])
+    ],
     };
   },
 
