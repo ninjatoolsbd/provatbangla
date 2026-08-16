@@ -16,6 +16,7 @@ export const Route = createFileRoute('/magazine')({
       .from('posts')
       .select('id, title, created_at, slug, category, image_url, excerpt')
       .eq('status', 'published')
+      .eq('category', 'বিনোদন')
       .order('created_at', { ascending: false })
       .limit(10);
     
