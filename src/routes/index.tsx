@@ -115,6 +115,7 @@ function Home() {
         {/* Video Strip removed and merged into Photo Gallery below */}
 
         <BottomWidgets />
+        <MoreNewsSection />
       </main>
 
       <VideoStrip items={videoPosts} />
