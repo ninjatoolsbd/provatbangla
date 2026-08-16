@@ -5,8 +5,9 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AdBanner } from "@/components/ad-banner";
-import { GridCard, Meta, SectionHeading } from "@/components/news-cards";
-import { categoryName, getArticle, related } from "@/lib/news-data";
+import { GridCard, Meta, SectionHeading, NewsImage } from "@/components/news-cards";
+import { SidebarSection } from "@/components/sidebar-widgets";
+import { categoryName, getArticle, byCategory, related } from "@/lib/news-data";
 
 export const Route = createFileRoute("/news/$id")({
   loader: ({ params }) => {
@@ -36,6 +37,9 @@ export const Route = createFileRoute("/news/$id")({
 function NewsPage() {
   const { article } = Route.useLoaderData();
   const more = related(article);
+  const latestInCategory = byCategory(article.category).filter(a => a.id !== article.id).slice(0, 5);
+  const popularInCategory = byCategory(article.category).reverse().filter(a => a.id !== article.id).slice(0, 4);
+  const editorChoices = byCategory("bishesh-protibedon").slice(0, 8);
 
   const shareOnFacebook = () => {
     const url = window.location.href;
@@ -140,13 +144,47 @@ function NewsPage() {
           </article>
 
           <aside className="lg:col-span-3">
-            <div className="border border-border bg-card p-4 lg:sticky lg:top-4">
-              <SectionHeading title="সম্পর্কিত খবর" slug={article.category} />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                {more.slice(0, 3).map((a) => (
-                  <GridCard key={a.id} article={a} compact />
+            <div className="lg:sticky lg:top-20">
+              <SidebarSection 
+                title="সর্বশেষ" 
+                category={categoryName(article.category)} 
+                articles={latestInCategory} 
+                variant="list"
+              />
+              
+              <SidebarSection 
+                title="সর্বোচ্চ পঠিত" 
+                category={categoryName(article.category)} 
+                articles={popularInCategory} 
+                variant="grid"
+              />
+
+              <div className="mb-4 bg-[#b20000] p-2 text-center text-white font-bold text-lg">
+                আপনার জন্য নির্বাচিত
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2 mb-6">
+                {editorChoices.map((a) => (
+                  <Link 
+                    key={a.id} 
+                    to="/news/$id" 
+                    params={{ id: String(a.id) }}
+                    className="group relative overflow-hidden block"
+                  >
+                    <NewsImage 
+                      src={a.image} 
+                      alt={a.title} 
+                      className="aspect-video w-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 to-transparent p-1.5">
+                      <h4 className="line-clamp-2 font-display text-[11px] leading-tight text-white group-hover:text-primary">
+                        {a.title}
+                      </h4>
+                    </div>
+                  </Link>
                 ))}
               </div>
+              
               <AdBanner index={1} variant="box" className="mt-4 h-[250px]" />
             </div>
           </aside>
