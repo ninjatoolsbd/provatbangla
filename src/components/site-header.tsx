@@ -283,61 +283,63 @@ export function SiteHeader() {
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className={`hidden flex-1 items-center flex-wrap lg:flex gap-1 overflow-hidden ${isScrolled ? 'lg:justify-start' : 'lg:justify-center'}`}>
-
-            <Link
-              to="/"
-              className={`flex shrink-0 items-center px-2 sm:px-3 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-3' : 'py-3.5'}`}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "text-primary" }}
-              aria-label="প্রচ্ছদ"
-            >
-              <Home className={`${isScrolled ? 'size-[18px]' : 'size-[20px]'} stroke-[2.5]`} />
-            </Link>
-            
-            {categories.filter(c => ![
-              'health', 'probas', 'orthoniti', 'ain-adalat', 
-              'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
-            ].includes(c.slug)).map((c) => (
+          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-6' : 'justify-center'}`}>
+            <div className="flex flex-wrap items-center gap-x-1">
               <Link
-                key={c.slug}
-                to="/category/$slug"
-                params={{ slug: c.slug }}
-                className={`kb-underline px-2.5 sm:px-3.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-3' : 'py-3.5'}`}
+                to="/"
+                className={`flex shrink-0 items-center px-2 text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-3'}`}
+                activeOptions={{ exact: true }}
                 activeProps={{ className: "text-primary" }}
+                aria-label="প্রচ্ছদ"
               >
-                {c.name}
+                <Home className={`${isScrolled ? 'size-[18px]' : 'size-[20px]'} stroke-[2.5]`} />
               </Link>
-            ))}
+              
+              {categories.filter(c => ![
+                'health', 'probas', 'orthoniti', 'ain-adalat', 
+                'motamot', 'bishesh-protibedon', 'photo-gallery', 'onnanno'
+              ].includes(c.slug)).map((c) => (
+                <Link
+                  key={c.slug}
+                  to="/category/$slug"
+                  params={{ slug: c.slug }}
+                  className={`kb-underline px-2 text-[14px] xl:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-2' : 'py-3'}`}
+                  activeProps={{ className: "text-primary" }}
+                >
+                  {c.name}
+                </Link>
+              ))}
 
-            <div className="relative group shrink-0">
-              <Link
-                to="/category/$slug"
-                params={{ slug: 'onnanno' }}
-                className={`kb-underline px-2.5 sm:px-3.5 text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-3' : 'py-3.5'}`}
-                activeProps={{ className: "text-primary" }}
-              >
-                অন্যান্য
-                <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3.5' : 'size-4'}`} />
-              </Link>
-              <div className="absolute top-full left-0 hidden group-hover:block w-52 bg-card border border-border shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
-                {categories.filter(c => [
-                  'health', 'probas', 'orthoniti', 'ain-adalat', 
-                  'motamot', 'bishesh-protibedon', 'photo-gallery'
-                ].includes(c.slug)).map((c) => (
-                  <Link
-                    key={c.slug}
-                    to="/category/$slug"
-                    params={{ slug: c.slug }}
-                    className="block px-4 py-2.5 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
-                    activeProps={{ className: "text-primary bg-accent" }}
-                  >
-                    {c.name}
-                  </Link>
-                ))}
+              <div className="relative group shrink-0">
+                <Link
+                  to="/category/$slug"
+                  params={{ slug: 'onnanno' }}
+                  className={`kb-underline px-2 text-[14px] xl:text-[15px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-2' : 'py-3'}`}
+                  activeProps={{ className: "text-primary" }}
+                >
+                  অন্যান্য
+                  <ChevronRight className={`transition-all duration-300 rotate-90 ${isScrolled ? 'size-3.5' : 'size-4'}`} />
+                </Link>
+                <div className="absolute top-full left-0 hidden group-hover:block w-52 bg-card border border-border shadow-xl py-2 animate-in fade-in slide-in-from-top-1 duration-200 z-[60]">
+                  {categories.filter(c => [
+                    'health', 'probas', 'orthoniti', 'ain-adalat', 
+                    'motamot', 'bishesh-protibedon', 'photo-gallery'
+                  ].includes(c.slug)).map((c) => (
+                    <Link
+                      key={c.slug}
+                      to="/category/$slug"
+                      params={{ slug: c.slug }}
+                      className="block px-4 py-2.5 text-[14px] font-bold hover:bg-accent hover:text-primary transition-colors border-b border-border/50 last:border-0"
+                      activeProps={{ className: "text-primary bg-accent" }}
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+
 
           {/* Scrolled Search/Utility */}
           {isScrolled && (
