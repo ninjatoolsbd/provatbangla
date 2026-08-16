@@ -30,8 +30,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
       {/* Top Header - Hides on Scroll */}
       <div 
-        className={`mx-auto flex max-w-[1360px] items-center gap-6 px-4 transition-all duration-300 ease-in-out ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[70px] py-3"
+        className={`mx-auto flex max-w-[1360px] items-center gap-4 px-4 transition-all duration-300 ease-in-out sm:gap-6 ${
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[64px] py-2 sm:h-[80px] sm:py-3"
         }`}
       >
         <button
@@ -42,11 +42,11 @@ export function SiteHeader() {
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[200px] sm:max-w-[240px]">
+        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[160px] sm:max-w-[220px]">
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-auto w-full max-h-[40px] object-contain sm:max-h-[48px]" 
+            className="h-auto w-full max-h-[36px] object-contain sm:max-h-[44px]" 
           />
         </Link>
 
@@ -79,7 +79,7 @@ export function SiteHeader() {
 
       {/* Main Navigation - Stays Sticky */}
       <div className="border-y border-border bg-white">
-        <div className={`mx-auto flex max-w-[1360px] items-center justify-center gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1' : ''}`}>
+        <div className={`mx-auto flex max-w-[1360px] items-center justify-between lg:justify-center gap-1 px-4 transition-all duration-300 ${isScrolled ? 'py-1 min-h-[50px]' : ''}`}>
           
           {/* Mobile Menu Button - Visible when scrolled on mobile */}
           <button
