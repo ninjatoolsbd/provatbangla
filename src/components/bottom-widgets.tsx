@@ -180,7 +180,7 @@ export function BottomWidgets() {
 
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-sm mb-5 bg-slate-100">
             <NewsImage 
-              src="https://images.unsplash.com/photo-1540910419892-f0c976c70c5f?auto=format&fit=crop&w=800&q=80" 
+              src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=800&q=80" 
               alt="Poll"
               className="h-full w-full object-cover"
             />
