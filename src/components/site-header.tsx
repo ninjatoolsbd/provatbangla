@@ -11,7 +11,7 @@ const utility = [
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
-  { icon: Languages, label: "বাংলা কনভার্টার", to: "/converter" },
+  { icon: Languages, label: "English", to: "/english" },
 ];
 
 export function SiteHeader() {
