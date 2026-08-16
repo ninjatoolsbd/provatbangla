@@ -273,7 +273,7 @@ export function SiteHeader() {
 
           {/* Scrolled Logo - Standard sizing and position */}
           {isScrolled && (
-            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[120px] sm:max-w-[150px] mr-6">
+            <Link to="/" className="flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[100px] sm:max-w-[140px] mr-2 xl:mr-6">
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
