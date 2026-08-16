@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, Tv, X } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/assets/logo.png.asset.json";
@@ -18,7 +18,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   
-  const banglaDate = useMemo(() => {
+  const getBanglaDate = useCallback(() => {
     const date = new Date();
     const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
     const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
@@ -37,13 +37,22 @@ export function SiteHeader() {
     return `${day}, ${dateNum} ${month} ${year}`;
   }, []);
 
+  const [banglaDate, setBanglaDate] = useState(getBanglaDate());
+
   useEffect(() => {
+    const timer = setInterval(() => {
+      setBanglaDate(getBanglaDate());
+    }, 60000); // Check every minute
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 120);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearInterval(timer);
+    };
+  }, [getBanglaDate]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
