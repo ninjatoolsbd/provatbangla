@@ -130,12 +130,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               autoDisplay: false
             }, 'google_translate_element');
           }
-        
         `
       },
       {
         src: "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit",
-        async: true
+        async: true,
+        defer: true
       },
       ...(runtimeSupabaseConfig.url && runtimeSupabaseConfig.publishableKey
         ? [
