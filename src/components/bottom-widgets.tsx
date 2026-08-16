@@ -250,7 +250,7 @@ export function BottomWidgets() {
         </div>
 
         <div className="flex-1 border-t border-slate-100">
-          <div className="space-y-0.5 overflow-y-auto max-h-[520px] scrollbar-thin scrollbar-thumb-slate-200">
+          <div className="space-y-0.5 overflow-y-auto max-h-[580px] lg:max-h-[660px] scrollbar-thin scrollbar-thumb-slate-200">
             {tabPosts.slice(0, 8).map((p, i) => (
               <Link
                 key={p.id}
