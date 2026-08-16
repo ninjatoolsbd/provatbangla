@@ -17,6 +17,25 @@ const utility = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  const banglaDate = useMemo(() => {
+    const date = new Date();
+    const days = ["রবিবার", "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার"];
+    const months = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+    
+    const banglaNumbers: Record<string, string> = {
+      "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪", "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯"
+    };
+
+    const toBanglaNum = (num: number) => num.toString().split("").map(d => banglaNumbers[d] || d).join("");
+    
+    const day = days[date.getDay()];
+    const dateNum = toBanglaNum(date.getDate());
+    const month = months[date.getMonth()];
+    const year = toBanglaNum(date.getFullYear());
+    
+    return `${day}, ${dateNum} ${month} ${year}`;
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
