@@ -28,11 +28,17 @@ export const Route = createFileRoute("/post/$slug")({
   loaderDeps: ({ search: { preview } }) => ({ preview }),
   loader: async ({ params, deps: { preview } }) => {
     let post;
-    if (preview) {
-      post = await getPostForPreview({ data: { slug: params.slug } });
-    } else {
-      post = await getPublishedPost({ data: { slug: params.slug } });
+    try {
+      if (preview) {
+        post = await getPostForPreview({ data: { slug: params.slug } });
+      } else {
+        post = await getPublishedPost({ data: { slug: params.slug } });
+      }
+    } catch (e) {
+      console.error("Loader fetch error:", e);
+      throw notFound();
     }
+    
     if (!post) throw notFound();
     return { post: post as Post, isPreview: !!preview };
   },

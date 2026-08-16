@@ -11,12 +11,15 @@ export const attachSupabaseAuth = createMiddleware({ type: "function" }).client(
       try {
         const { data } = await supabase.auth.getSession();
         token = data.session?.access_token ?? undefined;
-      } catch {
+      } catch (err) {
+        console.warn("Supabase session fetch failed in auth-attacher:", err);
         token = undefined;
       }
     }
-    return next(
-      token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
-    );
+    
+    // Explicitly merge the new header instead of potentially overwriting context
+    return next({
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
   },
 );
