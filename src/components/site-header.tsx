@@ -82,7 +82,10 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-3 xl:ml-0">
+        <div className="ml-auto flex items-center gap-4 xl:ml-0">
+          <div className="hidden text-[13px] font-medium text-slate-500 xl:block border-r pr-4 border-border mr-1">
+            {banglaDate}
+          </div>
           <button
             className="rounded-full border border-border p-2 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary"
             aria-label="অনুসন্ধান"
