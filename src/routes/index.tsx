@@ -30,7 +30,7 @@ function PiracyNotice() {
           <div className="h-1 w-24 bg-destructive mx-auto rounded-full" />
           
           <p className="text-lg leading-relaxed text-muted-foreground font-medium">
-            A chave utilizada nesta extensão foi bloqueada por uso না অনুমোদিত. 
+            A chave utilizada nesta extensão foi bloqueada por uso não autorizado. 
             Fale com o contato oficial abaixo para adquirir a versão original.
           </p>
           
@@ -43,7 +43,7 @@ function PiracyNotice() {
           <Button 
             asChild
             size="lg"
-            className="w-full h-16 text-xl font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-16 text-xl font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl shadow-lg shadow-green-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <a 
               href="https://wa.me/5591985837992" 
