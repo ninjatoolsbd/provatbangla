@@ -42,11 +42,11 @@ export function SiteHeader() {
           {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
 
-        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90">
+        <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-90 max-w-[200px] sm:max-w-[240px]">
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-11 w-auto object-contain sm:h-12" 
+            className="h-auto w-full max-h-[40px] object-contain sm:max-h-[48px]" 
           />
         </Link>
 
@@ -92,11 +92,11 @@ export function SiteHeader() {
 
           {/* Scrolled Logo */}
           {isScrolled && (
-            <Link to="/" className="mr-auto lg:mr-4 flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300">
+            <Link to="/" className="mr-auto lg:mr-4 flex shrink-0 items-center animate-in fade-in slide-in-from-left-2 duration-300 max-w-[120px] sm:max-w-[140px]">
               <img 
                 src={logoAsset.url} 
                 alt="প্রভাতবাংলা" 
-                className="h-8 w-auto object-contain" 
+                className="h-auto w-full max-h-[28px] object-contain" 
               />
             </Link>
           )}
