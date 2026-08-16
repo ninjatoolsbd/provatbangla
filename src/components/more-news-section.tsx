@@ -93,7 +93,7 @@ export function MoreNewsSection() {
                   {post.title}
                 </h3>
                 <p className="text-[13px] text-slate-400">
-                  {toBanglaDateTime(post.published_at)}
+                  {toBanglaDateTime(post.published_at || new Date().toISOString())}
                 </p>
               </div>
             </Link>
