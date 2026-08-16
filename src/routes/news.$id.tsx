@@ -5,9 +5,8 @@ import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { AdBanner } from "@/components/ad-banner";
-import { GridCard, Meta, SectionHeading, NewsImage } from "@/components/news-cards";
-import { SidebarSection } from "@/components/sidebar-widgets";
-import { categoryName, getArticle, byCategory, related } from "@/lib/news-data";
+import { GridCard, Meta, SectionHeading } from "@/components/news-cards";
+import { categoryName, getArticle, related } from "@/lib/news-data";
 
 export const Route = createFileRoute("/news/$id")({
   loader: ({ params }) => {
@@ -37,9 +36,6 @@ export const Route = createFileRoute("/news/$id")({
 function NewsPage() {
   const { article } = Route.useLoaderData();
   const more = related(article);
-  const latestInCategory = byCategory(article.category).filter(a => a.id !== article.id).slice(0, 5);
-  const popularInCategory = byCategory(article.category).reverse().filter(a => a.id !== article.id).slice(0, 4);
-  const editorChoices = byCategory("bishesh-protibedon").slice(0, 8);
 
   const shareOnFacebook = () => {
     const url = window.location.href;
