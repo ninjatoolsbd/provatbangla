@@ -88,12 +88,12 @@ export function SplitLead({ article }: { article: Article | Post }) {
       </ArticleLink>
       <div className="min-w-0">
         <ArticleLink article={article}>
-          <h2 className="font-display text-[24px] leading-[1.2] font-bold transition-colors group-hover:text-primary sm:text-[34px]">
+          <h2 className="font-display text-[22px] leading-[1.3] font-bold transition-colors group-hover:text-primary sm:text-[32px] md:text-[34px]">
             <Kicker article={article} />
             {article.title}
           </h2>
         </ArticleLink>
-        <p className="mt-3 line-clamp-4 text-[16px] leading-relaxed text-slate-600">
+        <p className="mt-3 line-clamp-4 text-[15px] leading-[1.6] text-slate-600 sm:text-[16px]">
           {article.excerpt}
         </p>
       </div>
