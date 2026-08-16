@@ -88,12 +88,12 @@ export function SplitLead({ article }: { article: Article | Post }) {
       </ArticleLink>
       <div className="min-w-0">
         <ArticleLink article={article}>
-          <h2 className="font-display text-[26px] leading-[1.35] font-bold transition-colors group-hover:text-primary sm:text-[30px]">
+          <h2 className="font-display text-[28px] leading-[1.3] font-bold transition-colors group-hover:text-primary sm:text-[32px]">
             <Kicker article={article} />
             {article.title}
           </h2>
         </ArticleLink>
-        <p className="mt-3 line-clamp-5 text-[15px] leading-relaxed text-muted-foreground">
+        <p className="mt-3 line-clamp-4 text-[16px] leading-relaxed text-slate-600">
           {article.excerpt}
         </p>
       </div>
@@ -116,7 +116,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
         />
       </ArticleLink>
       <ArticleLink article={article}>
-        <h2 className="mt-3 font-display text-2xl leading-snug font-bold transition-colors group-hover:text-primary">
+        <h2 className="mt-3 font-display text-[22px] leading-snug font-bold transition-colors group-hover:text-primary">
           <Kicker article={article} />
           {article.title}
         </h2>
@@ -145,7 +145,7 @@ export function GridCard({ article, compact = false }: { article: Article | Post
         <h3
           className={cn(
             "mt-2.5 font-display leading-[1.4] font-bold transition-colors group-hover:text-primary",
-            compact ? "text-[17px]" : "text-[19px]",
+            compact ? "text-[16px]" : "text-[18px]",
           )}
         >
           <Kicker article={article} />

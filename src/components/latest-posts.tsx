@@ -125,7 +125,7 @@ export function LatestPosts({ category }: { category?: string }) {
               
               <div className="p-6 lg:p-8">
                 <Link to="/post/$slug" params={{ slug: mainPost.slug ?? "" }}>
-                  <h2 className="font-display text-2xl font-black leading-tight text-slate-900 transition-colors group-hover:text-primary lg:text-4xl">
+                  <h2 className="font-display text-2xl font-extrabold leading-[1.2] text-slate-900 transition-colors group-hover:text-primary lg:text-[40px]">
                     {mainPost.title}
                   </h2>
                 </Link>
@@ -152,8 +152,8 @@ export function LatestPosts({ category }: { category?: string }) {
         {/* Right: Sidebar Feed */}
         <div className="lg:col-span-4 flex flex-col">
           <div className="flex flex-col gap-6 h-full">
-            <h3 className="flex items-center gap-3 font-display text-xl font-bold text-slate-900 shrink-0">
-              <span className="h-6 w-1 rounded-full bg-primary"></span>
+            <h3 className="flex items-center gap-3 font-display text-[22px] font-bold text-slate-900 shrink-0">
+              <span className="h-[22px] w-[5px] bg-primary"></span>
               খবরগুলো পড়ুন
             </h3>
             <div className="flex-1 space-y-5 overflow-hidden">
@@ -175,7 +175,7 @@ export function LatestPosts({ category }: { category?: string }) {
                     </div>
                     <div className="col-span-2">
                       <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                        <h3 className="line-clamp-2 font-display text-[15px] font-bold leading-snug text-slate-800 transition-colors group-hover:text-primary">
+                        <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary">
                           {p.title}
                         </h3>
                       </Link>
