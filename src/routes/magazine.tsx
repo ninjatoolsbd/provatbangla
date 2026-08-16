@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Link } from "@tanstack/react-router";
 import { BookOpen, Calendar, Clock, ChevronRight, Hash } from "lucide-react";
-import { NewsImage } from "@/components/news-image";
+import { NewsImage } from "@/components/news-cards";
 
 export const Route = createFileRoute('/magazine')({
   component: MagazinePage,
