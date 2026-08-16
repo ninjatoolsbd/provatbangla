@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Facebook, Link2, Twitter } from "lucide-react";
+import { toast } from "sonner";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -36,10 +37,26 @@ function NewsPage() {
   const { article } = Route.useLoaderData();
   const more = related(article);
 
+  const shareOnFacebook = () => {
+    const url = window.location.href;
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+  };
+
+  const shareOnTwitter = () => {
+    const url = window.location.href;
+    const title = article.title;
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, "_blank");
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("লিঙ্ক কপি করা হয়েছে");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <main className="mx-auto max-w-[1360px] px-3 py-4 sm:px-4">
         <nav className="mb-3 text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">
             প্রচ্ছদ
@@ -55,7 +72,7 @@ function NewsPage() {
         </nav>
 
         <div className="grid gap-5 lg:grid-cols-12">
-          <article className="border border-border bg-card p-4 sm:p-6 lg:col-span-8">
+          <article className="border border-border bg-card p-4 sm:p-6 lg:col-span-9">
             {article.kicker && (
               <span className="mb-2 block font-display text-lg font-bold text-primary">
                 {article.kicker}
@@ -68,15 +85,24 @@ function NewsPage() {
 
             <div className="mt-4 flex items-center gap-2 border-y border-border py-2">
               <span className="text-xs text-muted-foreground">শেয়ার:</span>
-              <span className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground">
+              <button
+                onClick={shareOnFacebook}
+                className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-[#1877F2] hover:text-white"
+              >
                 <Facebook className="size-4" />
-              </span>
-              <span className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground">
+              </button>
+              <button
+                onClick={shareOnTwitter}
+                className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-black hover:text-white"
+              >
                 <Twitter className="size-4" />
-              </span>
-              <span className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground">
+              </button>
+              <button
+                onClick={copyLink}
+                className="grid size-8 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
                 <Link2 className="size-4" />
-              </span>
+              </button>
             </div>
 
             <figure className="mt-4">
@@ -113,7 +139,7 @@ function NewsPage() {
             </div>
           </article>
 
-          <aside className="lg:col-span-4">
+          <aside className="lg:col-span-3">
             <div className="border border-border bg-card p-4 lg:sticky lg:top-4">
               <SectionHeading title="সম্পর্কিত খবর" slug={article.category} />
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
