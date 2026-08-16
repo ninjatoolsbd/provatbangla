@@ -1,4 +1,3 @@
-
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { createPublicServerClient } from "@/integrations/my-supabase/client";
@@ -17,7 +16,7 @@ export const getRelatedPosts = createServerFn({ method: "GET" })
       
       const { data: posts, error } = await supabase
         .from("posts")
-        .select("*")
+        .select("id, title, slug, image_url, category, published_at, created_at, author_name, excerpt")
         .eq("status", "published")
         .eq("category", data.category)
         .neq("slug", data.excludeSlug)
@@ -29,7 +28,7 @@ export const getRelatedPosts = createServerFn({ method: "GET" })
         throw new Error(error.message);
       }
       
-      // Ensure we return a plain array that can be serialized
+      // Return a plain POJO array
       return (posts || []).map(p => ({
         id: p.id,
         title: p.title,
