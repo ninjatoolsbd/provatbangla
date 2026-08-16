@@ -34,7 +34,7 @@ export function SiteFooter() {
                 <img 
                   src={logoAsset.url} 
                   alt="প্রভাতবাংলা" 
-                  className="h-14 w-auto object-contain" 
+                  className="h-14 w-auto object-contain brightness-0 invert" 
                 />
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
