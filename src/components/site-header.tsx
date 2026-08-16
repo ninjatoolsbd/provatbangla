@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, BookOpen, ChevronRight, Home, Languages, Menu, Newspaper, Search, Share2, Tv, X } from "lucide-react";
+import { Bell, BookOpen, ChevronDown, ChevronRight, Facebook, Home, Instagram, Languages, Linkedin, MessageCircle, Menu, Newspaper, Music2, Rss, Search, Send, Share2, Tv, Twitter, X, Youtube } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 
 import { categories } from "@/lib/news-data";
@@ -9,10 +9,94 @@ const utility = [
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
   { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
-  { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social" },
+  { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
   { icon: Languages, label: "English", to: "/english" },
 ];
+
+type SocialGroup = { title: string; Icon: React.ComponentType<{ className?: string }>; iconClass: string; items: string[] };
+
+const socialGroups: SocialGroup[][] = [
+  [
+    {
+      title: "ফেসবুক পেজ",
+      Icon: Facebook,
+      iconClass: "text-[#1877F2]",
+      items: ["প্রভাতবাংলা", "প্রভাতবাংলা অনলাইন", "প্রভাতবাংলা নিউজ", "provatbangla.com", "প্রভাতবাংলা ওয়ার্ল্ড", "প্রভাতবাংলা স্পোর্টস", "প্রভাতবাংলা বিনোদন", "প্রভাতবাংলা ড্রামা"],
+    },
+  ],
+  [
+    {
+      title: "ইউটিউব চ্যানেল",
+      Icon: Youtube,
+      iconClass: "text-[#FF0000]",
+      items: ["প্রভাতবাংলা নিউজ", "প্রভাতবাংলা ওয়ার্ল্ড", "প্রভাতবাংলা বিনোদন", "প্রভাতবাংলা স্পোর্টস", "প্রভাতবাংলা", "প্রভাতবাংলা ড্রামা"],
+    },
+  ],
+  [
+    { title: "টিকটক", Icon: Music2, iconClass: "text-foreground", items: ["প্রভাতবাংলা নিউজ"] },
+    { title: "টিকটক", Icon: Music2, iconClass: "text-foreground", items: ["প্রভাতবাংলা বিনোদন"] },
+    { title: "টুইটার", Icon: Twitter, iconClass: "text-[#1DA1F2]", items: ["প্রভাতবাংলা"] },
+    { title: "ইনস্টাগ্রাম", Icon: Instagram, iconClass: "text-[#E4405F]", items: ["প্রভাতবাংলা"] },
+    { title: "লিংকডইন", Icon: Linkedin, iconClass: "text-[#0A66C2]", items: ["প্রভাতবাংলা"] },
+  ],
+  [
+    { title: "টেলিগ্রাম", Icon: Send, iconClass: "text-[#229ED9]", items: ["প্রভাতবাংলা"] },
+    { title: "লাইকি", Icon: Rss, iconClass: "text-[#FF8A00]", items: ["প্রভাতবাংলা নিউজ"] },
+    { title: "সাউন্ডক্লাউড পডকাস্ট", Icon: Rss, iconClass: "text-muted-foreground", items: ["প্রভাতবাংলা নিউজ"] },
+    { title: "গুগল নিউজ", Icon: Newspaper, iconClass: "text-[#4285F4]", items: ["প্রভাতবাংলা"] },
+  ],
+  [
+    { title: "ইমু", Icon: MessageCircle, iconClass: "text-[#00A0E9]", items: ["প্রভাতবাংলা"] },
+    { title: "হোয়াটসঅ্যাপ", Icon: MessageCircle, iconClass: "text-[#25D366]", items: ["প্রভাতবাংলা"] },
+    { title: "থ্রেডস", Icon: Instagram, iconClass: "text-foreground", items: ["প্রভাতবাংলা নিউজ"] },
+  ],
+];
+
+function SocialMegaMenu() {
+  return (
+    <div className="invisible absolute left-1/2 top-full z-50 w-[920px] -translate-x-1/2 border border-border bg-card opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+      {socialGroups.map((row, ri) => (
+        <div key={ri} className={`px-6 py-4 ${ri > 0 ? "border-t border-border" : ""}`}>
+          <div className="grid grid-cols-4 gap-x-6 gap-y-3">
+            {row.length === 1 ? (
+              (() => {
+                const g = row[0]!;
+                const Icon = g.Icon;
+                return (
+                  <div className="col-span-4">
+                    <div className="mb-2 text-[13px] font-bold text-slate-800">{g.title}</div>
+                    <div className="grid grid-cols-4 gap-x-6 gap-y-2">
+                      {g.items.map((it) => (
+                        <a key={it} href="#" className="flex items-center gap-2 text-[13px] text-slate-700 transition-colors hover:text-primary">
+                          <Icon className={`size-4 shrink-0 ${g.iconClass}`} />
+                          <span className="truncate">{it}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : (
+              row.map((g, gi) => (
+                <div key={gi}>
+                  <div className="mb-2 text-[13px] font-bold text-slate-800">{g.title}</div>
+                  {g.items.map((it) => (
+                    <a key={it} href="#" className="flex items-center gap-2 py-0.5 text-[13px] text-slate-700 transition-colors hover:text-primary">
+                      <g.Icon className={`size-4 shrink-0 ${g.iconClass}`} />
+                      <span className="truncate">{it}</span>
+                    </a>
+                  ))}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -79,17 +163,32 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex">
-          {utility.map((u) => (
-            <Link
-              key={u.label}
-              to={u.to as any}
-              className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
-            >
-              <u.icon className="size-4 text-muted-foreground" />
-              {u.label}
-            </Link>
-          ))}
+          {utility.map((u) =>
+            "mega" in u && u.mega ? (
+              <div key={u.label} className="group relative">
+                <Link
+                  to={u.to as any}
+                  className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+                >
+                  <u.icon className="size-4 text-muted-foreground group-hover:text-primary" />
+                  {u.label}
+                  <ChevronDown className="size-3" />
+                </Link>
+                <SocialMegaMenu />
+              </div>
+            ) : (
+              <Link
+                key={u.label}
+                to={u.to as any}
+                className="kb-underline flex cursor-pointer items-center gap-1.5 text-[13px] font-bold text-slate-700 transition-colors hover:text-primary"
+              >
+                <u.icon className="size-4 text-muted-foreground" />
+                {u.label}
+              </Link>
+            ),
+          )}
         </nav>
+
 
         <div className="ml-auto flex items-center gap-4 xl:ml-0">
           <div className="hidden text-[13px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1">
