@@ -11,7 +11,13 @@ const utility = [
   { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
-  { icon: Languages, label: "English", to: "/english" },
+  { icon: Languages, label: "English", onClick: () => {
+    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (select) {
+      select.value = select.value === 'en' ? 'bn' : 'en';
+      select.dispatchEvent(new Event('change'));
+    }
+  }},
 ];
 
 type SocialGroup = { title: string; Icon: React.ComponentType<{ className?: string }>; iconClass: string; items: string[] };
