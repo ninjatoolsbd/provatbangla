@@ -133,7 +133,7 @@ function PostPage() {
             </nav>
 
             <article>
-              <h1 className="font-display text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl lg:text-[42px]">
+              <h1 className="font-display text-2xl font-bold leading-[1.3] text-slate-900 sm:text-3xl lg:text-[42px]">
                 {post.kicker && (
                   <span className="mb-1 block text-lg text-primary">
                     {post.kicker}
@@ -180,7 +180,7 @@ function PostPage() {
                 </div>
               )}
 
-              <div className="mt-6 space-y-6 text-[19px] leading-[1.8] text-slate-800 post-content">
+              <div className="mt-6 space-y-6 text-[17px] leading-[1.7] text-slate-800 sm:text-[19px] sm:leading-[1.8] post-content">
                 {post.excerpt && <p className="font-bold text-slate-900">{post.excerpt}</p>}
                 {paragraphs(post.content).map((p, i) => (
                   <p key={i}>{p}</p>
