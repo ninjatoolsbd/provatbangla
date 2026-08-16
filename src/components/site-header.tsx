@@ -12,17 +12,22 @@ const utility = [
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
   { icon: Languages, label: "English", onClick: () => {
-    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    // Attempt multiple selectors if one fails
+    const select = (document.querySelector('.goog-te-combo') || 
+                    document.querySelector('#google_translate_element select')) as HTMLSelectElement;
+    
     if (select) {
-      console.log('Found select, current value:', select.value);
-      // Toggle between 'en' (English) and 'bn' (original Bengali)
-      // Note: If value is empty string, it usually means the page language (bn)
-      const targetLang = select.value === 'en' ? 'bn' : 'en';
+      // Toggle between 'en' and 'bn'
+      // Google Translate uses 'en' for English and 'bn' for Bengali
+      const currentVal = select.value;
+      const targetLang = (currentVal === 'en') ? 'bn' : 'en';
+      
       select.value = targetLang;
-      select.dispatchEvent(new Event('change'));
-      console.log('Dispatched change event to', targetLang);
+      // Google Translate listens for 'change'
+      select.dispatchEvent(new Event('change', { bubbles: true }));
     } else {
-      console.error('Google Translate dropdown (.goog-te-combo) not found');
+      console.error('Google Translate widget not ready');
+      // If the widget isn't ready, we can try to re-initialize or notify
     }
   }},
 ];
