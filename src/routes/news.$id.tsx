@@ -146,9 +146,16 @@ function NewsPage() {
           <aside className="lg:col-span-3">
             <div className="lg:sticky lg:top-20">
               <SidebarSection 
+                title="" 
+                category="" 
+                articles={latestInCategory} 
+                variant="tabs"
+              />
+              
+              <SidebarSection 
                 title="সর্বশেষ" 
                 category={categoryName(article.category)} 
-                articles={latestInCategory} 
+                articles={latestInCategory.slice(0, 5)} 
                 variant="list"
               />
               
@@ -162,7 +169,7 @@ function NewsPage() {
               <SidebarSection 
                 title="আপনার জন্য নির্বাচিত" 
                 category="" 
-                articles={editorChoices} 
+                articles={editorChoices.slice(0, 6)} 
                 variant="featured-grid"
               />
               

@@ -230,26 +230,26 @@ export function BottomWidgets() {
 
       {/* Column 3: Tabs (Latest/Popular) */}
       <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
-        <div className="flex bg-white px-2 pt-2 border-b border-slate-200">
+        <div className="flex bg-white px-0 pt-0 border-b border-slate-200">
           <button 
             onClick={() => setActiveTab("latest")}
             className={cn(
-              "px-6 py-2.5 text-[17px] font-bold transition-all relative",
-              activeTab === "latest" ? "text-slate-900" : "text-slate-400"
+              "flex-1 py-3.5 text-[18px] font-bold transition-all relative border-r border-slate-100",
+              activeTab === "latest" ? "text-[#D0021B] bg-white" : "text-slate-500 bg-slate-50"
             )}
           >
             সর্বশেষ
-            {activeTab === "latest" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-slate-900"></div>}
+            {activeTab === "latest" && <div className="absolute top-0 left-0 w-full h-[3px] bg-[#D0021B]"></div>}
           </button>
           <button 
             onClick={() => setActiveTab("popular")}
             className={cn(
-              "px-6 py-2.5 text-[17px] font-bold transition-all relative",
-              activeTab === "popular" ? "text-slate-900" : "text-slate-400"
+              "flex-1 py-3.5 text-[18px] font-bold transition-all relative",
+              activeTab === "popular" ? "text-[#D0021B] bg-white" : "text-slate-500 bg-slate-50"
             )}
           >
             জনপ্রিয়
-            {activeTab === "popular" && <div className="absolute bottom-0 left-0 w-full h-[3px] bg-slate-900"></div>}
+            {activeTab === "popular" && <div className="absolute top-0 left-0 w-full h-[3px] bg-[#D0021B]"></div>}
           </button>
         </div>
 
@@ -260,17 +260,16 @@ export function BottomWidgets() {
                 key={p.id}
                 to="/post/$slug"
                 params={{ slug: p.slug ?? "" }}
-                className="group flex items-start gap-3 border-b border-slate-100 py-3 px-4 hover:bg-slate-50 transition-colors last:border-0"
+                className="group flex items-center gap-3 border-b border-slate-100 py-4 px-5 hover:bg-slate-50 transition-colors last:border-0"
               >
                 <span className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[15px] font-bold mt-0.5 shadow-sm transition-colors",
-                  i < 3 ? "bg-slate-200 text-slate-700" : "bg-slate-100 text-slate-400"
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-[16px] font-bold shadow-sm transition-colors",
+                  i < 3 ? "bg-[#e8f0fe] text-[#1a73e8]" : "bg-slate-100 text-slate-500"
                 )}>
                   {toBanglaNumber(i + 1)}
                 </span>
                 <h4 className={cn(
-                  "line-clamp-2 font-display text-[15px] font-bold leading-[1.4] transition-colors group-hover:text-[#D0021B]",
-                  i === 2 ? "text-[#D0021B]" : "text-slate-800"
+                  "line-clamp-2 font-display text-[15px] font-bold leading-[1.5] transition-colors group-hover:text-[#D0021B] text-slate-800"
                 )}>
                   {p.title}
                 </h4>
