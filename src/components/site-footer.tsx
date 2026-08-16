@@ -87,12 +87,18 @@ export function SiteFooter() {
               <ul className="grid grid-cols-2 gap-y-2 text-sm text-ink-muted">
                 {extraLinks.map((l) => (
                   <li key={l}>
-                    <Link 
-                      to={l === "আর্কাইভ" ? "/archive" : "#"} 
-                      className="transition-colors hover:text-ink-foreground"
-                    >
-                      {l}
-                    </Link>
+                    {l === "আর্কাইভ" ? (
+                      <Link 
+                        to="/archive" 
+                        className="transition-colors hover:text-ink-foreground"
+                      >
+                        {l}
+                      </Link>
+                    ) : (
+                      <a href="#" className="transition-colors hover:text-ink-foreground">
+                        {l}
+                      </a>
+                    )}
                   </li>
                 ))}
                 <li>
