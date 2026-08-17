@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/my-supabase/client";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
@@ -58,7 +59,17 @@ function PostsPage() {
   const [showDuplicates, setShowDuplicates] = useState(false);
   const [showMissingImages, setShowMissingImages] = useState(false);
   
-  const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
+  const { role, userId } = useAuth();
+  const postsQuery = useQuery({ 
+    queryKey: ["admin-posts", role, userId], 
+    queryFn: async () => {
+      const data = await fetchAllPostsForAdmin();
+      if (role === "editor" && userId) {
+        return data.filter(p => (p as any).author_id === userId);
+      }
+      return data;
+    }
+  });
 
   const allPosts = postsQuery.data ?? [];
 
