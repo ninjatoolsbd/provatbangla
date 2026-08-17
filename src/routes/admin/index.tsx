@@ -64,7 +64,7 @@ function Overview() {
     queryFn: async () => {
       const data = await fetchAllPostsForAdmin();
       if (role === "editor" && userId) {
-        return data.filter(p => p.author_id === userId);
+        return data.filter(p => (p as any).author_id === userId);
       }
       return data;
     }
