@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Upload, X } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,8 @@ function WritePage() {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDesc, setSeoDesc] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
+  const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
@@ -187,6 +189,46 @@ function WritePage() {
     }
   };
 
+  const handleAutoMetadata = async () => {
+    if (!title || content.length < 100) return;
+    
+    try {
+      setIsGeneratingMetadata(true);
+      const { generateMetadata } = await import("@/lib/news-metadata.functions");
+      const result = await generateMetadata({
+        data: { title, content }
+      });
+      
+      // Only fill if current field is empty (to avoid overwriting user edits)
+      if (!excerpt) setExcerpt(result.excerpt);
+      if (!seoTitle) setSeoTitle(result.seo_title);
+      if (!seoDesc) setSeoDesc(result.seo_description);
+      
+      // Auto select category if it's still default or empty
+      if (category === "bangladesh" || !category) {
+        setCategory(result.category);
+      }
+      
+      toast.success("মেটাডেটা ও ক্যাটাগরি অটো-জেনারেট হয়েছে");
+    } catch (error: any) {
+      console.error("Metadata generation failed:", error);
+    } finally {
+      setIsGeneratingMetadata(false);
+    }
+  };
+
+  // Debounced effect for auto-generation when title and content are typed
+  useEffect(() => {
+    if (editingId || autoGenAttempted || !title || content.length < 300) return;
+    
+    const timer = setTimeout(() => {
+      handleAutoMetadata();
+      setAutoGenAttempted(true); // Only auto-attempt once per new post session
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, [title, content, editingId, autoGenAttempted]);
+
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const charCount = content.length;
 
@@ -261,8 +303,18 @@ function WritePage() {
           </div>
 
           <div className="border border-border bg-card shadow-sm">
-            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
-              সারসংক্ষেপ
+            <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
+              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">সারসংক্ষেপ</span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-6 w-6 text-primary hover:text-primary"
+                onClick={handleAutoMetadata}
+                disabled={isGeneratingMetadata || !title || content.length < 100}
+                title="AI দিয়ে অটো-জেনারেট করুন"
+              >
+                {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+              </Button>
             </div>
             <div className="p-4">
               <Textarea
