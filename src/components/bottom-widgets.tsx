@@ -89,7 +89,7 @@ export function BottomWidgets() {
   };
 
   return (
-    <div className="mt-12 grid gap-6 border-t border-border pt-8 lg:grid-cols-3 max-w-[1360px] mx-auto px-4">
+    <div className="mt-12 grid gap-6 border-t border-border pt-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-[1360px] mx-auto px-4">
       {/* Column 1: মতামত (Opinion) */}
       <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
         <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-[#D0021B] relative">
@@ -229,7 +229,7 @@ export function BottomWidgets() {
       </div>
 
       {/* Column 3: Tabs (Latest/Popular) */}
-      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm">
+      <div className="flex flex-col border border-slate-200 rounded-sm bg-white overflow-hidden shadow-sm sm:col-span-2 lg:col-span-1">
         <div className="flex bg-white px-0 pt-0 border-b border-slate-200">
           <button 
             onClick={() => setActiveTab("latest")}

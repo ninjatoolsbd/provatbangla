@@ -283,7 +283,7 @@ export function OpinionColumn({ items }: { items: Article[] }) {
     <div>
       <BarHeading title="শিল্প ও সাহিত্য" slug="shilpo-sahitto" />
       <div className="divide-y divide-border border-t border-border">
-        {items.slice(0, 3).map((a) => (
+        {items.slice(0, 4).map((a) => (
           <Link
             key={a.id}
             to="/post/$slug"
