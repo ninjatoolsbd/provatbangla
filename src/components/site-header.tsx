@@ -171,7 +171,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex px-4">
+        <nav className="hidden flex-1 items-center justify-between gap-3 xl:flex px-6 2xl:px-10">
           {utility.map((u) => {
             if ("mega" in u && u.mega) {
               return (
@@ -265,8 +265,9 @@ export function SiteHeader() {
           )}
 
           {/* Desktop Nav Items - Responsive Wrapping */}
-          <div className={`hidden flex-1 items-center lg:flex overflow-hidden ${isScrolled ? 'justify-start ml-2 xl:ml-6' : 'justify-center'}`}>
-            <div className="flex flex-wrap items-center gap-x-0.5 xl:gap-x-1">
+          <div className={`hidden w-full flex-1 items-center lg:flex ${isScrolled ? 'justify-start ml-2 xl:ml-4' : ''}`}>
+            <div className="flex w-full flex-nowrap items-center justify-between gap-x-1">
+
               <Link
                 to="/"
                 className={`flex shrink-0 items-center px-1.5 xl:px-2 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
