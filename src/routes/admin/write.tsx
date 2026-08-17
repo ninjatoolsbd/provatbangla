@@ -333,12 +333,36 @@ function WritePage() {
             </div>
             <div className="space-y-4 p-4">
               <div className="space-y-2">
-                <Label htmlFor="seoTitle">SEO টাইটেল</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="seoTitle">SEO টাইটেল</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-5 w-5 text-primary hover:text-primary"
+                    onClick={handleAutoMetadata}
+                    disabled={isGeneratingMetadata || !title || content.length < 100}
+                    title="AI দিয়ে অটো-জেনারেট করুন"
+                  >
+                    {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+                  </Button>
+                </div>
                 <Input id="seoTitle" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} />
                 <p className="text-[11px] text-muted-foreground">{(seoTitle || title).length}/60 অক্ষর</p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="seoDesc">SEO ডেসক্রিপশন</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="seoDesc">SEO ডেসক্রিপশন</Label>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-5 w-5 text-primary hover:text-primary"
+                    onClick={handleAutoMetadata}
+                    disabled={isGeneratingMetadata || !title || content.length < 100}
+                    title="AI দিয়ে অটো-জেনারেট করুন"
+                  >
+                    {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+                  </Button>
+                </div>
                 <Textarea id="seoDesc" rows={2} value={seoDesc} onChange={(e) => setSeoDesc(e.target.value)} />
                 <p className="text-[11px] text-muted-foreground">{(seoDesc || excerpt).length}/160 অক্ষর</p>
               </div>
@@ -381,8 +405,18 @@ function WritePage() {
           </div>
 
           <div className="border border-border bg-card shadow-sm">
-            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
-              ক্যাটাগরি
+            <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
+              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">ক্যাটাগরি</span>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-5 w-5 text-primary hover:text-primary"
+                onClick={handleAutoMetadata}
+                disabled={isGeneratingMetadata || !title || content.length < 100}
+                title="AI দিয়ে ক্যাটাগরি ডিটেক্ট করুন"
+              >
+                {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+              </Button>
             </div>
             <div className="p-4">
               <Select value={category} onValueChange={setCategory}>
