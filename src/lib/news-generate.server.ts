@@ -153,7 +153,7 @@ export async function runGenerate(data: GenerateInputType) {
       if (title && content) {
         parsed = {
           title,
-          kicker: "",
+          
           excerpt: regexExtract("excerpt") || content.slice(0, 200),
           content: content.replace(/\\n/g, "\n"),
           seo_title: regexExtract("seo_title") || title,
