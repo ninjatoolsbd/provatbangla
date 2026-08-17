@@ -36,9 +36,10 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
 
   if (layout === "national") {
     return (
-      <section className="mt-5 border border-border bg-card p-4">
+      <section className="mt-8 rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
         <BarHeading title={title} slug={slug} />
-        <div className="grid gap-5 grid-cols-1 lg:grid-cols-12 lg:divide-x lg:divide-border">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-12 lg:divide-x lg:divide-slate-100">
+
           <div className="min-w-0 lg:col-span-5 lg:pr-5">
             <LeadCard article={mappedPosts[0] as any} />
           </div>
@@ -74,9 +75,10 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
 
   if (layout === "politics") {
       return (
-        <section className="mt-5 border border-border bg-card p-4">
+        <section className="mt-8 rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <BarHeading title={title} slug={slug} />
-          <div className="grid gap-5 lg:grid-cols-12">
+          <div className="grid gap-6 lg:grid-cols-12">
+
             <div className="min-w-0 lg:col-span-4">
               <LeadCard article={mappedPosts[0] as any} />
             </div>
@@ -93,9 +95,10 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   }
 
   return (
-    <section className="mt-5 border border-border bg-card p-4">
+    <section className="mt-8 rounded-xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
       <BarHeading title={title} slug={slug} />
-      <div className="grid gap-x-6 gap-y-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
+      <div className="grid gap-x-8 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+
         {mappedPosts.map((a: any, i: number) => (
           <Reveal key={a.id} delay={i * 60}>
             <GridCard article={a as any} compact />

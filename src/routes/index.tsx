@@ -80,9 +80,10 @@ function Home() {
         {/* HERO Section using LatestPosts or similar logic - currently LatestPosts covers published items */}
         <LatestPosts />
 
-        <div className="my-6">
-          <AdBanner index={0} className="h-24" />
+        <div className="my-10">
+          <AdBanner index={0} className="h-28 rounded-xl" />
         </div>
+
 
 
         {/* Home Sections populated from DB */}
@@ -94,9 +95,10 @@ function Home() {
            <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
         </Suspense>
 
-        <div className="my-6">
-          <AdBanner index={1} className="h-24" />
+        <div className="my-10">
+          <AdBanner index={1} className="h-28 rounded-xl" />
         </div>
+
 
         {/* Division Map moved here so it appears after the first few sections */}
         <section>
