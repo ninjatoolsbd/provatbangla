@@ -152,7 +152,7 @@ export function SiteHeader() {
       {/* Top Header - Hides on Scroll */}
       <div 
         className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ease-in-out sm:px-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[50px] py-1 sm:h-[65px] sm:py-1.5"
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[60px] py-1.5 sm:h-[80px] sm:py-2.5"
         }`}
       >
         <button
@@ -167,7 +167,7 @@ export function SiteHeader() {
           <img 
             src={logoAsset.url} 
             alt="প্রভাতবাংলা" 
-            className="h-auto w-full max-h-[48px] object-contain sm:max-h-[58px]" 
+            className="h-auto w-full max-h-[56px] object-contain sm:max-h-[70px]" 
           />
         </Link>
 
