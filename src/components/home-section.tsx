@@ -38,7 +38,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
     return (
       <section className="mt-5 border border-border bg-card p-4">
         <BarHeading title={title} slug={slug} />
-        <div className="grid gap-5 lg:grid-cols-12 lg:divide-x lg:divide-border">
+        <div className="grid gap-5 grid-cols-1 lg:grid-cols-12 lg:divide-x lg:divide-border">
           <div className="min-w-0 lg:col-span-5 lg:pr-5">
             <LeadCard article={mappedPosts[0] as any} />
           </div>
@@ -80,7 +80,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
             <div className="min-w-0 lg:col-span-4">
               <LeadCard article={mappedPosts[0] as any} />
             </div>
-            <div className="grid min-w-0 gap-x-4 gap-y-5 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
+            <div className="grid min-w-0 gap-x-4 gap-y-5 grid-cols-1 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
               {mappedPosts.slice(1, 7).map((a: any, i: number) => (
                 <Reveal key={a.id} delay={i * 60}>
                   <GridCard article={a as any} compact />
@@ -95,7 +95,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   return (
     <section className="mt-5 border border-border bg-card p-4">
       <BarHeading title={title} slug={slug} />
-      <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
+      <div className="grid gap-x-6 gap-y-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
         {mappedPosts.map((a: any, i: number) => (
           <Reveal key={a.id} delay={i * 60}>
             <GridCard article={a as any} compact />

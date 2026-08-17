@@ -156,11 +156,11 @@ export function SiteHeader() {
         }`}
       >
         <button
-          className="mr-4 p-1 lg:hidden text-slate-800"
+          className="mr-3 p-1.5 lg:hidden text-slate-800 transition-colors hover:bg-slate-100 rounded-md"
           onClick={() => setOpen((v) => !v)}
           aria-label="মেনু"
         >
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          {open ? <X className="size-5 sm:size-6" /> : <Menu className="size-5 sm:size-6" />}
         </button>
 
         <Link to="/" className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-95 max-w-[180px] sm:max-w-[260px]">
@@ -242,15 +242,15 @@ export function SiteHeader() {
 
       {/* Main Navigation - Stays Sticky */}
       <div className="border-y border-border bg-white shadow-sm">
-        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-0.5 min-h-[50px]' : ''}`}>
+        <div className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ${isScrolled ? 'py-0.5 min-h-[48px]' : ''}`}>
           
           {/* Mobile Menu Button - Left aligned when scrolled */}
           <button
-            className={`mr-4 p-1 lg:hidden text-slate-800 transition-all duration-300 ${isScrolled ? '' : 'hidden'}`}
+            className={`mr-3 p-1.5 lg:hidden text-slate-800 transition-all duration-300 rounded-md hover:bg-slate-100 ${isScrolled ? '' : 'hidden'}`}
             onClick={() => setOpen((v) => !v)}
             aria-label="মেনু"
           >
-            {open ? <X className="size-6" /> : <Menu className="size-6" />}
+            {open ? <X className="size-5 sm:size-6" /> : <Menu className="size-5 sm:size-6" />}
           </button>
 
           {/* Scrolled Logo - Standard sizing and position */}

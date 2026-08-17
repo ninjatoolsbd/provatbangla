@@ -112,7 +112,7 @@ export function VideoStrip({ items }: { items: any[] }) {
             <span className="inline-block h-[24px] w-[6px] bg-primary animate-pulse" />
             <h2 className="font-display text-2xl font-extrabold uppercase tracking-tight">লাইভ টিভি</h2>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {/* Live TV Box 1 */}
             <div className="border-[10px] border-[#990000] bg-[#990000] p-1 shadow-lg h-full flex flex-col">
               <div className="mb-2 flex items-center justify-between px-2 text-white">
@@ -283,7 +283,7 @@ export function OpinionColumn({ items }: { items: Article[] }) {
     <div>
       <BarHeading title="শিল্প ও সাহিত্য" slug="shilpo-sahitto" />
       <div className="divide-y divide-border border-t border-border">
-        {items.slice(0, 3).map((a) => (
+        {items.slice(0, 4).map((a) => (
           <Link
             key={a.id}
             to="/post/$slug"
@@ -558,7 +558,7 @@ export function PhotoGallery({ items }: { items: any[] }) {
           <Camera className="size-4 text-primary" />
           <h2 className="font-display text-[20px] font-bold">ফটোগ্যালারি</h2>
         </div>
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
           {/* Large Main Feature */}
           <div className="relative lg:col-span-2">
             <Link 
@@ -591,7 +591,7 @@ export function PhotoGallery({ items }: { items: any[] }) {
 
           {/* Side Grid Items */}
           <div className="grid grid-cols-1 gap-4 lg:col-span-2">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               {items.slice(1, 5).map((a) => (
                 <Link
                   key={a.id}
