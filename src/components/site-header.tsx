@@ -152,7 +152,7 @@ export function SiteHeader() {
       {/* Top Header - Hides on Scroll */}
       <div 
         className={`mx-auto flex max-w-[1360px] items-center px-4 transition-all duration-300 ease-in-out sm:px-6 ${
-          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[60px] py-1 sm:h-[80px] sm:py-2"
+          isScrolled ? "h-0 py-0 overflow-hidden opacity-0 pointer-events-none" : "h-[50px] py-1 sm:h-[65px] sm:py-1.5"
         }`}
       >
         <button
@@ -171,7 +171,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-between gap-3 xl:flex px-6 2xl:px-10">
+        <nav className="hidden flex-1 items-center justify-between gap-1.5 xl:flex px-4 2xl:px-8">
           {utility.map((u) => {
             if ("mega" in u && u.mega) {
               return (
@@ -266,11 +266,11 @@ export function SiteHeader() {
 
           {/* Desktop Nav Items - Responsive Wrapping */}
           <div className={`hidden w-full flex-1 items-center lg:flex ${isScrolled ? 'justify-start ml-2 xl:ml-4' : ''}`}>
-            <div className="flex w-full flex-nowrap items-center justify-between gap-x-1">
+            <div className="flex w-full flex-nowrap items-center justify-between gap-x-0.5">
 
               <Link
                 to="/"
-                className={`flex shrink-0 items-center px-1.5 xl:px-2 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
+                className={`flex shrink-0 items-center px-1 xl:px-1.5 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-2'}`}
                 activeOptions={{ exact: true }}
                 activeProps={{ className: "text-primary" }}
                 aria-label="প্রচ্ছদ"
@@ -286,7 +286,7 @@ export function SiteHeader() {
                   key={c.slug}
                   to="/category/$slug"
                   params={{ slug: c.slug }}
-                  className={`kb-underline px-1.5 xl:px-2 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
+                  className={`kb-underline px-1 xl:px-1.5 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-1' : 'py-2'}`}
                   activeProps={{ className: "text-primary" }}
                 >
                   {c.name}
@@ -297,7 +297,7 @@ export function SiteHeader() {
                 <Link
                   to="/category/$slug"
                   params={{ slug: 'onnanno' }}
-                  className={`kb-underline px-1.5 xl:px-2 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1.5 ${isScrolled ? 'py-1.5' : 'py-3'}`}
+                  className={`kb-underline px-1 xl:px-1.5 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary flex items-center gap-1 ${isScrolled ? 'py-1' : 'py-2'}`}
                   activeProps={{ className: "text-primary" }}
                 >
                   অন্যান্য
