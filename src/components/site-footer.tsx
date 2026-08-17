@@ -38,11 +38,11 @@ export function SiteFooter() {
                 />
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                সম্পাদক ও প্রকাশক: <span className="text-ink-foreground">ডেমো সম্পাদক</span>
+                সম্পাদক : <span className="text-ink-foreground">ইঞ্জিনিয়ার জাহাঙ্গীর আলম</span>
                 <br />
-                ব্যবস্থাপনা সম্পাদক: ডেমো ব্যবস্থাপক
+                ব্যবস্থাপনা সম্পাদক: ইঞ্জিনিয়ার বুল্বুল বাহার
                 <br />
-                প্রকাশনায়: প্রভাতবাংলা ডেমো মিডিয়া লিমিটেড
+                প্রকাশনায়: প্রভাতবাংলা মিডিয়া লিমিটেড
               </p>
               <div className="mt-4 flex gap-2">
                 {socials.map(({ Icon, label }) => (
@@ -155,9 +155,9 @@ export function SiteFooter() {
         {/* bottom bar */}
         <div className="border-t border-white/5 bg-black/20">
           <div className="mx-auto flex max-w-[1360px] flex-col items-center justify-between gap-4 px-4 py-6 text-[13px] text-ink-muted md:flex-row">
-            <span className="font-medium">© ২০২৬ প্রভাতবাংলা ডেমো। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span className="font-medium">© ২০২৬ প্রভাতবাংলা। সর্বস্বত্ব সংরক্ষিত।</span>
             <span>
-              এটি একটি ডেমো সংবাদমাধ্যম — সব সংবাদ, ছবি ও নাম কেবল উদাহরণ হিসেবে ব্যবহৃত।
+              প্রকাশনায়: প্রভাতবাংলা মিডিয়া লিমিটেড
             </span>
           </div>
         </div>
