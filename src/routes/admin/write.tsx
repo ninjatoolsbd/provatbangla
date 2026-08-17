@@ -187,65 +187,193 @@ function WritePage() {
     }
   };
 
-  const canRewrite = title.trim().length > 0 && content.trim().length > 20;
+  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+  const charCount = content.length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-[22px] font-bold text-primary">নিউজ লিখুন</h1>
+    <div className="pb-10">
+      {/* Top bar */}
+      <div className="sticky top-0 z-20 -mx-4 mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="min-w-0">
+          <h1 className="font-display text-[20px] font-bold text-primary">
+            {editingId ? "নিউজ এডিট করুন" : "নতুন নিউজ লিখুন"}
+          </h1>
+          <p className="truncate text-xs text-muted-foreground">
+            {editingId ? `স্লাগ: ${slugify(title) || "—"}` : "খসড়া তৈরি করুন, তারপর প্রকাশ করুন"}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {editingId && (
+            <Button asChild variant="outline" size="sm">
+              <a href={`/post/${slugify(title)}?preview=true`} target="_blank" rel="noopener noreferrer">
+                <Eye className="mr-2 size-4" />
+                প্রিভিউ
+              </a>
+            </Button>
+          )}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => saveMutation.mutate("draft")}
+            disabled={!title || saveMutation.isPending}
+          >
+            ড্রাফট সেভ
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => saveMutation.mutate("published")}
+            disabled={!title || !content || saveMutation.isPending}
+          >
+            {saveMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+            পাবলিশ
+          </Button>
+        </div>
       </div>
 
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        {/* Main editor column */}
+        <div className="space-y-5">
+          <div className="border border-border bg-card p-4 shadow-sm">
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="এখানে শিরোনাম লিখুন..."
+              className="h-auto border-0 px-0 font-display text-[24px] font-bold shadow-none focus-visible:ring-0"
+            />
+          </div>
 
-      <section className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="title">টাইটেল</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="নিউজের শিরোনাম"
-          />
+          <div className="border border-border bg-card shadow-sm">
+            <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
+              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">মূল কনটেন্ট</span>
+              <span className="text-xs text-muted-foreground">
+                {wordCount} শব্দ · {charCount} অক্ষর
+              </span>
+            </div>
+            <Textarea
+              id="content"
+              rows={22}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="এখানে নিউজের মূল লেখা লিখুন..."
+              className="resize-y rounded-none border-0 text-[16px] leading-[1.9] shadow-none focus-visible:ring-0"
+            />
+          </div>
+
+          <div className="border border-border bg-card shadow-sm">
+            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              সারসংক্ষেপ
+            </div>
+            <div className="p-4">
+              <Textarea
+                id="excerpt"
+                rows={3}
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                placeholder="ফাঁকা রাখলে কনটেন্টের শুরু থেকে নেওয়া হবে"
+              />
+            </div>
+          </div>
+
+          <div className="border border-border bg-card shadow-sm">
+            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              SEO সেটিংস
+            </div>
+            <div className="space-y-4 p-4">
+              <div className="space-y-2">
+                <Label htmlFor="seoTitle">SEO টাইটেল</Label>
+                <Input id="seoTitle" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} />
+                <p className="text-[11px] text-muted-foreground">{(seoTitle || title).length}/60 অক্ষর</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="seoDesc">SEO ডেসক্রিপশন</Label>
+                <Textarea id="seoDesc" rows={2} value={seoDesc} onChange={(e) => setSeoDesc(e.target.value)} />
+                <p className="text-[11px] text-muted-foreground">{(seoDesc || excerpt).length}/160 অক্ষর</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label>ক্যাটাগরি</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((c) => (
-                  <SelectItem key={c.slug} value={c.slug}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {/* Sidebar */}
+        <aside className="space-y-5 lg:sticky lg:top-[84px] lg:self-start">
+          <div className="border border-border bg-card shadow-sm">
+            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              প্রকাশ
+            </div>
+            <div className="space-y-3 p-4 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">স্ট্যাটাস</span>
+                <span className="font-bold">{editingId ? "সংরক্ষিত" : "নতুন খসড়া"}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">লেখক</span>
+                <span className="font-bold">
+                  {auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")}
+                </span>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <Button
+                  className="flex-1"
+                  onClick={() => saveMutation.mutate("published")}
+                  disabled={!title || !content || saveMutation.isPending}
+                >
+                  পাবলিশ
+                </Button>
+                {editingId && (
+                  <Button variant="ghost" onClick={resetForm}>
+                    নতুন
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label>ফিচার ইমেজ</Label>
-            <div className="flex flex-col gap-2">
+
+          <div className="border border-border bg-card shadow-sm">
+            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              ক্যাটাগরি
+            </div>
+            <div className="p-4">
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((c) => (
+                    <SelectItem key={c.slug} value={c.slug}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="border border-border bg-card shadow-sm">
+            <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              ফিচার ইমেজ
+            </div>
+            <div className="space-y-2 p-4">
               {imageUrl ? (
-                <div className="relative aspect-video w-full overflow-hidden border-2 border-primary/30">
+                <div className="relative aspect-video w-full overflow-hidden border border-border">
                   <img src={imageUrl} alt="Preview" className="h-full w-full object-cover" />
                   <button
                     onClick={() => setImageUrl("")}
-                    className="absolute top-2 right-2 rounded-full bg-red-600 p-1 text-white shadow-lg hover:bg-red-700"
+                    className="absolute top-2 right-2 rounded-full bg-primary p-1 text-primary-foreground shadow-lg"
+                    aria-label="ছবি মুছুন"
                   >
                     <X className="size-4" />
                   </button>
                 </div>
               ) : (
-                <div 
+                <div
                   onClick={() => fileInputRef.current?.click()}
                   className="flex aspect-video w-full cursor-pointer flex-col items-center justify-center border-2 border-dashed border-primary/30 bg-secondary/20 transition-colors hover:bg-secondary/40"
                 >
                   {isUploading ? (
-                    <Loader2 className="size-8 animate-spin text-primary" />
+                    <Loader2 className="size-7 animate-spin text-primary" />
                   ) : (
                     <>
-                      <Upload className="mb-2 size-8 text-primary" />
+                      <Upload className="mb-2 size-7 text-primary" />
                       <span className="text-sm font-bold text-primary">ছবি আপলোড করুন</span>
                     </>
                   )}
@@ -258,87 +386,17 @@ function WritePage() {
                 accept="image/*"
                 className="hidden"
               />
-              <div className="flex items-center gap-2">
-                <Input
-                  id="image"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="অথবা সরাসরি ছবির ইউআরএল দিন..."
-                  className="h-8 text-xs"
-                />
-              </div>
+              <Input
+                id="image"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="অথবা ছবির ইউআরএল..."
+                className="h-8 text-xs"
+              />
             </div>
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="content">মূল কনটেন্ট</Label>
-          <Textarea
-            id="content"
-            rows={14}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="এখানে নিউজের মূল লেখা লিখুন..."
-          />
-        </div>
-
-
-
-        <div className="space-y-2">
-          <Label htmlFor="excerpt">সারসংক্ষেপ</Label>
-          <Textarea
-            id="excerpt"
-            rows={3}
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="seoTitle">SEO টাইটেল</Label>
-            <Input id="seoTitle" value={seoTitle} onChange={(e) => setSeoTitle(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="seoDesc">SEO ডেসক্রিপশন</Label>
-            <Input id="seoDesc" value={seoDesc} onChange={(e) => setSeoDesc(e.target.value)} />
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={() => saveMutation.mutate("published")}
-            disabled={!title || !content || saveMutation.isPending}
-          >
-            পাবলিশ
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => saveMutation.mutate("draft")}
-            disabled={!title || saveMutation.isPending}
-          >
-            ড্রাফট সেভ
-          </Button>
-          {editingId && (
-            <>
-              <Button asChild variant="outline">
-                <a 
-                  href={`/post/${slugify(title)}?preview=true`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center"
-                >
-                  <Eye className="mr-2 size-4" />
-                  প্রিভিউ
-                </a>
-              </Button>
-              <Button variant="ghost" onClick={resetForm}>
-                নতুন নিউজ
-              </Button>
-            </>
-          )}
-        </div>
-      </section>
+        </aside>
+      </div>
     </div>
   );
 }
