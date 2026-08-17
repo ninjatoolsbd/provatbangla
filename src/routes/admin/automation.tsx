@@ -470,12 +470,6 @@ function AutomationPage() {
                 />
                 <div className="flex flex-wrap gap-2">
                   <input
-                    value={p.kicker}
-                    placeholder="কিকার"
-                    onChange={(e) => updatePreview(p.sourceUrl, { kicker: e.target.value } as Partial<Preview>)}
-                    className="w-40 border border-border bg-background px-2 py-1 text-xs"
-                  />
-                  <input
                     value={p.category}
                     placeholder="ক্যাটাগরি"
                     onChange={(e) => updatePreview(p.sourceUrl, { category: e.target.value } as Partial<Preview>)}

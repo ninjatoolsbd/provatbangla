@@ -54,7 +54,7 @@ function WritePage() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
-  const [kicker, setKicker] = useState("");
+  
   const [category, setCategory] = useState("bangladesh");
   const [imageUrl, setImageUrl] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -75,7 +75,7 @@ function WritePage() {
     // or if we are switching to a completely different news item
     setEditingId(p.id);
     setTitle(p.title);
-    setKicker(p.kicker ?? "");
+    
     setCategory(p.category);
     setImageUrl(p.image_url ?? "");
     setExcerpt(p.excerpt);
@@ -95,7 +95,7 @@ function WritePage() {
   function resetForm() {
     setEditingId(null);
     setTitle("");
-    setKicker("");
+    
     setImageUrl("");
     setExcerpt("");
     setContent("");
@@ -107,7 +107,7 @@ function WritePage() {
     mutationFn: async (status: "draft" | "published") => {
       const payload = {
         title,
-        kicker: kicker || null,
+        
         category,
         image_url: imageUrl || null,
         excerpt: excerpt || content.slice(0, 180),
@@ -207,11 +207,7 @@ function WritePage() {
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="space-y-2">
-            <Label htmlFor="kicker">কিকার (ঐচ্ছিক)</Label>
-            <Input id="kicker" value={kicker} onChange={(e) => setKicker(e.target.value)} />
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>ক্যাটাগরি</Label>
             <Select value={category} onValueChange={setCategory}>

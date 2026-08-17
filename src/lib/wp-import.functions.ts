@@ -89,7 +89,7 @@ export const importWpPosts = createServerFn({ method: "POST" })
         const { error } = await context.supabase.from("posts").insert({
           title: item.title,
           slug: data.skipExisting ? slug : `${slug}-${Math.random().toString(36).slice(2, 6)}`,
-          kicker: null,
+          
           category: item.category,
           image_url: image,
           excerpt: item.excerpt.slice(0, 500),

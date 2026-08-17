@@ -73,11 +73,6 @@ function NewsPage() {
 
         <div className="grid gap-5 lg:grid-cols-12">
           <article className="border border-border bg-card p-4 sm:p-6 lg:col-span-12">
-            {article.kicker && (
-              <span className="mb-2 block font-display text-lg font-bold text-primary">
-                {article.kicker}
-              </span>
-            )}
             <h1 className="font-display text-[30px] leading-[1.3] font-bold sm:text-[38px]">
               {article.title}
             </h1>

@@ -27,7 +27,7 @@ export function BottomWidgets() {
           slug: `demo-${a.id}`,
           image_url: a.image,
           author_name: a.author,
-          kicker: a.kicker,
+          
           excerpt: a.excerpt,
           content: a.body.join("\n"),
           status: "published",
@@ -72,7 +72,6 @@ export function BottomWidgets() {
           title: a.title,
           slug: `demo-${a.id}`,
           image_url: a.image,
-          author_name: a.author,
           status: "published",
           published_at: new Date().toISOString()
         }));
@@ -123,7 +122,7 @@ export function BottomWidgets() {
                     {p.author_name || (p as any).author || "আহমেদ সোহেল বাপ্পী"}
                   </span>
                   <span className="text-[10px] text-slate-500 text-center leading-none">
-                    { (p as any).kicker || "বার্তা সম্পাদক, প্রভাতবাংলা" }
+                    বার্তা সম্পাদক, প্রভাতবাংলা
                   </span>
                 </div>
                 <div className="flex-1 pt-1">

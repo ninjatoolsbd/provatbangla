@@ -18,7 +18,7 @@ export type GenerateInputType = z.infer<typeof GenerateInput>;
 
 const Article = z.object({
   title: z.string().min(1),
-  kicker: z.string().default(""),
+  
   excerpt: z.string().min(1),
   content: z.string().min(1),
   seo_title: z.string().default(""),
@@ -64,7 +64,7 @@ export async function runGenerate(data: GenerateInputType) {
     "JSON Structure:",
     "{",
     '  "title": "নিখুঁত ও আকর্ষণীয় শিরোনাম",',
-    '  "kicker": "ছোট কিউয়ার্ড (যেমন: রাজনীতি, খেলা)",',
+    
     '  "excerpt": "খবরের একটি ছোট সারাংশ",',
     '  "content": "বিস্তারিত খবর (কমপক্ষে ৫০০ শব্দ)। অনুচ্ছেদগুলো \\n\\n দিয়ে আলাদা করো।",',
     '  "seo_title": "SEO টাইটেল (৬০ অক্ষর)",',
@@ -153,7 +153,7 @@ export async function runGenerate(data: GenerateInputType) {
       if (title && content) {
         parsed = {
           title,
-          kicker: regexExtract("kicker") || "খবর",
+          
           excerpt: regexExtract("excerpt") || content.slice(0, 200),
           content: content.replace(/\\n/g, "\n"),
           seo_title: regexExtract("seo_title") || title,
