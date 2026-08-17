@@ -155,7 +155,7 @@ export function SiteFooter() {
         {/* bottom bar */}
         <div className="border-t border-white/5 bg-black/20">
           <div className="mx-auto flex max-w-[1360px] flex-col items-center justify-between gap-4 px-4 py-6 text-[13px] text-ink-muted md:flex-row">
-            <span className="font-medium">© ২০২৬ প্রভাতবাংলা। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span className="font-medium">© ২০২৬ প্রভাতবাংলা । সর্বস্বত্ব সংরক্ষিত।</span>
             <span>
               প্রকাশনায়: প্রভাতবাংলা মিডিয়া লিমিটেড
             </span>
