@@ -1,8 +1,37 @@
 import { supabaseAdmin } from "@/integrations/my-supabase/client.server";
 import { uploadToR2 } from "@/lib/r2.server";
+import frameAsset from "@/assets/photocard-frame.png.asset.json";
+
+const SITE_ORIGIN = "https://cheer-collective-code.lovable.app";
+
+/** Template geometry (matches the provided poster template). */
+const CARD_W = 1086;
+const CARD_H = 1448;
+const WIN_X = 26;
+const WIN_Y = 23;
+const WIN_W = 1034;
+const WIN_H = 680;
+
+const escapeXml = (s: string) =>
+  s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+const banglaDate = (iso: string) => {
+  const d = new Date(iso);
+  const digits = "০১২৩৪৫৬৭৮৯";
+  const months = [
+    "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
+    "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর",
+  ];
+  const bn = (n: number) => String(n).split("").map((c) => digits[Number(c)]).join("");
+  return `${bn(d.getDate())} ${months[d.getMonth()]}, ${bn(d.getFullYear())}`;
+};
 
 export async function runPhotocardGeneration(postId: string) {
-  // 1. Fetch post data
   const { data: post, error } = await supabaseAdmin
     .from("posts")
     .select("*")
@@ -10,74 +39,51 @@ export async function runPhotocardGeneration(postId: string) {
     .single();
 
   if (error || !post) {
-    throw new Error("নিউজ পাওয়া যায়নি");
+    throw new Error("নিউজ পাওয়া যায়নি");
   }
 
-  // 2. Generate Photocard Image
-  // Using a canvas-less approach (SVG -> PNG) or a similar technique suitable for Workers.
-  // For a news portal, a photocard usually has:
-  // - Background image (the news image)
-  // - Dark gradient overlay at bottom
-  // - News title in white (Bengali)
-  // - Logo (ProvatBangla)
-  
-  const width = 1200;
-  const height = 630;
-  
-  // We'll use a simple SVG template that we can return or process.
-  // Since we don't have a full headless browser or heavy canvas in the worker,
-  // we'll use a reliable SVG construction.
-  
-  const imageUrl = post.image_url || 'https://cheer-collective-code.lovable.app/og-image.png'; // Fallback
-  const title = post.title;
-  const logoUrl = 'https://cheer-collective-code.lovable.app/logo.png';
+  const imageUrl = post.image_url || `${SITE_ORIGIN}/og-image.png`;
+  const frameUrl = `${SITE_ORIGIN}${frameAsset.url}`;
+  const title = escapeXml(post.title ?? "");
+  const dateText = escapeXml(banglaDate(post.published_at || post.created_at || new Date().toISOString()));
 
-  // SVG Template
-  const svg = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:rgba(0,0,0,0);stop-opacity:0" />
-          <stop offset="100%" style="stop-color:rgba(0,0,0,0.85);stop-opacity:1" />
-        </linearGradient>
-      </defs>
-      
-      <!-- Background Image -->
-      <image href="${imageUrl}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />
-      
-      <!-- Gradient Overlay -->
-      <rect x="0" y="${height * 0.4}" width="${width}" height="${height * 0.6}" fill="url(#grad)" />
-      
-      <!-- Logo -->
-      <image href="${logoUrl}" x="50" y="50" width="200" height="60" preserveAspectRatio="xMinYMin meet" />
-      
-      <!-- News Title -->
-      <foreignObject x="50" y="${height - 200}" width="${width - 100}" height="150">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="color: white; font-family: 'SolaimanLipi', sans-serif; font-size: 48px; font-weight: bold; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-          ${title}
-        </div>
-      </foreignObject>
-      
-      <!-- Brand Name / Date -->
-      <text x="50" y="${height - 40}" fill="white" font-family="sans-serif" font-size="20" font-weight="bold">প্রভাতবাংলা | প্রভাতবেলা ডট কম</text>
-    </svg>
-  `;
+  const svg = `<svg width="${CARD_W}" height="${CARD_H}" viewBox="0 0 ${CARD_W} ${CARD_H}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="win"><rect x="${WIN_X}" y="${WIN_Y}" width="${WIN_W}" height="${WIN_H}" /></clipPath>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(0,0,0,0)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.88)" />
+    </linearGradient>
+  </defs>
 
-  // Ideally, we'd convert this SVG to PNG. 
-  // For now, we'll store the SVG as the photocard or use a placeholder URL if we can't convert.
-  // Most social platforms support SVG if served with correct MIME, but PNG is safer.
-  // Since this is a worker, we'll upload the SVG directly or use an external API for PNG if required.
-  // Let's stick to SVG for immediate implementation as it's lightweight.
-  
+  <rect width="${CARD_W}" height="${CARD_H}" fill="#8f0101" />
+
+  <g clip-path="url(#win)">
+    <image href="${escapeXml(imageUrl)}" x="${WIN_X}" y="${WIN_Y}" width="${WIN_W}" height="${WIN_H}" preserveAspectRatio="xMidYMid slice" />
+    <rect x="${WIN_X}" y="${WIN_Y + WIN_H - 320}" width="${WIN_W}" height="320" fill="url(#shade)" />
+    <foreignObject x="${WIN_X + 30}" y="${WIN_Y + WIN_H - 265}" width="${WIN_W - 60}" height="235">
+      <div xmlns="http://www.w3.org/1999/xhtml" style="color:#ffffff;font-family:'SolaimanLipi','Noto Sans Bengali',sans-serif;font-size:52px;font-weight:700;line-height:1.35;text-shadow:0 2px 10px rgba(0,0,0,.6);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${title}</div>
+    </foreignObject>
+  </g>
+
+  <!-- Date badge -->
+  <g>
+    <rect x="716" y="52" width="318" height="72" rx="36" fill="#c40b0b" />
+    <text x="875" y="102" text-anchor="middle" fill="#ffffff" font-family="'SolaimanLipi','Noto Sans Bengali',sans-serif" font-size="40" font-weight="700">${dateText}</text>
+  </g>
+
+  <!-- Template frame on top (photo window is transparent) -->
+  <image href="${escapeXml(frameUrl)}" x="0" y="0" width="${CARD_W}" height="${CARD_H}" />
+</svg>`;
+
   const bytes = new TextEncoder().encode(svg);
   const key = `photocards/${postId}-${Date.now()}.svg`;
   const photocardUrl = await uploadToR2(key, bytes, "image/svg+xml");
 
   if (!photocardUrl) {
-    throw new Error("ফটোকোর্ড আপলোড ব্যর্থ হয়েছে");
+    throw new Error("ফটোকোর্ড আপলোড ব্যর্থ হয়েছে");
   }
 
-  // 3. Update database
   const { error: updateError } = await supabaseAdmin
     .from("posts")
     .update({ photocard_url: photocardUrl } as any)
