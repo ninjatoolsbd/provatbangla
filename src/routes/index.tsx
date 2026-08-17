@@ -125,6 +125,7 @@ function Home() {
       <PhotoGallery items={mappedPhotoPosts} />
 
 
+
       <EpaperSection />
 
       <SiteFooter />

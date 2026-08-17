@@ -642,115 +642,105 @@ export function SocialFollow() {
 
 /* ---------- dark photo gallery band ---------- */
 export function PhotoGallery({ items }: { items: any[] }) {
-  const [active, setActive] = useState(0);
-  const main = items[active] ?? items[0];
+  const main = items[0];
   if (!main) return null;
 
   return (
-    <section className="mt-10 bg-ink py-8 text-ink-foreground">
-      <div className="mx-auto max-w-[1240px] px-4">
-        <div className="mb-4 flex items-center gap-2 border-b border-ink-foreground/20 pb-2">
-          <Camera className="size-4 text-primary" />
-          <h2 className="font-display text-[20px] font-bold">ফটোগ্যালারি</h2>
+    <section className="mt-10 mb-10">
+      <div className="mx-auto max-w-[1360px] px-4">
+        {/* Header - matching file-74 style */}
+        <div className="mb-4 flex items-center gap-2">
+          <div className="h-4 w-4 bg-primary" />
+          <h2 className="font-display text-[22px] font-bold text-slate-900">ছবি</h2>
         </div>
-        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
-          {/* Large Main Feature */}
-          <div className="relative lg:col-span-2">
+
+        {/* Grid Layout - matching file-74 masonry-like structure */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 aspect-[21/9] min-h-[500px]">
+          
+          {/* Column 1: Two small items stacked */}
+          <div className="md:col-span-1 flex flex-col gap-4">
+            {items.slice(0, 2).map((item) => (
+              <Link 
+                key={item.id}
+                to="/post/$slug"
+                params={{ slug: item.slug || String(item.id) }}
+                className="group relative flex-1 overflow-hidden rounded-sm"
+              >
+                <NewsImage
+                  src={item.image}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
+                  <Camera className="h-3.5 w-3.5 text-white" />
+                </div>
+                <div className="absolute bottom-2 left-3 right-3">
+                  <h3 className="line-clamp-2 font-display text-[15px] font-bold text-white leading-tight">
+                    {item.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Column 2: Large Vertical Main item */}
+          <div className="md:col-span-2">
             <Link 
-              to="/post/$slug" 
-              params={{ slug: main.slug || String(main.id) }} 
-              className="group relative block overflow-hidden rounded-lg shadow-2xl"
+              to="/post/$slug"
+              params={{ slug: items[2]?.slug || String(items[2]?.id || items[0].id) }}
+              className="group relative block h-full overflow-hidden rounded-sm"
             >
               <NewsImage
-                src={main.image}
-                alt={main.title}
-                className="aspect-[16/9] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src={items[2]?.image || items[0].image}
+                alt={items[2]?.title || items[0].title}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
-                width="800"
-                height="450"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-6 w-full">
-                <div className="mb-2 flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-4 ring-white/20">
-                    <Camera className="h-5 w-5" />
-                  </div>
-                  <span className="bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white rounded-sm">গ্যালারি</span>
-                </div>
-                <h3 className="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors">
-                  {main.title}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+              <div className="absolute top-3 left-3 flex h-7 w-7 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
+                <Camera className="h-4 w-4 text-white" />
+              </div>
+              <div className="absolute bottom-4 left-4 right-4">
+                <h3 className="line-clamp-2 font-display text-[22px] font-bold text-white leading-tight">
+                  {items[2]?.title || items[0].title}
                 </h3>
               </div>
             </Link>
           </div>
 
-          {/* Side Grid Items */}
-          <div className="grid grid-cols-1 gap-4 lg:col-span-2">
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              {items.slice(1, 5).map((a) => (
-                <Link
-                  key={a.id}
-                  to="/post/$slug"
-                  params={{ slug: a.slug || String(a.id) }}
-                  className="group relative block overflow-hidden rounded-md bg-[#1A1A1A] border border-white/5 shadow-lg"
-                >
-                  <div className="relative aspect-video overflow-hidden">
-                    <NewsImage
-                      src={a.image}
-                      alt={a.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                      width="300"
-                      height="169"
-                    />
-                    <div className="absolute inset-0 bg-black/40 transition-opacity group-hover:opacity-20" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                      <div className="h-10 w-10 rounded-full bg-primary/90 flex items-center justify-center text-white ring-4 ring-white/10">
-                        <Camera className="h-4 w-4" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <h4 className="line-clamp-2 text-sm font-bold leading-snug text-white/90 group-hover:text-primary transition-colors">
-                      {a.title}
-                    </h4>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Thumbnail Navigation */}
-        <div className="mt-8 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:thin] scrollbar-thumb-primary/50">
-          {items.map((a, i) => (
-            <button 
-              key={a.id} 
-              onClick={() => setActive(i)} 
-              className="shrink-0 transition-transform hover:-translate-y-1"
-            >
-              <div className={cn(
-                "relative h-16 w-28 overflow-hidden rounded-md border-2 transition-all",
-                i === active ? "border-primary scale-105 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" : "border-white/10 opacity-60 hover:opacity-100"
-              )}>
+          {/* Column 3: Two small items stacked */}
+          <div className="md:col-span-1 flex flex-col gap-4">
+            {items.slice(3, 5).map((item) => (
+              <Link 
+                key={item.id}
+                to="/post/$slug"
+                params={{ slug: item.slug || String(item.id) }}
+                className="group relative flex-1 overflow-hidden rounded-sm"
+              >
                 <NewsImage
-                  src={a.image}
-                  alt=""
-                  className="h-full w-full object-cover"
+                  src={item.image}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
-                  width="112"
-                  height="64"
                 />
-                {i === active && (
-                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                    <Play className="h-4 w-4 fill-white animate-pulse" />
-                  </div>
-                )}
-              </div>
-            </button>
-          ))}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
+                  <Camera className="h-3.5 w-3.5 text-white" />
+                </div>
+                <div className="absolute bottom-2 left-3 right-3">
+                  <h3 className="line-clamp-2 font-display text-[15px] font-bold text-white leading-tight">
+                    {item.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>
   );
 }
+
