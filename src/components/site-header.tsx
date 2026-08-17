@@ -119,12 +119,12 @@ export function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentLang, setCurrentLang] = useState("bn");
   
-  // Use useMemo for stable date display that matches SSR
-  const banglaDate = useMemo(() => {
-    // Return empty or fixed placeholder for SSR if needed, 
-    // but getCurrentBanglaDate is now more robust.
-    return getCurrentBanglaDate();
-  }, []); // Only compute once on mount/render
+  const [banglaDate, setBanglaDate] = useState<string>("");
+
+  useEffect(() => {
+    setBanglaDate(getCurrentBanglaDate());
+  }, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -222,11 +222,14 @@ export function SiteHeader() {
 
 
         <div className="ml-auto flex items-center gap-3 sm:gap-4 xl:ml-0">
-          <div id="google_translate_element" className="google-translate-container"></div>
+          <div suppressHydrationWarning id="google_translate_element" className="google-translate-container"></div>
           
-          <div className="hidden text-[14px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1 h-5 leading-5">
-            {banglaDate}
-          </div>
+          {banglaDate && (
+            <div className="hidden text-[14px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1 h-5 leading-5">
+              {banglaDate}
+            </div>
+          )}
+
           <button
             className="rounded-full border border-border p-2.5 transition-all duration-300 hover:rotate-6 hover:scale-110 hover:border-primary hover:text-primary shadow-sm"
             aria-label="অনুসন্ধান"
