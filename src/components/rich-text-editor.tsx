@@ -4,8 +4,8 @@ import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
-import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
+import { TextStyle } from "@tiptap/extension-text-style";
+import { Color } from "@tiptap/extension-color";
 import Youtube from "@tiptap/extension-youtube";
 import {
   Bold,
