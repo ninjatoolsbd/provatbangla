@@ -64,6 +64,7 @@ function WritePage() {
   const [seoDesc, setSeoDesc] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
+  const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
