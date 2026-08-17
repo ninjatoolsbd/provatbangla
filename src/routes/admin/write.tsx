@@ -257,8 +257,8 @@ function WritePage() {
         }
       });
       
-      if (result && result.length > 0) {
-        setContent(result[0].content);
+      if (result && result.versions && result.versions.length > 0) {
+        setContent(result.versions[0].content);
         toast.success("নিউজ সফলভাবে রিরাইট করা হয়েছে");
       }
     } catch (error: any) {
