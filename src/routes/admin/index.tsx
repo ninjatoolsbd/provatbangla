@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 import {
   FileText,
   CheckCircle2,
@@ -57,8 +58,27 @@ function Overview() {
   const [refreshing, setRefreshing] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
-  const posts = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
-  const counts = useQuery({ queryKey: ["admin-post-counts"], queryFn: fetchPostCounts, retry: false });
+  const { role, userId } = useAuth();
+  const posts = useQuery({ 
+    queryKey: ["admin-posts", role, userId], 
+    queryFn: async () => {
+      const data = await fetchAllPostsForAdmin();
+      if (role === "editor" && userId) {
+        return data.filter(p => p.author_id === userId);
+      }
+      return data;
+    }
+  });
+  const counts = useQuery({ 
+    queryKey: ["admin-post-counts", role, userId], 
+    queryFn: async () => {
+      const data = await fetchPostCounts();
+      // Note: fetchPostCounts would ideally be role-aware on server, 
+      // but if not, the post list query above handles visibility.
+      return data;
+    }, 
+    retry: false 
+  });
 
   const refreshAll = useCallback(async () => {
     setRefreshing(true);

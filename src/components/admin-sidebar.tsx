@@ -56,6 +56,7 @@ const engageItems = [
 ];
 
 const systemItems = [
+  { title: "প্রোফাইল", url: "/admin/profile", icon: Users, adminOnly: false },
   { title: "ইউজার ও অথর", url: "/admin/users", icon: Users, adminOnly: true },
   { title: "সেটিংস", url: "/admin/settings", icon: Settings, adminOnly: true },
 ];
