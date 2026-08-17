@@ -66,15 +66,15 @@ export function SiteFooter() {
               <ul className="space-y-2.5 text-sm text-ink-muted">
                 <li className="flex gap-2">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-                  বার্তাকক্ষ ও বাণিজ্যিক কার্যালয়: বাড়ি ৩৯১, রোড ২৯, নিউ ডিওএইচএস, মহাখালী, ঢাকা ১২০৬
+                  বার্তাকক্ষ ও বাণিজ্যিক কার্যালয়: বাড়ি ১২২, রোড ১, বারিধারা ডিওএইচএস, ঢাকা ১২০৫
                 </li>
                 <li className="flex gap-2">
                   <Phone className="mt-0.5 size-4 shrink-0 text-primary" />
-                  ফোন: ০২-৫৫০০০০০০, ০১৭০০-০০০০০০
+                  ফোন: ০১৩৩০৭০৯৯৫৩, ০১৭১০৪২৪২৪১
                 </li>
                 <li className="flex gap-2">
                   <Mail className="mt-0.5 size-4 shrink-0 text-primary" />
-                  ইমেইল: news@demo-kalbela.test · ad@demo-kalbela.test
+                  ইমেইল: news@provatbanglanews.com · info@provatbanglanews.com
                 </li>
               </ul>
             </div>
