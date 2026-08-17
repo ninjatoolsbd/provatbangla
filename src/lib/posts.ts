@@ -4,7 +4,7 @@ export type Post = {
   id: string;
   title: string;
   slug: string | null;
-  kicker: string | null;
+  
   excerpt: string;
   content: string;
   image_url: string | null;

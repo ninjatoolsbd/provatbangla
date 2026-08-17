@@ -32,7 +32,7 @@ export const categories: Category[] = [
 export type Article = {
   id: number;
   title: string;
-  kicker?: string;
+  
   excerpt: string;
   body: string[];
   category: string;
@@ -54,7 +54,7 @@ const raw: Array<Omit<Article, "body" | "image" | "excerpt"> & { excerpt?: strin
   {
     id: 1001,
     title: "মতামত: নতুন প্রজন্মের সাংবাদিকতায় নৈতিকতার গুরুত্ব",
-    kicker: "বিশেষ নিবন্ধ",
+    
     category: "motamot",
     author: "ড. আশরাফ আলী",
     location: "ঢাকা",
@@ -64,7 +64,7 @@ const raw: Array<Omit<Article, "body" | "image" | "excerpt"> & { excerpt?: strin
   {
     id: 1002,
     title: "মতামত: কৃষি অর্থনীতিতে পরিবর্তনের ছোঁয়া",
-    kicker: "কৃষি ও অর্থনীতি",
+    
     category: "motamot",
     author: "ফারজানা হক",
     location: "রাজশাহী",
@@ -74,7 +74,7 @@ const raw: Array<Omit<Article, "body" | "image" | "excerpt"> & { excerpt?: strin
   {
     id: 1003,
     title: "মতামত: স্মার্ট বাংলাদেশ বিনির্মাণে তারুণ্যের ভূমিকা",
-    kicker: "প্রযুক্তি",
+    
     category: "motamot",
     author: "তানভীর আহমেদ",
     location: "ঢাকা",

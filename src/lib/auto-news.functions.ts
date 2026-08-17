@@ -40,7 +40,7 @@ const previewSchema = z.object({
   sourceUrl: z.string().url(),
   sourceTitle: z.string(),
   title: z.string().min(3),
-  kicker: z.string().default(""),
+  
   excerpt: z.string().default(""),
   content: z.string().min(20),
   seo_title: z.string().default(""),

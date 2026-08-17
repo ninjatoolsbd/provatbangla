@@ -47,7 +47,7 @@ const DIVISION_NAMES: Record<string, string> = {
 /** খবরের সব লেখা এক জায়গায় (location ফাঁকা থাকলেও অটো শনাক্ত করার জন্য) */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function haystack(a: any) {
-  return [a.location, a.title, a.kicker, a.excerpt, a.content]
+  return [a.location, a.title, a.excerpt, a.content]
     .filter(Boolean)
     .join(" ");
 }
