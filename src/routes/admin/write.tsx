@@ -128,7 +128,7 @@ function WritePage() {
           ...payload,
           slug: slugify(title),
           author_id: auth.userId,
-          author_name: auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"),
+          author_name: (auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")) as string,
         })
         .select("id")
         .single();
