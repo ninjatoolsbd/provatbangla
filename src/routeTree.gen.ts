@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdvertisementRouteImport } from './routes/advertisement'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EnglishRouteImport } from './routes/english'
@@ -55,6 +56,11 @@ const AboutUsRoute = AboutUsRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdvertisementRoute = AdvertisementRouteImport.update({
+  id: '/advertisement',
+  path: '/advertisement',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchiveRoute = ArchiveRouteImport.update({
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/admin': typeof AdminRouteWithChildren
+  '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/english': typeof EnglishRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
+  '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/english': typeof EnglishRoute
@@ -275,6 +283,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/admin': typeof AdminRouteWithChildren
+  '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/english': typeof EnglishRoute
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/admin'
+    | '/advertisement'
     | '/archive'
     | '/auth'
     | '/english'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about-us'
+    | '/advertisement'
     | '/archive'
     | '/auth'
     | '/english'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/admin'
+    | '/advertisement'
     | '/archive'
     | '/auth'
     | '/english'
@@ -413,6 +425,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutUsRoute: typeof AboutUsRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AdvertisementRoute: typeof AdvertisementRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   EnglishRoute: typeof EnglishRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advertisement': {
+      id: '/advertisement'
+      path: '/advertisement'
+      fullPath: '/advertisement'
+      preLoaderRoute: typeof AdvertisementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/archive': {
@@ -701,6 +721,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutUsRoute: AboutUsRoute,
   AdminRoute: AdminRouteWithChildren,
+  AdvertisementRoute: AdvertisementRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   EnglishRoute: EnglishRoute,
