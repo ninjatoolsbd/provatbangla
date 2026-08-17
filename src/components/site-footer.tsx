@@ -115,6 +115,13 @@ export function SiteFooter() {
                       >
                         {l}
                       </Link>
+                    ) : l === "যোগাযোগ" ? (
+                      <Link 
+                        to="/contact" 
+                        className="transition-colors hover:text-ink-foreground"
+                      >
+                        {l}
+                      </Link>
                     ) : (
                       <a href="#" className="transition-colors hover:text-ink-foreground">
                         {l}
