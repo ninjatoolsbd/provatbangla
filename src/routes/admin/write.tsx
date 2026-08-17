@@ -189,6 +189,11 @@ function WritePage() {
 
       setImageUrl(res.url);
       toast.success("ছবি আপলোড সফল হয়েছে");
+      
+      // Auto-generate photocard if title is present
+      if (title) {
+        handleGeneratePhotocard(editingId || undefined);
+      }
     } catch (error: any) {
       toast.error("আপলোড ব্যর্থ হয়েছে: " + (error.message || "Unknown error"));
     } finally {
@@ -465,17 +470,22 @@ function WritePage() {
                 </span>
               </div>
               {photocardUrl && (
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">ফটোকোর্ড</span>
-                  <a 
-                    href={photocardUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-primary hover:underline font-bold"
-                  >
-                    <Download className="size-3" />
-                    ডাউনলোড
-                  </a>
+                <div className="space-y-3 border-t border-border pt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">ফটোকোর্ড</span>
+                    <a 
+                      href={photocardUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-primary hover:underline font-bold"
+                    >
+                      <Download className="size-3" />
+                      ডাউনলোড
+                    </a>
+                  </div>
+                  <div className="relative aspect-video w-full overflow-hidden border border-border bg-muted">
+                    <img src={photocardUrl} alt="Photocard Preview" className="h-full w-full object-contain" />
+                  </div>
                 </div>
               )}
               <div className="flex gap-2 pt-1">
@@ -487,7 +497,7 @@ function WritePage() {
                     disabled={isGeneratingPhotocard}
                   >
                     {isGeneratingPhotocard ? <Loader2 className="size-4 animate-spin" /> : <ImageIcon className="mr-2 size-4" />}
-                    ফটোকোর্ড
+                    রি-জেনারেট
                   </Button>
                 )}
                 <Button
@@ -498,8 +508,8 @@ function WritePage() {
                   পাবলিশ
                 </Button>
                 {editingId && (
-                  <Button variant="ghost" onClick={resetForm}>
-                    নতুন
+                  <Button variant="ghost" size="icon" onClick={resetForm} title="নতুন">
+                    <X className="size-4" />
                   </Button>
                 )}
               </div>
