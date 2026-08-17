@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdvertisementRouteImport } from './routes/advertisement'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EnglishRouteImport } from './routes/english'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as MagazineRouteImport } from './routes/magazine'
@@ -72,6 +73,11 @@ const ArchiveRoute = ArchiveRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnglishRoute = EnglishRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/advertisement': typeof AdvertisementRoute
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
   '/english': typeof EnglishRoute
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
@@ -332,6 +341,7 @@ export interface FileRouteTypes {
     | '/advertisement'
     | '/archive'
     | '/auth'
+    | '/contact'
     | '/english'
     | '/epaper'
     | '/magazine'
@@ -367,6 +377,7 @@ export interface FileRouteTypes {
     | '/advertisement'
     | '/archive'
     | '/auth'
+    | '/contact'
     | '/english'
     | '/epaper'
     | '/magazine'
@@ -403,6 +414,7 @@ export interface FileRouteTypes {
     | '/advertisement'
     | '/archive'
     | '/auth'
+    | '/contact'
     | '/english'
     | '/epaper'
     | '/magazine'
@@ -440,6 +452,7 @@ export interface RootRouteChildren {
   AdvertisementRoute: typeof AdvertisementRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
   EnglishRoute: typeof EnglishRoute
   EpaperRoute: typeof EpaperRoute
   MagazineRoute: typeof MagazineRoute
@@ -496,6 +509,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/english': {
@@ -744,6 +764,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvertisementRoute: AdvertisementRoute,
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
   EnglishRoute: EnglishRoute,
   EpaperRoute: EpaperRoute,
   MagazineRoute: MagazineRoute,
