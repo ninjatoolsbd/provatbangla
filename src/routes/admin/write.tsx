@@ -324,18 +324,26 @@ function WritePage() {
 
           <div className="border border-border bg-card shadow-sm">
             <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
-              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">মূল কনটেন্ট</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">মূল কনটেন্ট</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6 text-primary hover:text-primary"
+                  onClick={handleRewrite}
+                  disabled={isRewriting || content.length < 50}
+                  title="AI দিয়ে রিরাইট করুন"
+                >
+                  {isRewriting ? <Loader2 className="size-3 animate-spin" /> : <Wand2 className="size-3" />}
+                </Button>
+              </div>
               <span className="text-xs text-muted-foreground">
                 {wordCount} শব্দ · {charCount} অক্ষর
               </span>
             </div>
-            <Textarea
-              id="content"
-              rows={22}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="এখানে নিউজের মূল লেখা লিখুন..."
-              className="resize-y rounded-none border-0 text-[16px] leading-[1.9] shadow-none focus-visible:ring-0"
+            <RichTextEditor
+              content={content}
+              onChange={setContent}
             />
           </div>
 
