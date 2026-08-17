@@ -28,7 +28,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
     title: p.title,
     slug: p.slug,
     image: p.image_url,
-    kicker: p.kicker,
+    
     excerpt: p.excerpt,
     category: p.category,
     time: new Date(p.published_at || p.created_at).toLocaleDateString('bn-BD'),
@@ -59,7 +59,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
                     className="group block py-2.5 transition-transform duration-300 hover:translate-x-1"
                   >
                     <span className="line-clamp-3 font-display text-[14px] leading-[1.4] font-bold transition-colors group-hover:text-primary sm:text-[15px] sm:leading-snug">
-                      {a.kicker && <span className="text-primary">{a.kicker} / </span>}
+                      
                       {a.title}
                     </span>
                   </Link>

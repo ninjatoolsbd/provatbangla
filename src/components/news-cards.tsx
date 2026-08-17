@@ -68,10 +68,6 @@ function ArticleLink({
   );
 }
 
-function Kicker({ article }: { article: Article | Post }) {
-  if (!article.kicker) return null;
-  return <span className="text-primary">{article.kicker} / </span>;
-}
 
 /** Big story: image on the left, headline + excerpt on the right (kalbela hero). */
 export function SplitLead({ article }: { article: Article | Post }) {
@@ -90,7 +86,6 @@ export function SplitLead({ article }: { article: Article | Post }) {
       <div className="min-w-0">
         <ArticleLink article={article}>
           <h2 className="font-display text-[20px] leading-[1.3] font-bold transition-colors group-hover:text-primary sm:text-[28px] md:text-[32px] lg:text-[34px]">
-            <Kicker article={article} />
             {article.title}
           </h2>
         </ArticleLink>
@@ -118,7 +113,6 @@ export function LeadCard({ article }: { article: Article | Post }) {
       </ArticleLink>
       <ArticleLink article={article}>
         <h2 className="mt-3 font-display text-[18px] sm:text-[20px] leading-snug font-bold transition-colors group-hover:text-primary">
-          <Kicker article={article} />
           {article.title}
         </h2>
       </ArticleLink>
@@ -149,7 +143,6 @@ export function GridCard({ article, compact = false }: { article: Article | Post
             compact ? "text-[15px] sm:text-[16px]" : "text-[18px] sm:text-[20px]",
           )}
         >
-          <Kicker article={article} />
           {article.title}
         </h3>
       </ArticleLink>
@@ -173,7 +166,7 @@ export function ThumbRow({ article }: { article: Article | Post }) {
       </ArticleLink>
       <ArticleLink article={article} className="min-w-0 flex-1">
         <h3 className="font-display text-[15px] sm:text-[16px] leading-[1.4] font-bold transition-colors group-hover:text-primary">
-          <Kicker article={article} />
+          
           {article.title}
         </h3>
       </ArticleLink>
