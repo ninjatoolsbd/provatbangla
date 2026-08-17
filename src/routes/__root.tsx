@@ -116,6 +116,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700;800&display=swap",
       },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/gh/liam-curtis/solaimanlipi@master/solaimanlipi.css",
+      },
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", href: "/favicon.ico" },
     ],
