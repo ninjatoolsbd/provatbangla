@@ -210,9 +210,16 @@ function PostPage() {
                   <span>{(post as any).location || "ঢাকা"}, প্রতিনিধি:</span>
                 </div>
                 {post.excerpt && <p className="font-bold text-[19px] leading-[1.7]">{post.excerpt}</p>}
-                {paragraphs(post.content).map((p, i) => (
-                  <p key={i}>{p}</p>
-                ))}
+                {post.content.includes('<') && post.content.includes('>') ? (
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: post.content }} 
+                    className="prose prose-slate max-w-none dark:prose-invert prose-p:leading-[1.8] prose-p:text-slate-800 prose-p:text-[18px] prose-headings:font-display prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+                  />
+                ) : (
+                  paragraphs(post.content).map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))
+                )}
               </div>
 
               {/* Tags/Categories */}

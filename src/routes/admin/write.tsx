@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/my-supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
+import { RichTextEditor } from "@/components/rich-text-editor";
 
 export const Route = createFileRoute("/admin/write")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -63,6 +64,7 @@ function WritePage() {
   const [seoDesc, setSeoDesc] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
+  const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -229,8 +231,43 @@ function WritePage() {
     return () => clearTimeout(timer);
   }, [title, content, editingId, autoGenAttempted]);
 
-  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
-  const charCount = content.length;
+  const stripHtml = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  };
+
+  const wordCount = content.trim() ? stripHtml(content).trim().split(/\s+/).length : 0;
+  const charCount = stripHtml(content).length;
+
+  const handleRewrite = async () => {
+    if (!content || content.length < 50) {
+      toast.error("নিউজ রিরাইট করতে কমপক্ষে ৫০টি অক্ষর প্রয়োজন");
+      return;
+    }
+
+    try {
+      setIsRewriting(true);
+      const { rewriteNews } = await import("@/lib/news.functions");
+      const result = await rewriteNews({
+        data: { 
+          title, 
+          content: stripHtml(content),
+          tone: "news",
+          variants: 1
+        }
+      });
+      
+      if (result?.versions?.[0]?.content) {
+        setContent(result.versions[0].content);
+        toast.success("নিউজ সফলভাবে রিরাইট করা হয়েছে");
+      }
+    } catch (error: any) {
+      console.error("Rewrite failed:", error);
+      toast.error("রিরাইট করতে সমস্যা হয়েছে");
+    } finally {
+      setIsRewriting(false);
+    }
+  };
 
   return (
     <div className="pb-10">
@@ -287,18 +324,26 @@ function WritePage() {
 
           <div className="border border-border bg-card shadow-sm">
             <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
-              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">মূল কনটেন্ট</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">মূল কনটেন্ট</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6 text-primary hover:text-primary"
+                  onClick={handleRewrite}
+                  disabled={isRewriting || content.length < 50}
+                  title="AI দিয়ে রিরাইট করুন"
+                >
+                  {isRewriting ? <Loader2 className="size-3 animate-spin" /> : <Wand2 className="size-3" />}
+                </Button>
+              </div>
               <span className="text-xs text-muted-foreground">
                 {wordCount} শব্দ · {charCount} অক্ষর
               </span>
             </div>
-            <Textarea
-              id="content"
-              rows={22}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="এখানে নিউজের মূল লেখা লিখুন..."
-              className="resize-y rounded-none border-0 text-[16px] leading-[1.9] shadow-none focus-visible:ring-0"
+            <RichTextEditor
+              content={content}
+              onChange={setContent}
             />
           </div>
 
