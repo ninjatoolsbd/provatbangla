@@ -101,6 +101,13 @@ export function SiteFooter() {
                       >
                         {l}
                       </Link>
+                    ) : l === "বিজ্ঞাপন" ? (
+                      <Link 
+                        to="/advertisement" 
+                        className="transition-colors hover:text-ink-foreground"
+                      >
+                        {l}
+                      </Link>
                     ) : (
                       <a href="#" className="transition-colors hover:text-ink-foreground">
                         {l}
