@@ -591,7 +591,7 @@ export function PhotoGallery({ items }: { items: any[] }) {
 
           {/* Side Grid Items */}
           <div className="grid grid-cols-1 gap-4 lg:col-span-2">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               {items.slice(1, 5).map((a) => (
                 <Link
                   key={a.id}
