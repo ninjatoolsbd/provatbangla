@@ -558,7 +558,7 @@ export function PhotoGallery({ items }: { items: any[] }) {
           <Camera className="size-4 text-primary" />
           <h2 className="font-display text-[20px] font-bold">ফটোগ্যালারি</h2>
         </div>
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
           {/* Large Main Feature */}
           <div className="relative lg:col-span-2">
             <Link 
