@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/my-supabase/client";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
