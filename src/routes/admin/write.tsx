@@ -247,17 +247,18 @@ function WritePage() {
 
     try {
       setIsRewriting(true);
-      const { generateNews } = await import("@/lib/news-generate.functions");
-      const result = await generateNews({
+      const { rewriteNews } = await import("@/lib/news.functions");
+      const result = await rewriteNews({
         data: { 
           title, 
           content: stripHtml(content),
-          prompt: "এই নিউজটি বাংলায় পেশাদার সাংবাদিকতার ভাষায় রিরাইট করো। মূল তথ্য একই রাখবে কিন্তু ভাষা আরও সাবলীল এবং আকর্ষণীয় করবে। ফলাফল শুধুমাত্র রিরাইট করা টেক্সট হিসেবে দাও।"
+          tone: "news",
+          variants: 1
         }
       });
       
-      if (result.content) {
-        setContent(result.content);
+      if (result && result.length > 0) {
+        setContent(result[0].content);
         toast.success("নিউজ সফলভাবে রিরাইট করা হয়েছে");
       }
     } catch (error: any) {
