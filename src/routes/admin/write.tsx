@@ -257,7 +257,7 @@ function WritePage() {
         }
       });
       
-      if (result && result.versions && result.versions.length > 0) {
+      if (result?.versions?.[0]?.content) {
         setContent(result.versions[0].content);
         toast.success("নিউজ সফলভাবে রিরাইট করা হয়েছে");
       }
