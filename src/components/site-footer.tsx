@@ -38,11 +38,11 @@ export function SiteFooter() {
                 />
               </Link>
               <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                সম্পাদক ও প্রকাশক: <span className="text-ink-foreground">ডেমো সম্পাদক</span>
+                সম্পাদক : <span className="text-ink-foreground">ইঞ্জিনিয়ার জাহাঙ্গীর আলম</span>
                 <br />
-                ব্যবস্থাপনা সম্পাদক: ডেমো ব্যবস্থাপক
+                ব্যবস্থাপনা সম্পাদক: ইঞ্জিনিয়ার বুল্বুল বাহার
                 <br />
-                প্রকাশনায়: প্রভাতবাংলা ডেমো মিডিয়া লিমিটেড
+                প্রকাশনায়: প্রভাতবাংলা মিডিয়া লিমিটেড
               </p>
               <div className="mt-4 flex gap-2">
                 {socials.map(({ Icon, label }) => (
