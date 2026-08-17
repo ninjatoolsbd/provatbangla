@@ -231,8 +231,42 @@ function WritePage() {
     return () => clearTimeout(timer);
   }, [title, content, editingId, autoGenAttempted]);
 
-  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
-  const charCount = content.length;
+  const stripHtml = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  };
+
+  const wordCount = content.trim() ? stripHtml(content).trim().split(/\s+/).length : 0;
+  const charCount = stripHtml(content).length;
+
+  const handleRewrite = async () => {
+    if (!content || content.length < 50) {
+      toast.error("নিউজ রিরাইট করতে কমপক্ষে ৫০টি অক্ষর প্রয়োজন");
+      return;
+    }
+
+    try {
+      setIsRewriting(true);
+      const { generateNews } = await import("@/lib/news-generate.functions");
+      const result = await generateNews({
+        data: { 
+          title, 
+          content: stripHtml(content),
+          prompt: "এই নিউজটি বাংলায় পেশাদার সাংবাদিকতার ভাষায় রিরাইট করো। মূল তথ্য একই রাখবে কিন্তু ভাষা আরও সাবলীল এবং আকর্ষণীয় করবে। ফলাফল শুধুমাত্র রিরাইট করা টেক্সট হিসেবে দাও।"
+        }
+      });
+      
+      if (result.content) {
+        setContent(result.content);
+        toast.success("নিউজ সফলভাবে রিরাইট করা হয়েছে");
+      }
+    } catch (error: any) {
+      console.error("Rewrite failed:", error);
+      toast.error("রিরাইট করতে সমস্যা হয়েছে");
+    } finally {
+      setIsRewriting(false);
+    }
+  };
 
   return (
     <div className="pb-10">
