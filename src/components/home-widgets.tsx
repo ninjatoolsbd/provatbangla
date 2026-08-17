@@ -655,7 +655,8 @@ export function PhotoGallery({ items }: { items: any[] }) {
         </div>
 
         {/* Grid Layout - matching file-74 masonry-like structure */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 aspect-[21/9] min-h-[500px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 aspect-[16/6] max-h-[350px]">
+
           
           {/* Column 1: Two small items stacked */}
           <div className="md:col-span-1 flex flex-col gap-4">
