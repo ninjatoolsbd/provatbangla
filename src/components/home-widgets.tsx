@@ -9,12 +9,16 @@ import {
   Play,
   Search,
   Youtube,
+  ArrowRight,
+  Clock,
 } from "lucide-react";
 import { useRef, useState, useMemo, useEffect } from "react";
 
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 import { NewsImage } from "@/components/news-cards";
+import { formatDistanceToNow } from "date-fns";
+import { bn } from "date-fns/locale";
 
 /* ---------- shared red section bar (kalbela style) ---------- */
 export function BarHeading({
@@ -276,6 +280,97 @@ export function VideoStrip({ items }: { items: any[] }) {
     </>
   );
 }
+
+/* ---------- Video Section (Kalbela Style) - user-uploads://file-73 ---------- */
+export function VideoGallery({ items }: { items: any[] }) {
+  if (!items || items.length === 0) return null;
+
+  return (
+    <section className="mt-10 mb-10 border-t border-border pt-8">
+      <div className="mx-auto max-w-[1360px] px-4">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between border-b border-border pb-2">
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-tr from-orange-500 via-pink-600 to-purple-600 text-white">
+              <Play className="h-3 w-3 fill-white" />
+            </div>
+            <h2 className="font-display text-[22px] font-bold text-slate-900">ভিডিও</h2>
+          </div>
+          <Link
+            to="/category/$slug"
+            params={{ slug: "video" }}
+            className="flex items-center gap-1 text-[15px] font-bold text-slate-800 hover:text-primary transition-colors"
+          >
+            সব ভিডিও <ArrowRight className="h-4 w-4 rounded-full border border-slate-800 p-0.5" />
+          </Link>
+        </div>
+
+        {/* Video Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {items.slice(0, 5).map((item) => (
+            <Link
+              key={item.id}
+              to="/post/$slug"
+              params={{ slug: item.slug || String(item.id) }}
+              className="group flex flex-col gap-3"
+            >
+              {/* Thumbnail Container */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-md bg-slate-100">
+                <NewsImage
+                  src={item.image_url}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-xl ring-4 ring-white/20 transition-transform duration-300 group-hover:scale-110">
+                    <Play className="h-5 w-5 fill-slate-900 ml-0.5" />
+                  </div>
+                </div>
+
+                {/* Bottom Red/Gradient Bar with Logo */}
+                <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-red-900/90 to-transparent flex items-end p-2">
+                  <div className="flex w-full items-center justify-between">
+                    <div className="h-4 w-16 bg-white/20 rounded backdrop-blur-sm" />
+                    <div className="text-[10px] font-bold text-white uppercase tracking-tighter opacity-80">কালবেলা</div>
+                  </div>
+                </div>
+
+                {/* Center Text (As seen in ref - maybe title or specific tag) */}
+                <div className="absolute bottom-4 left-0 right-0 text-center px-2">
+                   <p className="line-clamp-2 font-display text-[14px] font-bold text-white drop-shadow-lg leading-tight">
+                     {item.title}
+                   </p>
+                </div>
+              </div>
+
+              {/* Info Area */}
+              <div className="flex flex-col gap-1.5 px-1">
+                <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary">
+                  {item.title}
+                </h3>
+                {item.published_at && (
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                    <Clock className="h-3 w-3" />
+                    <span>
+                      {formatDistanceToNow(new Date(item.published_at), {
+                        addSuffix: true,
+                        locale: bn,
+                      })}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 /* ---------- opinion / মতামত with author chips ---------- */
 export function OpinionColumn({ items }: { items: Article[] }) {

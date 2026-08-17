@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { EpaperSection } from "@/components/epaper-section";
 import { BreakingTicker } from "@/components/breaking-ticker";
 import { LatestPosts } from "@/components/latest-posts";
-import { PhotoGallery, VideoStrip } from "@/components/home-widgets";
+import { PhotoGallery, VideoStrip, VideoGallery } from "@/components/home-widgets";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 import { DivisionMap } from "@/components/division-map";
 import { AdBanner } from "@/components/ad-banner";
@@ -119,6 +119,8 @@ function Home() {
 
       {/* VideoStrip (Live TV section) removed from homepage as per user request */}
       
+      <VideoGallery items={videoPosts} />
+
       {/* Photo Gallery connected to DB */}
       <PhotoGallery items={mappedPhotoPosts} />
 
