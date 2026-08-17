@@ -171,7 +171,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-center gap-6 xl:flex px-4">
+        <nav className="hidden flex-1 items-center justify-between gap-3 xl:flex px-6 2xl:px-10">
           {utility.map((u) => {
             if ("mega" in u && u.mega) {
               return (
