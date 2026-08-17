@@ -64,7 +64,7 @@ export const generateNews = createServerFn({ method: "POST" })
         .insert({
           title: article.title,
           slug,
-          kicker: article.kicker || null,
+          
           category: data.category,
           image_url: imageUrl,
           excerpt: article.excerpt,

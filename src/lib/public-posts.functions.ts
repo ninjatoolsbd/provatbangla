@@ -8,7 +8,7 @@ function pickPostFields(p: any) {
     id: p.id,
     title: p.title,
     slug: p.slug,
-    kicker: p.kicker,
+    
     excerpt: p.excerpt,
     content: p.content,
     image_url: p.image_url,

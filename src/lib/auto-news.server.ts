@@ -27,7 +27,6 @@ export type AutoPreview = {
   sourceUrl: string;
   sourceTitle: string;
   title: string;
-  kicker: string;
   excerpt: string;
   content: string;
   seo_title: string;
@@ -49,7 +48,7 @@ async function settings(): Promise<Record<string, string>> {
 
 type Rewritten = {
   title: string;
-  kicker: string;
+  
   excerpt: string;
   content: string;
   seo_title: string;
@@ -80,7 +79,7 @@ async function rewrite(
     "",
     "নিচের মার্কারগুলো হুবহু রেখে উত্তর দাও। JSON বা Markdown ব্যবহার করবে না:",
     "[TITLE]শিরোনাম[/TITLE]",
-    "[KICKER]ছোট কিকার[/KICKER]",
+    
     "[EXCERPT]সংক্ষিপ্ত সারাংশ[/EXCERPT]",
     "[CONTENT]পূর্ণ সংবাদ, একাধিক অনুচ্ছেদসহ[/CONTENT]",
     "[SEO_TITLE]SEO শিরোনাম[/SEO_TITLE]",
@@ -98,7 +97,7 @@ async function rewrite(
   };
   const parsed: Partial<Rewritten> = {
     title: field("TITLE"),
-    kicker: field("KICKER"),
+    
     excerpt: field("EXCERPT"),
     content: field("CONTENT"),
     seo_title: field("SEO_TITLE"),
@@ -109,7 +108,7 @@ async function rewrite(
   if (!parsed.content) {
     const plain = text
       .replace(/```[a-z]*|```/gi, "")
-      .replace(/\[(?:\/?)(?:TITLE|KICKER|EXCERPT|CONTENT|SEO_TITLE|SEO_DESCRIPTION|CATEGORY)\]/gi, "")
+      .replace(/\[(?:\/?)(?:TITLE|EXCERPT|CONTENT|SEO_TITLE|SEO_DESCRIPTION|CATEGORY)\]/gi, "")
       .trim();
     if (plain.length < 200) throw new Error("AI থেকে পূর্ণ সংবাদ পাওয়া যায়নি");
     parsed.content = plain;
@@ -117,7 +116,7 @@ async function rewrite(
   if (!parsed.title) parsed.title = article.title;
   return {
     title: parsed.title,
-    kicker: parsed.kicker ?? "",
+    
     excerpt: parsed.excerpt ?? parsed.content.slice(0, 160),
     content: parsed.content,
     seo_title: parsed.seo_title ?? "",
@@ -222,7 +221,7 @@ export async function runAutoSync(
             sourceUrl: item.url,
             sourceTitle: title,
             title: news.title,
-            kicker: news.kicker,
+            
             excerpt: news.excerpt,
             content: news.content + credit,
             seo_title: news.seo_title,
@@ -241,7 +240,7 @@ export async function runAutoSync(
           .insert({
             title: news.title,
             slug: slugify(news.title),
-            kicker: news.kicker || null,
+            
             category: news.category,
             image_url: imageUrl,
             excerpt: news.excerpt,
@@ -314,7 +313,7 @@ export async function publishPreview(
     .insert({
       title: preview.title,
       slug: slugify(preview.title),
-      kicker: preview.kicker || null,
+      
       category: preview.category,
       image_url: preview.imageUrl,
       excerpt: preview.excerpt,
