@@ -88,9 +88,9 @@ export function BreakingTicker() {
 
   return (
     <div className="border-b border-border bg-secondary">
-      <div className="mx-auto flex max-w-[1360px] items-center gap-3 px-4 py-1.5">
-        <span className="flex shrink-0 items-center gap-1.5 bg-primary px-3 py-1.5 text-xs font-black text-primary-foreground shadow-sm">
-          <Radio className={cn("size-3.5", pulse && "animate-pulse")} />
+      <div className="mx-auto flex max-w-[1360px] items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1 sm:py-1.5">
+        <span className="flex shrink-0 items-center gap-1 sm:gap-1.5 bg-primary px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-black text-primary-foreground shadow-sm">
+          <Radio className={cn("size-3 sm:size-3.5", pulse && "animate-pulse")} />
           সর্বশেষ
         </span>
 
@@ -110,7 +110,7 @@ export function BreakingTicker() {
                 to="/post/$slug"
                 params={{ slug: a.slug ?? "" }}
                 className={cn(
-                  "kb-underline text-sm font-semibold transition-colors hover:text-primary",
+                  "kb-underline text-[13px] sm:text-sm font-semibold transition-colors hover:text-primary",
                   i % items.length === 0 && pulse && "kb-headline-in text-primary",
                 )}
               >
@@ -125,9 +125,9 @@ export function BreakingTicker() {
           onClick={() => setPaused((v) => !v)}
           aria-label={paused ? "টিকার চালু করুন" : "টিকার থামান"}
           aria-pressed={paused}
-          className="shrink-0 rounded-full border border-border bg-background p-1.5 text-muted-foreground transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary active:scale-95"
+          className="shrink-0 rounded-full border border-border bg-background p-1 sm:p-1.5 text-muted-foreground transition-all duration-300 hover:scale-110 hover:border-primary hover:text-primary active:scale-95"
         >
-          {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
+          {paused ? <Play className="size-3 sm:size-3.5" /> : <Pause className="size-3 sm:size-3.5" />}
         </button>
       </div>
     </div>

@@ -94,9 +94,9 @@ export function LatestPosts({ category }: { category?: string }) {
   return (
     <section className="mb-12">
       {/* Top Section: Hero + Sidebar */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
         {/* Left: Featured Hero */}
-        <div className="lg:col-span-8">
+        <div className="md:col-span-2 lg:col-span-8">
           <Reveal delay={0}>
             <article className="group relative overflow-hidden rounded-md bg-slate-50 transition-all hover:bg-white hover:shadow-xl">
               <div className="relative">
@@ -150,7 +150,7 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
 
         {/* Right: Sidebar Feed */}
-        <div className="lg:col-span-4 flex flex-col border border-slate-100 rounded-md bg-slate-50/50 p-4 md:col-span-1 lg:col-span-4">
+        <div className="lg:col-span-4 flex flex-col border border-slate-100 rounded-md bg-slate-50/50 p-4 md:col-span-2 lg:col-span-4">
           <div className="flex flex-col gap-6 h-full">
             <h3 className="flex items-center gap-3 font-display text-[20px] font-bold text-slate-900 shrink-0">
               <span className="h-[22px] w-[5px] bg-primary"></span>
@@ -159,8 +159,8 @@ export function LatestPosts({ category }: { category?: string }) {
             <div className="flex-1 space-y-5 overflow-hidden">
               {sidePosts.map((p, i) => (
                 <Reveal key={p.id} delay={100 + i * 50}>
-                  <article className="group grid grid-cols-3 gap-3 border-b border-slate-100 pb-5 last:border-0 last:pb-0 sm:grid-cols-12 lg:grid-cols-3">
-                    <div className="col-span-1 sm:col-span-4 lg:col-span-1">
+                  <article className="group grid grid-cols-3 gap-3 border-b border-slate-100 pb-5 last:border-0 last:pb-0 md:grid-cols-1 lg:grid-cols-3">
+                    <div className="col-span-1 md:col-span-1 lg:col-span-1">
                       {p.image_url && (
                         <Link to="/post/$slug" params={{ slug: p.slug ?? "" }} className="block overflow-hidden rounded-sm shadow-sm">
                           <NewsImage 
@@ -173,7 +173,7 @@ export function LatestPosts({ category }: { category?: string }) {
                         </Link>
                       )}
                     </div>
-                    <div className="col-span-2 sm:col-span-8 lg:col-span-2">
+                    <div className="col-span-2 md:col-span-1 lg:col-span-2">
                       <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
                         <h3 className="line-clamp-2 font-display text-[16px] font-bold leading-snug text-slate-900 transition-colors group-hover:text-primary">
                           {p.title}
