@@ -642,106 +642,117 @@ export function SocialFollow() {
 
 /* ---------- dark photo gallery band ---------- */
 export function PhotoGallery({ items }: { items: any[] }) {
-  const main = items[0];
-  if (!main) return null;
+  const [active, setActive] = useState(0);
+  if (!items || items.length === 0) return null;
+
+  const next = () => setActive((prev) => (prev + 1) % items.length);
+  const prev = () => setActive((prev) => (prev - 1 + items.length) % items.length);
+
+  // Helper to get relative item
+  const getItem = (offset: number) => {
+    const index = (active + offset + items.length) % items.length;
+    return items[index];
+  };
+
+  const leftItem = getItem(-1);
+  const mainItem = getItem(0);
+  const rightItem = getItem(1);
 
   return (
-    <section className="mt-10 mb-10">
+    <section className="mt-10 mb-10 overflow-hidden">
       <div className="mx-auto max-w-[1360px] px-4">
-        {/* Header - matching file-74 style */}
-        <div className="mb-4 flex items-center gap-2">
-          <div className="h-4 w-4 bg-primary" />
-          <h2 className="font-display text-[22px] font-bold text-slate-900">ছবি</h2>
+        {/* Header - matching file-75 style */}
+        <div className="mb-8 flex items-center justify-between border-b border-border pb-2">
+          <h2 className="font-display text-[24px] font-bold text-slate-900">ফটোগ্যালারি</h2>
+          <Link
+            to="/category/$slug"
+            params={{ slug: "photo-gallery" }}
+            className="flex items-center gap-1 text-[15px] text-slate-600 hover:text-primary transition-colors"
+          >
+            আরও <ChevronRight className="h-4 w-4" />
+          </Link>
         </div>
 
-        {/* Grid Layout - matching file-74 masonry-like structure */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 aspect-[16/6] max-h-[350px]">
-
+        {/* Slider Layout - matching file-75 3-item view */}
+        <div className="relative flex items-center justify-center gap-4 sm:gap-8 min-h-[400px]">
           
-          {/* Column 1: Two small items stacked */}
-          <div className="md:col-span-1 flex flex-col gap-4">
-            {items.slice(0, 2).map((item) => (
-              <Link 
-                key={item.id}
-                to="/post/$slug"
-                params={{ slug: item.slug || String(item.id) }}
-                className="group relative flex-1 overflow-hidden rounded-sm"
-              >
-                <NewsImage
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
-                  <Camera className="h-3.5 w-3.5 text-white" />
-                </div>
-                <div className="absolute bottom-2 left-3 right-3">
-                  <h3 className="line-clamp-2 font-display text-[15px] font-bold text-white leading-tight">
-                    {item.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+          {/* Left Item (Partial/Side) */}
+          <div className="hidden sm:block w-1/4 opacity-40 transition-all duration-500 scale-90 blur-[1px]">
+            <div className="relative aspect-video overflow-hidden rounded-xl">
+              <NewsImage
+                src={leftItem.image}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <p className="mt-4 text-center font-display text-sm text-slate-500">
+              {leftItem.published_at ? new Date(leftItem.published_at).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : "১৬ আগস্ট, ২০২৪"}
+            </p>
           </div>
 
-          {/* Column 2: Large Vertical Main item */}
-          <div className="md:col-span-2">
+          {/* Main Item (Center) */}
+          <div className="w-full sm:w-1/2 z-10 transition-all duration-500 scale-105 sm:scale-110">
             <Link 
               to="/post/$slug"
-              params={{ slug: items[2]?.slug || String(items[2]?.id || items[0].id) }}
-              className="group relative block h-full overflow-hidden rounded-sm"
+              params={{ slug: mainItem.slug || String(mainItem.id) }}
+              className="group relative block overflow-hidden rounded-xl shadow-2xl"
             >
               <NewsImage
-                src={items[2]?.image || items[0].image}
-                alt={items[2]?.title || items[0].title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                loading="lazy"
+                src={mainItem.image}
+                alt={mainItem.title}
+                className="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute top-3 left-3 flex h-7 w-7 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
-                <Camera className="h-4 w-4 text-white" />
-              </div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="line-clamp-2 font-display text-[22px] font-bold text-white leading-tight">
-                  {items[2]?.title || items[0].title}
-                </h3>
-              </div>
             </Link>
+            <p className="mt-6 text-center font-display text-[18px] font-bold text-slate-800">
+              {mainItem.published_at ? new Date(mainItem.published_at).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : "১৫ আগস্ট, ২০২৪"}
+            </p>
           </div>
 
-          {/* Column 3: Two small items stacked */}
-          <div className="md:col-span-1 flex flex-col gap-4">
-            {items.slice(3, 5).map((item) => (
-              <Link 
-                key={item.id}
-                to="/post/$slug"
-                params={{ slug: item.slug || String(item.id) }}
-                className="group relative flex-1 overflow-hidden rounded-sm"
-              >
-                <NewsImage
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute top-2 left-2 flex h-6 w-6 items-center justify-center rounded-sm bg-white/20 backdrop-blur-md">
-                  <Camera className="h-3.5 w-3.5 text-white" />
-                </div>
-                <div className="absolute bottom-2 left-3 right-3">
-                  <h3 className="line-clamp-2 font-display text-[15px] font-bold text-white leading-tight">
-                    {item.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+          {/* Right Item (Partial/Side) */}
+          <div className="hidden sm:block w-1/4 opacity-40 transition-all duration-500 scale-90 blur-[1px]">
+            <div className="relative aspect-video overflow-hidden rounded-xl">
+              <NewsImage
+                src={rightItem.image}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <p className="mt-4 text-center font-display text-sm text-slate-500">
+              {rightItem.published_at ? new Date(rightItem.published_at).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : "১৪ আগস্ট, ২০২৪"}
+            </p>
           </div>
 
+          {/* Navigation Arrows - matching red circular style in file-75 */}
+          <button 
+            onClick={prev}
+            className="absolute left-0 sm:left-[22%] top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button 
+            onClick={next}
+            className="absolute right-0 sm:right-[22%] top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* Dots Indicator - matching file-75 bottom dots */}
+        <div className="mt-10 flex justify-center gap-2">
+          {items.slice(0, 5).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={cn(
+                "h-2 w-2 rounded-full transition-all duration-300",
+                active === i ? "bg-blue-600 w-4" : "bg-slate-300"
+              )}
+            />
+          ))}
         </div>
       </div>
     </section>
   );
 }
+
 
