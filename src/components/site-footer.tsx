@@ -94,6 +94,13 @@ export function SiteFooter() {
                       >
                         {l}
                       </Link>
+                    ) : l === "আমাদের সম্পর্কে" ? (
+                      <Link 
+                        to="/about-us" 
+                        className="transition-colors hover:text-ink-foreground"
+                      >
+                        {l}
+                      </Link>
                     ) : (
                       <a href="#" className="transition-colors hover:text-ink-foreground">
                         {l}
