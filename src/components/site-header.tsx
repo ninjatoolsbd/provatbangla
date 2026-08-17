@@ -171,14 +171,14 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden flex-1 items-center justify-between gap-1.5 xl:flex px-4 2xl:px-8">
+        <nav className="hidden flex-1 items-center justify-center gap-1 xl:flex px-2 2xl:px-4">
           {utility.map((u) => {
             if ("mega" in u && u.mega) {
               return (
                 <div key={u.label} className="group relative py-2">
                   <Link
                     to={u.to as any}
-                    className="kb-underline flex cursor-pointer items-center gap-1.5 text-[14px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary"
+                    className="kb-underline flex cursor-pointer items-center gap-1 text-[14px] font-bold text-slate-700 transition-colors hover:text-primary group-hover:text-primary whitespace-nowrap"
                   >
                     <u.icon className="size-[18px] text-muted-foreground group-hover:text-primary" />
                     {u.label}
