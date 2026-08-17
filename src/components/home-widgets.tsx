@@ -35,31 +35,35 @@ export function BarHeading({
   return (
     <div
       className={cn(
-        "mb-3 flex items-center justify-between border-b border-border pb-1.5",
+        "mb-4 flex items-center justify-between border-b-2 border-primary/20 pb-2",
         className,
       )}
     >
-      <h2 className="relative flex items-center gap-2 font-display text-[20px] font-bold text-slate-900">
-        <span className="inline-block h-[24px] w-[5px] bg-primary" />
-        {title}
-      </h2>
+      <div className="flex items-center gap-2">
+        <span className="h-6 w-1.5 rounded-full bg-primary" />
+        <h2 className="font-display text-[22px] font-extrabold tracking-tight text-slate-900 sm:text-[24px]">
+          {title}
+        </h2>
+      </div>
       <div className="flex items-center gap-2">
         {slug && (
           <Link
             to="/category/$slug"
             params={{ slug }}
-            className="kb-underline text-xs font-bold text-muted-foreground hover:text-primary"
+            className="flex items-center gap-1.5 text-sm font-bold text-slate-600 transition-colors hover:text-primary"
           >
-            সব খবর →
+            সব খবর
+            <ChevronRight className="h-4 w-4 rounded-full border border-slate-200 p-0.5 group-hover:border-primary" />
           </Link>
         )}
         {arrows && (
-          <span className="grid size-6 place-items-center rounded-full border border-border text-muted-foreground">
-            <ChevronRight className="size-3.5" />
+          <span className="grid size-8 place-items-center rounded-full border border-slate-200 text-slate-400 transition-colors hover:border-primary hover:text-primary">
+            <ChevronRight className="size-4" />
           </span>
         )}
       </div>
     </div>
+
   );
 }
 
