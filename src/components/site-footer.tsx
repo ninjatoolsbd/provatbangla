@@ -108,6 +108,13 @@ export function SiteFooter() {
                       >
                         {l}
                       </Link>
+                    ) : l === "শর্তাবলি" ? (
+                      <Link 
+                        to="/terms-and-conditions" 
+                        className="transition-colors hover:text-ink-foreground"
+                      >
+                        {l}
+                      </Link>
                     ) : (
                       <a href="#" className="transition-colors hover:text-ink-foreground">
                         {l}
