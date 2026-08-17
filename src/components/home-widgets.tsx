@@ -742,5 +742,5 @@ export function PhotoGallery({ items }: { items: any[] }) {
       </div>
     </section>
   );
-  );
 }
+
