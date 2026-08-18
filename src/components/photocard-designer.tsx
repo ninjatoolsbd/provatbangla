@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as fabric from 'fabric';
-import { Download, Loader2, Save, Undo, Redo, ZoomIn, ZoomOut, Type, Image as ImageIcon, Palette } from 'lucide-react';
+import { Download, Loader2, Save, ZoomIn, ZoomOut, Image as ImageIcon, Palette } from 'lucide-react';
+import type * as FabricType from 'fabric';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -26,121 +26,127 @@ const WIN_H = 680;
 
 export function PhotocardDesigner({ initialTitle, initialImage, postId, onSave, onClose }: PhotocardDesignerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+  const fabricCanvasRef = useRef<FabricType.Canvas | null>(null);
+  const fabricRef = useRef<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [line1, setLine1] = useState(initialTitle.slice(0, 40));
   const [line2, setLine2] = useState(initialTitle.slice(40, 80));
   const [line3, setLine3] = useState(initialTitle.slice(80, 120));
-  const [activeObject, setActiveObject] = useState<fabric.FabricObject | null>(null);
+  const [activeObject, setActiveObject] = useState<FabricType.FabricObject | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const canvas = new fabric.Canvas(canvasRef.current, {
-      width: CARD_W,
-      height: CARD_H,
-      backgroundColor: '#8f0101',
-    });
-    fabricCanvasRef.current = canvas;
+    let canvas: FabricType.Canvas;
 
-    // Load Background Image
-    const loadImage = async () => {
-      try {
-        const img = await fabric.FabricImage.fromURL(initialImage, { crossOrigin: 'anonymous' });
-        img.set({
-          left: WIN_X,
-          top: WIN_Y,
-          scaleX: WIN_W / img.width!,
-          scaleY: WIN_H / img.height!,
-          selectable: true,
-          evented: true,
-        });
-        
-        // Clip image to the window
-        const clipPath = new fabric.Rect({
-          left: WIN_X,
-          top: WIN_Y,
-          width: WIN_W,
-          height: WIN_H,
-          absolutePositioned: true,
-        });
-        img.clipPath = clipPath;
-        
-        canvas.add(img);
-        canvas.sendObjectToBack(img);
-      } catch (e) {
-        console.error("Failed to load news image", e);
-      }
-    };
+    const initFabric = async () => {
+      const fabric = await import('fabric');
+      fabricRef.current = fabric;
+      
+      canvas = new fabric.Canvas(canvasRef.current!, {
+        width: CARD_W,
+        height: CARD_H,
+        backgroundColor: '#8f0101',
+      });
+      fabricCanvasRef.current = canvas;
 
-    // Load Frame Image
-    const loadFrame = async () => {
-      try {
-        const frameUrl = `${SITE_ORIGIN}${frameAsset.url}`;
-        const frame = await fabric.FabricImage.fromURL(frameUrl, { crossOrigin: 'anonymous' });
-        frame.set({
-          left: 0,
-          top: 0,
-          scaleX: CARD_W / frame.width!,
-          scaleY: CARD_H / frame.height!,
-          selectable: false,
-          evented: false,
-        });
-        canvas.add(frame);
-        canvas.bringObjectToFront(frame);
-      } catch (e) {
-        console.error("Failed to load template frame", e);
-      }
-    };
-
-    // Add Text Layers
-    const addText = () => {
-      const textStyle = {
-        fontFamily: 'SolaimanLipi',
-        fontSize: 52,
-        fontWeight: 'bold' as const,
-        fill: '#ffffff',
-        left: WIN_X + 40,
-        textAlign: 'center' as const,
-        width: WIN_W - 80,
+      // Load Background Image
+      const loadImage = async () => {
+        try {
+          const img = await fabric.FabricImage.fromURL(initialImage, { crossOrigin: 'anonymous' });
+          img.set({
+            left: WIN_X,
+            top: WIN_Y,
+            scaleX: WIN_W / img.width!,
+            scaleY: WIN_H / img.height!,
+            selectable: true,
+            evented: true,
+          });
+          
+          // Clip image to the window
+          const clipPath = new fabric.Rect({
+            left: WIN_X,
+            top: WIN_Y,
+            width: WIN_W,
+            height: WIN_H,
+            absolutePositioned: true,
+          });
+          img.clipPath = clipPath;
+          
+          canvas.add(img);
+          canvas.sendObjectToBack(img);
+        } catch (e) {
+          console.error("Failed to load news image", e);
+        }
       };
 
-      const t1 = new fabric.Textbox(line1, {
-        ...textStyle,
-        top: WIN_Y + WIN_H - 220,
-        name: 'line1',
-      });
+      // Load Frame Image
+      const loadFrame = async () => {
+        try {
+          const frameUrl = `${SITE_ORIGIN}${frameAsset.url}`;
+          const frame = await fabric.FabricImage.fromURL(frameUrl, { crossOrigin: 'anonymous' });
+          frame.set({
+            left: 0,
+            top: 0,
+            scaleX: CARD_W / frame.width!,
+            scaleY: CARD_H / frame.height!,
+            selectable: false,
+            evented: false,
+          });
+          canvas.add(frame);
+          canvas.bringObjectToFront(frame);
+        } catch (e) {
+          console.error("Failed to load template frame", e);
+        }
+      };
 
-      const t2 = new fabric.Textbox(line2, {
-        ...textStyle,
-        top: WIN_Y + WIN_H - 160,
-        name: 'line2',
-      });
+      // Add Text Layers
+      const addText = () => {
+        const textStyle = {
+          fontFamily: 'SolaimanLipi',
+          fontSize: 52,
+          fontWeight: 'bold' as const,
+          fill: '#ffffff',
+          left: WIN_X + 40,
+          textAlign: 'center' as const,
+          width: WIN_W - 80,
+        };
 
-      const t3 = new fabric.Textbox(line3, {
-        ...textStyle,
-        top: WIN_Y + WIN_H - 100,
-        name: 'line3',
-      });
+        const t1 = new fabric.Textbox(line1, {
+          ...textStyle,
+          top: WIN_Y + WIN_H - 220,
+        });
+        (t1 as any).name = 'line1';
 
-      canvas.add(t1, t2, t3);
-    };
+        const t2 = new fabric.Textbox(line2, {
+          ...textStyle,
+          top: WIN_Y + WIN_H - 160,
+        });
+        (t2 as any).name = 'line2';
 
-    const init = async () => {
+        const t3 = new fabric.Textbox(line3, {
+          ...textStyle,
+          top: WIN_Y + WIN_H - 100,
+        });
+        (t3 as any).name = 'line3';
+
+        canvas.add(t1, t2, t3);
+      };
+
       await loadImage();
       await loadFrame();
       addText();
       canvas.renderAll();
+
+      canvas.on('selection:created', (e) => setActiveObject(e.selected[0] || null));
+      canvas.on('selection:updated', (e) => setActiveObject(e.selected[0] || null));
+      canvas.on('selection:cleared', () => setActiveObject(null));
     };
 
-    init();
-
-    canvas.on('selection:created', (e) => setActiveObject(e.selected[0] || null));
-    canvas.on('selection:updated', (e) => setActiveObject(e.selected[0] || null));
-    canvas.on('selection:cleared', () => setActiveObject(null));
+    initFabric();
 
     return () => {
-      canvas.dispose();
+      if (canvas) canvas.dispose();
     };
   }, []);
 
@@ -149,9 +155,9 @@ export function PhotocardDesigner({ initialTitle, initialImage, postId, onSave, 
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
 
-    const t1 = canvas.getObjects().find(o => (o as any).name === 'line1') as fabric.Textbox;
-    const t2 = canvas.getObjects().find(o => (o as any).name === 'line2') as fabric.Textbox;
-    const t3 = canvas.getObjects().find(o => (o as any).name === 'line3') as fabric.Textbox;
+    const t1 = canvas.getObjects().find(o => (o as any).name === 'line1') as any;
+    const t2 = canvas.getObjects().find(o => (o as any).name === 'line2') as any;
+    const t3 = canvas.getObjects().find(o => (o as any).name === 'line3') as any;
 
     if (t1) t1.set('text', line1);
     if (t2) t2.set('text', line2);
