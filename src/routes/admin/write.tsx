@@ -193,7 +193,11 @@ function WritePage() {
       toast.success("ছবি আপলোড সফল হয়েছে");
       
       // Open designer if title is present
-      if (title) {
+      if (title && imageUrl) {
+        setIsDesignerOpen(true);
+      } else if (title) {
+        // We set image URL then wait a bit or just trigger if we have it now
+        setImageUrl(res.url);
         setIsDesignerOpen(true);
       }
     } catch (error: any) {
@@ -608,15 +612,17 @@ function WritePage() {
         </aside>
       </div>
 
-      {isDesignerOpen && editingId && (
+      {isDesignerOpen && (
         <PhotocardDesigner
           initialTitle={title}
           initialImage={imageUrl}
-          postId={editingId}
+          postId={editingId || "new-post"}
           onSave={(url) => {
             setPhotocardUrl(url);
             setIsDesignerOpen(false);
-            void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+            if (editingId) {
+              void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+            }
           }}
           onClose={() => setIsDesignerOpen(false)}
         />
