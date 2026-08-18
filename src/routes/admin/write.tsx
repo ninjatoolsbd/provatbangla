@@ -186,15 +186,6 @@ function WritePage() {
 
       setImageUrl(res.url);
       toast.success("ছবি আপলোড সফল হয়েছে");
-      
-      // Open designer if title is present
-      if (title && imageUrl) {
-        setIsDesignerOpen(true);
-      } else if (title) {
-        // We set image URL then wait a bit or just trigger if we have it now
-        setImageUrl(res.url);
-        setIsDesignerOpen(true);
-      }
     } catch (error: any) {
       toast.error("আপলোড ব্যর্থ হয়েছে: " + (error.message || "Unknown error"));
     } finally {
