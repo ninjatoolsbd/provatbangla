@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2, Image as ImageIcon, Download, RefreshCw, Search } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, RefreshCw, Search, Edit3 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { fetchAllPostsForAdmin } from "@/lib/posts";
+import { PhotocardDesigner } from "@/components/photocard-designer";
 
 export const Route = createFileRoute("/admin/photocards")({
   head: () => ({
@@ -22,7 +23,8 @@ export const Route = createFileRoute("/admin/photocards")({
 
 function PhotocardGeneratorPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [generatingId, setGeneratingId] = useState<string | null>(null);
+   const [generatingId, setGeneratingId] = useState<string | null>(null);
+   const [designingPost, setDesigningPost] = useState<any | null>(null);
   
   const { data: posts, isLoading, refetch } = useQuery({ 
     queryKey: ["admin-posts"], 
@@ -123,6 +125,14 @@ function PhotocardGeneratorPage() {
                               ডাউনলোড
                             </a>
                           </Button>
+                           <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setDesigningPost(post)}
+                            title="ডিজাইন পরিবর্তন করুন"
+                          >
+                            <Edit3 className="size-4" />
+                          </Button>
                           <Button 
                             variant="ghost" 
                             size="sm"
@@ -149,9 +159,17 @@ function PhotocardGeneratorPage() {
                           ) : (
                             <ImageIcon className="mr-2 size-4" />
                           )}
-                          ফটোকোর্ড তৈরি করুন
+                           ফটোকোর্ড তৈরি করুন
                         </Button>
                       )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDesigningPost(post)}
+                        title="নিজে ডিজাইন করুন"
+                      >
+                        <Edit3 className="size-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -160,6 +178,19 @@ function PhotocardGeneratorPage() {
           )}
         </CardContent>
       </Card>
+
+      {designingPost && (
+        <PhotocardDesigner
+          initialTitle={designingPost.title}
+          initialImage={designingPost.image_url}
+          postId={designingPost.id}
+          onSave={(url) => {
+            setDesigningPost(null);
+            void refetch();
+          }}
+          onClose={() => setDesigningPost(null)}
+        />
+      )}
     </div>
   );
 }
