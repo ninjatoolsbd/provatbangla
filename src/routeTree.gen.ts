@@ -24,7 +24,6 @@ import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-condi
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAdsRouteImport } from './routes/admin/ads'
 import { Route as AdminAutomationRouteImport } from './routes/admin/automation'
-import { Route as AdminBreakingRouteImport } from './routes/admin/breaking'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
 import { Route as AdminEpaperRouteImport } from './routes/admin/epaper'
@@ -121,11 +120,6 @@ const AdminAdsRoute = AdminAdsRouteImport.update({
 const AdminAutomationRoute = AdminAutomationRouteImport.update({
   id: '/automation',
   path: '/automation',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBreakingRoute = AdminBreakingRouteImport.update({
-  id: '/breaking',
-  path: '/breaking',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
@@ -254,7 +248,6 @@ export interface FileRoutesByFullPath {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -293,7 +286,6 @@ export interface FileRoutesByTo {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -334,7 +326,6 @@ export interface FileRoutesById {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
@@ -376,7 +367,6 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
@@ -415,7 +405,6 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
@@ -455,7 +444,6 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
@@ -609,13 +597,6 @@ declare module '@tanstack/react-router' {
       path: '/automation'
       fullPath: '/admin/automation'
       preLoaderRoute: typeof AdminAutomationRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/breaking': {
-      id: '/admin/breaking'
-      path: '/breaking'
-      fullPath: '/admin/breaking'
-      preLoaderRoute: typeof AdminBreakingRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/categories': {
@@ -778,7 +759,6 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
   AdminAutomationRoute: typeof AdminAutomationRoute
-  AdminBreakingRoute: typeof AdminBreakingRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
   AdminEpaperRoute: typeof AdminEpaperRoute
@@ -799,7 +779,6 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdsRoute: AdminAdsRoute,
   AdminAutomationRoute: AdminAutomationRoute,
-  AdminBreakingRoute: AdminBreakingRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommentsRoute: AdminCommentsRoute,
   AdminEpaperRoute: AdminEpaperRoute,
