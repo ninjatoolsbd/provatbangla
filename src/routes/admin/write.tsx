@@ -192,9 +192,9 @@ function WritePage() {
       setImageUrl(res.url);
       toast.success("ছবি আপলোড সফল হয়েছে");
       
-      // Auto-generate photocard if title is present
+      // Open designer if title is present
       if (title) {
-        handleGeneratePhotocard(editingId || undefined);
+        setIsDesignerOpen(true);
       }
     } catch (error: any) {
       toast.error("আপলোড ব্যর্থ হয়েছে: " + (error.message || "Unknown error"));
