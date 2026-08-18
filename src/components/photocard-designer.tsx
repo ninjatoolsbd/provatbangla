@@ -257,10 +257,10 @@ export function PhotocardDesigner({ initialTitle, initialImage, postId, onSave, 
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
                   <span>ফন্ট সাইজ</span>
-                  <span>{Math.round((activeObject as any).fontSize || 0)}</span>
+                   <span>{Math.round((activeObject as any).fontSize || 0)}</span>
                 </div>
                 <Slider 
-                  defaultValue={[52]} 
+                  value={[(activeObject as any).fontSize || 52]} 
                   max={120} 
                   min={20} 
                   step={1} 
