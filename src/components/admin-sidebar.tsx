@@ -39,7 +39,7 @@ const contentItems = [
   { title: "ড্যাশবোর্ড", url: "/admin", icon: Gauge, adminOnly: false },
   { title: "নিউজ লিখুন", url: "/admin/write", icon: PenSquare, adminOnly: false },
   { title: "সব নিউজ", url: "/admin/posts", icon: FileText, adminOnly: false },
-  { title: "ব্রেকিং নিউজ", url: "/admin/breaking", icon: Radio, adminOnly: true },
+  { title: "ফটোকোর্ড জেনারেটর", url: "/admin/photocards", icon: Image, adminOnly: true },
   { title: "ই-পেপার", url: "/admin/epaper", icon: Newspaper, adminOnly: true },
   { title: "মিডিয়া লাইব্রেরি", url: "/admin/media", icon: Image, adminOnly: false },
   { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree, adminOnly: true },

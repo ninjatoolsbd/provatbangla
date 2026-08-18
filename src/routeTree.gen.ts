@@ -24,13 +24,13 @@ import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-condi
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAdsRouteImport } from './routes/admin/ads'
 import { Route as AdminAutomationRouteImport } from './routes/admin/automation'
-import { Route as AdminBreakingRouteImport } from './routes/admin/breaking'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminCommentsRouteImport } from './routes/admin/comments'
 import { Route as AdminEpaperRouteImport } from './routes/admin/epaper'
 import { Route as AdminImportRouteImport } from './routes/admin/import'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
+import { Route as AdminPhotocardsRouteImport } from './routes/admin/photocards'
 import { Route as AdminPollsRouteImport } from './routes/admin/polls'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
@@ -122,11 +122,6 @@ const AdminAutomationRoute = AdminAutomationRouteImport.update({
   path: '/automation',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBreakingRoute = AdminBreakingRouteImport.update({
-  id: '/breaking',
-  path: '/breaking',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -155,6 +150,11 @@ const AdminMediaRoute = AdminMediaRouteImport.update({
 const AdminMessagesRoute = AdminMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPhotocardsRoute = AdminPhotocardsRouteImport.update({
+  id: '/photocards',
+  path: '/photocards',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPollsRoute = AdminPollsRouteImport.update({
@@ -248,13 +248,13 @@ export interface FileRoutesByFullPath {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocards': typeof AdminPhotocardsRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -286,13 +286,13 @@ export interface FileRoutesByTo {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocards': typeof AdminPhotocardsRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -326,13 +326,13 @@ export interface FileRoutesById {
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
-  '/admin/breaking': typeof AdminBreakingRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/comments': typeof AdminCommentsRoute
   '/admin/epaper': typeof AdminEpaperRoute
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocards': typeof AdminPhotocardsRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -367,13 +367,13 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocards'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -405,13 +405,13 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocards'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -444,13 +444,13 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
-    | '/admin/breaking'
     | '/admin/categories'
     | '/admin/comments'
     | '/admin/epaper'
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocards'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -599,13 +599,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAutomationRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/breaking': {
-      id: '/admin/breaking'
-      path: '/breaking'
-      fullPath: '/admin/breaking'
-      preLoaderRoute: typeof AdminBreakingRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -646,6 +639,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/admin/messages'
       preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/photocards': {
+      id: '/admin/photocards'
+      path: '/photocards'
+      fullPath: '/admin/photocards'
+      preLoaderRoute: typeof AdminPhotocardsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/polls': {
@@ -759,13 +759,13 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
   AdminAutomationRoute: typeof AdminAutomationRoute
-  AdminBreakingRoute: typeof AdminBreakingRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommentsRoute: typeof AdminCommentsRoute
   AdminEpaperRoute: typeof AdminEpaperRoute
   AdminImportRoute: typeof AdminImportRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminPhotocardsRoute: typeof AdminPhotocardsRoute
   AdminPollsRoute: typeof AdminPollsRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminProfileRoute: typeof AdminProfileRoute
@@ -779,13 +779,13 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdsRoute: AdminAdsRoute,
   AdminAutomationRoute: AdminAutomationRoute,
-  AdminBreakingRoute: AdminBreakingRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommentsRoute: AdminCommentsRoute,
   AdminEpaperRoute: AdminEpaperRoute,
   AdminImportRoute: AdminImportRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
+  AdminPhotocardsRoute: AdminPhotocardsRoute,
   AdminPollsRoute: AdminPollsRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminProfileRoute: AdminProfileRoute,
