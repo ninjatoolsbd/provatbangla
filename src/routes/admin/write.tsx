@@ -87,7 +87,7 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-    setPhotocardUrl((p as any).photocard_url ?? "");
+    
   }, [id, postsQuery.data]); // Removed editingId from deps to prevent re-runs on same ID
 
   function applyVersion(v: Version) {
@@ -107,7 +107,7 @@ function WritePage() {
     setContent("");
     setSeoTitle("");
     setSeoDesc("");
-    setPhotocardUrl("");
+    
   }
 
   const saveMutation = useMutation({
@@ -446,27 +446,6 @@ function WritePage() {
                 </span>
               </div>
               <div className="flex gap-2 pt-1">
-                {editingId && (
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => handleGeneratePhotocard()}
-                    disabled={isGeneratingPhotocard}
-                  >
-                    {isGeneratingPhotocard ? <Loader2 className="size-4 animate-spin" /> : <ImageIcon className="mr-2 size-4" />}
-                    রি-জেনারেট
-                  </Button>
-                )}
-                {editingId && (
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setIsDesignerOpen(true)}
-                  >
-                    <Edit3 className="mr-2 size-4" />
-                    এডিট
-                  </Button>
-                )}
                 <Button
                   className="flex-1"
                   onClick={() => saveMutation.mutate("published")}
