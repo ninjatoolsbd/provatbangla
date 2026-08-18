@@ -68,8 +68,8 @@ export async function runPhotocardGeneration(postId: string) {
 
   <!-- Date badge -->
   <g>
-    <rect x="716" y="52" width="318" height="72" rx="36" fill="#c40b0b" />
-    <text x="875" y="102" text-anchor="middle" fill="#ffffff" font-family="'SolaimanLipi','Noto Sans Bengali',sans-serif" font-size="40" font-weight="700">${dateText}</text>
+    <rect x="716" y="52" width="318" height="72" rx="36" fill="#ed1c24" />
+    <text x="875" y="103" text-anchor="middle" fill="#ffffff" font-family="'SolaimanLipi','Noto Sans Bengali',sans-serif" font-size="34" font-weight="700">${dateText}</text>
   </g>
 
   <!-- Template frame on top (photo window is transparent) -->
