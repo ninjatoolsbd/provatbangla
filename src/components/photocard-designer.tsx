@@ -135,8 +135,8 @@ export function PhotocardDesigner({ initialTitle, initialImage, postId, onSave, 
 
     init();
 
-    canvas.on('selection:created', (e) => setActiveObject(e.selected[0]));
-    canvas.on('selection:updated', (e) => setActiveObject(e.selected[0]));
+    canvas.on('selection:created', (e) => setActiveObject(e.selected[0] || null));
+    canvas.on('selection:updated', (e) => setActiveObject(e.selected[0] || null));
     canvas.on('selection:cleared', () => setActiveObject(null));
 
     return () => {
@@ -149,9 +149,9 @@ export function PhotocardDesigner({ initialTitle, initialImage, postId, onSave, 
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
 
-    const t1 = canvas.getObjects().find(o => o.name === 'line1') as fabric.Textbox;
-    const t2 = canvas.getObjects().find(o => o.name === 'line2') as fabric.Textbox;
-    const t3 = canvas.getObjects().find(o => o.name === 'line3') as fabric.Textbox;
+    const t1 = canvas.getObjects().find(o => (o as any).name === 'line1') as fabric.Textbox;
+    const t2 = canvas.getObjects().find(o => (o as any).name === 'line2') as fabric.Textbox;
+    const t3 = canvas.getObjects().find(o => (o as any).name === 'line3') as fabric.Textbox;
 
     if (t1) t1.set('text', line1);
     if (t2) t2.set('text', line2);

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Download } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Download, Edit3 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { PhotocardDesigner } from "@/components/photocard-designer";
 
 export const Route = createFileRoute("/admin/write")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -68,6 +69,7 @@ function WritePage() {
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const [isGeneratingPhotocard, setIsGeneratingPhotocard] = useState(false);
   const [photocardUrl, setPhotocardUrl] = useState("");
+  const [isDesignerOpen, setIsDesignerOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
@@ -500,6 +502,16 @@ function WritePage() {
                     রি-জেনারেট
                   </Button>
                 )}
+                {editingId && (
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setIsDesignerOpen(true)}
+                  >
+                    <Edit3 className="mr-2 size-4" />
+                    এডিট
+                  </Button>
+                )}
                 <Button
                   className="flex-1"
                   onClick={() => saveMutation.mutate("published")}
@@ -595,6 +607,20 @@ function WritePage() {
           </div>
         </aside>
       </div>
+
+      {isDesignerOpen && editingId && (
+        <PhotocardDesigner
+          initialTitle={title}
+          initialImage={imageUrl}
+          postId={editingId}
+          onSave={(url) => {
+            setPhotocardUrl(url);
+            setIsDesignerOpen(false);
+            void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+          }}
+          onClose={() => setIsDesignerOpen(false)}
+        />
+      )}
     </div>
   );
 }
