@@ -42,7 +42,6 @@ import { Route as LiveTvIndexRouteImport } from './routes/live-tv/index'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
 import { Route as ApiPublicCronSyncRouteImport } from './routes/api/public/cron-sync'
-import { Route as ApiPublicDeploymentCheckRouteImport } from './routes/api/public/deployment-check'
 import { Route as ApiPublicRelatedPostsRouteImport } from './routes/api/public/related-posts'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
 import { Route as ApiPublicR2SplatRouteImport } from './routes/api/public/r2.$'
@@ -212,12 +211,6 @@ const ApiPublicCronSyncRoute = ApiPublicCronSyncRouteImport.update({
   path: '/api/public/cron-sync',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicDeploymentCheckRoute =
-  ApiPublicDeploymentCheckRouteImport.update({
-    id: '/api/public/deployment-check',
-    path: '/api/public/deployment-check',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiPublicRelatedPostsRoute = ApiPublicRelatedPostsRouteImport.update({
   id: '/api/public/related-posts',
   path: '/api/public/related-posts',
@@ -268,7 +261,6 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/live-tv/': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
-  '/api/public/deployment-check': typeof ApiPublicDeploymentCheckRoute
   '/api/public/related-posts': typeof ApiPublicRelatedPostsRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -306,7 +298,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/live-tv': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
-  '/api/public/deployment-check': typeof ApiPublicDeploymentCheckRoute
   '/api/public/related-posts': typeof ApiPublicRelatedPostsRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -346,7 +337,6 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/live-tv/': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
-  '/api/public/deployment-check': typeof ApiPublicDeploymentCheckRoute
   '/api/public/related-posts': typeof ApiPublicRelatedPostsRoute
   '/api/public/news-image/$': typeof ApiPublicNewsImageSplatRoute
   '/api/public/r2/$': typeof ApiPublicR2SplatRoute
@@ -387,7 +377,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/live-tv/'
     | '/api/public/cron-sync'
-    | '/api/public/deployment-check'
     | '/api/public/related-posts'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -425,7 +414,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/live-tv'
     | '/api/public/cron-sync'
-    | '/api/public/deployment-check'
     | '/api/public/related-posts'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -464,7 +452,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/live-tv/'
     | '/api/public/cron-sync'
-    | '/api/public/deployment-check'
     | '/api/public/related-posts'
     | '/api/public/news-image/$'
     | '/api/public/r2/$'
@@ -488,7 +475,6 @@ export interface RootRouteChildren {
   PostSlugRoute: typeof PostSlugRoute
   LiveTvIndexRoute: typeof LiveTvIndexRoute
   ApiPublicCronSyncRoute: typeof ApiPublicCronSyncRoute
-  ApiPublicDeploymentCheckRoute: typeof ApiPublicDeploymentCheckRoute
   ApiPublicRelatedPostsRoute: typeof ApiPublicRelatedPostsRoute
   ApiPublicNewsImageSplatRoute: typeof ApiPublicNewsImageSplatRoute
   ApiPublicR2SplatRoute: typeof ApiPublicR2SplatRoute
@@ -727,13 +713,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/deployment-check': {
-      id: '/api/public/deployment-check'
-      path: '/api/public/deployment-check'
-      fullPath: '/api/public/deployment-check'
-      preLoaderRoute: typeof ApiPublicDeploymentCheckRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/related-posts': {
       id: '/api/public/related-posts'
       path: '/api/public/related-posts'
@@ -816,7 +795,6 @@ const rootRouteChildren: RootRouteChildren = {
   PostSlugRoute: PostSlugRoute,
   LiveTvIndexRoute: LiveTvIndexRoute,
   ApiPublicCronSyncRoute: ApiPublicCronSyncRoute,
-  ApiPublicDeploymentCheckRoute: ApiPublicDeploymentCheckRoute,
   ApiPublicRelatedPostsRoute: ApiPublicRelatedPostsRoute,
   ApiPublicNewsImageSplatRoute: ApiPublicNewsImageSplatRoute,
   ApiPublicR2SplatRoute: ApiPublicR2SplatRoute,
