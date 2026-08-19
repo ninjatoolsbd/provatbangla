@@ -59,10 +59,7 @@ export async function uploadToR2(
 /** Streams an object back from R2 (used by the proxy route when no public base URL is set). */
 export async function getFromR2(key: string): Promise<Response | null> {
   const cfg = r2Config();
-  if (!cfg) {
-    console.error("[R2 Server] Config missing");
-    return null;
-  }
+  if (!cfg) return null;
   try {
     const client = new AwsClient({
       accessKeyId: cfg.accessKeyId,
@@ -70,35 +67,16 @@ export async function getFromR2(key: string): Promise<Response | null> {
       service: "s3",
       region: "auto",
     });
-    
-    // R2 expects the key to be encoded. aws4fetch handles the signature encoding.
-    // We try to fetch the key as-is first.
     const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${key}`;
-    
-    let res = await client.fetch(url, { method: "GET" });
-
-    // If it fails, it might be due to encoding issues with specific characters like '-' or Bengali
-    if (!res.ok) {
-      const encodedUrl = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodeURIComponent(key).replace(/%2F/g, '/')}`;
-      const retryRes = await client.fetch(encodedUrl, { method: "GET" });
-      if (retryRes.ok) res = retryRes;
-    }
-    
-    if (!res.ok) {
-      console.error(`[R2 Server] Fetch failed (${res.status}) for ${key}. URL attempted: ${url}`);
-      return null;
-    }
-    
-    // We must ensure the body is consumed correctly and returned as a fresh Response
-    const blob = await res.blob();
-    return new Response(blob, {
+    const res = await client.fetch(url, { method: "GET" });
+    if (!res.ok) return null;
+    return new Response(res.body, {
       headers: {
         "Content-Type": res.headers.get("content-type") ?? "application/octet-stream",
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
-  } catch (err) {
-    console.error(`[R2 Server] Exception for key ${key}:`, err);
+  } catch {
     return null;
   }
 }
