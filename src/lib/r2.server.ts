@@ -67,7 +67,8 @@ export async function getFromR2(key: string): Promise<Response | null> {
       service: "s3",
       region: "auto",
     });
-    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${key}`;
+    const encodedKey = key.split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodedKey}`;
     const res = await client.fetch(url, { method: "GET" });
     if (!res.ok) return null;
     return new Response(res.body, {
