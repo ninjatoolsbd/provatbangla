@@ -65,7 +65,8 @@ export const Route = createFileRoute("/post/$slug")({
       console.error("Loader fetch error:", e);
       // Fallback: try demo news before giving up
       const { articles } = await import("@/lib/news-data");
-      const demoPost = articles[0]; // Fallback to first demo
+      const demoPost = articles[0];
+      if (!demoPost) throw notFound();
       return {
         post: {
           id: String(demoPost.id),
