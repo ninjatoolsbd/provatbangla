@@ -80,13 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const runtimeSupabaseConfig = {
       url:
         (typeof process !== "undefined" ? process.env?.["MY_SUPABASE_URL"] : "") ||
-        (import.meta.env.VITE_MY_SUPABASE_URL as string) ||
+        (import.meta.env as any)["VITE_MY_SUPABASE_URL"] ||
         "",
       publishableKey:
         (typeof process !== "undefined"
           ? process.env?.["MY_SUPABASE_PUBLISHABLE_KEY"]
           : "") ||
-        (import.meta.env.VITE_MY_SUPABASE_PUBLISHABLE_KEY as string) ||
+        (import.meta.env as any)["VITE_MY_SUPABASE_PUBLISHABLE_KEY"] ||
         "",
     };
 
