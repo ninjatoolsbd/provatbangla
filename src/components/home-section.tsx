@@ -41,6 +41,8 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
           created_at: new Date().toISOString()
         }));
     },
+    // Prevent SSR hydration issues by keeping results stable during initial load
+    staleTime: 5000,
   });
 
   if (isLoading) return <div className="mt-8 h-96 w-full animate-pulse bg-muted/20 rounded-xl" />;
