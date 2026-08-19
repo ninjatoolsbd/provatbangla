@@ -85,11 +85,13 @@ export async function getFromR2(key: string): Promise<Response | null> {
     }
     
     if (!res.ok) {
-      console.error(`[R2 Server] Fetch failed (${res.status}): ${url}`);
+      console.error(`[R2 Server] Fetch failed (${res.status}) for ${key}. URL attempted: ${url}`);
       return null;
     }
     
-    return new Response(res.body, {
+    // We must ensure the body is consumed correctly and returned as a fresh Response
+    const blob = await res.blob();
+    return new Response(blob, {
       headers: {
         "Content-Type": res.headers.get("content-type") ?? "application/octet-stream",
         "Cache-Control": "public, max-age=31536000, immutable",
