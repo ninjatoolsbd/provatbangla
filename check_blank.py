@@ -1,5 +1,4 @@
 import asyncio
-import json
 from playwright.async_api import async_playwright
 
 async def main():
@@ -11,7 +10,7 @@ async def main():
         page.on("console", lambda msg: print(f"CONSOLE: {msg.type}: {msg.text}"))
         
         # Log failed requests
-        page.on("requestfailed", lambda req: print(f"FAILED: {req.method} {req.url} - {req.failure.error_text}"))
+        page.on("requestfailed", lambda req: print(f"FAILED: {req.method} {req.url}"))
 
         print("Navigating to http://localhost:8080...")
         try:
@@ -20,15 +19,16 @@ async def main():
             print(f"Navigation error: {e}")
 
         # Check for root element
-        root_exists = await page.evaluate("!!document.querySelector('body').innerHTML.trim()")
-        print(f"Body content exists: {root_exists}")
+        html_content = await page.content()
+        print("Page HTML Sample (first 1000 chars):")
+        print(html_content[:1000])
         
-        # Get body HTML if blank
-        if not root_exists:
-            html = await page.content()
-            print("Full Page HTML:")
-            print(html)
-        
+        body_inner = await page.evaluate("document.body.innerHTML")
+        print(f"Body inner HTML length: {len(body_inner.strip())}")
+        if len(body_inner.strip()) < 100:
+             print("Body inner HTML content:")
+             print(body_inner)
+
         await browser.close()
 
 asyncio.run(main())
