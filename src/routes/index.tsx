@@ -62,16 +62,7 @@ function Home() {
       } catch (e) {
         console.error("Error fetching video posts:", e);
       }
-      
-      const { articles } = await import("@/lib/news-data");
-      return articles.filter(a => a.category === "video-gallery").map(a => ({
-        id: String(a.id),
-        title: a.title,
-        slug: `demo-${a.id}`,
-        image_url: a.image,
-        category: a.category,
-        status: "published"
-      }));
+      return [];
     },
   });
 
