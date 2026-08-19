@@ -36,7 +36,11 @@ export const getPublishedPost = createServerFn({ method: "GET" })
       .eq("slug", data.slug)
       .eq("status", "published")
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    
+    if (error) {
+      console.error("getPublishedPost error:", error);
+      return null;
+    }
     return pickPostFields(post);
   });
 
