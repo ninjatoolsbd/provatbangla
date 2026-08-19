@@ -28,20 +28,25 @@ function pickPostFields(p: any) {
 export const getPublishedPost = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
-    const supabase = createPublicServerClient();
+    try {
+      const supabase = createPublicServerClient();
 
-    const { data: post, error } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("slug", data.slug)
-      .eq("status", "published")
-      .maybeSingle();
-    
-    if (error) {
-      console.error("getPublishedPost error:", error);
+      const { data: post, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("slug", data.slug)
+        .eq("status", "published")
+        .maybeSingle();
+      
+      if (error) {
+        console.error("getPublishedPost error:", error);
+        return null;
+      }
+      return pickPostFields(post);
+    } catch (e) {
+      console.error("getPublishedPost exception:", e);
       return null;
     }
-    return pickPostFields(post);
   });
 
 export const getPostForPreview = createServerFn({ method: "GET" })
