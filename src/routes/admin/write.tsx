@@ -468,8 +468,8 @@ function WritePage() {
                 variant="ghost" 
                 size="icon" 
                 className="h-5 w-5 text-primary hover:text-primary"
-                onClick={handleAutoMetadata}
-                disabled={isGeneratingMetadata || !title || content.length < 100}
+                onClick={() => handleAutoMetadata(true)}
+                disabled={isGeneratingMetadata || !title || stripHtml(content).length < 100}
                 title="AI দিয়ে ক্যাটাগরি ডিটেক্ট করুন"
               >
                 {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
