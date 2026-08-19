@@ -71,10 +71,9 @@ export async function getFromR2(key: string): Promise<Response | null> {
       region: "auto",
     });
     
-    // R2 expects the key to be encoded but not double-encoded
-    // aws4fetch handles the signature encoding, but we need the base URL to be correct
-    const encodedKey = key.split('/').map(segment => encodeURIComponent(segment)).join('/');
-    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodedKey}`;
+    // R2 expects the key to be encoded. aws4fetch handles the signature encoding, 
+    // but the URL itself must be correctly formatted.
+    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodeURIComponent(key).replace(/%2F/g, '/')}`;
     
     const res = await client.fetch(url, { method: "GET" });
     
