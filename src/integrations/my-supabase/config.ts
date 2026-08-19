@@ -24,6 +24,7 @@ function pick(
   const fromVite = (import.meta.env as Record<string, string | undefined>)[viteKey];
   if (fromVite) return fromVite;
   if (typeof process !== "undefined" && process.env?.[nodeKey]) return process.env[nodeKey] as string;
+  if (typeof globalThis !== "undefined" && (globalThis as any)[nodeKey]) return (globalThis as any)[nodeKey];
   return "";
 }
 
