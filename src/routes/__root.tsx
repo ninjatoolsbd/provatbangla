@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BackToTop } from "../components/back-to-top";
 import { Toaster } from "@/components/ui/sonner";
+import { readPublicConfig } from "@/integrations/my-supabase/config";
+
 
 function NotFoundComponent() {
   return (
