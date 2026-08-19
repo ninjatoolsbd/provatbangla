@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BackToTop } from "../components/back-to-top";
 import { Toaster } from "@/components/ui/sonner";
+import { readPublicConfig } from "@/integrations/my-supabase/config";
+
 
 function NotFoundComponent() {
   return (
@@ -77,18 +79,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => {
-    const runtimeSupabaseConfig = {
-      url:
-        (typeof process !== "undefined" ? process.env?.["MY_SUPABASE_URL"] : "") ||
-        (typeof globalThis !== "undefined" ? (globalThis as any)["MY_SUPABASE_URL"] : "") ||
-        (import.meta.env as any)["VITE_MY_SUPABASE_URL"] ||
-        "",
-      publishableKey:
-        (typeof process !== "undefined" ? process.env?.["MY_SUPABASE_PUBLISHABLE_KEY"] : "") ||
-        (typeof globalThis !== "undefined" ? (globalThis as any)["MY_SUPABASE_PUBLISHABLE_KEY"] : "") ||
-        (import.meta.env as any)["VITE_MY_SUPABASE_PUBLISHABLE_KEY"] ||
-        "",
-    };
+    const runtimeSupabaseConfig = readPublicConfig();
+
 
     return {
     meta: [

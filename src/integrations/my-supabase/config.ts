@@ -68,3 +68,25 @@ export function supabaseFetch(key: string): typeof fetch {
     return fetch(input, { ...init, headers });
   };
 }
+
+/**
+ * Reads the public config at call time (not module-init time). Needed on
+ * Cloudflare Workers, where env vars can be injected per-request rather than
+ * being available when modules are first evaluated.
+ */
+export function readPublicConfig() {
+  return {
+    url: pick(
+      typeof __MY_SUPABASE_URL__ !== "undefined" ? __MY_SUPABASE_URL__ : undefined,
+      typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.url : undefined,
+      "VITE_MY_SUPABASE_URL",
+      "MY_SUPABASE_URL",
+    ),
+    publishableKey: pick(
+      typeof __MY_SUPABASE_PUBLISHABLE_KEY__ !== "undefined" ? __MY_SUPABASE_PUBLISHABLE_KEY__ : undefined,
+      typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.publishableKey : undefined,
+      "VITE_MY_SUPABASE_PUBLISHABLE_KEY",
+      "MY_SUPABASE_PUBLISHABLE_KEY",
+    ),
+  };
+}
