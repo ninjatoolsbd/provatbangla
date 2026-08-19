@@ -26,20 +26,7 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
         console.error(`Error fetching posts for ${slug}:`, e);
       }
       
-      // Fallback to demo data
-      return articles
-        .filter(a => a.category === slug || (slug === "sorboshesh"))
-        .slice(0, layout === "grid" ? 4 : 8)
-        .map(a => ({
-          id: String(a.id),
-          title: a.title,
-          slug: `demo-${a.id}`,
-          image_url: a.image,
-          excerpt: a.excerpt,
-          category: a.category,
-          published_at: new Date().toISOString(),
-          created_at: new Date().toISOString()
-        }));
+      return [];
     },
     // Prevent SSR hydration issues by keeping results stable during initial load
     staleTime: 5000,
