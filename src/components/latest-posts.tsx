@@ -6,37 +6,60 @@ import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { banglaDateTime, Post } from "@/lib/posts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { articles } from "@/lib/news-data";
 
 async function fetchFilteredPosts(limit = 20, category?: string) {
-  let q = supabase
-    .from("posts")
-    .select("*")
-    .eq("status", "published")
-    .order("published_at", { ascending: false });
+  try {
+    let q = supabase
+      .from("posts")
+      .select("*")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
 
-  if (category) {
-    q = q.eq("category", category);
+    if (category) {
+      q = q.eq("category", category);
+    }
+
+    const { data, error } = await q.limit(limit);
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      let posts = (data ?? []) as Post[];
+      if (!category) {
+        posts.sort((a, b) => {
+          if (a.category === 'sorboshesh' && b.category !== 'sorboshesh') return -1;
+          if (a.category !== 'sorboshesh' && b.category === 'sorboshesh') return 1;
+          return 0;
+        });
+      }
+      return posts;
+    }
+  } catch (e) {
+    console.error("Error fetching posts for hero:", e);
   }
 
-  const { data, error } = await q.limit(limit);
-  if (error) throw error;
-
-  let posts = (data ?? []) as Post[];
-  
-  if (!category) {
-    posts.sort((a, b) => {
-      if (a.category === 'sorboshesh' && b.category !== 'sorboshesh') return -1;
-      if (a.category !== 'sorboshesh' && b.category === 'sorboshesh') return 1;
-      return 0;
-    });
-  }
-
-  return posts;
+  // Fallback to demo data
+  return articles
+    .filter(a => !category || a.category === category)
+    .slice(0, limit)
+    .map(a => ({
+      id: String(a.id),
+      title: a.title,
+      slug: `demo-${a.id}`,
+      image_url: a.image,
+      excerpt: a.excerpt,
+      category: a.category,
+      published_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      author_name: a.author,
+      content: a.body.join("\n"),
+      status: "published"
+    })) as any[] as Post[];
 }
 
 export function LatestPosts({ category }: { category?: string }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
-  const { data = [] } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["sorboshesh-hero-posts", category ?? "all"],
     queryFn: () => fetchFilteredPosts(20, category),
   });
@@ -49,6 +72,7 @@ export function LatestPosts({ category }: { category?: string }) {
     }
   };
 
+  if (isLoading) return <div className="mb-12 h-[500px] w-full animate-pulse bg-muted/20 rounded-md" />;
   if (!data || data.length === 0) return null;
 
   // For category-specific view, use a simpler grid
@@ -87,15 +111,13 @@ export function LatestPosts({ category }: { category?: string }) {
   const mainPost = data[0];
   if (!mainPost) return null;
   
-  const sidePosts = data.slice(1, 6); // Right sidebar posts (increased to 5)
-  const secondaryPosts = data.slice(6, 9); // Three-column grid posts
-  const sliderPosts = data.slice(9); // Slider posts
+  const sidePosts = data.slice(1, 6);
+  const secondaryPosts = data.slice(6, 9);
+  const sliderPosts = data.slice(9);
 
   return (
     <section className="mb-12">
-      {/* Top Section: Hero + Sidebar */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-        {/* Left: Featured Hero */}
         <div className="md:col-span-2 lg:col-span-8">
           <Reveal delay={0}>
             <article className="group relative overflow-hidden rounded-md bg-slate-50 transition-all hover:bg-white hover:shadow-xl">
@@ -149,7 +171,6 @@ export function LatestPosts({ category }: { category?: string }) {
           </Reveal>
         </div>
 
-        {/* Right: Sidebar Feed */}
         <div className="lg:col-span-4 flex flex-col border border-slate-100 rounded-md bg-slate-50/50 p-4 md:col-span-2 lg:col-span-4">
           <div className="flex flex-col gap-6 h-full">
             <h3 className="flex items-center gap-3 font-display text-[20px] font-bold text-slate-900 shrink-0">
@@ -191,7 +212,6 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
       </div>
 
-      {/* Middle: Secondary Grid */}
       {secondaryPosts.length > 0 && (
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
           {secondaryPosts.map((p, i) => (
@@ -224,7 +244,6 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
       )}
 
-      {/* Bottom: Infinite-style Slider */}
       {sliderPosts.length > 0 && (
         <div className="mt-16 overflow-hidden bg-slate-900 px-6 py-12 rounded-3xl shadow-2xl lg:px-12">
           <div className="mb-8 flex items-center justify-between">
