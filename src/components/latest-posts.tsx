@@ -38,7 +38,23 @@ async function fetchFilteredPosts(limit = 20, category?: string) {
     console.error("Error fetching posts for hero:", e);
   }
 
-  return [] as Post[];
+  // Fallback to demo data
+  return articles
+    .filter(a => !category || a.category === category)
+    .slice(0, limit)
+    .map(a => ({
+      id: String(a.id),
+      title: a.title,
+      slug: `demo-${a.id}`,
+      image_url: a.image,
+      excerpt: a.excerpt,
+      category: a.category,
+      published_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      author_name: a.author,
+      content: a.body.join("\n"),
+      status: "published"
+    })) as any[] as Post[];
 }
 
 export function LatestPosts({ category }: { category?: string }) {
