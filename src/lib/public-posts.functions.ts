@@ -52,18 +52,23 @@ export const getPublishedPost = createServerFn({ method: "GET" })
 export const getPostForPreview = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
-    const supabase = createPublicServerClient();
+    try {
+      const supabase = createPublicServerClient();
 
-    const { data: post, error } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("slug", data.slug)
-      .maybeSingle();
-    if (error) {
-      console.error("getPostForPreview error:", error);
+      const { data: post, error } = await supabase
+        .from("posts")
+        .select("*")
+        .eq("slug", data.slug)
+        .maybeSingle();
+      if (error) {
+        console.error("getPostForPreview error:", error);
+        return null;
+      }
+      return pickPostFields(post);
+    } catch (e) {
+      console.error("getPostForPreview exception:", e);
       return null;
     }
-    return pickPostFields(post);
   });
 
 export const getHomeSectionPosts = createServerFn({ method: "GET" })
