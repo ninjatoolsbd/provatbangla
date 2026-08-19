@@ -54,7 +54,10 @@ export const getPostForPreview = createServerFn({ method: "GET" })
       .select("*")
       .eq("slug", data.slug)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("getPostForPreview error:", error);
+      return null;
+    }
     return pickPostFields(post);
   });
 
@@ -80,6 +83,9 @@ export const getHomeSectionPosts = createServerFn({ method: "GET" })
     }
 
     const { data: posts, error } = await query;
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("getHomeSectionPosts error:", error);
+      return [];
+    }
     return (posts || []).map(pickPostFields);
   });
