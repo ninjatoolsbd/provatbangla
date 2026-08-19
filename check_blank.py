@@ -9,25 +9,38 @@ async def main():
         # Log all console messages
         page.on("console", lambda msg: print(f"CONSOLE: {msg.type}: {msg.text}"))
         
-        # Log failed requests
-        page.on("requestfailed", lambda req: print(f"FAILED: {req.method} {req.url}"))
-
         print("Navigating to http://localhost:8080...")
         try:
-            await page.goto("http://localhost:8080", wait_until="networkidle", timeout=10000)
+            # Increase timeout and wait for network idle to ensure everything loaded
+            await page.goto("http://localhost:8080", wait_until="networkidle", timeout=30000)
         except Exception as e:
             print(f"Navigation error: {e}")
 
-        # Check for root element
-        html_content = await page.content()
-        print("Page HTML Sample (first 1000 chars):")
-        print(html_content[:1000])
+        # Check visibility of main components
+        header_visible = await page.is_visible("header")
+        footer_visible = await page.is_visible("footer")
+        main_visible = await page.is_visible("main")
         
-        body_inner = await page.evaluate("document.body.innerHTML")
-        print(f"Body inner HTML length: {len(body_inner.strip())}")
-        if len(body_inner.strip()) < 100:
-             print("Body inner HTML content:")
-             print(body_inner)
+        print(f"Header visible: {header_visible}")
+        print(f"Footer visible: {footer_visible}")
+        print(f"Main visible: {main_visible}")
+
+        # Take a screenshot to see what's actually rendered
+        await page.screenshot(path="screenshot.png")
+        print("Screenshot saved to screenshot.png")
+        
+        # Check computed styles of body and root
+        body_styles = await page.evaluate("""() => {
+            const body = document.body;
+            return {
+                display: getComputedStyle(body).display,
+                visibility: getComputedStyle(body).visibility,
+                opacity: getComputedStyle(body).opacity,
+                height: body.offsetHeight,
+                width: body.offsetWidth
+            };
+        }""")
+        print(f"Body styles: {body_styles}")
 
         await browser.close()
 
