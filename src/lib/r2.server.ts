@@ -59,7 +59,10 @@ export async function uploadToR2(
 /** Streams an object back from R2 (used by the proxy route when no public base URL is set). */
 export async function getFromR2(key: string): Promise<Response | null> {
   const cfg = r2Config();
-  if (!cfg) return null;
+  if (!cfg) {
+    console.error("[R2 Server] Config missing");
+    return null;
+  }
   try {
     const client = new AwsClient({
       accessKeyId: cfg.accessKeyId,
@@ -67,17 +70,27 @@ export async function getFromR2(key: string): Promise<Response | null> {
       service: "s3",
       region: "auto",
     });
+    
+    // R2 expects the key to be encoded but not double-encoded
+    // aws4fetch handles the signature encoding, but we need the base URL to be correct
     const encodedKey = key.split('/').map(segment => encodeURIComponent(segment)).join('/');
     const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodedKey}`;
+    
     const res = await client.fetch(url, { method: "GET" });
-    if (!res.ok) return null;
+    
+    if (!res.ok) {
+      console.error(`[R2 Server] Fetch failed (${res.status}): ${url}`);
+      return null;
+    }
+    
     return new Response(res.body, {
       headers: {
         "Content-Type": res.headers.get("content-type") ?? "application/octet-stream",
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });
-  } catch {
+  } catch (err) {
+    console.error(`[R2 Server] Exception for key ${key}:`, err);
     return null;
   }
 }
