@@ -65,29 +65,54 @@ export function getCurrentBanglaDate() {
 }
 
 export async function fetchPublishedPosts(limit = 12, category?: string, sort: 'latest' | 'popular' = 'latest') {
-  let q = supabase
-    .from("posts")
-    .select("*")
-    .eq("status", "published");
+  try {
+    let q = supabase
+      .from("posts")
+      .select("*")
+      .eq("status", "published");
 
-  if (category) q = q.eq("category", category);
+    if (category) q = q.eq("category", category);
 
-  if (sort === 'popular') {
-    // If view_count exists, use it. Otherwise, randomish but stable for demo
-    q = q.order("view_count", { ascending: false, nullsFirst: false });
-  } else {
-    q = q.order("published_at", { ascending: false });
-  }
-
-  const { data, error } = await q.limit(limit);
-  if (error) {
-    // Fallback if view_count doesn't exist yet
-    if (sort === 'popular' && error.code === '42703') {
-      return fetchPublishedPosts(limit, category, 'latest');
+    if (sort === 'popular') {
+      q = q.order("view_count", { ascending: false, nullsFirst: false });
+    } else {
+      q = q.order("published_at", { ascending: false });
     }
-    throw error;
+
+    const { data, error } = await q.limit(limit);
+    
+    if (error) {
+      if (sort === 'popular' && error.code === '42703') {
+        return fetchPublishedPosts(limit, category, 'latest');
+      }
+      throw error;
+    }
+    
+    if (data && data.length > 0) {
+      return (data ?? []) as Post[];
+    }
+  } catch (e) {
+    console.error("fetchPublishedPosts error:", e);
   }
-  return (data ?? []) as Post[];
+
+  // Fallback to demo data
+  const { articles } = await import("./news-data");
+  return articles
+    .filter(a => !category || a.category === category)
+    .slice(0, limit)
+    .map(a => ({
+      id: String(a.id),
+      title: a.title,
+      slug: `demo-${a.id}`,
+      image_url: a.image,
+      excerpt: a.excerpt,
+      category: a.category,
+      published_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      author_name: a.author,
+      content: a.body.join("\n"),
+      status: "published"
+    })) as any[] as Post[];
 }
 
 export async function fetchPostBySlug(slug: string) {
