@@ -71,19 +71,27 @@ export async function getFromR2(key: string): Promise<Response | null> {
       region: "auto",
     });
     
-    // R2 expects the key to be encoded but not double-encoded
-    // aws4fetch handles the signature encoding, but we need the base URL to be correct
-    const encodedKey = key.split('/').map(segment => encodeURIComponent(segment)).join('/');
-    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodedKey}`;
+    // R2 expects the key to be encoded. aws4fetch handles the signature encoding.
+    // We try to fetch the key as-is first.
+    const url = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${key}`;
     
-    const res = await client.fetch(url, { method: "GET" });
+    let res = await client.fetch(url, { method: "GET" });
+
+    // If it fails, it might be due to encoding issues with specific characters like '-' or Bengali
+    if (!res.ok) {
+      const encodedUrl = `https://${cfg.accountId}.r2.cloudflarestorage.com/${cfg.bucket}/${encodeURIComponent(key).replace(/%2F/g, '/')}`;
+      const retryRes = await client.fetch(encodedUrl, { method: "GET" });
+      if (retryRes.ok) res = retryRes;
+    }
     
     if (!res.ok) {
-      console.error(`[R2 Server] Fetch failed (${res.status}): ${url}`);
+      console.error(`[R2 Server] Fetch failed (${res.status}) for ${key}. URL attempted: ${url}`);
       return null;
     }
     
-    return new Response(res.body, {
+    // We must ensure the body is consumed correctly and returned as a fresh Response
+    const blob = await res.blob();
+    return new Response(blob, {
       headers: {
         "Content-Type": res.headers.get("content-type") ?? "application/octet-stream",
         "Cache-Control": "public, max-age=31536000, immutable",
