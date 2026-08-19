@@ -194,35 +194,29 @@ function WritePage() {
     }
   };
 
-  const handleAutoMetadata = async (force = false) => {
-    const cleanContent = stripHtml(content);
-    if (!title || cleanContent.length < 100) return;
+  const handleAutoMetadata = async () => {
+    if (!title || content.length < 100) return;
     
     try {
       setIsGeneratingMetadata(true);
       const { generateMetadata } = await import("@/lib/news-metadata.functions");
       const result = await generateMetadata({
-        data: { title, content: cleanContent }
+        data: { title, content }
       });
       
-      let changed = false;
-      // If forced (manual click), we overwrite or fill everything. 
-      // If auto, we only fill empty fields.
-      if (force || !excerpt) { setExcerpt(result.excerpt); changed = true; }
-      if (force || !seoTitle) { setSeoTitle(result.seo_title); changed = true; }
-      if (force || !seoDesc) { setSeoDesc(result.seo_description); changed = true; }
+      // Only fill if current field is empty (to avoid overwriting user edits)
+      if (!excerpt) setExcerpt(result.excerpt);
+      if (!seoTitle) setSeoTitle(result.seo_title);
+      if (!seoDesc) setSeoDesc(result.seo_description);
       
-      if (force || category === "bangladesh" || !category) {
+      // Auto select category if it's still default or empty
+      if (category === "bangladesh" || !category) {
         setCategory(result.category);
-        changed = true;
       }
       
-      if (changed) {
-        toast.success("মেটাডেটা ও ক্যাটাগরি সফলভাবে জেনারেট হয়েছে");
-      }
+      toast.success("মেটাডেটা ও ক্যাটাগরি অটো-জেনারেট হয়েছে");
     } catch (error: any) {
       console.error("Metadata generation failed:", error);
-      toast.error("মেটাডেটা জেনারেশন ব্যর্থ হয়েছে");
     } finally {
       setIsGeneratingMetadata(false);
     }
@@ -230,14 +224,12 @@ function WritePage() {
 
   // Debounced effect for auto-generation when title and content are typed
   useEffect(() => {
-    const cleanContent = stripHtml(content);
-    // Auto-gen only for new posts when fields are empty and enough content exists
-    if (editingId || autoGenAttempted || !title || cleanContent.length < 300) return;
+    if (editingId || autoGenAttempted || !title || content.length < 300) return;
     
     const timer = setTimeout(() => {
-      void handleAutoMetadata(false);
-      setAutoGenAttempted(true);
-    }, 2500);
+      handleAutoMetadata();
+      setAutoGenAttempted(true); // Only auto-attempt once per new post session
+    }, 2000);
     
     return () => clearTimeout(timer);
   }, [title, content, editingId, autoGenAttempted]);
@@ -366,8 +358,8 @@ function WritePage() {
                 variant="ghost" 
                 size="icon" 
                 className="h-6 w-6 text-primary hover:text-primary"
-                onClick={() => handleAutoMetadata(true)}
-                disabled={isGeneratingMetadata || !title || stripHtml(content).length < 100}
+                onClick={handleAutoMetadata}
+                disabled={isGeneratingMetadata || !title || content.length < 100}
                 title="AI দিয়ে অটো-জেনারেট করুন"
               >
                 {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
@@ -396,8 +388,8 @@ function WritePage() {
                     variant="ghost" 
                     size="icon" 
                     className="h-5 w-5 text-primary hover:text-primary"
-                    onClick={() => handleAutoMetadata(true)}
-                    disabled={isGeneratingMetadata || !title || stripHtml(content).length < 100}
+                    onClick={handleAutoMetadata}
+                    disabled={isGeneratingMetadata || !title || content.length < 100}
                     title="AI দিয়ে অটো-জেনারেট করুন"
                   >
                     {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
@@ -413,8 +405,8 @@ function WritePage() {
                     variant="ghost" 
                     size="icon" 
                     className="h-5 w-5 text-primary hover:text-primary"
-                    onClick={() => handleAutoMetadata(true)}
-                    disabled={isGeneratingMetadata || !title || stripHtml(content).length < 100}
+                    onClick={handleAutoMetadata}
+                    disabled={isGeneratingMetadata || !title || content.length < 100}
                     title="AI দিয়ে অটো-জেনারেট করুন"
                   >
                     {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
@@ -468,8 +460,8 @@ function WritePage() {
                 variant="ghost" 
                 size="icon" 
                 className="h-5 w-5 text-primary hover:text-primary"
-                onClick={() => handleAutoMetadata(true)}
-                disabled={isGeneratingMetadata || !title || stripHtml(content).length < 100}
+                onClick={handleAutoMetadata}
+                disabled={isGeneratingMetadata || !title || content.length < 100}
                 title="AI দিয়ে ক্যাটাগরি ডিটেক্ট করুন"
               >
                 {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
