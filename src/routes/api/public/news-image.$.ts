@@ -15,6 +15,7 @@ export const Route = createFileRoute("/api/public/news-image/$")({
           headers: {
             "Content-Type": data.type || "image/png",
             "Cache-Control": "public, max-age=31536000, immutable",
+            "Access-Control-Allow-Origin": "*",
           },
         });
       },

@@ -15,7 +15,8 @@ export function NewsImage({
   className, 
   loading = "lazy",
   width,
-  height
+  height,
+  crossOrigin
 }: { 
   src?: string | null; 
   alt: string; 
@@ -23,6 +24,7 @@ export function NewsImage({
   loading?: "lazy" | "eager";
   width?: string | number;
   height?: string | number;
+  crossOrigin?: "anonymous" | "use-credentials";
 }) {
   const [error, setError] = React.useState(false);
   
@@ -33,12 +35,17 @@ export function NewsImage({
 
   const imageSrc = !src || error ? PLACEHOLDER_IMAGE : src;
 
-  // Add a special check for empty or broken URLs
-  const effectiveSrc = (imageSrc && imageSrc !== 'null' && imageSrc !== 'undefined') ? imageSrc : PLACEHOLDER_IMAGE;
+  // Resolve relative URLs to absolute if they start with /api
+  let effectiveSrc = (imageSrc && imageSrc !== 'null' && imageSrc !== 'undefined') ? imageSrc : PLACEHOLDER_IMAGE;
+  
+  if (typeof window !== "undefined" && effectiveSrc.startsWith('/api/')) {
+    effectiveSrc = window.location.origin + effectiveSrc;
+  }
 
   return (
     <img
       src={effectiveSrc}
+      crossOrigin={crossOrigin}
       alt={alt}
       className={cn("bg-muted", className)}
       loading={loading}
