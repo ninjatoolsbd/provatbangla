@@ -79,23 +79,28 @@ export const getHomeSectionPosts = createServerFn({ method: "GET" })
     }).parse(input)
   )
   .handler(async ({ data }) => {
-    const supabase = createPublicServerClient();
-    
-    let query = supabase
-      .from("posts")
-      .select("*")
-      .eq("status", "published")
-      .order("published_at", { ascending: false })
-      .limit(data.limit);
+    try {
+      const supabase = createPublicServerClient();
+      
+      let query = supabase
+        .from("posts")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(data.limit);
 
-    if (data.category && data.category !== "sorboshesh") {
-      query = query.eq("category", data.category);
-    }
+      if (data.category && data.category !== "sorboshesh") {
+        query = query.eq("category", data.category);
+      }
 
-    const { data: posts, error } = await query;
-    if (error) {
-      console.error("getHomeSectionPosts error:", error);
+      const { data: posts, error } = await query;
+      if (error) {
+        console.error("getHomeSectionPosts error:", error);
+        return [];
+      }
+      return (posts || []).map(pickPostFields);
+    } catch (e) {
+      console.error("getHomeSectionPosts exception:", e);
       return [];
     }
-    return (posts || []).map(pickPostFields);
   });
