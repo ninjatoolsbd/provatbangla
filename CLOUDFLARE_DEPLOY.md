@@ -43,3 +43,16 @@
 ২. **Build Output Path**: নিশ্চিত করুন যে আপনি `dist/client` ফোল্ডারটিকে Static Assets হিসেবে এবং `dist/server` ফোল্ডারটিকে Functions/Worker হিসেবে ব্যবহার করছেন।
 
 আপনার কোনো প্রশ্ন থাকলে বা কোনো এরর মেসেজ পেলে তা জানান।
+
+## ৬. GitHub Actions দিয়ে অটো ডেপ্লয়
+`.github/workflows/deploy.yml` ফাইলটি যোগ করা হয়েছে। `main` ব্রাঞ্চে পুশ করলেই এটি বিল্ড করে Cloudflare Workers-এ ডেপ্লয় করবে।
+
+GitHub রিপোজিটরির **Settings > Secrets and variables > Actions**-এ নিচের সিক্রেটগুলো যোগ করুন:
+
+- `CLOUDFLARE_API_TOKEN` (Workers Scripts: Edit পারমিশনসহ)
+- `CLOUDFLARE_ACCOUNT_ID`
+- `MY_SUPABASE_URL`, `MY_SUPABASE_PUBLISHABLE_KEY`, `MY_SUPABASE_SERVICE_ROLE_KEY`
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_BASE_URL`
+- `GEMINI_API_KEY` (এবং প্রয়োজনে `GEMINI_API_KEY_1` ... `GEMINI_API_KEY_5`)
+
+ওয়ার্কফ্লো `MY_SUPABASE_*`, `R2_*`, `GEMINI_*`, `OPENROUTER_*` প্রিফিক্সের সব সিক্রেট স্বয়ংক্রিয়ভাবে Worker-এ আপলোড করে দেয়, তাই আলাদাভাবে ড্যাশবোর্ডে বসাতে হবে না।
