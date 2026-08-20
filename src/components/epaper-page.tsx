@@ -1,4 +1,4 @@
-import logoAsset from "@/lib/site-logo";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 type Props = {
   pageNo: number;

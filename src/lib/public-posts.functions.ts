@@ -28,47 +28,30 @@ function pickPostFields(p: any) {
 export const getPublishedPost = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
-    try {
-      const supabase = createPublicServerClient();
+    const supabase = createPublicServerClient();
 
-      const { data: post, error } = await supabase
-        .from("posts")
-        .select("*")
-        .eq("slug", data.slug)
-        .eq("status", "published")
-        .maybeSingle();
-      
-      if (error) {
-        console.error("getPublishedPost error:", error);
-        return null;
-      }
-      return pickPostFields(post);
-    } catch (e) {
-      console.error("getPublishedPost exception:", e);
-      return null;
-    }
+    const { data: post, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("slug", data.slug)
+      .eq("status", "published")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return pickPostFields(post);
   });
 
 export const getPostForPreview = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }) => {
-    try {
-      const supabase = createPublicServerClient();
+    const supabase = createPublicServerClient();
 
-      const { data: post, error } = await supabase
-        .from("posts")
-        .select("*")
-        .eq("slug", data.slug)
-        .maybeSingle();
-      if (error) {
-        console.error("getPostForPreview error:", error);
-        return null;
-      }
-      return pickPostFields(post);
-    } catch (e) {
-      console.error("getPostForPreview exception:", e);
-      return null;
-    }
+    const { data: post, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return pickPostFields(post);
   });
 
 export const getHomeSectionPosts = createServerFn({ method: "GET" })
@@ -79,28 +62,20 @@ export const getHomeSectionPosts = createServerFn({ method: "GET" })
     }).parse(input)
   )
   .handler(async ({ data }) => {
-    try {
-      const supabase = createPublicServerClient();
-      
-      let query = supabase
-        .from("posts")
-        .select("*")
-        .eq("status", "published")
-        .order("published_at", { ascending: false })
-        .limit(data.limit);
+    const supabase = createPublicServerClient();
+    
+    let query = supabase
+      .from("posts")
+      .select("*")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(data.limit);
 
-      if (data.category && data.category !== "sorboshesh") {
-        query = query.eq("category", data.category);
-      }
-
-      const { data: posts, error } = await query;
-      if (error) {
-        console.error("getHomeSectionPosts error:", error);
-        return [];
-      }
-      return (posts || []).map(pickPostFields);
-    } catch (e) {
-      console.error("getHomeSectionPosts exception:", e);
-      return [];
+    if (data.category && data.category !== "sorboshesh") {
+      query = query.eq("category", data.category);
     }
+
+    const { data: posts, error } = await query;
+    if (error) throw new Error(error.message);
+    return (posts || []).map(pickPostFields);
   });

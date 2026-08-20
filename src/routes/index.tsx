@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -40,38 +40,27 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { data: photoPosts = [] } = useQuery({
+  const { data: photoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-photo-gallery"],
-    queryFn: async () => {
-      try {
-        const posts = await getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } });
-        if (posts && posts.length > 0) return posts;
-      } catch (e) {
-        console.error("Error fetching photo posts:", e);
-      }
-      return [];
-    },
+    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } }),
   });
 
-  const { data: videoPosts = [] } = useQuery({
+  const { data: videoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-video-gallery"],
     queryFn: async () => {
-      try {
-        const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
-        if (posts && posts.length > 0) return posts;
-      } catch (e) {
-        console.error("Error fetching video posts:", e);
+      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return articles.filter(a => a.category === "video-gallery").map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          category: a.category,
+          status: "published"
+        }));
       }
-      
-      const { articles } = await import("@/lib/news-data");
-      return articles.filter(a => a.category === "video-gallery").map(a => ({
-        id: String(a.id),
-        title: a.title,
-        slug: `demo-${a.id}`,
-        image_url: a.image,
-        category: a.category,
-        status: "published"
-      }));
+      return posts;
     },
   });
 

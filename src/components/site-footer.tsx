@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 
 import { categories } from "@/lib/news-data";
-import logoAsset from "@/lib/site-logo";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 const socials = [
   { Icon: Facebook, label: "Facebook" },

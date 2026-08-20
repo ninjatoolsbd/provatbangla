@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { VideoStrip } from "@/components/home-widgets";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 
 export const Route = createFileRoute("/live-tv/")({
@@ -10,25 +10,22 @@ export const Route = createFileRoute("/live-tv/")({
 });
 
 function LiveTVPage() {
-  const { data: videoPosts = [] } = useQuery({
+  const { data: videoPosts = [] } = useSuspenseQuery({
     queryKey: ["live-tv-video-gallery"],
     queryFn: async () => {
-      try {
-        const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
-        if (posts && posts.length > 0) return posts;
-      } catch (e) {
-        console.error("Error fetching live-tv video posts:", e);
+      const posts = await getHomeSectionPosts({ data: { category: "video-gallery", limit: 24 } });
+      if (posts.length === 0) {
+        const { articles } = await import("@/lib/news-data");
+        return articles.filter(a => a.category === "video-gallery").map(a => ({
+          id: String(a.id),
+          title: a.title,
+          slug: `demo-${a.id}`,
+          image_url: a.image,
+          category: a.category,
+          status: "published"
+        }));
       }
-      
-      const { articles } = await import("@/lib/news-data");
-      return articles.filter(a => a.category === "video-gallery").map(a => ({
-        id: String(a.id),
-        title: a.title,
-        slug: `demo-${a.id}`,
-        image_url: a.image,
-        category: a.category,
-        status: "published"
-      }));
+      return posts;
     },
   });
 

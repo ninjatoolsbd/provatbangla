@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { getCurrentBanglaDate } from "@/lib/posts";
 
 import { categories } from "@/lib/news-data";
-import logoAsset from "@/lib/site-logo";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 const utility = [
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },

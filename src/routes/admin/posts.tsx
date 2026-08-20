@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Calendar, CheckSquare, Copy, Eye, FileCheck, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Sparkles, Square, Trash2 } from "lucide-react";
+import { Calendar, CheckSquare, Copy, Download, Eye, FileCheck, FolderEdit, ImageOff, ImagePlus, Loader2, Search, Sparkles, Square, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -411,6 +411,17 @@ function PostsPage() {
               </div>
 
               <div className="flex w-56 items-center justify-end gap-3 shrink-0">
+                {(p as any).photocard_url && (
+                  <a
+                    href={(p as any).photocard_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-muted-foreground hover:text-primary"
+                    title="ফটোকোর্ড ডাউনলোড"
+                  >
+                    <Download className="size-4" />
+                  </a>
+                )}
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"

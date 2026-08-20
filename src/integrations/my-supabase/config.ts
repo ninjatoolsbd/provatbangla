@@ -24,7 +24,6 @@ function pick(
   const fromVite = (import.meta.env as Record<string, string | undefined>)[viteKey];
   if (fromVite) return fromVite;
   if (typeof process !== "undefined" && process.env?.[nodeKey]) return process.env[nodeKey] as string;
-  if (typeof globalThis !== "undefined" && (globalThis as any)[nodeKey]) return (globalThis as any)[nodeKey];
   return "";
 }
 
@@ -66,27 +65,5 @@ export function supabaseFetch(key: string): typeof fetch {
     }
     headers.set("apikey", key);
     return fetch(input, { ...init, headers });
-  };
-}
-
-/**
- * Reads the public config at call time (not module-init time). Needed on
- * Cloudflare Workers, where env vars can be injected per-request rather than
- * being available when modules are first evaluated.
- */
-export function readPublicConfig() {
-  return {
-    url: pick(
-      typeof __MY_SUPABASE_URL__ !== "undefined" ? __MY_SUPABASE_URL__ : undefined,
-      typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.url : undefined,
-      "VITE_MY_SUPABASE_URL",
-      "MY_SUPABASE_URL",
-    ),
-    publishableKey: pick(
-      typeof __MY_SUPABASE_PUBLISHABLE_KEY__ !== "undefined" ? __MY_SUPABASE_PUBLISHABLE_KEY__ : undefined,
-      typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.publishableKey : undefined,
-      "VITE_MY_SUPABASE_PUBLISHABLE_KEY",
-      "MY_SUPABASE_PUBLISHABLE_KEY",
-    ),
   };
 }

@@ -29,32 +29,6 @@ export const Route = createFileRoute("/post/$slug")({
   loader: async ({ params, deps: { preview } }) => {
     let post;
     const decodedSlug = decodeURIComponent(params.slug);
-    
-    // Check if it's a demo slug
-    if (decodedSlug.startsWith('demo-')) {
-      const { articles } = await import("@/lib/news-data");
-      const demoId = parseInt(decodedSlug.replace('demo-', ''));
-      const demoPost = articles.find(a => a.id === demoId);
-      if (demoPost) {
-        return {
-          post: {
-            id: String(demoPost.id),
-            title: demoPost.title,
-            slug: decodedSlug,
-            image_url: demoPost.image,
-            excerpt: demoPost.excerpt,
-            category: demoPost.category,
-            content: demoPost.body.join("\n\n"),
-            author_name: demoPost.author,
-            published_at: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-            status: "published"
-          } as Post,
-          isPreview: false
-        };
-      }
-    }
-
     try {
       if (preview) {
         post = await getPostForPreview({ data: { slug: decodedSlug } });
@@ -63,52 +37,11 @@ export const Route = createFileRoute("/post/$slug")({
       }
     } catch (e) {
       console.error("Loader fetch error:", e);
-      // Fallback: try demo news before giving up
-      const { articles } = await import("@/lib/news-data");
-      const demoPost = articles[0];
-      if (!demoPost) throw notFound();
-      return {
-        post: {
-          id: String(demoPost.id),
-          title: demoPost.title,
-          slug: decodedSlug,
-          image_url: demoPost.image,
-          excerpt: demoPost.excerpt,
-          category: demoPost.category,
-          content: demoPost.body.join("\n\n"),
-          author_name: demoPost.author,
-          published_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          status: "published"
-        } as Post,
-        isPreview: false
-      };
-    }
-    
-    if (!post) {
-      // One last check: maybe it's a demo post without prefix
-      const { articles } = await import("@/lib/news-data");
-      const demoPost = articles.find(a => String(a.id) === decodedSlug);
-      if (demoPost) {
-        return {
-          post: {
-             id: String(demoPost.id),
-             title: demoPost.title,
-             slug: decodedSlug,
-             image_url: demoPost.image,
-             excerpt: demoPost.excerpt,
-             category: demoPost.category,
-             content: demoPost.body.join("\n\n"),
-             author_name: demoPost.author,
-             published_at: new Date().toISOString(),
-             created_at: new Date().toISOString(),
-             status: "published"
-          } as Post,
-          isPreview: false
-        };
-      }
+      // Fallback for demo news or not found
       throw notFound();
     }
+    
+    if (!post) throw notFound();
     return { post: post as Post, isPreview: !!preview };
   },
   head: ({ loaderData }) => {

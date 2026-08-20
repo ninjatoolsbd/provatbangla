@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2 } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
 import { RichTextEditor } from "@/components/rich-text-editor";
-
 
 export const Route = createFileRoute("/admin/write")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -67,6 +66,8 @@ function WritePage() {
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
+  const [isGeneratingPhotocard, setIsGeneratingPhotocard] = useState(false);
+  const [photocardUrl, setPhotocardUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
@@ -87,7 +88,7 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-    
+    setPhotocardUrl((p as any).photocard_url ?? "");
   }, [id, postsQuery.data]); // Removed editingId from deps to prevent re-runs on same ID
 
   function applyVersion(v: Version) {
@@ -107,7 +108,7 @@ function WritePage() {
     setContent("");
     setSeoTitle("");
     setSeoDesc("");
-    
+    setPhotocardUrl("");
   }
 
   const saveMutation = useMutation({
@@ -148,6 +149,8 @@ function WritePage() {
       void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
       
       if (status === "published") {
+        // Automatically generate photocard on publish
+        handleGeneratePhotocard(id);
         resetForm();
       } else {
         // If it was a draft save and we weren't editing, set the ID so we don't insert a duplicate next time
@@ -272,6 +275,31 @@ function WritePage() {
     }
   };
 
+  const handleGeneratePhotocard = async (postIdToUse?: string) => {
+    const targetId = postIdToUse || editingId;
+    if (!targetId) {
+      toast.error("ফটোকোর্ড তৈরি করতে আগে নিউজটি সেভ করুন");
+      return;
+    }
+
+    try {
+      setIsGeneratingPhotocard(true);
+      const { generatePostPhotocard } = await import("@/lib/photocard.functions");
+      const result = await generatePostPhotocard({ data: { postId: targetId } });
+      setPhotocardUrl(result.photocardUrl);
+      toast.success("ফটোকোর্ড জেনারেট হয়েছে");
+      
+      // If manually generating, we might want to refresh the post data
+      if (!postIdToUse) {
+        void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+      }
+    } catch (error: any) {
+      console.error("Photocard generation failed:", error);
+      toast.error("ফটোকোর্ড তৈরি করতে সমস্যা হয়েছে");
+    } finally {
+      setIsGeneratingPhotocard(false);
+    }
+  };
 
   return (
     <div className="pb-10">
@@ -436,7 +464,32 @@ function WritePage() {
                   {auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")}
                 </span>
               </div>
+              {photocardUrl && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">ফটোকোর্ড</span>
+                  <a 
+                    href={photocardUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-primary hover:underline font-bold"
+                  >
+                    <Download className="size-3" />
+                    ডাউনলোড
+                  </a>
+                </div>
+              )}
               <div className="flex gap-2 pt-1">
+                {editingId && (
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => handleGeneratePhotocard()}
+                    disabled={isGeneratingPhotocard}
+                  >
+                    {isGeneratingPhotocard ? <Loader2 className="size-4 animate-spin" /> : <ImageIcon className="mr-2 size-4" />}
+                    ফটোকোর্ড
+                  </Button>
+                )}
                 <Button
                   className="flex-1"
                   onClick={() => saveMutation.mutate("published")}
@@ -445,8 +498,8 @@ function WritePage() {
                   পাবলিশ
                 </Button>
                 {editingId && (
-                  <Button variant="ghost" size="icon" onClick={resetForm} title="নতুন">
-                    <X className="size-4" />
+                  <Button variant="ghost" onClick={resetForm}>
+                    নতুন
                   </Button>
                 )}
               </div>
@@ -532,7 +585,6 @@ function WritePage() {
           </div>
         </aside>
       </div>
-
     </div>
   );
 }
