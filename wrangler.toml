@@ -1,23 +1,15 @@
 # Cloudflare Pages configuration for প্রভাতবাংলা
-# Secrets (MY_SUPABASE_SERVICE_ROLE_KEY, R2_SECRET_ACCESS_KEY, etc.)
-# must be added in the Cloudflare dashboard: Workers & Pages > your project > Settings > Variables
+# Build command (Pages dashboard / Git integration): npm run build
+# Build output directory: dist
+#
+# IMPORTANT: Add all secrets in the Cloudflare dashboard:
+#   Workers & Pages → provatbangla → Settings → Variables
+# Required secrets: MY_SUPABASE_SERVICE_ROLE_KEY, R2_SECRET_ACCESS_KEY
+# Required vars: MY_SUPABASE_URL, MY_SUPABASE_PUBLISHABLE_KEY, R2_ACCOUNT_ID,
+#                R2_BUCKET, R2_PUBLIC_BASE_URL, R2_ACCESS_KEY_ID,
+#                GEMINI_API_KEY, OPENROUTER_API_KEY, LOVABLE_API_KEY
 
 name = "provatbangla"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-21"
-
-# Node.js compatibility is required by some dependencies
 compatibility_flags = ["nodejs_compat"]
-
-[vars]
-# Non-secret values can be set here or in the dashboard.
-# Example (replace with your actual values or remove if using dashboard-only):
-# MY_SUPABASE_URL = "https://your-project.supabase.co"
-# MY_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_..."
-# R2_ACCOUNT_ID = "..."
-# R2_BUCKET = "..."
-# R2_PUBLIC_BASE_URL = "https://..."
-# R2_ACCESS_KEY_ID = "..."
-# GEMINI_API_KEY = "..."
-# OPENROUTER_API_KEY = "..."
-# LOVABLE_API_KEY = "..."
