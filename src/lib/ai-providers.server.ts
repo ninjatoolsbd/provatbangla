@@ -29,7 +29,7 @@ function extractJsonBlock(raw: string) {
  */
 async function geminiApi(opts: { key: string; system: string; prompt: string }) {
   // Ordered by preference: flash-latest is often best for standard tasks
-  const models = ["gemini-1.5-flash", "gemini-flash-latest", "gemini-1.5-pro", "gemini-pro"];
+  const models = ["gemini-flash-latest", "gemini-3.6-flash", "gemini-2.5-flash", "gemini-pro-latest"];
   const versions = ["v1beta", "v1"];
   
   let lastError: Error | null = null;
