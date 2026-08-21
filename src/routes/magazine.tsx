@@ -7,7 +7,7 @@ import { BookOpen, Calendar, Clock, ChevronRight, Hash, ChevronLeft } from "luci
 import { NewsImage } from "@/components/news-cards";
 import HTMLFlipBook from 'react-pageflip';
 import { useState, useRef, forwardRef } from 'react';
-import logoAsset from "@/assets/logo.png.asset.json";
+import logoAsset from "@/lib/logo";
 
 export const Route = createFileRoute('/magazine')({
   component: MagazinePage,
