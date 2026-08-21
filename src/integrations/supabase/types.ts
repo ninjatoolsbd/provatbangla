@@ -581,6 +581,13 @@ export type Database = {
         Returns: boolean
       }
       increment_post_view: { Args: { _post_id: string }; Returns: undefined }
+      poll_results: {
+        Args: { _poll_id: string }
+        Returns: {
+          option_index: number
+          votes: number
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "editor" | "user"
