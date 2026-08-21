@@ -53,6 +53,83 @@ export type Database = {
         }
         Relationships: []
       }
+      auto_items: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          post_id: string | null
+          source_id: string | null
+          source_title: string | null
+          source_url: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          post_id?: string | null
+          source_id?: string | null
+          source_title?: string | null
+          source_url: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          post_id?: string | null
+          source_id?: string | null
+          source_title?: string | null
+          source_url?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_items_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "auto_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auto_sources: {
+        Row: {
+          category: string
+          created_at: string
+          enabled: boolean
+          id: string
+          last_run_at: string | null
+          last_status: string | null
+          name: string
+          per_run: number
+          site_url: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          last_status?: string | null
+          name: string
+          per_run?: number
+          site_url: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          last_run_at?: string | null
+          last_status?: string | null
+          name?: string
+          per_run?: number
+          site_url?: string
+        }
+        Relationships: []
+      }
       breaking_news: {
         Row: {
           created_at: string
