@@ -22,6 +22,9 @@ export default defineConfig({
     cloudflare: {
       nodeCompat: true,
       deployConfig: true,
+      wrangler: {
+        compatibility_flags: ["nodejs_compat"],
+      },
     },
   },
   vite: {
