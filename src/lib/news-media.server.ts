@@ -62,7 +62,7 @@ async function geminiEdit(parts: GeminiParts): Promise<Uint8Array | null> {
   for (const key of keys) {
     try {
     const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
       {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
