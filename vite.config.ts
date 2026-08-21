@@ -15,10 +15,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  // Pin Nitro to the Cloudflare Pages preset so the GitHub-connected Pages build
-  // produces the expected `_worker.js` + static asset layout.
+  // Cloudflare Workers (Workers Builds runs `wrangler deploy`), so emit a
+  // Worker entry + assets and let Nitro write the deploy config wrangler reads.
   nitro: {
-    preset: "cloudflare-pages",
+    preset: "cloudflare-module",
     cloudflare: {
       nodeCompat: true,
       deployConfig: true,

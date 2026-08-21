@@ -1,15 +1,17 @@
-# Cloudflare Pages configuration for প্রভাতবাংলা
-# Build command (Pages dashboard / Git integration): npm run build
-# Build output directory: dist
+# Cloudflare Workers configuration for প্রভাতবাংলা
+# Build command (Workers Builds): npm run build
+# Deploy command: npx wrangler deploy
 #
-# IMPORTANT: Add all secrets in the Cloudflare dashboard:
+# The build writes dist/_worker.js/wrangler.json (entry + assets) and
+# .wrangler/deploy/config.json, which wrangler picks up automatically.
+#
+# Add secrets/vars in the Cloudflare dashboard:
 #   Workers & Pages → provatbangla → Settings → Variables
 # Required secrets: MY_SUPABASE_SERVICE_ROLE_KEY, R2_SECRET_ACCESS_KEY
 # Required vars: MY_SUPABASE_URL, MY_SUPABASE_PUBLISHABLE_KEY, R2_ACCOUNT_ID,
 #                R2_BUCKET, R2_PUBLIC_BASE_URL, R2_ACCESS_KEY_ID,
-#                GEMINI_API_KEY, OPENROUTER_API_KEY, LOVABLE_API_KEY
+#                GEMINI_API_KEY, OPENROUTER_API_KEY
 
 name = "provatbangla"
-pages_build_output_dir = "dist"
 compatibility_date = "2026-08-21"
 compatibility_flags = ["nodejs_compat"]
