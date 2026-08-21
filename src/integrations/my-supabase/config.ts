@@ -13,18 +13,25 @@ declare global {
   }
 }
 
+// Public fallbacks: URL + publishable key are public by design. They keep the
+// app working on hosts (e.g. Cloudflare Workers) where build-time env vars
+// were not configured — otherwise SSR throws and every page fails to load.
+const FALLBACK_URL = "https://twqgyregrrqgwxyhglsg.supabase.co";
+const FALLBACK_PUBLISHABLE_KEY = "sb_publishable_WcD-YUXN8p7-wCIOTCZeYQ_plJq9E6j";
+
 function pick(
   injected: string | undefined,
   runtimeValue: string | undefined,
   viteKey: string,
   nodeKey: string,
+  fallback: string,
 ): string {
   if (injected) return injected;
   if (runtimeValue) return runtimeValue;
   const fromVite = (import.meta.env as Record<string, string | undefined>)[viteKey];
   if (fromVite) return fromVite;
   if (typeof process !== "undefined" && process.env?.[nodeKey]) return process.env[nodeKey] as string;
-  return "";
+  return fallback;
 }
 
 export const MY_SUPABASE_URL = pick(
@@ -32,6 +39,7 @@ export const MY_SUPABASE_URL = pick(
   typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.url : undefined,
   "VITE_MY_SUPABASE_URL",
   "MY_SUPABASE_URL",
+  FALLBACK_URL,
 );
 
 export const MY_SUPABASE_PUBLISHABLE_KEY = pick(
@@ -39,7 +47,9 @@ export const MY_SUPABASE_PUBLISHABLE_KEY = pick(
   typeof window !== "undefined" ? window.__MY_SUPABASE_CONFIG__?.publishableKey : undefined,
   "VITE_MY_SUPABASE_PUBLISHABLE_KEY",
   "MY_SUPABASE_PUBLISHABLE_KEY",
+  FALLBACK_PUBLISHABLE_KEY,
 );
+
 
 export function assertPublicConfig() {
   if (!MY_SUPABASE_URL || !MY_SUPABASE_PUBLISHABLE_KEY) {
