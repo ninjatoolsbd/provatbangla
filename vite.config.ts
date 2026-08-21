@@ -22,9 +22,6 @@ export default defineConfig({
     cloudflare: {
       nodeCompat: true,
       deployConfig: true,
-      // Nitro's cloudflare preset accepts wrangler overrides; the wrapper's
-      // types don't expose it yet, so widen the object here.
-      ...({ wrangler: { compatibility_flags: ["nodejs_compat"] } } as Record<string, unknown>),
     },
   },
   vite: {
