@@ -6,9 +6,6 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// The app talks to the project's OWN Supabase instance. URL + publishable key
-// are public values, injected at build time from MY_SUPABASE_* project secrets
-// so they survive workspace/environment changes.
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -22,14 +19,6 @@ export default defineConfig({
     cloudflare: {
       nodeCompat: true,
       deployConfig: true,
-    },
-  },
-  vite: {
-    define: {
-      __MY_SUPABASE_URL__: JSON.stringify(process.env["MY_SUPABASE_URL"] ?? ""),
-      __MY_SUPABASE_PUBLISHABLE_KEY__: JSON.stringify(
-        process.env["MY_SUPABASE_PUBLISHABLE_KEY"] ?? "",
-      ),
     },
   },
 });
