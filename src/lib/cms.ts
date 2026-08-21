@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 /** Untyped view of the client for CMS tables that are not in the generated types. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

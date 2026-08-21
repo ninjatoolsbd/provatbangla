@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/integrations/my-supabase/client.server";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const BUCKET = "news-images";
 

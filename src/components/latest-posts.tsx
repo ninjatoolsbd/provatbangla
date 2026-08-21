@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { banglaDateTime, Post } from "@/lib/posts";

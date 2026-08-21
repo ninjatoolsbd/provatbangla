@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, banglaDateTime } from "@/lib/posts";
 import { Button } from "@/components/ui/button";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "admin" | "editor" | "user";
 

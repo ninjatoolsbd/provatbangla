@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createPublicServerClient } from "@/integrations/my-supabase/client";
+import { createPublicServerClient } from "@/lib/supabase-public";
 
 export const getRelatedPosts = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => 

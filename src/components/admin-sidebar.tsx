@@ -33,7 +33,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 const contentItems = [
   { title: "ড্যাশবোর্ড", url: "/admin", icon: Gauge, adminOnly: false },
