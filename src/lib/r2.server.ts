@@ -1,17 +1,20 @@
 import { AwsClient } from "aws4fetch";
+import { R2_FALLBACK } from "./r2-fallback.server";
 
-/** Cloudflare R2 config from project secrets. Returns null when not fully configured. */
+/** Cloudflare R2 config: env vars first, then the build-time fallback (so the deployed Worker works without dashboard vars). */
 function r2Config() {
-  const accountId = process.env["R2_ACCOUNT_ID"];
-  const accessKeyId = process.env["R2_ACCESS_KEY_ID"];
-  const secretAccessKey = process.env["R2_SECRET_ACCESS_KEY"];
-  const bucket = process.env["R2_BUCKET"];
+  const pick = (name: keyof typeof R2_FALLBACK) => process.env[name] || R2_FALLBACK[name];
+  const accountId = pick("R2_ACCOUNT_ID");
+  const accessKeyId = pick("R2_ACCESS_KEY_ID");
+  const secretAccessKey = pick("R2_SECRET_ACCESS_KEY");
+  const bucket = pick("R2_BUCKET");
   if (!accountId || !accessKeyId || !secretAccessKey || !bucket) return null;
-  let publicBase = (process.env["R2_PUBLIC_BASE_URL"] ?? "").replace(/\/+$/, "");
+  let publicBase = (pick("R2_PUBLIC_BASE_URL") ?? "").replace(/\/+$/, "");
   // The S3 API endpoint is NOT publicly readable — ignore it and use the app proxy instead.
   if (publicBase.includes("r2.cloudflarestorage.com")) publicBase = "";
   return { accountId, accessKeyId, secretAccessKey, bucket, publicBase };
 }
+
 
 export function isR2Configured() {
   return r2Config() !== null;
