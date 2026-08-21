@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/integrations/my-supabase/client.server";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { uploadToR2 } from "@/lib/r2.server";
 
 export async function runPhotocardGeneration(postId: string) {

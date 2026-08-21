@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createPublicServerClient } from "@/integrations/my-supabase/client";
+import { createPublicServerClient } from "@/lib/supabase-public";
 
 function pickPostFields(p: any) {
   if (!p) return null;

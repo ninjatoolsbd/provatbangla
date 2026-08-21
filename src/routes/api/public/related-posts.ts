@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { createPublicServerClient } from "@/integrations/my-supabase/client";
+import { createPublicServerClient } from "@/lib/supabase-public";
 
 export const Route = createFileRoute("/api/public/related-posts")({
   server: {

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { NewsImage } from "@/components/news-cards";

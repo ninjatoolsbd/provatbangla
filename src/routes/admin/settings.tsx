@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Check, Loader2, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/my-supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { fetchSettings, saveSetting } from "@/lib/cms";
 import { useServerFn } from "@tanstack/react-start";
