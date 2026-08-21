@@ -222,7 +222,7 @@ export function SiteHeader() {
 
 
         <div className="ml-auto flex items-center gap-3 sm:gap-4 xl:ml-0">
-          <div id="google_translate_element" className="google-translate-container min-h-[38px] min-w-[120px]"></div>
+          <div id="google_translate_element" suppressHydrationWarning className="google-translate-container min-h-[38px] min-w-[120px]"></div>
           
           {banglaDate && (
             <div className="hidden text-[14px] font-bold text-slate-700 xl:block border-r pr-4 border-border mr-1 h-5 leading-5">
