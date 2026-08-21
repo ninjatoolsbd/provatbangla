@@ -15,6 +15,15 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Pin Nitro to the Cloudflare Pages preset so the GitHub-connected Pages build
+  // produces the expected `_worker.js` + static asset layout.
+  nitro: {
+    preset: "cloudflare-pages",
+    cloudflare: {
+      nodeCompat: true,
+      deployConfig: true,
+    },
+  },
   vite: {
     define: {
       __MY_SUPABASE_URL__: JSON.stringify(process.env["MY_SUPABASE_URL"] ?? ""),
