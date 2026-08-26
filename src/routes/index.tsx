@@ -86,14 +86,18 @@ function Home() {
 
 
 
-        {/* Home Sections populated from DB */}
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
-           <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
-           <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
-           <HomeSection title="চাকরি" slug="chakri" layout="politics" />
-           <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
-        </Suspense>
+        {/* Home Sections populated from DB — each streams in on its own */}
+        {[
+          { title: "বাংলাদেশ", slug: "bangladesh", layout: "national" as const },
+          { title: "আন্তর্জাতিক", slug: "antorjatik", layout: "national" as const },
+          { title: "রাজনীতি", slug: "politics", layout: "politics" as const },
+          { title: "চাকরি", slug: "chakri", layout: "politics" as const },
+          { title: "শিক্ষা", slug: "shikkha", layout: "economy" as const },
+        ].map((s) => (
+          <Suspense key={s.slug} fallback={<SectionSkeleton />}>
+            <HomeSection title={s.title} slug={s.slug} layout={s.layout} />
+          </Suspense>
+        ))}
 
         <div className="my-10">
           <AdBanner index={1} className="h-28 rounded-xl" />
