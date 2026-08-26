@@ -39,6 +39,24 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+/** Placeholder that reserves a section's height so nothing jumps while it loads. */
+function SectionSkeleton() {
+  return (
+    <section className="mt-8 rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
+      <div className="mb-5 h-6 w-40 animate-pulse rounded bg-muted/40" />
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="space-y-3">
+            <div className="aspect-[16/10] w-full animate-pulse rounded-lg bg-muted/30" />
+            <div className="h-4 w-full animate-pulse rounded bg-muted/30" />
+            <div className="h-4 w-2/3 animate-pulse rounded bg-muted/20" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Home() {
   const { data: photoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-photo-gallery"],
