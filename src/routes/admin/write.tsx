@@ -15,7 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+
 import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
