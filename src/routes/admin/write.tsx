@@ -524,6 +524,86 @@ function WritePage() {
           </div>
         </aside>
       </div>
+
+      <Dialog open={!!shareInfo} onOpenChange={(o) => { if (!o) { setShareInfo(null); setCopied(false); } }}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 font-display">
+              <CheckCircle2 className="size-5 text-primary" />
+              নিউজ সফলভাবে প্রকাশিত হয়েছে
+            </DialogTitle>
+            <DialogDescription>সোশ্যাল মিডিয়ায় শেয়ার করুন</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-center gap-3 py-2">
+            <button
+              type="button"
+              onClick={() =>
+                window.open(
+                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareInfo?.url ?? "")}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
+              aria-label="ফেসবুকে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Facebook className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                window.open(
+                  `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareInfo?.url ?? "")}&text=${encodeURIComponent(shareInfo?.title ?? "")}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
+              aria-label="টুইটারে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Twitter className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareInfo?.url ?? "");
+                  toast.success("লিঙ্ক কপি হয়েছে — ইনস্টাগ্রামে পেস্ট করুন");
+                } catch {
+                  toast.error("কপি করা যায়নি");
+                }
+                window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+              }}
+              aria-label="ইনস্টাগ্রামে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Instagram className="size-5" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Input readOnly value={shareInfo?.url ?? ""} className="h-9 text-xs" />
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareInfo?.url ?? "");
+                  setCopied(true);
+                  toast.success("ইউআরএল কপি হয়েছে");
+                } catch {
+                  toast.error("কপি করা যায়নি");
+                }
+              }}
+            >
+              {copied ? <CheckCircle2 className="mr-1.5 size-4" /> : <Copy className="mr-1.5 size-4" />}
+              {copied ? "কপি হয়েছে" : "কপি"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
+
   );
 }
