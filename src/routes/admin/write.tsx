@@ -117,7 +117,7 @@ function WritePage() {
         
         category,
         image_url: imageUrl || null,
-        excerpt: excerpt || content.slice(0, 180),
+        excerpt: stripHtml(content).slice(0, 180),
         content,
         seo_title: seoTitle || null,
         seo_description: seoDesc || null,
