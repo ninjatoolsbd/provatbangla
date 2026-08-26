@@ -237,7 +237,7 @@ function PostPage() {
                   <MapPin className="h-4 w-4 text-primary" />
                   <span>{(post as any).location || "ঢাকা"}, প্রতিনিধি:</span>
                 </div>
-                {post.excerpt && <p className="font-bold text-[19px] leading-[1.7]">{post.excerpt}</p>}
+                {post.excerpt && <p className="font-bold text-[19px] leading-[1.7]" dangerouslySetInnerHTML={{ __html: post.excerpt }} />}
                 {post.content.includes('<') && post.content.includes('>') ? (
                   <div 
                     dangerouslySetInnerHTML={{ __html: post.content }} 
