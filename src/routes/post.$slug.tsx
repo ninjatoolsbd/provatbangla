@@ -21,13 +21,22 @@ type PostSearch = {
 
 const SITE_URL = "https://provatbanglanews.com";
 
-function absolutePublicUrl(value: string | null) {
+function absolutePublicUrl(value: string | null, version?: string | null) {
   if (!value) return null;
   try {
-    return new URL(value, SITE_URL).href;
+    const url = new URL(value, SITE_URL);
+    if (version) url.searchParams.set("v", version);
+    return url.href;
   } catch {
     return null;
   }
+}
+
+function socialImageType(value: string) {
+  const pathname = new URL(value).pathname.toLowerCase();
+  if (pathname.endsWith(".png")) return "image/png";
+  if (pathname.endsWith(".webp")) return "image/webp";
+  return "image/jpeg";
 }
 
 export const Route = createFileRoute("/post/$slug")({
@@ -63,7 +72,7 @@ export const Route = createFileRoute("/post/$slug")({
     const title = p.seo_title || `${p.title} — প্রভাতবাংলা`;
     const desc = (p.seo_description || p.excerpt).slice(0, 155);
     const canonical = `${SITE_URL}/post/${encodeURIComponent(p.slug ?? "")}`;
-    const socialImage = absolutePublicUrl(p.image_url);
+    const socialImage = absolutePublicUrl(p.image_url, p.updated_at || p.created_at);
     
     return {
       meta: [
@@ -79,7 +88,11 @@ export const Route = createFileRoute("/post/$slug")({
         ...(socialImage
           ? [
               { property: "og:image", content: socialImage },
+              { property: "og:image:url", content: socialImage },
               { property: "og:image:secure_url", content: socialImage },
+              { property: "og:image:type", content: socialImageType(socialImage) },
+              { property: "og:image:width", content: "1200" },
+              { property: "og:image:height", content: "630" },
               { property: "og:image:alt", content: p.title },
               { name: "twitter:image", content: socialImage },
               { name: "twitter:image:alt", content: p.title },
