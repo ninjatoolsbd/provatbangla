@@ -14,6 +14,7 @@ import { getPublishedPost, getPostForPreview } from "@/lib/public-posts.function
 import { getRelatedPosts } from "@/lib/related-posts.functions";
 import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
+import { summarize } from "@/lib/post-utils";
 
 type PostSearch = {
   preview?: boolean;
@@ -70,7 +71,7 @@ export const Route = createFileRoute("/post/$slug")({
     }
     const p = loaderData.post;
     const title = p.seo_title || `${p.title} — প্রভাতবাংলা`;
-    const desc = (p.seo_description || p.excerpt).slice(0, 155);
+    const desc = (p.seo_description || summarize(p.excerpt, (p as any).content, 300)).slice(0, 155);
     const canonical = `${SITE_URL}/post/${encodeURIComponent(p.slug ?? "")}`;
     const socialImage = absolutePublicUrl(p.image_url, p.updated_at || p.created_at);
     
@@ -237,7 +238,7 @@ function PostPage() {
                   <MapPin className="h-4 w-4 text-primary" />
                   <span>{(post as any).location || "ঢাকা"}, প্রতিনিধি:</span>
                 </div>
-                {post.excerpt && <p className="font-bold text-[19px] leading-[1.7]" dangerouslySetInnerHTML={{ __html: post.excerpt }} />}
+                {summarize(post.excerpt, post.content, 300) && <p className="font-bold text-[19px] leading-[1.7]">{summarize(post.excerpt, post.content, 300)}</p>}
                 {post.content.includes('<') && post.content.includes('>') ? (
                   <div 
                     dangerouslySetInnerHTML={{ __html: post.content }} 

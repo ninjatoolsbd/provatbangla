@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { AdBanner } from "@/components/ad-banner";
 import { GridCard, Meta, SectionHeading } from "@/components/news-cards";
 import { categoryName, getArticle, related } from "@/lib/news-data";
+import { summarize } from "@/lib/post-utils";
 
 export const Route = createFileRoute("/news/$id")({
   loader: ({ params }) => {
@@ -112,7 +113,7 @@ function NewsPage() {
             </figure>
 
             <div className="kb-article mt-5 space-y-4 text-[18px] leading-[1.95] text-foreground/90">
-              <p className="font-semibold">{article.excerpt}</p>
+              <p className="font-semibold">{summarize(article.excerpt, (article as any).body ?? (article as any).content)}</p>
               {article.body.map((p: string, i: number) => (
                 <p key={i}>{p}</p>
               ))}
