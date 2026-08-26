@@ -1,7 +1,18 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { uploadToR2 } from "@/lib/r2.server";
 
-export async function runPhotocardGeneration(postId: string) {
+const DEFAULT_SITE_ORIGIN = "https://cheer-collective-code.lovable.app";
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+export async function runPhotocardGeneration(postId: string, siteOrigin?: string) {
   // 1. Fetch post data
   const { data: post, error } = await supabaseAdmin
     .from("posts")
