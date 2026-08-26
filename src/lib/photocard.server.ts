@@ -54,8 +54,10 @@ export async function runPhotocardGeneration(postId: string, siteOrigin?: string
         </linearGradient>
       </defs>
       
-      <!-- Background Image -->
-      <image href="${imageUrl}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />
+      <!-- Background: news image, or brand color when the post has no image -->
+      ${imageUrl
+        ? `<image href="${escapeXml(imageUrl)}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />`
+        : `<rect x="0" y="0" width="${width}" height="${height}" fill="#7f0d10" />`}
       
       <!-- Gradient Overlay -->
       <rect x="0" y="${height * 0.4}" width="${width}" height="${height * 0.6}" fill="url(#grad)" />
