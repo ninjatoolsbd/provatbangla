@@ -127,7 +127,8 @@ function WritePage() {
       if (editingId) {
         const { error } = await supabase.from("posts").update(payload).eq("id", editingId);
         if (error) throw error;
-        return editingId;
+        const { data: row } = await supabase.from("posts").select("slug").eq("id", editingId).single();
+        return { id: editingId, slug: (row?.slug as string) || slugify(title), title };
       }
       const { data, error } = await supabase
         .from("posts")
@@ -137,27 +138,30 @@ function WritePage() {
           author_id: auth.userId,
           author_name: (auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")) as string,
         })
-        .select("id")
+        .select("id, slug")
         .single();
       if (error) throw error;
-      return data.id as string;
+      return { id: data.id as string, slug: (data.slug as string) || slugify(title), title };
     },
-    onSuccess: (id, status) => {
+    onSuccess: (res, status) => {
       toast.success(status === "published" ? "নিউজ লাইভ হয়েছে" : "ড্রাফট সংরক্ষিত হয়েছে");
       void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
       
       if (status === "published") {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        setShareInfo({ url: `${origin}/post/${res.slug}`, title: res.title });
         resetForm();
       } else {
         // If it was a draft save and we weren't editing, set the ID so we don't insert a duplicate next time
         if (!editingId) {
-          setEditingId(id);
+          setEditingId(res.id);
         }
       }
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
