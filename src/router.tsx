@@ -8,7 +8,10 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: { queryClient },
-    scrollRestoration: true,
+    // Reloads should always start at the top of the page; restoring a stale
+    // scroll offset before async sections finish rendering lands the user
+    // in the middle of the page.
+    scrollRestoration: false,
     defaultPreloadStaleTime: 0,
   });
 

@@ -39,6 +39,24 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+/** Placeholder that reserves a section's height so nothing jumps while it loads. */
+function SectionSkeleton() {
+  return (
+    <section className="mt-8 rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
+      <div className="mb-5 h-6 w-40 animate-pulse rounded bg-muted/40" />
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="space-y-3">
+            <div className="aspect-[16/10] w-full animate-pulse rounded-lg bg-muted/30" />
+            <div className="h-4 w-full animate-pulse rounded bg-muted/30" />
+            <div className="h-4 w-2/3 animate-pulse rounded bg-muted/20" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Home() {
   const { data: photoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-photo-gallery"],
@@ -86,14 +104,18 @@ function Home() {
 
 
 
-        {/* Home Sections populated from DB */}
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="বাংলাদেশ" slug="bangladesh" layout="national" />
-           <HomeSection title="আন্তর্জাতিক" slug="antorjatik" layout="national" />
-           <HomeSection title="রাজনীতি" slug="politics" layout="politics" />
-           <HomeSection title="চাকরি" slug="chakri" layout="politics" />
-           <HomeSection title="শিক্ষা" slug="shikkha" layout="economy" />
-        </Suspense>
+        {/* Home Sections populated from DB — each streams in on its own */}
+        {[
+          { title: "বাংলাদেশ", slug: "bangladesh", layout: "national" as const },
+          { title: "আন্তর্জাতিক", slug: "antorjatik", layout: "national" as const },
+          { title: "রাজনীতি", slug: "politics", layout: "politics" as const },
+          { title: "চাকরি", slug: "chakri", layout: "politics" as const },
+          { title: "শিক্ষা", slug: "shikkha", layout: "economy" as const },
+        ].map((s) => (
+          <Suspense key={s.slug} fallback={<SectionSkeleton />}>
+            <HomeSection title={s.title} slug={s.slug} layout={s.layout} />
+          </Suspense>
+        ))}
 
         <div className="my-10">
           <AdBanner index={1} className="h-28 rounded-xl" />
@@ -105,14 +127,18 @@ function Home() {
           <DivisionMap />
         </section>
 
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
-           <HomeSection title="খেলা" slug="khela" layout="grid" />
-           <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
-           <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
-           <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
-           <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
-        </Suspense>
+        {[
+          { title: "চলনবিল", slug: "cholonbil" },
+          { title: "খেলা", slug: "khela" },
+          { title: "বিনোদন", slug: "binodon" },
+          { title: "অপরাধ", slug: "apradh" },
+          { title: "স্বাস্থ্য", slug: "health" },
+          { title: "অর্থনীতি", slug: "orthoniti" },
+        ].map((s) => (
+          <Suspense key={s.slug} fallback={<SectionSkeleton />}>
+            <HomeSection title={s.title} slug={s.slug} layout="grid" />
+          </Suspense>
+        ))}
 
         {/* Video Strip removed and merged into Photo Gallery below */}
 
