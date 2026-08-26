@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireCloudAuth } from "@/lib/cloud-auth.middleware";
 
 export const rewriteNews = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -28,7 +28,7 @@ export const rewriteNews = createServerFn({ method: "POST" })
   });
 
 export const generateNews = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z
       .object({

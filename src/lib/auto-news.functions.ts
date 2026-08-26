@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireCloudAuth } from "@/lib/cloud-auth.middleware";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function assertAdmin(context: any) {
@@ -14,7 +14,7 @@ async function assertAdmin(context: any) {
 
 
 export const runAutoImport = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -53,7 +53,7 @@ const previewSchema = z.object({
 
 /** ড্রাই-রানের প্রিভিউ নিশ্চিত করে সাইটে সেভ করে। */
 export const publishAutoPreview = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) => previewSchema.parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
@@ -62,7 +62,7 @@ export const publishAutoPreview = createServerFn({ method: "POST" })
   });
 
 export const previewSource = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z.object({ siteUrl: z.string().url(), limit: z.number().int().min(1).max(20).default(5) }).parse(input),
   )

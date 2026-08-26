@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireCloudAuth } from "@/lib/cloud-auth.middleware";
 
 /** Builds a prompt that describes the actual subject of the article. */
 function buildPrompt(title: string, body: string) {
@@ -22,7 +22,7 @@ function buildPrompt(title: string, body: string) {
 
 /** Regenerates a topic-relevant AI image for one post and saves it. */
 export const regeneratePostImage = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) => z.object({ postId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { data: post, error } = await context.supabase
