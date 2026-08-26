@@ -6,6 +6,7 @@ import type { Post } from "@/lib/posts";
 import { categoryName } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 import { banglaDateTime } from "@/lib/posts";
+import { summarize } from "@/lib/post-utils";
 
 export const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1585829365234-781fcd04c838?auto=format&fit=crop&w=800&q=80";
 
@@ -90,7 +91,7 @@ export function SplitLead({ article }: { article: Article | Post }) {
           </h2>
         </ArticleLink>
         <p className="mt-3 line-clamp-4 text-[15px] leading-[1.6] text-slate-600 sm:text-[16px]">
-          {article.excerpt}
+          {summarize(article.excerpt, (article as any).content)}
         </p>
       </div>
     </article>
@@ -117,7 +118,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
         </h2>
       </ArticleLink>
       <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-        {article.excerpt}
+        {summarize(article.excerpt, (article as any).content)}
       </p>
     </article>
   );

@@ -8,6 +8,7 @@ import { NewsImage } from "@/components/news-cards";
 import HTMLFlipBook from 'react-pageflip';
 import { useState, useRef, forwardRef } from 'react';
 import logoAsset from "@/lib/logo";
+import { summarize } from "@/lib/post-utils";
 
 export const Route = createFileRoute('/magazine')({
   component: MagazinePage,
@@ -142,7 +143,7 @@ function MagazinePage() {
                   </h2>
                   
                   <div className="text-slate-600 text-sm leading-[1.8] mb-6 line-clamp-[12] whitespace-pre-wrap">
-                    {post.excerpt || 'এই বিশেষ প্রতিবেদনটির বিস্তারিত খবর প্রভাতবাংলা ম্যাগাজিনে নিয়মিতভাবে আমরা সমসাময়িক বিষয় নিয়ে গভীর বিশ্লেষণধর্মী লেখা প্রকাশ করে থাকি। এ বিষয়ে সংশ্লিষ্ট কর্তৃপক্ষ জানিয়েছে পরিস্থিতি নিয়মিত পর্যবেক্ষণে রাখা হয়েছে।'}
+                    {summarize(post.excerpt, (post as any).content) || 'এই বিশেষ প্রতিবেদনটির বিস্তারিত খবর প্রভাতবাংলা ম্যাগাজিনে নিয়মিতভাবে আমরা সমসাময়িক বিষয় নিয়ে গভীর বিশ্লেষণধর্মী লেখা প্রকাশ করে থাকি। এ বিষয়ে সংশ্লিষ্ট কর্তৃপক্ষ জানিয়েছে পরিস্থিতি নিয়মিত পর্যবেক্ষণে রাখা হয়েছে।'}
                   </div>
                   
                   <div className="mt-auto flex items-center justify-between text-[12px] text-slate-400">

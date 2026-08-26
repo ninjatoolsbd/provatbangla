@@ -6,6 +6,7 @@ import { NewsImage } from "@/components/news-cards";
 import { Reveal } from "@/components/reveal";
 import { banglaDateTime, Post } from "@/lib/posts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { summarize } from "@/lib/post-utils";
 
 async function fetchFilteredPosts(limit = 20, category?: string) {
   let q = supabase
@@ -134,7 +135,7 @@ export function LatestPosts({ category }: { category?: string }) {
                   <span>{banglaDateTime(mainPost.published_at)}</span>
                 </div>
                 <p className="mt-4 line-clamp-3 text-base leading-[1.6] text-slate-600 sm:mt-6 sm:text-lg">
-                  {mainPost.excerpt || (mainPost.content ? mainPost.content.replace(/<[^>]*>/g, '').slice(0, 220) : "")}
+                  {summarize(mainPost.excerpt, mainPost.content, 220)}
                 </p>
                 <Link 
                   to="/post/$slug" 
@@ -215,7 +216,7 @@ export function LatestPosts({ category }: { category?: string }) {
                     </h3>
                   </Link>
                   <p className="mt-2 line-clamp-2 text-sm text-slate-500">
-                    {p.excerpt || (p.content ? p.content.replace(/<[^>]*>/g, '').slice(0, 100) : "")}
+                    {summarize(p.excerpt, p.content, 120)}
                   </p>
                 </div>
               </article>
