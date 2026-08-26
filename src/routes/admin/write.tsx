@@ -350,30 +350,6 @@ function WritePage() {
             />
           </div>
 
-          <div className="border border-border bg-card shadow-sm">
-            <div className="flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-2">
-              <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">সারসংক্ষেপ</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-6 w-6 text-primary hover:text-primary"
-                onClick={handleAutoMetadata}
-                disabled={isGeneratingMetadata || !title || content.length < 100}
-                title="AI দিয়ে অটো-জেনারেট করুন"
-              >
-                {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
-              </Button>
-            </div>
-            <div className="p-4">
-              <Textarea
-                id="excerpt"
-                rows={3}
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                placeholder="ফাঁকা রাখলে কনটেন্টের শুরু থেকে নেওয়া হবে"
-              />
-            </div>
-          </div>
 
           <div className="border border-border bg-card shadow-sm">
             <div className="border-b border-border bg-secondary/30 px-4 py-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
