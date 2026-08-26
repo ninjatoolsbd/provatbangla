@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
