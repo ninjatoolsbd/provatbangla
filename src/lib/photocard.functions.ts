@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -26,6 +27,16 @@ export const generatePostPhotocard = createServerFn({ method: "POST" })
        }
     }
 
+    // Derive the site origin from the incoming request so the photocard's
+    // logo/fallback image always points at the host the site is served from.
+    let siteOrigin: string | undefined;
+    try {
+      const request = getRequest();
+      if (request) siteOrigin = new URL(request.url).origin;
+    } catch {
+      siteOrigin = undefined;
+    }
+
     const { runPhotocardGeneration } = await import("@/lib/photocard.server");
-    return runPhotocardGeneration(data.postId);
+    return runPhotocardGeneration(data.postId, siteOrigin);
   });
