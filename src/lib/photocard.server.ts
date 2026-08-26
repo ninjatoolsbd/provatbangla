@@ -1,7 +1,18 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { uploadToR2 } from "@/lib/r2.server";
 
-export async function runPhotocardGeneration(postId: string) {
+const DEFAULT_SITE_ORIGIN = "https://cheer-collective-code.lovable.app";
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+export async function runPhotocardGeneration(postId: string, siteOrigin?: string) {
   // 1. Fetch post data
   const { data: post, error } = await supabaseAdmin
     .from("posts")
@@ -28,9 +39,10 @@ export async function runPhotocardGeneration(postId: string) {
   // Since we don't have a full headless browser or heavy canvas in the worker,
   // we'll use a reliable SVG construction.
   
-  const imageUrl = post.image_url || 'https://cheer-collective-code.lovable.app/og-image.png'; // Fallback
-  const title = post.title;
-  const logoUrl = 'https://cheer-collective-code.lovable.app/logo.png';
+  const origin = (siteOrigin || DEFAULT_SITE_ORIGIN).replace(/\/$/, "");
+  const imageUrl: string | null = post.image_url || null;
+  const title = escapeXml(String(post.title ?? ""));
+  const logoUrl = `${origin}/logo.png`;
 
   // SVG Template
   const svg = `
@@ -42,8 +54,10 @@ export async function runPhotocardGeneration(postId: string) {
         </linearGradient>
       </defs>
       
-      <!-- Background Image -->
-      <image href="${imageUrl}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />
+      <!-- Background: news image, or brand color when the post has no image -->
+      ${imageUrl
+        ? `<image href="${escapeXml(imageUrl)}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" />`
+        : `<rect x="0" y="0" width="${width}" height="${height}" fill="#7f0d10" />`}
       
       <!-- Gradient Overlay -->
       <rect x="0" y="${height * 0.4}" width="${width}" height="${height * 0.6}" fill="url(#grad)" />
