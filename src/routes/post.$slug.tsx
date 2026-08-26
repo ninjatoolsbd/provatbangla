@@ -19,6 +19,17 @@ type PostSearch = {
   preview?: boolean;
 };
 
+const SITE_URL = "https://provatbanglanews.com";
+
+function absolutePublicUrl(value: string | null) {
+  if (!value) return null;
+  try {
+    return new URL(value, SITE_URL).href;
+  } catch {
+    return null;
+  }
+}
+
 export const Route = createFileRoute("/post/$slug")({
   validateSearch: (search: Record<string, unknown>): PostSearch => {
     return {
@@ -51,7 +62,8 @@ export const Route = createFileRoute("/post/$slug")({
     const p = loaderData.post;
     const title = p.seo_title || `${p.title} — প্রভাতবাংলা`;
     const desc = (p.seo_description || p.excerpt).slice(0, 155);
-    const canonical = `https://provatbangla.com/post/${p.slug}`;
+    const canonical = `${SITE_URL}/post/${encodeURIComponent(p.slug ?? "")}`;
+    const socialImage = absolutePublicUrl(p.image_url);
     
     return {
       meta: [
@@ -64,10 +76,13 @@ export const Route = createFileRoute("/post/$slug")({
         { property: "article:published_time", content: p.published_at || p.created_at },
         { property: "article:section", content: p.category },
         { name: "twitter:card", content: "summary_large_image" },
-        ...(p.image_url?.startsWith("https://")
+        ...(socialImage
           ? [
-              { property: "og:image", content: p.image_url },
-              { name: "twitter:image", content: p.image_url },
+              { property: "og:image", content: socialImage },
+              { property: "og:image:secure_url", content: socialImage },
+              { property: "og:image:alt", content: p.title },
+              { name: "twitter:image", content: socialImage },
+              { name: "twitter:image:alt", content: p.title },
             ]
           : []),
       ],
