@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+
 import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
@@ -67,7 +75,10 @@ function WritePage() {
   const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const [postAuthorName, setPostAuthorName] = useState("");
+  const [shareInfo, setShareInfo] = useState<{ url: string; title: string } | null>(null);
+  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
@@ -127,7 +138,8 @@ function WritePage() {
       if (editingId) {
         const { error } = await supabase.from("posts").update(payload).eq("id", editingId);
         if (error) throw error;
-        return editingId;
+        const { data: row } = await supabase.from("posts").select("slug").eq("id", editingId).single();
+        return { id: editingId, slug: (row?.slug as string) || slugify(title), title };
       }
       const { data, error } = await supabase
         .from("posts")
@@ -137,27 +149,30 @@ function WritePage() {
           author_id: auth.userId,
           author_name: (auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")) as string,
         })
-        .select("id")
+        .select("id, slug")
         .single();
       if (error) throw error;
-      return data.id as string;
+      return { id: data.id as string, slug: (data.slug as string) || slugify(title), title };
     },
-    onSuccess: (id, status) => {
+    onSuccess: (res, status) => {
       toast.success(status === "published" ? "নিউজ লাইভ হয়েছে" : "ড্রাফট সংরক্ষিত হয়েছে");
       void queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
       void queryClient.invalidateQueries({ queryKey: ["published-posts"] });
       
       if (status === "published") {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        setShareInfo({ url: `${origin}/post/${res.slug}`, title: res.title });
         resetForm();
       } else {
         // If it was a draft save and we weren't editing, set the ID so we don't insert a duplicate next time
         if (!editingId) {
-          setEditingId(id);
+          setEditingId(res.id);
         }
       }
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -509,6 +524,86 @@ function WritePage() {
           </div>
         </aside>
       </div>
+
+      <Dialog open={!!shareInfo} onOpenChange={(o) => { if (!o) { setShareInfo(null); setCopied(false); } }}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 font-display">
+              <CheckCircle2 className="size-5 text-primary" />
+              নিউজ সফলভাবে প্রকাশিত হয়েছে
+            </DialogTitle>
+            <DialogDescription>সোশ্যাল মিডিয়ায় শেয়ার করুন</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-center gap-3 py-2">
+            <button
+              type="button"
+              onClick={() =>
+                window.open(
+                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareInfo?.url ?? "")}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
+              aria-label="ফেসবুকে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Facebook className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                window.open(
+                  `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareInfo?.url ?? "")}&text=${encodeURIComponent(shareInfo?.title ?? "")}`,
+                  "_blank",
+                  "noopener,noreferrer",
+                )
+              }
+              aria-label="টুইটারে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Twitter className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareInfo?.url ?? "");
+                  toast.success("লিঙ্ক কপি হয়েছে — ইনস্টাগ্রামে পেস্ট করুন");
+                } catch {
+                  toast.error("কপি করা যায়নি");
+                }
+                window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+              }}
+              aria-label="ইনস্টাগ্রামে শেয়ার"
+              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              <Instagram className="size-5" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Input readOnly value={shareInfo?.url ?? ""} className="h-9 text-xs" />
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareInfo?.url ?? "");
+                  setCopied(true);
+                  toast.success("ইউআরএল কপি হয়েছে");
+                } catch {
+                  toast.error("কপি করা যায়নি");
+                }
+              }}
+            >
+              {copied ? <CheckCircle2 className="mr-1.5 size-4" /> : <Copy className="mr-1.5 size-4" />}
+              {copied ? "কপি হয়েছে" : "কপি"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
+
   );
 }
