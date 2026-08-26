@@ -109,14 +109,18 @@ function Home() {
           <DivisionMap />
         </section>
 
-        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-muted/20" />}>
-           <HomeSection title="চলনবিল" slug="cholonbil" layout="grid" />
-           <HomeSection title="খেলা" slug="khela" layout="grid" />
-           <HomeSection title="বিনোদন" slug="binodon" layout="grid" />
-           <HomeSection title="অপরাধ" slug="apradh" layout="grid" />
-           <HomeSection title="স্বাস্থ্য" slug="health" layout="grid" />
-           <HomeSection title="অর্থনীতি" slug="orthoniti" layout="grid" />
-        </Suspense>
+        {[
+          { title: "চলনবিল", slug: "cholonbil" },
+          { title: "খেলা", slug: "khela" },
+          { title: "বিনোদন", slug: "binodon" },
+          { title: "অপরাধ", slug: "apradh" },
+          { title: "স্বাস্থ্য", slug: "health" },
+          { title: "অর্থনীতি", slug: "orthoniti" },
+        ].map((s) => (
+          <Suspense key={s.slug} fallback={<SectionSkeleton />}>
+            <HomeSection title={s.title} slug={s.slug} layout="grid" />
+          </Suspense>
+        ))}
 
         {/* Video Strip removed and merged into Photo Gallery below */}
 
