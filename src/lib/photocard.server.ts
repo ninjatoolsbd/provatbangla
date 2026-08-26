@@ -39,9 +39,10 @@ export async function runPhotocardGeneration(postId: string, siteOrigin?: string
   // Since we don't have a full headless browser or heavy canvas in the worker,
   // we'll use a reliable SVG construction.
   
-  const imageUrl = post.image_url || 'https://cheer-collective-code.lovable.app/og-image.png'; // Fallback
-  const title = post.title;
-  const logoUrl = 'https://cheer-collective-code.lovable.app/logo.png';
+  const origin = (siteOrigin || DEFAULT_SITE_ORIGIN).replace(/\/$/, "");
+  const imageUrl: string | null = post.image_url || null;
+  const title = escapeXml(String(post.title ?? ""));
+  const logoUrl = `${origin}/logo.png`;
 
   // SVG Template
   const svg = `
