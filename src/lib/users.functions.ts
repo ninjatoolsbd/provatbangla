@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireCloudAuth } from "@/lib/cloud-auth.middleware";
 
 const roleSchema = z.enum(["admin", "editor", "user"]);
 
@@ -23,7 +23,7 @@ export type ManagedUser = {
 };
 
 export const listUsers = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .handler(async ({ context }): Promise<ManagedUser[]> => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -56,7 +56,7 @@ export const listUsers = createServerFn({ method: "POST" })
   });
 
 export const createUserAccount = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -91,7 +91,7 @@ export const createUserAccount = createServerFn({ method: "POST" })
   });
 
 export const setUserRole = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) =>
     z.object({ userId: z.string().uuid(), role: roleSchema }).parse(input),
   )
@@ -110,7 +110,7 @@ export const setUserRole = createServerFn({ method: "POST" })
   });
 
 export const deleteUserAccount = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireCloudAuth])
   .inputValidator((input: unknown) => z.object({ userId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
