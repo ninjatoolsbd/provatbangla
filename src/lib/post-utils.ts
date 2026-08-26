@@ -16,7 +16,7 @@ export function firstParagraph(html: string | null | undefined, max = 220) {
     .split(/<\/(?:p|div|h[1-6]|li|blockquote)>/i)
     .map((b) => b.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim())
     .filter((b) => b.length > 0);
-  const text = blocks[0] ?? "";
+  const text = blocks.find((b) => b.length >= 40) ?? blocks[0] ?? "";
   return text.length > max ? `${text.slice(0, max).replace(/\s+\S*$/, "")}…` : text;
 }
 
