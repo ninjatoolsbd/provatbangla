@@ -75,7 +75,10 @@ function WritePage() {
   const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const [postAuthorName, setPostAuthorName] = useState("");
+  const [shareInfo, setShareInfo] = useState<{ url: string; title: string } | null>(null);
+  const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
 
