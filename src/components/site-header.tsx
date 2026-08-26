@@ -289,7 +289,7 @@ export function SiteHeader() {
                   key={c.slug}
                   to="/category/$slug"
                   params={{ slug: c.slug }}
-                  className={`kb-underline px-1 xl:px-1.5 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-1' : 'py-2'}`}
+                  className={`kb-underline px-1 xl:px-1.5 text-[13px] xl:text-[14px] font-bold whitespace-nowrap transition-all duration-300 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-3'}`}
                   activeProps={{ className: "text-primary" }}
                 >
                   {c.name}
