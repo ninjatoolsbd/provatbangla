@@ -273,7 +273,7 @@ export function SiteHeader() {
 
               <Link
                 to="/"
-                className={`flex shrink-0 items-center px-1 xl:px-1.5 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-1.5' : 'py-2'}`}
+                className={`flex shrink-0 items-center px-1 xl:px-1.5 text-[14px] xl:text-[15px] font-bold transition-all duration-300 hover:scale-110 hover:text-primary ${isScrolled ? 'py-2' : 'py-3'}`}
                 activeOptions={{ exact: true }}
                 activeProps={{ className: "text-primary" }}
                 aria-label="প্রচ্ছদ"
