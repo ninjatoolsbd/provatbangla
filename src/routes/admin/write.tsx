@@ -142,7 +142,9 @@ function WritePage() {
     setContent("");
     setSeoTitle("");
     setSeoDesc("");
-    setPostAuthorName("");
+    const currentUserId = auth.userId;
+    setAuthorId(currentUserId || "");
+    setAuthorName(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
   }
 
   const saveMutation = useMutation({
