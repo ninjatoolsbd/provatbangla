@@ -90,7 +90,7 @@ export function SplitLead({ article }: { article: Article | Post }) {
             {article.title}
           </h2>
         </ArticleLink>
-        <p className="mt-3 line-clamp-4 text-[15px] leading-[1.6] text-slate-600 sm:text-[16px]">
+        <p className="mt-3 line-clamp-4 font-sans text-[15px] leading-[1.6] text-black/80 sm:text-[16px]">
           {summarize(article.excerpt, (article as any).content)}
         </p>
       </div>
@@ -117,7 +117,7 @@ export function LeadCard({ article }: { article: Article | Post }) {
           {article.title}
         </h2>
       </ArticleLink>
-      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+      <p className="mt-2 line-clamp-3 font-sans text-sm leading-relaxed text-black/80">
         {summarize(article.excerpt, (article as any).content)}
       </p>
     </article>

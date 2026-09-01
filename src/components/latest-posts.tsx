@@ -134,7 +134,7 @@ export function LatestPosts({ category }: { category?: string }) {
                   <span className="h-2 w-2 rounded-full bg-primary"></span>
                   <span>{banglaDateTime(mainPost.published_at)}</span>
                 </div>
-                <p className="mt-4 line-clamp-3 text-base leading-[1.6] text-slate-600 sm:mt-6 sm:text-lg">
+                <p className="mt-4 line-clamp-3 font-sans text-base leading-[1.6] text-black/80 sm:mt-6 sm:text-lg">
                   {summarize(mainPost.excerpt, mainPost.content, 220)}
                 </p>
                 <Link 
@@ -215,7 +215,7 @@ export function LatestPosts({ category }: { category?: string }) {
                       {p.title}
                     </h3>
                   </Link>
-                  <p className="mt-2 line-clamp-2 text-sm text-slate-500">
+                  <p className="mt-2 line-clamp-2 font-sans text-sm text-black/70">
                     {summarize(p.excerpt, p.content, 120)}
                   </p>
                 </div>
