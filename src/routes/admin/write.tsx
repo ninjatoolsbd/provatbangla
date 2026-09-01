@@ -121,7 +121,7 @@ function WritePage() {
     const currentUserId = auth.userId;
     if (currentUserId) {
       setAuthorId(currentUserId);
-      setAuthorName(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
+      setAuthorName(String(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")));
     }
   }, [editingId, auth.userId, auth.displayName, auth.email]);
 
