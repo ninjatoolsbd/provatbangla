@@ -144,13 +144,13 @@ function WritePage() {
     setSeoDesc("");
     const currentUserId = auth.userId;
     setAuthorId(currentUserId || "");
-    setAuthorName(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
+    setAuthorName(String(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")));
   }
 
   const saveMutation = useMutation({
     mutationFn: async (status: "draft" | "published") => {
-      const selectedAuthorId = authorId || auth.userId;
-      const selectedAuthorName = authorName || auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা");
+      const selectedAuthorId = authorId || auth.userId || null;
+      const selectedAuthorName = String(authorName || auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
       const payload = {
         title,
         
