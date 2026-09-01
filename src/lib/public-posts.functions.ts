@@ -16,6 +16,7 @@ function pickPostFields(p: any) {
     seo_title: p.seo_title,
     seo_description: p.seo_description,
     status: p.status,
+    author_id: p.author_id ?? null,
     author_name: p.author_name,
     published_at: p.published_at,
     created_at: p.created_at,
