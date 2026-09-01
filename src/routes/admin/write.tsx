@@ -448,13 +448,28 @@ function WritePage() {
                 <span className="text-muted-foreground">স্ট্যাটাস</span>
                 <span className="font-bold">{editingId ? "সংরক্ষিত" : "নতুন খসড়া"}</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="space-y-2">
                 <span className="text-muted-foreground">লেখক</span>
-                <span className="font-bold">
-                  {editingId && postAuthorName
-                    ? postAuthorName
-                    : auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")}
-                </span>
+                <Select
+                  value={authorId}
+                  onValueChange={(value) => {
+                    const selected = authorsQuery.data?.find((a) => a.id === value);
+                    setAuthorId(value);
+                    setAuthorName(selected?.display_name || selected?.email || "অজানা");
+                  }}
+                  disabled={authorsQuery.isLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="লেখক নির্বাচন করুন" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {authorsQuery.data?.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.display_name || a.email || "অজানা"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-2 pt-1">
                 <Button
