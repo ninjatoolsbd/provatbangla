@@ -280,7 +280,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     },
     editorProps: {
       attributes: {
-        class: "prose prose-slate max-w-none focus:outline-none min-h-[500px] p-6 text-[18px] leading-[1.8] font-sans",
+        class: "prose prose-slate max-w-none focus:outline-none min-h-[500px] p-6 text-[17px] md:text-[20px] leading-[1.95] font-sans",
       },
     },
     immediatelyRender: false,
