@@ -12,6 +12,7 @@ export type Post = {
   seo_title: string | null;
   seo_description: string | null;
   status: string;
+  author_id: string | null;
   author_name: string;
   published_at: string | null;
   created_at: string;

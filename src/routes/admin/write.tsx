@@ -74,10 +74,23 @@ function WritePage() {
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
-  const [postAuthorName, setPostAuthorName] = useState("");
+  const [authorId, setAuthorId] = useState<string>("");
+  const [authorName, setAuthorName] = useState<string>("");
   const [shareInfo, setShareInfo] = useState<{ url: string; title: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const authorsQuery = useQuery({
+    queryKey: ["authors"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, email")
+        .order("display_name", { ascending: true });
+      if (error) throw error;
+      return (data || []) as { id: string; display_name: string | null; email: string | null }[];
+    },
+  });
 
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
@@ -98,8 +111,19 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-    setPostAuthorName(p.author_name);
+    setAuthorId(p.author_id || "");
+    setAuthorName(p.author_name || "");
   }, [id, postsQuery.data]); // Removed editingId from deps to prevent re-runs on same ID
+
+  // Default author to current user when starting a brand-new post
+  useEffect(() => {
+    if (editingId || authorId) return;
+    const currentUserId = auth.userId;
+    if (currentUserId) {
+      setAuthorId(currentUserId);
+      setAuthorName(String(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")));
+    }
+  }, [editingId, auth.userId, auth.displayName, auth.email]);
 
   function applyVersion(v: Version) {
     setTitle(v.title);
@@ -118,11 +142,15 @@ function WritePage() {
     setContent("");
     setSeoTitle("");
     setSeoDesc("");
-    setPostAuthorName("");
+    const currentUserId = auth.userId;
+    setAuthorId(currentUserId || "");
+    setAuthorName(String(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")));
   }
 
   const saveMutation = useMutation({
     mutationFn: async (status: "draft" | "published") => {
+      const selectedAuthorId = authorId || auth.userId || null;
+      const selectedAuthorName = String(authorName || auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
       const payload = {
         title,
         
@@ -134,6 +162,8 @@ function WritePage() {
         seo_description: seoDesc || null,
         status,
         published_at: status === "published" ? new Date().toISOString() : null,
+        author_id: selectedAuthorId,
+        author_name: selectedAuthorName,
       };
       if (editingId) {
         const { error } = await supabase.from("posts").update(payload).eq("id", editingId);
@@ -146,8 +176,6 @@ function WritePage() {
         .insert({
           ...payload,
           slug: slugify(title),
-          author_id: auth.userId,
-          author_name: (auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")) as string,
         })
         .select("id, slug")
         .single();
@@ -420,13 +448,28 @@ function WritePage() {
                 <span className="text-muted-foreground">স্ট্যাটাস</span>
                 <span className="font-bold">{editingId ? "সংরক্ষিত" : "নতুন খসড়া"}</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="space-y-2">
                 <span className="text-muted-foreground">লেখক</span>
-                <span className="font-bold">
-                  {editingId && postAuthorName
-                    ? postAuthorName
-                    : auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")}
-                </span>
+                <Select
+                  value={authorId}
+                  onValueChange={(value) => {
+                    const selected = authorsQuery.data?.find((a) => a.id === value);
+                    setAuthorId(value);
+                    setAuthorName(selected?.display_name || selected?.email || "অজানা");
+                  }}
+                  disabled={authorsQuery.isLoading}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="লেখক নির্বাচন করুন" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {authorsQuery.data?.map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.display_name || a.email || "অজানা"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-2 pt-1">
                 <Button
