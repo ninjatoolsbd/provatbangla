@@ -149,6 +149,8 @@ function WritePage() {
 
   const saveMutation = useMutation({
     mutationFn: async (status: "draft" | "published") => {
+      const selectedAuthorId = authorId || auth.userId;
+      const selectedAuthorName = authorName || auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা");
       const payload = {
         title,
         
@@ -160,6 +162,8 @@ function WritePage() {
         seo_description: seoDesc || null,
         status,
         published_at: status === "published" ? new Date().toISOString() : null,
+        author_id: selectedAuthorId,
+        author_name: selectedAuthorName,
       };
       if (editingId) {
         const { error } = await supabase.from("posts").update(payload).eq("id", editingId);
@@ -172,8 +176,6 @@ function WritePage() {
         .insert({
           ...payload,
           slug: slugify(title),
-          author_id: auth.userId,
-          author_name: (auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা")) as string,
         })
         .select("id, slug")
         .single();
