@@ -188,7 +188,7 @@ function PostPage() {
             </nav>
 
             <article className="border border-border bg-card p-4 sm:p-5">
-              <h1 className="font-display text-[24px] font-bold leading-[1.3] text-slate-900 sm:text-[32px] lg:text-[38px] mb-4">
+              <h1 className="font-display text-[21px] font-bold leading-[1.35] text-slate-900 sm:text-[24px] lg:text-[28px] mb-4">
                 {post.title}
               </h1>
               
