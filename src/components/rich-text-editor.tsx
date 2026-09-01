@@ -1,8 +1,10 @@
 import { EditorContent, useEditor } from "@tiptap/react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
-import Image from "@tiptap/extension-image";
+import { ResizableImage } from "./editor/resizable-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
@@ -26,6 +28,7 @@ import {
   Type,
   Maximize,
   Minimize,
+  Loader2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -232,11 +235,20 @@ const MenuBar = ({ editor }: { editor: any }) => {
         variant="ghost"
         size="icon"
         className="h-8 w-8"
-        onClick={addImage}
-        title="ছবি যোগ করুন"
+        onClick={() => imageInputRef.current?.click()}
+        disabled={uploading}
+        title="ছবি আপলোড করুন (একাধিক নির্বাচন করা যাবে)"
       >
-        <ImageIcon className="h-4 w-4" />
+        {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
       </Button>
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={(e) => handleImageFiles(e.target.files)}
+      />
 
       <Button
         variant="ghost"
@@ -287,8 +299,9 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           class: "text-primary underline cursor-pointer",
         },
       }),
-      Image.configure({
+      ResizableImage.configure({
         allowBase64: true,
+        inline: false,
         HTMLAttributes: {
           class: "max-w-full h-auto rounded-lg my-4",
         },
