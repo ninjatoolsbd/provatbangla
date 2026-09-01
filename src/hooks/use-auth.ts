@@ -24,9 +24,13 @@ export function useAuth() {
         setLoading(false);
         return;
       }
-      const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+      const [{ data }, { data: profile }] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", uid),
+        supabase.from("profiles").select("display_name").eq("id", uid).maybeSingle(),
+      ]);
       if (!active) return;
       const roles = (data ?? []).map((r) => r.role as AppRole);
+      setDisplayName(profile?.display_name || meta?.display_name || null);
       setRole(
         roles.includes("admin") ? "admin" : roles.includes("editor") ? "editor" : "user",
       );
