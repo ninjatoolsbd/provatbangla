@@ -1,8 +1,10 @@
 import { EditorContent, useEditor } from "@tiptap/react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
-import Image from "@tiptap/extension-image";
+import { ResizableImage } from "./editor/resizable-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
@@ -26,6 +28,7 @@ import {
   Type,
   Maximize,
   Minimize,
+  Loader2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -43,6 +46,9 @@ interface RichTextEditorProps {
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   if (!editor) return null;
 
   const addLink = () => {
@@ -52,10 +58,36 @@ const MenuBar = ({ editor }: { editor: any }) => {
     }
   };
 
-  const addImage = () => {
-    const url = window.prompt("ছবির URL লিখুন:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const handleImageFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const { uploadMedia } = await import("@/lib/media.functions");
+      for (const file of Array.from(files)) {
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = String(reader.result);
+            resolve(res.slice(res.indexOf(",") + 1));
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await uploadMedia({
+          data: {
+            name: file.name,
+            contentType: file.type || "image/jpeg",
+            dataBase64: base64,
+          },
+        });
+        editor.chain().focus().setImage({ src: res.url }).run();
+      }
+      toast.success("ছবি যোগ করা হয়েছে");
+    } catch (error: any) {
+      toast.error("ছবি আপলোড ব্যর্থ: " + (error?.message || "Unknown error"));
+    } finally {
+      setUploading(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
     }
   };
 
@@ -203,11 +235,20 @@ const MenuBar = ({ editor }: { editor: any }) => {
         variant="ghost"
         size="icon"
         className="h-8 w-8"
-        onClick={addImage}
-        title="ছবি যোগ করুন"
+        onClick={() => imageInputRef.current?.click()}
+        disabled={uploading}
+        title="ছবি আপলোড করুন (একাধিক নির্বাচন করা যাবে)"
       >
-        <ImageIcon className="h-4 w-4" />
+        {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
       </Button>
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={(e) => handleImageFiles(e.target.files)}
+      />
 
       <Button
         variant="ghost"
@@ -258,8 +299,9 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           class: "text-primary underline cursor-pointer",
         },
       }),
-      Image.configure({
+      ResizableImage.configure({
         allowBase64: true,
+        inline: false,
         HTMLAttributes: {
           class: "max-w-full h-auto rounded-lg my-4",
         },
