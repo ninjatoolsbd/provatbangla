@@ -126,13 +126,21 @@ function PostPage() {
   });
 
   const { data: latestPosts = [] } = useQuery({
-    queryKey: ["post-sidebar-latest"],
-    queryFn: () => fetchPublishedPosts(10),
+    queryKey: ["post-sidebar-latest", post.category],
+    queryFn: () => fetchPublishedPosts(10, post.category),
+    staleTime: 30_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchInterval: 60_000,
   });
 
   const { data: popularPosts = [] } = useQuery({
-    queryKey: ["post-sidebar-popular"],
-    queryFn: () => fetchPublishedPosts(10, undefined, "popular"),
+    queryKey: ["post-sidebar-popular", post.category],
+    queryFn: () => fetchPublishedPosts(10, post.category, "popular"),
+    staleTime: 30_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchInterval: 60_000,
   });
 
   const sidebarPosts = activeTab === "latest" ? latestPosts : popularPosts;
