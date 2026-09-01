@@ -111,8 +111,19 @@ function WritePage() {
     setContent(p.content);
     setSeoTitle(p.seo_title ?? "");
     setSeoDesc(p.seo_description ?? "");
-    setPostAuthorName(p.author_name);
+    setAuthorId(p.author_id || "");
+    setAuthorName(p.author_name || "");
   }, [id, postsQuery.data]); // Removed editingId from deps to prevent re-runs on same ID
+
+  // Default author to current user when starting a brand-new post
+  useEffect(() => {
+    if (editingId || authorId) return;
+    const currentUserId = auth.userId;
+    if (currentUserId) {
+      setAuthorId(currentUserId);
+      setAuthorName(auth.displayName || (auth.email ? auth.email.split("@")[0] : "অজানা"));
+    }
+  }, [editingId, auth.userId, auth.displayName, auth.email]);
 
   function applyVersion(v: Version) {
     setTitle(v.title);
