@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import * as React from "react";
-import { Facebook, MessageCircle, Send, Twitter, Linkedin, Share2, User, Clock, MapPin } from "lucide-react";
+import { Facebook, MessageCircle, Twitter, Share2, User, Clock } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -233,12 +233,7 @@ function PostPage() {
                 </div>
               )}
 
-              <div className="post-content mb-8 text-[18px] leading-[1.8] text-slate-800 space-y-5">
-                <div className="flex items-center gap-1.5 text-[15px] font-bold text-slate-700 mb-4">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span>{(post as any).location || "ঢাকা"}, প্রতিনিধি:</span>
-                </div>
-                {summarize(post.excerpt, post.content, 300) && <p className="font-bold text-[19px] leading-[1.7]">{summarize(post.excerpt, post.content, 300)}</p>}
+              <div className="post-content mb-8 space-y-5 text-[18px] leading-[1.8] text-slate-800">
                 {post.content.includes('<') && post.content.includes('>') ? (
                   <div 
                     dangerouslySetInnerHTML={{ __html: post.content }} 
