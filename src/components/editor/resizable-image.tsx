@@ -10,13 +10,13 @@ function ResizableImageView(props: any) {
   const startResize = (e: React.MouseEvent | React.TouchEvent, dir: "left" | "right") => {
     e.preventDefault();
     e.stopPropagation();
-    const startX = "touches" in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+    const startX = "touches" in e ? (e.touches[0]?.clientX ?? 0) : (e as React.MouseEvent).clientX;
     const startWidth = wrapperRef.current?.querySelector("img")?.getBoundingClientRect().width || 0;
     const maxWidth = wrapperRef.current?.parentElement?.getBoundingClientRect().width || 800;
     setDragging(true);
 
     const onMove = (ev: MouseEvent | TouchEvent) => {
-      const clientX = "touches" in ev ? ev.touches[0].clientX : (ev as MouseEvent).clientX;
+      const clientX = "touches" in ev ? (ev.touches[0]?.clientX ?? 0) : (ev as MouseEvent).clientX;
       const delta = dir === "right" ? clientX - startX : startX - clientX;
       const next = Math.max(80, Math.min(maxWidth, startWidth + delta));
       updateAttributes({ width: Math.round(next) });
@@ -84,10 +84,10 @@ export const ResizableImage = Image.extend({
           return Number.isFinite(n) ? n : null;
         },
         renderHTML: (attributes) => {
-          if (!attributes.width) return {};
+          if (!attributes["width"]) return {};
           return {
-            width: attributes.width,
-            style: `width:${attributes.width}px;max-width:100%;height:auto;`,
+            width: attributes["width"],
+            style: `width:${attributes["width"]}px;max-width:100%;height:auto;`,
           };
         },
       },
