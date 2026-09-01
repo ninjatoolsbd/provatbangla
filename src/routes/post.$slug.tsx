@@ -241,15 +241,15 @@ function PostPage() {
                 </div>
               )}
 
-              <div className="post-content mb-8 space-y-5 text-justify text-[13px] leading-[1.7] text-black md:text-[16px] md:leading-[1.75]">
+              <div className="post-content mb-8 space-y-5 text-justify text-[14px] leading-[1.85] text-black md:text-[17px] md:leading-[1.9]">
                 {post.content.includes('<') && post.content.includes('>') ? (
                   <div 
                     dangerouslySetInnerHTML={{ __html: post.content }} 
-                    className="prose prose-slate max-w-none dark:prose-invert prose-p:leading-[1.7] prose-p:text-black prose-p:text-[13px] md:prose-p:text-[16px] prose-p:mb-5 prose-headings:font-display prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-md"
+                    className="prose prose-slate max-w-none dark:prose-invert prose-p:leading-[1.85] prose-p:text-black prose-p:text-[14px] md:prose-p:text-[17px] prose-p:mb-5 prose-headings:font-display prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-md"
                   />
                 ) : (
                   paragraphs(post.content).map((p, i) => (
-                    <p key={i} className="text-[13px] leading-[1.7] text-black md:text-[16px] md:leading-[1.75]">{p}</p>
+                    <p key={i} className="text-[14px] leading-[1.85] text-black md:text-[17px] md:leading-[1.9]">{p}</p>
                   ))
                 )}
               </div>
