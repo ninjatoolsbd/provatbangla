@@ -43,6 +43,9 @@ interface RichTextEditorProps {
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   if (!editor) return null;
 
   const addLink = () => {
@@ -52,10 +55,36 @@ const MenuBar = ({ editor }: { editor: any }) => {
     }
   };
 
-  const addImage = () => {
-    const url = window.prompt("ছবির URL লিখুন:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const handleImageFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const { uploadMedia } = await import("@/lib/media.functions");
+      for (const file of Array.from(files)) {
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const res = String(reader.result);
+            resolve(res.slice(res.indexOf(",") + 1));
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await uploadMedia({
+          data: {
+            name: file.name,
+            contentType: file.type || "image/jpeg",
+            dataBase64: base64,
+          },
+        });
+        editor.chain().focus().setImage({ src: res.url }).run();
+      }
+      toast.success("ছবি যোগ করা হয়েছে");
+    } catch (error: any) {
+      toast.error("ছবি আপলোড ব্যর্থ: " + (error?.message || "Unknown error"));
+    } finally {
+      setUploading(false);
+      if (imageInputRef.current) imageInputRef.current.value = "";
     }
   };
 
