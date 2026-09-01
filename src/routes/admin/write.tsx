@@ -74,10 +74,23 @@ function WritePage() {
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
-  const [postAuthorName, setPostAuthorName] = useState("");
+  const [authorId, setAuthorId] = useState<string>("");
+  const [authorName, setAuthorName] = useState<string>("");
   const [shareInfo, setShareInfo] = useState<{ url: string; title: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const authorsQuery = useQuery({
+    queryKey: ["authors"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, email")
+        .order("display_name", { ascending: true });
+      if (error) throw error;
+      return (data || []) as { id: string; display_name: string | null; email: string | null }[];
+    },
+  });
 
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
