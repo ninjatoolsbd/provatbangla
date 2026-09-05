@@ -17,6 +17,8 @@ import { useRef, useState, useMemo, useEffect } from "react";
 import type { Article } from "@/lib/news-data";
 import { cn } from "@/lib/utils";
 import { NewsImage } from "@/components/news-cards";
+import { LiveTvPlayers } from "@/components/live-tv-players";
+
 import { formatDistanceToNow } from "date-fns";
 import { bn } from "date-fns/locale";
 
