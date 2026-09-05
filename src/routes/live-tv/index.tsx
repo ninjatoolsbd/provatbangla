@@ -6,8 +6,19 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getHomeSectionPosts } from "@/lib/public-posts.functions";
 
 export const Route = createFileRoute("/live-tv/")({
+  head: () => ({
+    meta: [
+      { title: "লাইভ টিভি ও ভিডিও — প্রভাতবাংলা" },
+      { name: "description", content: "প্রভাতবাংলায় দেখুন বাংলাদেশের জনপ্রিয় টেলিভিশন চ্যানেলের সরাসরি সম্প্রচার ও নির্বাচিত ভিডিও সংবাদ।" },
+      { property: "og:title", content: "লাইভ টিভি ও ভিডিও — প্রভাতবাংলা" },
+      { property: "og:description", content: "বাংলাদেশের জনপ্রিয় টিভি চ্যানেলের সরাসরি সম্প্রচার ও ভিডিও সংবাদ এক জায়গায়।" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: LiveTVPage,
 });
+
 
 function LiveTVPage() {
   const { data: videoPosts = [] } = useSuspenseQuery({
