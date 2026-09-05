@@ -70,10 +70,17 @@ export function useAuth() {
       void load(data.session?.user?.id ?? null, data.session?.user?.email ?? null, data.session?.user?.user_metadata);
     });
 
+    // safety: never keep the screen stuck on the spinner
+    const bail = setTimeout(() => {
+      if (active) setLoading(false);
+    }, 10000);
+
     return () => {
       active = false;
+      clearTimeout(bail);
       sub.subscription.unsubscribe();
     };
+
   }, []);
 
   const isAdmin = role === "admin";
