@@ -210,19 +210,40 @@ function PostPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="ফেসবুকে শেয়ার"
+                    onClick={() => shareTo("facebook", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90"
+                  >
                     <Facebook className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="হোয়াটসঅ্যাপে শেয়ার"
+                    onClick={() => shareTo("whatsapp", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white hover:opacity-90"
+                  >
                     <MessageCircle className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1DA1F2] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="টুইটারে শেয়ার"
+                    onClick={() => shareTo("twitter", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1DA1F2] text-white hover:opacity-90"
+                  >
                     <Twitter className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="লিঙ্ক শেয়ার করুন"
+                    onClick={() => shareTo("native", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-white hover:opacity-90"
+                  >
                     <Share2 className="h-4 w-4" />
                   </button>
                 </div>
+
               </div>
 
               {post.image_url && (
