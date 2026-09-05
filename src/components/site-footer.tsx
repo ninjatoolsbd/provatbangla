@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Tv, Youtube } from "lucide-react";
 
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/lib/logo";
