@@ -15,6 +15,35 @@ import { getRelatedPosts } from "@/lib/related-posts.functions";
 import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 import { summarize } from "@/lib/post-utils";
+import { toast } from "sonner";
+
+async function shareTo(target: "facebook" | "twitter" | "whatsapp" | "native", title: string) {
+  if (typeof window === "undefined") return;
+  const url = window.location.href;
+  if (target === "facebook") {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank", "noopener,width=640,height=640");
+    return;
+  }
+  if (target === "twitter") {
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, "_blank", "noopener,width=640,height=640");
+    return;
+  }
+  if (target === "whatsapp") {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${title} ${url}`)}`, "_blank", "noopener");
+    return;
+  }
+  try {
+    if (navigator.share) {
+      await navigator.share({ title, url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    toast.success("লিঙ্ক কপি করা হয়েছে");
+  } catch {
+    /* user cancelled */
+  }
+}
+
 
 type PostSearch = {
   preview?: boolean;
@@ -210,19 +239,40 @@ function PostPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="ফেসবুকে শেয়ার"
+                    onClick={() => shareTo("facebook", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90"
+                  >
                     <Facebook className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="হোয়াটসঅ্যাপে শেয়ার"
+                    onClick={() => shareTo("whatsapp", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white hover:opacity-90"
+                  >
                     <MessageCircle className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1DA1F2] text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="টুইটারে শেয়ার"
+                    onClick={() => shareTo("twitter", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1DA1F2] text-white hover:opacity-90"
+                  >
                     <Twitter className="h-4 w-4" />
                   </button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-white hover:opacity-90">
+                  <button
+                    type="button"
+                    aria-label="লিঙ্ক শেয়ার করুন"
+                    onClick={() => shareTo("native", post.title)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-500 text-white hover:opacity-90"
+                  >
                     <Share2 className="h-4 w-4" />
                   </button>
                 </div>
+
               </div>
 
               {post.image_url && (
