@@ -20,10 +20,10 @@ const CHANNELS: Channel[] = [
     src: "https://www.btvlive.gov.bd/channel/BTV-News?autoplay=1&mute=1",
     crop: true,
   },
-  { name: "এনটিভি", color: "#006600", kind: "youtube", src: "WAH0A6-f258", ytId: "WAH0A6-f258" },
-  { name: "চ্যানেল ২৪", color: "#CC0000", kind: "youtube", src: "hjQluVY6EzQ", ytId: "hjQluVY6EzQ" },
+  { name: "এনটিভি", color: "#006600", kind: "youtube", src: "TIYqx_KVEpY", ytId: "TIYqx_KVEpY" },
+  { name: "চ্যানেল ২৪", color: "#CC0000", kind: "youtube", src: "LVPgC7LQOw0", ytId: "LVPgC7LQOw0" },
   { name: "আরটিভি লাইভ", color: "#003399", kind: "youtube", src: "PtztZQi5hCg", ytId: "PtztZQi5hCg" },
-  { name: "৭১ টিভি", color: "#333333", kind: "youtube", src: "9L9ymmaPIS0", ytId: "9L9ymmaPIS0" },
+  { name: "৭১ টিভি", color: "#333333", kind: "youtube", src: "s6XjS4u-0ZA", ytId: "s6XjS4u-0ZA" },
   {
     name: "সানন্দা টিভি",
     color: "#660066",
