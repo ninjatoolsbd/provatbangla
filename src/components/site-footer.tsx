@@ -137,10 +137,17 @@ export function SiteFooter() {
                   </li>
                 ))}
                 <li>
+                  <Link to="/live-tv" className="inline-flex items-center gap-1.5 transition-colors hover:text-ink-foreground">
+                    <Tv className="h-3.5 w-3.5 text-primary" />
+                    লাইভ টিভি
+                  </Link>
+                </li>
+                <li>
                   <Link to="/epaper" className="transition-colors hover:text-ink-foreground">
                     ই-পেপার
                   </Link>
                 </li>
+
               </ul>
               <Link
                 to="/epaper"
