@@ -26,7 +26,8 @@ export const listUsers = createServerFn({ method: "POST" })
   .middleware([requireCloudAuth])
   .handler(async ({ context }): Promise<ManagedUser[]> => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getAdminCloudClient } = await import("@/lib/admin-cloud-client.server");
+    const supabaseAdmin = getAdminCloudClient();
 
     const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 });
     if (error) throw new Error(error.message);
@@ -69,7 +70,8 @@ export const createUserAccount = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getAdminCloudClient } = await import("@/lib/admin-cloud-client.server");
+    const supabaseAdmin = getAdminCloudClient();
 
     const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
@@ -100,7 +102,8 @@ export const setUserRole = createServerFn({ method: "POST" })
     if (data.userId === context.userId && data.role !== "admin") {
       throw new Error("নিজের অ্যাডমিন অনুমতি সরানো যাবে না।");
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getAdminCloudClient } = await import("@/lib/admin-cloud-client.server");
+    const supabaseAdmin = getAdminCloudClient();
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId);
     const { error } = await supabaseAdmin
       .from("user_roles")
@@ -115,7 +118,8 @@ export const deleteUserAccount = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     if (data.userId === context.userId) throw new Error("নিজের অ্যাকাউন্ট মুছে ফেলা যাবে না।");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getAdminCloudClient } = await import("@/lib/admin-cloud-client.server");
+    const supabaseAdmin = getAdminCloudClient();
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
