@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
+import { ADMIN_CLOUD_FALLBACK } from "@/lib/admin-cloud-fallback.server";
 import type { Database } from "@/integrations/supabase/types";
 
 function createAdminFetch(key: string): typeof fetch {
