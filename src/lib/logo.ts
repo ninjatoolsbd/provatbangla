@@ -1,6 +1,5 @@
-import logoAsset from "@/assets/provat-bangla-logo.jpg.asset.json";
-
+// Keep the primary brand mark on the app's own origin so it also works on
+// custom domains that do not proxy Lovable's CDN asset route.
 export default {
-  ...logoAsset,
-  url: `${logoAsset.url}?v=5`,
+  url: "/logo.jpg?v=6",
 };
