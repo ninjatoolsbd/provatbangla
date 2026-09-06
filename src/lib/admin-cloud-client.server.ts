@@ -22,10 +22,12 @@ export function getAdminCloudClient() {
   const url =
     process.env["SUPABASE_URL"] ??
     process.env["MY_SUPABASE_URL"] ??
-    publicEnv["VITE_SUPABASE_URL"];
+    publicEnv["VITE_SUPABASE_URL"] ??
+    ADMIN_CLOUD_FALLBACK.SUPABASE_URL;
   const key =
     process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
-    process.env["MY_SUPABASE_SERVICE_ROLE_KEY"];
+    process.env["MY_SUPABASE_SERVICE_ROLE_KEY"] ??
+    ADMIN_CLOUD_FALLBACK.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
     throw new Error("ইউজার ব্যবস্থাপনার Cloud সংযোগ পাওয়া যায়নি। সাইটটি নতুন করে প্রকাশ করুন।");
