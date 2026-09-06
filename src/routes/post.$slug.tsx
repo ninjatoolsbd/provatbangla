@@ -16,6 +16,7 @@ import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 import { summarize } from "@/lib/post-utils";
 import { toast } from "sonner";
+import logoAsset from "@/lib/logo";
 
 async function shareTo(target: "facebook" | "twitter" | "whatsapp" | "native", title: string) {
   if (typeof window === "undefined") return;
@@ -276,12 +277,18 @@ function PostPage() {
               </div>
 
               {post.image_url && (
-                <div className="mb-5">
+                <div className="relative mb-5 overflow-hidden">
                   <NewsImage
                     src={post.image_url}
                     alt={post.title}
                     className="aspect-[16/9] w-full object-cover"
                     loading="eager"
+                  />
+                  <img
+                    src={logoAsset.url}
+                    alt=""
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-3 right-3 h-auto w-[20%] max-w-[150px] bg-background/85 p-1.5 opacity-90 shadow-sm sm:bottom-4 sm:right-4"
                   />
                   {(post as any).image_caption && (
                     <p className="mt-2 text-sm text-muted-foreground italic border-b border-slate-100 pb-2">

@@ -16,6 +16,7 @@ import {
 } from "@/lib/cms";
 import { uploadMedia } from "@/lib/media.functions";
 import { categories } from "@/lib/news-data";
+import logoAsset from "@/lib/logo";
 
 export const Route = createFileRoute("/admin/automation")({
   head: () => ({
@@ -232,9 +233,9 @@ function AutomationPage() {
         <div className="space-y-3">
           <h2 className="font-display text-base font-bold">ওয়াটারমার্ক লোগো</h2>
           <div className="flex items-center gap-3">
-            {cfg["watermark_logo_url"] ? (
+            {(cfg["watermark_logo_url"] || logoAsset.url) ? (
               <img
-                src={cfg["watermark_logo_url"]}
+                src={cfg["watermark_logo_url"] || logoAsset.url}
                 alt="ওয়াটারমার্ক লোগো"
                 className="h-12 w-auto border border-border bg-muted object-contain p-1"
               />
