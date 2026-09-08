@@ -166,15 +166,27 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
 
-  // Reloads should begin at the top instead of a restored mid-page offset.
+  // Reloads should begin at the top instead of a restored mid-page offset,
+  // and every in-app navigation should also land at the top of the new page.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
-  }, []);
+
+    let lastPath = window.location.pathname + window.location.search;
+    const unsubscribe = router.subscribe("onResolved", () => {
+      const next = window.location.pathname + window.location.search;
+      if (next !== lastPath) {
+        lastPath = next;
+        window.scrollTo(0, 0);
+      }
+    });
+    return unsubscribe;
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
