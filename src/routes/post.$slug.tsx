@@ -155,9 +155,27 @@ function PostPage() {
     },
   });
 
+  // Prefer same-category items, but top up with site-wide news so small
+  // categories never leave the sidebar nearly empty.
+  const buildSidebar = async (sort: "latest" | "popular") => {
+    const [inCategory, siteWide] = await Promise.all([
+      fetchPublishedPosts(10, post.category, sort),
+      fetchPublishedPosts(10, undefined, sort),
+    ]);
+    const seen = new Set<string>([post.id]);
+    const out: typeof inCategory = [];
+    for (const p of [...inCategory, ...siteWide]) {
+      if (seen.has(p.id)) continue;
+      seen.add(p.id);
+      out.push(p);
+      if (out.length >= 10) break;
+    }
+    return out;
+  };
+
   const { data: latestPosts = [] } = useQuery({
-    queryKey: ["post-sidebar-latest", post.category],
-    queryFn: () => fetchPublishedPosts(10, post.category),
+    queryKey: ["post-sidebar-latest", post.id, post.category],
+    queryFn: () => buildSidebar("latest"),
     staleTime: 30_000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
@@ -165,13 +183,20 @@ function PostPage() {
   });
 
   const { data: popularPosts = [] } = useQuery({
-    queryKey: ["post-sidebar-popular", post.category],
-    queryFn: () => fetchPublishedPosts(10, post.category, "popular"),
+    queryKey: ["post-sidebar-popular", post.id, post.category],
+    queryFn: () => buildSidebar("popular"),
     staleTime: 30_000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
     refetchInterval: 60_000,
   });
+
+  const { data: siteSettings } = useQuery({
+    queryKey: ["site-settings-watermark"],
+    queryFn: fetchSettings,
+    staleTime: 5 * 60_000,
+  });
+  const watermarkUrl = siteSettings?.["watermark_logo_url"] || logoAsset.url;
 
   const sidebarPosts = activeTab === "latest" ? latestPosts : popularPosts;
 
