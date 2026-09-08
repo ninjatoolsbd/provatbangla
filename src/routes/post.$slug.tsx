@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { summarize } from "@/lib/post-utils";
 import { toast } from "sonner";
 import logoAsset from "@/lib/logo";
+import { fetchSettings } from "@/lib/cms";
 
 async function shareTo(target: "facebook" | "twitter" | "whatsapp" | "native", title: string) {
   if (typeof window === "undefined") return;
@@ -310,7 +311,7 @@ function PostPage() {
                     loading="eager"
                   />
                   <img
-                    src={logoAsset.url}
+                    src={watermarkUrl}
                     alt=""
                     aria-hidden="true"
                     className="pointer-events-none absolute bottom-3 right-3 h-auto w-[20%] max-w-[150px] bg-background/85 p-1.5 opacity-90 shadow-sm sm:bottom-4 sm:right-4"
