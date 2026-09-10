@@ -117,6 +117,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
+        // Must run before anything renders: stop the browser from restoring a
+        // stale mid-page scroll offset on reload / first visit.
+        children: `
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+          window.scrollTo(0, 0);
+        `,
+      },
+      {
         children: `
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -177,6 +185,21 @@ function RootComponent() {
     }
     window.scrollTo(0, 0);
 
+    // Sections stream in asynchronously after hydration; a restored scroll
+    // offset applied before they render lands the user mid-page. Keep the
+    // page pinned to the top until the full load completes.
+    const pinToTop = () => window.scrollTo(0, 0);
+    if (document.readyState !== "complete") {
+      window.addEventListener("load", pinToTop);
+    }
+    const pinInterval = window.setInterval(() => {
+      if (document.readyState === "complete") {
+        window.clearInterval(pinInterval);
+        return;
+      }
+      window.scrollTo(0, 0);
+    }, 150);
+
     let lastPath = window.location.pathname + window.location.search;
     const unsubscribe = router.subscribe("onResolved", () => {
       const next = window.location.pathname + window.location.search;
@@ -185,7 +208,11 @@ function RootComponent() {
         window.scrollTo(0, 0);
       }
     });
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      window.removeEventListener("load", pinToTop);
+      window.clearInterval(pinInterval);
+    };
   }, [router]);
 
   return (
