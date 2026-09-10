@@ -37,7 +37,7 @@ async function fetchFilteredPosts(limit = 20, category?: string) {
 
 export function LatestPosts({ category }: { category?: string }) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
-  const { data = [] } = useQuery({
+  const { data = [], isLoading } = useQuery({
     queryKey: ["sorboshesh-hero-posts", category ?? "all"],
     queryFn: () => fetchFilteredPosts(20, category),
   });
