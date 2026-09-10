@@ -50,6 +50,38 @@ export function LatestPosts({ category }: { category?: string }) {
     }
   };
 
+  // Reserve the hero's space while it loads so sections below never
+  // paint first and get pushed down when the hero arrives.
+  if ((!data || data.length === 0) && isLoading && !category) {
+    return (
+      <section className="mb-12" aria-hidden="true">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+          <div className="md:col-span-2 lg:col-span-8">
+            <div className="aspect-[16/9] w-full animate-pulse rounded-md bg-muted/30" />
+            <div className="space-y-3 p-6 lg:p-8">
+              <div className="h-7 w-3/4 animate-pulse rounded bg-muted/30" />
+              <div className="h-4 w-1/3 animate-pulse rounded bg-muted/20" />
+              <div className="h-4 w-full animate-pulse rounded bg-muted/20" />
+              <div className="h-4 w-2/3 animate-pulse rounded bg-muted/20" />
+            </div>
+          </div>
+          <div className="hidden space-y-5 rounded-md border border-slate-100 p-4 lg:col-span-4 lg:block">
+            <div className="h-6 w-32 animate-pulse rounded bg-muted/30" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-3">
+                <div className="aspect-square w-20 shrink-0 animate-pulse rounded-sm bg-muted/30" />
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-4 w-full animate-pulse rounded bg-muted/30" />
+                  <div className="h-3 w-1/2 animate-pulse rounded bg-muted/20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   if (!data || data.length === 0) return null;
 
   // For category-specific view, use a simpler grid
