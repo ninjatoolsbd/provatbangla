@@ -117,6 +117,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
+        // Must run before anything renders: stop the browser from restoring a
+        // stale mid-page scroll offset on reload / first visit.
+        children: `
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+          window.scrollTo(0, 0);
+        `,
+      },
+      {
         children: `
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
