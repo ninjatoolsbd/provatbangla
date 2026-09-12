@@ -31,6 +31,7 @@ import { Route as AdminEpaperRouteImport } from './routes/admin/epaper'
 import { Route as AdminImportRouteImport } from './routes/admin/import'
 import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
+import { Route as AdminPhotocardRouteImport } from './routes/admin/photocard'
 import { Route as AdminPollsRouteImport } from './routes/admin/polls'
 import { Route as AdminPostsRouteImport } from './routes/admin/posts'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
@@ -157,6 +158,11 @@ const AdminMessagesRoute = AdminMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPhotocardRoute = AdminPhotocardRouteImport.update({
+  id: '/photocard',
+  path: '/photocard',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPollsRoute = AdminPollsRouteImport.update({
   id: '/polls',
   path: '/polls',
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocard': typeof AdminPhotocardRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -293,6 +300,7 @@ export interface FileRoutesByTo {
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocard': typeof AdminPhotocardRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/admin/import': typeof AdminImportRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/photocard': typeof AdminPhotocardRoute
   '/admin/polls': typeof AdminPollsRoute
   '/admin/posts': typeof AdminPostsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -374,6 +383,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocard'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -412,6 +422,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocard'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -451,6 +462,7 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/media'
     | '/admin/messages'
+    | '/admin/photocard'
     | '/admin/polls'
     | '/admin/posts'
     | '/admin/profile'
@@ -648,6 +660,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/photocard': {
+      id: '/admin/photocard'
+      path: '/photocard'
+      fullPath: '/admin/photocard'
+      preLoaderRoute: typeof AdminPhotocardRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/polls': {
       id: '/admin/polls'
       path: '/polls'
@@ -766,6 +785,7 @@ interface AdminRouteChildren {
   AdminImportRoute: typeof AdminImportRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminPhotocardRoute: typeof AdminPhotocardRoute
   AdminPollsRoute: typeof AdminPollsRoute
   AdminPostsRoute: typeof AdminPostsRoute
   AdminProfileRoute: typeof AdminProfileRoute
@@ -786,6 +806,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImportRoute: AdminImportRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminMessagesRoute: AdminMessagesRoute,
+  AdminPhotocardRoute: AdminPhotocardRoute,
   AdminPollsRoute: AdminPollsRoute,
   AdminPostsRoute: AdminPostsRoute,
   AdminProfileRoute: AdminProfileRoute,
