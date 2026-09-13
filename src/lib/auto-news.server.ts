@@ -245,12 +245,18 @@ export async function runAutoSync(
         await admin.from("auto_items").delete().eq("id", existing.id);
       }
 
-      processed += 1;
       try {
         const article = await fetchArticle(item.url);
         const title = article.title || item.title;
         const body = article.body;
-        if (!title || body.length < 120) throw new Error("যথেষ্ট কনটেন্ট পাওয়া যায়নি");
+        // সেকশন/ক্যাটাগরি পেজ (আসল খবর নয়) বাদ দেওয়া হয়
+        const looksLikeSection =
+          /breaking news|latest news and videos|latest news, photos|news, videos|- cnn$|home page|category|archive/i.test(
+            title,
+          );
+        if (!title || looksLikeSection || body.length < 700) continue;
+
+        processed += 1;
 
         const sourceLang = detectLang(`${title} ${body.slice(0, 1000)}`);
         const news = await rewrite(
