@@ -4,9 +4,24 @@
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { generateTextWithFallback } from "@/lib/ai-providers.server";
-import { processSourceImage } from "@/lib/news-media.server";
+import { SITE_NAME, sanitizeBrand, similarityRatio } from "@/lib/brand-sanitize";
+import { processSourceImageDetailed } from "@/lib/news-media.server";
 import { slugify } from "@/lib/post-utils";
 import { discoverLatest, fetchArticle, sourceHost } from "@/lib/source-fetch.server";
+
+/** সাইটে ব্যবহৃত বৈধ ক্যাটাগরি স্লাগ। */
+const CATEGORIES = [
+  "opradh", "antorjatik", "bangladesh", "shikkha", "chakri", "projukti", "khela", "binodon",
+  "shilpo-sahitto", "jibonjapon", "cholonbil", "video", "health", "probas", "orthoniti",
+  "ain-adalat", "motamot", "bishesh-protibedon", "photo-gallery", "onnanno",
+] as const;
+
+/** ইংরেজি সোর্স কিনা লেখা দেখে বুঝে নেয় (auto_sources-এ lang কলাম নেই)। */
+function detectLang(text: string): "bn" | "en" {
+  const bangla = (text.match(/[\u0980-\u09FF]/g) ?? []).length;
+  const latin = (text.match(/[A-Za-z]/g) ?? []).length;
+  return bangla > latin * 0.2 ? "bn" : "en";
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const admin = supabaseAdmin as any;
@@ -56,10 +71,12 @@ type Rewritten = {
   category: string;
 };
 
-async function rewrite(
+async function rewriteOnce(
   article: { title: string; body: string },
   fallbackCategory: string,
   sourceLang = "bn",
+  strict = false,
+  extraNames: string[] = [],
 ) {
   const isEnglish = sourceLang === "en";
   const system =
@@ -73,6 +90,11 @@ async function rewrite(
     "- তথ্য অপরিবর্তিত রাখবে, কোনো তথ্য বাদ দেবে না এবং নতুন কোনো তথ্য বা উদ্ধৃতি বানাবে না।",
     "- নিউজটি যথেষ্ট দীর্ঘ (কমপক্ষে ৩০০-৪০০ শব্দ) এবং সাবলীল হতে হবে।",
     "- বাক্য গঠন সম্পূর্ণ ভিন্ন হবে, হুবহু কপি নয়। পেশাদার সাংবাদিকতার ভাষা ব্যবহার করো।",
+    strict
+      ? "- আগের চেষ্টাটি মূল লেখার খুব কাছাকাছি হয়েছে। এবার প্রতিটি বাক্য নতুন করে সাজাও, অনুচ্ছেদের ক্রমও বদলাও; একটি বাক্যও হুবহু রাখা যাবে না।"
+      : "",
+    `- অন্য কোনো সংবাদমাধ্যম, ওয়েবসাইট, প্রতিবেদক বা সংবাদদাতার নাম লিখবে না। প্রয়োজনে শুধু "${SITE_NAME}" লিখবে।`,
+    "- 'সূত্র:', 'নিজস্ব প্রতিবেদক', 'স্টাফ রিপোর্টার' জাতীয় কোনো বাইলাইন বা ক্রেডিট লাইন থাকবে না।",
     "- অনুচ্ছেদগুলো আসল ফাঁকা লাইন দিয়ে আলাদা করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
     "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
@@ -114,15 +136,44 @@ async function rewrite(
     parsed.content = plain;
   }
   if (!parsed.title) parsed.title = article.title;
+
+  const allowed = CATEGORIES as readonly string[];
+  const aiCategory = allowed.includes(parsed.category ?? "") ? (parsed.category as string) : "";
+  const forced =
+    fallbackCategory && fallbackCategory !== "auto" && allowed.includes(fallbackCategory)
+      ? fallbackCategory
+      : "";
+  const clean = (value: string) => sanitizeBrand(value, extraNames);
+
   return {
-    title: parsed.title,
-    
-    excerpt: parsed.excerpt ?? parsed.content.slice(0, 160),
-    content: parsed.content,
-    seo_title: parsed.seo_title ?? "",
-    seo_description: parsed.seo_description ?? "",
-    category: (fallbackCategory && fallbackCategory !== "bangladesh") ? fallbackCategory : (parsed.category || fallbackCategory),
+    title: clean(parsed.title),
+    excerpt: clean(parsed.excerpt || parsed.content.slice(0, 160)),
+    content: clean(parsed.content),
+    seo_title: clean(parsed.seo_title ?? ""),
+    seo_description: clean(parsed.seo_description ?? ""),
+    // সোর্সে নির্দিষ্ট ক্যাটাগরি না থাকলে AI-ই ক্যাটাগরি বেছে নেয়
+    category: forced || aiCategory || "bangladesh",
   } satisfies Rewritten;
+}
+
+/** রিরাইট করে, মূল লেখার সঙ্গে বেশি মিল থাকলে আরেকবার কঠোরভাবে রিরাইট করে। */
+async function rewrite(
+  article: { title: string; body: string },
+  fallbackCategory: string,
+  sourceLang = "bn",
+  extraNames: string[] = [],
+) {
+  let news = await rewriteOnce(article, fallbackCategory, sourceLang, false, extraNames);
+  if (sourceLang === "bn" && similarityRatio(article.body, news.content) > 0.2) {
+    const retry = await rewriteOnce(article, fallbackCategory, sourceLang, true, extraNames).catch(
+      () => null,
+    );
+    if (retry) news = retry;
+  }
+  if (sourceLang === "bn" && similarityRatio(article.body, news.content) > 0.45) {
+    throw new Error("রিরাইট মূল লেখার সঙ্গে প্রায় হুবহু মিলে যাচ্ছে");
+  }
+  return news;
 }
 
 /** এক রাউন্ড অটো-সিঙ্ক চালায়। dryRun হলে কিছুই সেভ হয় না, শুধু প্রিভিউ ফেরত আসে। */
@@ -148,9 +199,12 @@ export async function runAutoSync(
   const { data: sources } = await query;
 
   const publishStatus = cfg["auto_mode"] === "publish" ? "published" : "draft";
-  const withCredit = cfg["auto_credit"] !== "false";
   const aiImage = cfg["auto_image_ai"] !== "false";
-  const logoUrl = cfg["watermark_logo_url"] || undefined;
+  const logoUrl = cfg["watermark_logo_url"] || "/logo.jpg";
+  const allSourceNames = ((sources ?? []) as { name: string; site_url: string }[]).flatMap((s) => [
+    s.name,
+    sourceHost(s.site_url),
+  ]);
 
   for (const source of (sources ?? []) as {
     id: string;
@@ -158,9 +212,8 @@ export async function runAutoSync(
     site_url: string;
     category: string;
     per_run: number;
-    lang?: string;
   }[]) {
-    const sourceLang = source.lang || "bn";
+    const brandNames = [...allSourceNames, source.name, sourceHost(source.site_url)];
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
@@ -192,27 +245,43 @@ export async function runAutoSync(
         await admin.from("auto_items").delete().eq("id", existing.id);
       }
 
-      processed += 1;
       try {
         const article = await fetchArticle(item.url);
         const title = article.title || item.title;
         const body = article.body;
-        if (!title || body.length < 120) throw new Error("যথেষ্ট কনটেন্ট পাওয়া যায়নি");
+        // সেকশন/ক্যাটাগরি পেজ (আসল খবর নয়) বাদ দেওয়া হয়
+        const looksLikeSection =
+          /breaking news|latest news and videos|latest news, photos|news, videos|- cnn$|home page|category|archive/i.test(
+            title,
+          );
+        if (!title || looksLikeSection || body.length < 700) continue;
 
+        processed += 1;
+
+        const sourceLang = detectLang(`${title} ${body.slice(0, 1000)}`);
         const news = await rewrite(
           { title, body },
-          source.category && source.category !== "auto" ? source.category : "bangladesh",
+          source.category || "auto",
           sourceLang,
+          brandNames,
         );
 
         const sourceImage = article.image ?? item.image ?? null;
-        const imageUrl = sourceImage
-          ? await processSourceImage({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
-          : null;
+        const media = sourceImage
+          ? await processSourceImageDetailed({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
+          : { url: null, watermarked: false };
+        const imageUrl = media.url;
+        if (sourceImage && !media.watermarked) {
+          result.details.push({
+            title: news.title,
+            status: "watermark-missing",
+            message: "ছবিতে লোগো ওয়াটারমার্ক বসানো যায়নি",
+          });
+        }
 
-        const credit = withCredit
-          ? `\n\nসূত্র: ${source.name} (${sourceHost(source.site_url)})`
-          : "";
+        // অন্য মাধ্যমের ক্রেডিট/নাম রাখা হয় না — সব প্রভাত বাংলার নামে
+        const credit = "";
+
 
         if (dryRun) {
           result.previews?.push({
@@ -308,18 +377,21 @@ export async function publishPreview(
     .maybeSingle();
   if (existing) return { status: "skipped" as const };
 
+  const names = [preview.sourceName, sourceHost(preview.sourceUrl)];
+  const clean = (value: string) => sanitizeBrand(value, names);
+
   const { data: inserted, error } = await admin
     .from("posts")
     .insert({
-      title: preview.title,
-      slug: slugify(preview.title),
-      
+      title: clean(preview.title),
+      slug: slugify(clean(preview.title)),
+
       category: preview.category,
       image_url: preview.imageUrl,
-      excerpt: preview.excerpt,
-      content: preview.content,
-      seo_title: preview.seo_title || null,
-      seo_description: preview.seo_description || null,
+      excerpt: clean(preview.excerpt),
+      content: clean(preview.content),
+      seo_title: clean(preview.seo_title) || null,
+      seo_description: clean(preview.seo_description) || null,
       status,
       published_at: status === "published" ? new Date().toISOString() : null,
     })

@@ -18,6 +18,20 @@ function base64ToBytes(b64: string) {
   return bytes;
 }
 
+/** আপেক্ষিক অ্যাসেট URL-কে সাইটের অরিজিনসহ পূর্ণ URL বানায়। */
+export async function resolveAssetUrl(url: string): Promise<string> {
+  if (!url || url.startsWith("http") || url.startsWith("/api/public/r2/")) return url;
+  let origin = "https://provatbanglanews.com";
+  try {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const request = getRequest();
+    if (request?.url) origin = new URL(request.url).origin;
+  } catch {
+    /* cron/worker context — default origin */
+  }
+  return new URL(url, origin).href;
+}
+
 async function fetchBytes(url: string): Promise<{ bytes: Uint8Array; type: string } | null> {
   try {
     if (url.startsWith("/api/public/r2/")) {
@@ -94,16 +108,40 @@ export async function processSourceImage(opts: {
   logoUrl?: string | undefined;
   aiModify: boolean;
 }): Promise<string | null> {
+  return (await processSourceImageDetailed(opts)).url;
+}
+
+/** একই কাজ, তবে ওয়াটারমার্ক বসেছে কিনা সেটাও জানায়। */
+export async function processSourceImageDetailed(opts: {
+  imageUrl: string;
+  logoUrl?: string | undefined;
+  aiModify: boolean;
+}): Promise<{ url: string | null; watermarked: boolean }> {
   const source = await fetchBytes(opts.imageUrl);
-  if (!source) return null;
+  if (!source) return { url: null, watermarked: false };
 
   const mimeType = source.type.startsWith("image/") ? source.type : "image/jpeg";
   let finalBytes: Uint8Array | null = null;
   let finalType = mimeType;
 
-  // লোগো থাকলে সেটা ওয়াটারমার্ক হিসেবে বসানো হবে
-  const logo = opts.logoUrl ? await fetchBytes(opts.logoUrl) : null;
+  // লোগো থাকলে সেটা ওয়াটারমার্ক হিসেবে বসানো হবে (আপেক্ষিক URL হলে অরিজিনসহ ঠিক করা হয়)
+  const logoCandidates = [opts.logoUrl, "/logo.jpg"].filter(Boolean) as string[];
+  let logo: { bytes: Uint8Array; type: string } | null = null;
+  for (const candidate of logoCandidates) {
+    logo = await fetchBytes(await resolveAssetUrl(candidate));
+    if (logo) break;
+  }
   if (logo) {
+    // ১ম চেষ্টা: WASM দিয়ে সরাসরি লোগো বসানো (কোটামুক্ত, নির্ভরযোগ্য)
+    const { stampWatermark } = await import("./watermark.server");
+    const stamped = await stampWatermark(source.bytes, logo.bytes);
+    if (stamped) {
+      finalBytes = stamped.bytes;
+      finalType = stamped.type;
+    }
+  }
+
+  if (logo && !finalBytes) {
     const parts: GeminiParts = [
       {
         text: `Apply the second image (logo) as a watermark to the first image (base photo).
@@ -122,16 +160,20 @@ export async function processSourceImage(opts: {
         },
       },
     ];
-    const edited = await geminiEdit(parts);
+    // একবার ব্যর্থ হলে আরেকবার চেষ্টা করা হয়
+    let edited = await geminiEdit(parts);
+    if (!edited) edited = await geminiEdit(parts);
     if (edited) {
       finalBytes = edited;
       finalType = "image/png";
     }
   }
 
+  const watermarked = finalBytes !== null;
   if (!finalBytes) finalBytes = source.bytes;
 
   const ext = finalType.includes("png") ? "png" : finalType.includes("webp") ? "webp" : "jpg";
   const key = `auto-news/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  return uploadToR2(key, finalBytes, finalType);
+  const url = await uploadToR2(key, finalBytes, finalType);
+  return { url, watermarked };
 }
