@@ -136,15 +136,44 @@ async function rewriteOnce(
     parsed.content = plain;
   }
   if (!parsed.title) parsed.title = article.title;
+
+  const allowed = CATEGORIES as readonly string[];
+  const aiCategory = allowed.includes(parsed.category ?? "") ? (parsed.category as string) : "";
+  const forced =
+    fallbackCategory && fallbackCategory !== "auto" && allowed.includes(fallbackCategory)
+      ? fallbackCategory
+      : "";
+  const clean = (value: string) => sanitizeBrand(value, extraNames);
+
   return {
-    title: parsed.title,
-    
-    excerpt: parsed.excerpt ?? parsed.content.slice(0, 160),
-    content: parsed.content,
-    seo_title: parsed.seo_title ?? "",
-    seo_description: parsed.seo_description ?? "",
-    category: (fallbackCategory && fallbackCategory !== "bangladesh") ? fallbackCategory : (parsed.category || fallbackCategory),
+    title: clean(parsed.title),
+    excerpt: clean(parsed.excerpt || parsed.content.slice(0, 160)),
+    content: clean(parsed.content),
+    seo_title: clean(parsed.seo_title ?? ""),
+    seo_description: clean(parsed.seo_description ?? ""),
+    // সোর্সে নির্দিষ্ট ক্যাটাগরি না থাকলে AI-ই ক্যাটাগরি বেছে নেয়
+    category: forced || aiCategory || "bangladesh",
   } satisfies Rewritten;
+}
+
+/** রিরাইট করে, মূল লেখার সঙ্গে বেশি মিল থাকলে আরেকবার কঠোরভাবে রিরাইট করে। */
+async function rewrite(
+  article: { title: string; body: string },
+  fallbackCategory: string,
+  sourceLang = "bn",
+  extraNames: string[] = [],
+) {
+  let news = await rewriteOnce(article, fallbackCategory, sourceLang, false, extraNames);
+  if (sourceLang === "bn" && similarityRatio(article.body, news.content) > 0.2) {
+    const retry = await rewriteOnce(article, fallbackCategory, sourceLang, true, extraNames).catch(
+      () => null,
+    );
+    if (retry) news = retry;
+  }
+  if (sourceLang === "bn" && similarityRatio(article.body, news.content) > 0.45) {
+    throw new Error("রিরাইট মূল লেখার সঙ্গে প্রায় হুবহু মিলে যাচ্ছে");
+  }
+  return news;
 }
 
 /** এক রাউন্ড অটো-সিঙ্ক চালায়। dryRun হলে কিছুই সেভ হয় না, শুধু প্রিভিউ ফেরত আসে। */
