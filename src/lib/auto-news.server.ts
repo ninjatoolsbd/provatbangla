@@ -71,10 +71,12 @@ type Rewritten = {
   category: string;
 };
 
-async function rewrite(
+async function rewriteOnce(
   article: { title: string; body: string },
   fallbackCategory: string,
   sourceLang = "bn",
+  strict = false,
+  extraNames: string[] = [],
 ) {
   const isEnglish = sourceLang === "en";
   const system =
