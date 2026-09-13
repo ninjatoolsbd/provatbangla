@@ -132,6 +132,16 @@ export async function processSourceImageDetailed(opts: {
     if (logo) break;
   }
   if (logo) {
+    // ১ম চেষ্টা: WASM দিয়ে সরাসরি লোগো বসানো (কোটামুক্ত, নির্ভরযোগ্য)
+    const { stampWatermark } = await import("./watermark.server");
+    const stamped = await stampWatermark(source.bytes, logo.bytes);
+    if (stamped) {
+      finalBytes = stamped.bytes;
+      finalType = stamped.type;
+    }
+  }
+
+  if (logo && !finalBytes) {
     const parts: GeminiParts = [
       {
         text: `Apply the second image (logo) as a watermark to the first image (base photo).
