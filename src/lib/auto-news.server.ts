@@ -199,9 +199,12 @@ export async function runAutoSync(
   const { data: sources } = await query;
 
   const publishStatus = cfg["auto_mode"] === "publish" ? "published" : "draft";
-  const withCredit = cfg["auto_credit"] !== "false";
   const aiImage = cfg["auto_image_ai"] !== "false";
-  const logoUrl = cfg["watermark_logo_url"] || undefined;
+  const logoUrl = cfg["watermark_logo_url"] || "/logo.jpg";
+  const allSourceNames = ((sources ?? []) as { name: string; site_url: string }[]).flatMap((s) => [
+    s.name,
+    sourceHost(s.site_url),
+  ]);
 
   for (const source of (sources ?? []) as {
     id: string;
@@ -209,9 +212,8 @@ export async function runAutoSync(
     site_url: string;
     category: string;
     per_run: number;
-    lang?: string;
   }[]) {
-    const sourceLang = source.lang || "bn";
+    const brandNames = [...allSourceNames, source.name, sourceHost(source.site_url)];
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
