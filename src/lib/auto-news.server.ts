@@ -371,18 +371,21 @@ export async function publishPreview(
     .maybeSingle();
   if (existing) return { status: "skipped" as const };
 
+  const names = [preview.sourceName, sourceHost(preview.sourceUrl)];
+  const clean = (value: string) => sanitizeBrand(value, names);
+
   const { data: inserted, error } = await admin
     .from("posts")
     .insert({
-      title: preview.title,
-      slug: slugify(preview.title),
-      
+      title: clean(preview.title),
+      slug: slugify(clean(preview.title)),
+
       category: preview.category,
       image_url: preview.imageUrl,
-      excerpt: preview.excerpt,
-      content: preview.content,
-      seo_title: preview.seo_title || null,
-      seo_description: preview.seo_description || null,
+      excerpt: clean(preview.excerpt),
+      content: clean(preview.content),
+      seo_title: clean(preview.seo_title) || null,
+      seo_description: clean(preview.seo_description) || null,
       status,
       published_at: status === "published" ? new Date().toISOString() : null,
     })
