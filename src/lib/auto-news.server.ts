@@ -252,20 +252,30 @@ export async function runAutoSync(
         const body = article.body;
         if (!title || body.length < 120) throw new Error("যথেষ্ট কনটেন্ট পাওয়া যায়নি");
 
+        const sourceLang = detectLang(`${title} ${body.slice(0, 1000)}`);
         const news = await rewrite(
           { title, body },
-          source.category && source.category !== "auto" ? source.category : "bangladesh",
+          source.category || "auto",
           sourceLang,
+          brandNames,
         );
 
         const sourceImage = article.image ?? item.image ?? null;
-        const imageUrl = sourceImage
-          ? await processSourceImage({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
-          : null;
+        const media = sourceImage
+          ? await processSourceImageDetailed({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
+          : { url: null, watermarked: false };
+        const imageUrl = media.url;
+        if (sourceImage && !media.watermarked) {
+          result.details.push({
+            title: news.title,
+            status: "watermark-missing",
+            message: "ছবিতে লোগো ওয়াটারমার্ক বসানো যায়নি",
+          });
+        }
 
-        const credit = withCredit
-          ? `\n\nসূত্র: ${source.name} (${sourceHost(source.site_url)})`
-          : "";
+        // অন্য মাধ্যমের ক্রেডিট/নাম রাখা হয় না — সব প্রভাত বাংলার নামে
+        const credit = "";
+
 
         if (dryRun) {
           result.previews?.push({
