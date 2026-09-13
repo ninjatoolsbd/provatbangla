@@ -150,16 +150,20 @@ export async function processSourceImageDetailed(opts: {
         },
       },
     ];
-    const edited = await geminiEdit(parts);
+    // একবার ব্যর্থ হলে আরেকবার চেষ্টা করা হয়
+    let edited = await geminiEdit(parts);
+    if (!edited) edited = await geminiEdit(parts);
     if (edited) {
       finalBytes = edited;
       finalType = "image/png";
     }
   }
 
+  const watermarked = finalBytes !== null;
   if (!finalBytes) finalBytes = source.bytes;
 
   const ext = finalType.includes("png") ? "png" : finalType.includes("webp") ? "webp" : "jpg";
   const key = `auto-news/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  return uploadToR2(key, finalBytes, finalType);
+  const url = await uploadToR2(key, finalBytes, finalType);
+  return { url, watermarked };
 }
