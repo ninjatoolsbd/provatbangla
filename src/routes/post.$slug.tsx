@@ -16,8 +16,7 @@ import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 import { summarize } from "@/lib/post-utils";
 import { toast } from "sonner";
-import logoAsset from "@/lib/logo";
-import { fetchSettings } from "@/lib/cms";
+
 
 async function shareTo(target: "facebook" | "twitter" | "whatsapp" | "native", title: string) {
   if (typeof window === "undefined") return;
@@ -192,12 +191,6 @@ function PostPage() {
     refetchInterval: 60_000,
   });
 
-  const { data: siteSettings } = useQuery({
-    queryKey: ["site-settings-watermark"],
-    queryFn: fetchSettings,
-    staleTime: 5 * 60_000,
-  });
-  const watermarkUrl = siteSettings?.["watermark_logo_url"] || logoAsset.url;
 
   const sidebarPosts = activeTab === "latest" ? latestPosts : popularPosts;
 
@@ -309,12 +302,6 @@ function PostPage() {
                     alt={post.title}
                     className="aspect-[16/9] w-full object-cover"
                     loading="eager"
-                  />
-                  <img
-                    src={watermarkUrl}
-                    alt=""
-                    aria-hidden="true"
-                    className="pointer-events-none absolute bottom-3 right-3 h-auto w-[20%] max-w-[150px] bg-background/85 p-1.5 opacity-90 shadow-sm sm:bottom-4 sm:right-4"
                   />
                   {(post as any).image_caption && (
                     <p className="mt-2 text-sm text-muted-foreground italic border-b border-slate-100 pb-2">
