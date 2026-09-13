@@ -12,7 +12,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { uploadToR2 } = await import("@/lib/r2.server");
     const binary = atob(data.dataBase64);
-    let bytes = new Uint8Array(binary.length);
+    let bytes: Uint8Array = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
     let contentType = data.contentType;
 
