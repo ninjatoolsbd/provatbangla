@@ -108,15 +108,29 @@ export async function processSourceImage(opts: {
   logoUrl?: string | undefined;
   aiModify: boolean;
 }): Promise<string | null> {
+  return (await processSourceImageDetailed(opts)).url;
+}
+
+/** একই কাজ, তবে ওয়াটারমার্ক বসেছে কিনা সেটাও জানায়। */
+export async function processSourceImageDetailed(opts: {
+  imageUrl: string;
+  logoUrl?: string | undefined;
+  aiModify: boolean;
+}): Promise<{ url: string | null; watermarked: boolean }> {
   const source = await fetchBytes(opts.imageUrl);
-  if (!source) return null;
+  if (!source) return { url: null, watermarked: false };
 
   const mimeType = source.type.startsWith("image/") ? source.type : "image/jpeg";
   let finalBytes: Uint8Array | null = null;
   let finalType = mimeType;
 
-  // লোগো থাকলে সেটা ওয়াটারমার্ক হিসেবে বসানো হবে
-  const logo = opts.logoUrl ? await fetchBytes(opts.logoUrl) : null;
+  // লোগো থাকলে সেটা ওয়াটারমার্ক হিসেবে বসানো হবে (আপেক্ষিক URL হলে অরিজিনসহ ঠিক করা হয়)
+  const logoCandidates = [opts.logoUrl, "/logo.jpg"].filter(Boolean) as string[];
+  let logo: { bytes: Uint8Array; type: string } | null = null;
+  for (const candidate of logoCandidates) {
+    logo = await fetchBytes(await resolveAssetUrl(candidate));
+    if (logo) break;
+  }
   if (logo) {
     const parts: GeminiParts = [
       {
