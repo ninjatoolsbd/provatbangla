@@ -19,7 +19,15 @@ export type SourceArticle = {
 };
 
 async function getText(url: string) {
-  const res = await fetch(url, { headers: { "User-Agent": UA } });
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": UA,
+      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      "Accept-Language": "bn,en;q=0.9",
+      "Cache-Control": "no-cache",
+      Referer: new URL(url).origin + "/",
+    },
+  });
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   return res.text();
 }
