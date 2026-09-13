@@ -16,7 +16,6 @@ import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 import { summarize } from "@/lib/post-utils";
 import { toast } from "sonner";
-import logoAsset from "@/lib/logo";
 import { fetchSettings } from "@/lib/cms";
 
 async function shareTo(target: "facebook" | "twitter" | "whatsapp" | "native", title: string) {
@@ -192,12 +191,6 @@ function PostPage() {
     refetchInterval: 60_000,
   });
 
-  const { data: siteSettings } = useQuery({
-    queryKey: ["site-settings-watermark"],
-    queryFn: fetchSettings,
-    staleTime: 5 * 60_000,
-  });
-  const watermarkUrl = siteSettings?.["watermark_logo_url"] || logoAsset.url;
 
   const sidebarPosts = activeTab === "latest" ? latestPosts : popularPosts;
 
