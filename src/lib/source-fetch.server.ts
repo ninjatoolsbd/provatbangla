@@ -170,8 +170,19 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       
       const fullUrl = link.startsWith('http') ? link : new URL(link, siteUrl).href;
       
-      if (/\.(jpg|jpeg|png|gif|css|js|xml|ico|svg|woff|ttf)$/i.test(fullUrl)) continue;
-      if (fullUrl.includes('/tag/') || fullUrl.includes('/author/') || fullUrl.includes('/search') || fullUrl === siteUrl || fullUrl === siteUrl + '/') continue;
+      if (/\.(jpg|jpeg|png|gif|webp|avif|css|js|mjs|json|xml|ico|svg|woff|woff2|ttf|otf|eot|pdf|mp3|mp4|m3u8|zip)(\?|$)/i.test(fullUrl)) continue;
+      if (/\/(tag|tags|author|authors|search|topic|topics|category|categories|section|page|subscribe|newsletter|login|account|privacy|terms|about|contact|archive|videos?|podcasts?|live)(\/|$)/i.test(fullUrl)) continue;
+      if (fullUrl === siteUrl || fullUrl === siteUrl + '/') continue;
+
+      // সেকশন/ক্যাটাগরি পেজ বাদ: শেষ অংশে স্লাগ-সদৃশ কিছু থাকতেই হবে
+      let lastSegment = "";
+      try {
+        const path = new URL(fullUrl).pathname.replace(/\/+$/, "");
+        lastSegment = path.split('/').pop() ?? "";
+      } catch { continue; }
+      const slugLike = lastSegment.length >= 10 && (/-/.test(lastSegment) || /\d{4,}/.test(lastSegment));
+      if (!slugLike) continue;
+      
       
       // Prothom Alo specific pattern: /bangladesh/politics/v1a2b3c
       // Daily Star specific pattern: /news/bangladesh/politics/slug-12345
