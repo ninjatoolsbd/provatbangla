@@ -18,6 +18,20 @@ function base64ToBytes(b64: string) {
   return bytes;
 }
 
+/** আপেক্ষিক অ্যাসেট URL-কে সাইটের অরিজিনসহ পূর্ণ URL বানায়। */
+export async function resolveAssetUrl(url: string): Promise<string> {
+  if (!url || url.startsWith("http") || url.startsWith("/api/public/r2/")) return url;
+  let origin = "https://provatbanglanews.com";
+  try {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const request = getRequest();
+    if (request?.url) origin = new URL(request.url).origin;
+  } catch {
+    /* cron/worker context — default origin */
+  }
+  return new URL(url, origin).href;
+}
+
 async function fetchBytes(url: string): Promise<{ bytes: Uint8Array; type: string } | null> {
   try {
     if (url.startsWith("/api/public/r2/")) {
