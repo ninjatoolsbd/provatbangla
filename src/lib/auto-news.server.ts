@@ -4,9 +4,24 @@
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { generateTextWithFallback } from "@/lib/ai-providers.server";
-import { processSourceImage } from "@/lib/news-media.server";
+import { SITE_NAME, sanitizeBrand, similarityRatio } from "@/lib/brand-sanitize";
+import { processSourceImageDetailed } from "@/lib/news-media.server";
 import { slugify } from "@/lib/post-utils";
 import { discoverLatest, fetchArticle, sourceHost } from "@/lib/source-fetch.server";
+
+/** সাইটে ব্যবহৃত বৈধ ক্যাটাগরি স্লাগ। */
+const CATEGORIES = [
+  "opradh", "antorjatik", "bangladesh", "shikkha", "chakri", "projukti", "khela", "binodon",
+  "shilpo-sahitto", "jibonjapon", "cholonbil", "video", "health", "probas", "orthoniti",
+  "ain-adalat", "motamot", "bishesh-protibedon", "photo-gallery", "onnanno",
+] as const;
+
+/** ইংরেজি সোর্স কিনা লেখা দেখে বুঝে নেয় (auto_sources-এ lang কলাম নেই)। */
+function detectLang(text: string): "bn" | "en" {
+  const bangla = (text.match(/[\u0980-\u09FF]/g) ?? []).length;
+  const latin = (text.match(/[A-Za-z]/g) ?? []).length;
+  return bangla > latin * 0.2 ? "bn" : "en";
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const admin = supabaseAdmin as any;
