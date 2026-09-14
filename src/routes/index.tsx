@@ -109,7 +109,7 @@ function Home() {
           { title: "বাংলাদেশ", slug: "bangladesh", layout: "national" as const },
           { title: "আন্তর্জাতিক", slug: "antorjatik", layout: "national" as const },
           { title: "রাজনীতি", slug: "politics", layout: "politics" as const },
-          { title: "চাকরি", slug: "chakri", layout: "politics" as const },
+          
           { title: "শিক্ষা", slug: "shikkha", layout: "economy" as const },
         ].map((s) => (
           <Suspense key={s.slug} fallback={<SectionSkeleton />}>
