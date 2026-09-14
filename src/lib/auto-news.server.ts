@@ -116,7 +116,7 @@ async function rewriteOnce(
     "- 'সূত্র:', 'নিজস্ব প্রতিবেদক', 'স্টাফ রিপোর্টার' জাতীয় কোনো বাইলাইন বা ক্রেডিট লাইন থাকবে না।",
     "- অনুচ্ছেদগুলো আসল ফাঁকা লাইন দিয়ে আলাদা করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
+    `- category হবে ঠিক এই তালিকার একটি: ${CATEGORIES.join(", ")}। খবরের বিষয়বস্তু অনুযায়ী সবচেয়ে মানানসই ক্যাটাগরি বাছবে।`,
     "",
     "নিচের মার্কারগুলো হুবহু রেখে উত্তর দাও। JSON বা Markdown ব্যবহার করবে না:",
     "[TITLE]শিরোনাম[/TITLE]",
