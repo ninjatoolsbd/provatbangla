@@ -205,7 +205,7 @@ export async function runAutoSync(
     ...(dryRun ? { dryRun: true, previews: [] as AutoPreview[] } : {}),
   };
 
-  if (cfg["auto_enabled"] === "false" && !options.sourceId) {
+  if (cfg["auto_enabled"] === "false" && !options.sourceId && !options.force) {
     return { ...result, details: [{ title: "অটোমেশন", status: "disabled" }] };
   }
 
