@@ -271,6 +271,15 @@ export async function runAutoSync(
           );
         if (!title || looksLikeSection || body.length < 700) continue;
 
+        // পুরনো খবর বাদ — শুধু সাম্প্রতিকগুলোই আসবে
+        if (article.publishedAt) {
+          const ageHours = (Date.now() - new Date(article.publishedAt).getTime()) / 3_600_000;
+          if (ageHours > maxAgeHours) {
+            result.skipped += 1;
+            continue;
+          }
+        }
+
         processed += 1;
 
         const sourceLang = detectLang(`${title} ${body.slice(0, 1000)}`);
