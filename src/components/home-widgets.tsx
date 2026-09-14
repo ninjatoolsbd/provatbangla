@@ -185,7 +185,7 @@ export function VideoGallery({ items }: { items: any[] }) {
                 <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-red-900/90 to-transparent flex items-end p-2">
                   <div className="flex w-full items-center justify-between">
                     <div className="h-4 w-16 bg-white/20 rounded backdrop-blur-sm" />
-                    <div className="text-[10px] font-bold text-white uppercase tracking-tighter opacity-80">কালবেলা</div>
+                    <div className="text-[10px] font-bold text-white tracking-tighter opacity-80">প্রভাত বাংলা</div>
                   </div>
                 </div>
 
