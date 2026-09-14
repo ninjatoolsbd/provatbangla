@@ -21,6 +21,8 @@ export const runAutoImport = createServerFn({ method: "POST" })
         sourceId: z.string().uuid().optional(),
         limit: z.number().int().min(1).max(10).optional(),
         dryRun: z.boolean().optional(),
+        // অ্যাডমিন প্যানেল থেকে ম্যানুয়াল রান — অটোমেশন টগল বন্ধ থাকলেও চলবে
+        force: z.boolean().optional(),
       })
       .parse(input ?? {}),
   )
@@ -31,6 +33,7 @@ export const runAutoImport = createServerFn({ method: "POST" })
       ...(data.sourceId ? { sourceId: data.sourceId } : {}),
       ...(data.limit ? { limit: data.limit } : {}),
       ...(data.dryRun ? { dryRun: true } : {}),
+      ...(data.force ? { force: true } : {}),
     });
   });
 
