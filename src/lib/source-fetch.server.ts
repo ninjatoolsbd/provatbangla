@@ -16,6 +16,7 @@ export type SourceArticle = {
   title: string;
   body: string;
   image?: string | undefined;
+  publishedAt?: string | undefined;
 };
 
 async function getText(url: string) {
