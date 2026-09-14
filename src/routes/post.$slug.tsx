@@ -145,11 +145,12 @@ function PostPage() {
   const { data: relatedPosts = [] } = useQuery({
     queryKey: ["related-posts", post.slug, post.category],
     queryFn: async () => {
-      const url = new URL("/api/public/related-posts", window.location.origin);
-      url.searchParams.set("category", post.category);
-      url.searchParams.set("excludeSlug", post.slug || "");
-      url.searchParams.set("limit", "12");
-      const res = await fetch(url.toString());
+      const params = new URLSearchParams({
+        category: post.category,
+        excludeSlug: post.slug || "",
+        limit: "12",
+      });
+      const res = await fetch(`/api/public/related-posts?${params.toString()}`);
       if (!res.ok) return [];
       return res.json();
     },
