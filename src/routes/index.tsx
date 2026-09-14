@@ -109,7 +109,7 @@ function Home() {
           { title: "বাংলাদেশ", slug: "bangladesh", layout: "national" as const },
           { title: "আন্তর্জাতিক", slug: "antorjatik", layout: "national" as const },
           { title: "রাজনীতি", slug: "politics", layout: "politics" as const },
-          { title: "চাকরি", slug: "chakri", layout: "politics" as const },
+          
           { title: "শিক্ষা", slug: "shikkha", layout: "economy" as const },
         ].map((s) => (
           <Suspense key={s.slug} fallback={<SectionSkeleton />}>
@@ -139,6 +139,11 @@ function Home() {
             <HomeSection title={s.title} slug={s.slug} layout="grid" />
           </Suspense>
         ))}
+
+        {/* চাকরি সেকশন — ভিডিও সেকশনের ঠিক আগে */}
+        <Suspense fallback={<SectionSkeleton />}>
+          <HomeSection title="চাকরি" slug="chakri" layout="politics" />
+        </Suspense>
 
         {/* Video Strip removed and merged into Photo Gallery below */}
 
