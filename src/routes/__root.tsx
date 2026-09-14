@@ -112,6 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://cdn.jsdelivr.net/gh/liam-curtis/solaimanlipi@master/solaimanlipi.css",
       },
+      { rel: "alternate", type: "application/rss+xml", title: "প্রভাতবাংলা — RSS ফিড", href: "/rss.xml" },
       { rel: "icon", type: "image/png", href: "/favicon.png?v=4" },
       { rel: "apple-touch-icon", href: "/favicon.png?v=4" },
     ],

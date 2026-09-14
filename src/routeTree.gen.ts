@@ -20,6 +20,7 @@ import { Route as EnglishRouteImport } from './routes/english'
 import { Route as EpaperRouteImport } from './routes/epaper'
 import { Route as MagazineRouteImport } from './routes/magazine'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as TermsAndConditionsRouteImport } from './routes/terms-and-conditions'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAdsRouteImport } from './routes/admin/ads'
@@ -101,6 +102,11 @@ const MagazineRoute = MagazineRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
@@ -251,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -290,6 +297,7 @@ export interface FileRoutesByTo {
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -331,6 +339,7 @@ export interface FileRoutesById {
   '/epaper': typeof EpaperRoute
   '/magazine': typeof MagazineRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/terms-and-conditions': typeof TermsAndConditionsRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/automation': typeof AdminAutomationRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/epaper'
     | '/magazine'
     | '/privacy-policy'
+    | '/rss.xml'
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
@@ -412,6 +422,7 @@ export interface FileRouteTypes {
     | '/epaper'
     | '/magazine'
     | '/privacy-policy'
+    | '/rss.xml'
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
@@ -452,6 +463,7 @@ export interface FileRouteTypes {
     | '/epaper'
     | '/magazine'
     | '/privacy-policy'
+    | '/rss.xml'
     | '/terms-and-conditions'
     | '/admin/ads'
     | '/admin/automation'
@@ -493,6 +505,7 @@ export interface RootRouteChildren {
   EpaperRoute: typeof EpaperRoute
   MagazineRoute: typeof MagazineRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
   TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
@@ -581,6 +594,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms-and-conditions': {
@@ -831,6 +851,7 @@ const rootRouteChildren: RootRouteChildren = {
   EpaperRoute: EpaperRoute,
   MagazineRoute: MagazineRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
   TermsAndConditionsRoute: TermsAndConditionsRoute,
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
