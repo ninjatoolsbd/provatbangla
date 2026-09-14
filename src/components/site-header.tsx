@@ -6,27 +6,72 @@ import { getCurrentBanglaDate } from "@/lib/posts";
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/lib/logo";
 
+type TranslateWindow = typeof window & {
+  google?: {
+    translate?: {
+      TranslateElement?: new (
+        options: Record<string, unknown>,
+        elementId: string,
+      ) => unknown;
+    };
+  };
+  googleTranslateElementInit?: () => void;
+};
+
+function loadGoogleTranslate(): Promise<HTMLSelectElement | null> {
+  const translateWindow = window as TranslateWindow;
+  return new Promise((resolve) => {
+  const findSelect = () => document.querySelector<HTMLSelectElement>(".goog-te-combo");
+  const initialize = () => {
+    const TranslateElement = translateWindow.google?.translate?.TranslateElement;
+    const container = document.getElementById("google_translate_element");
+    if (TranslateElement && container && container.childElementCount === 0) {
+      new TranslateElement(
+        { pageLanguage: "bn", includedLanguages: "en,bn", autoDisplay: false },
+        "google_translate_element",
+      );
+    }
+    let attempts = 0;
+    const waitForSelect = window.setInterval(() => {
+      const select = findSelect();
+      attempts += 1;
+      if (select || attempts >= 20) {
+        window.clearInterval(waitForSelect);
+        resolve(select);
+      }
+    }, 100);
+  };
+
+  translateWindow.googleTranslateElementInit = initialize;
+  if (translateWindow.google?.translate?.TranslateElement) {
+    initialize();
+    return;
+  }
+  if (document.querySelector('script[data-google-translate="true"]')) return;
+
+  const script = document.createElement("script");
+  script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  script.async = true;
+  script.dataset["googleTranslate"] = "true";
+  document.body.appendChild(script);
+  });
+}
+
 const utility = [
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
   { icon: Tv, label: "লাইভ টিভি", to: "/live-tv" },
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
-  { icon: Languages, label: "English", onClick: () => {
-    const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    
-    // Toggle logic
-    const currentLang = select ? select.value : (window.location.hash.includes('en') ? 'en' : 'bn');
+  { icon: Languages, label: "English", onClick: async () => {
+    const select = await loadGoogleTranslate();
+    const currentLang = select?.value || (window.location.hash.includes('en') ? 'en' : 'bn');
     const targetLang = currentLang === 'en' ? 'bn' : 'en';
 
-    if (targetLang === 'en') {
-      window.location.hash = '#googtrans(bn|en)';
-    } else {
-      window.location.hash = '#googtrans(bn|bn)';
+    if (select) {
+      select.value = targetLang;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
     }
-
-    // Refresh to force Google Translate to pick up the hash change immediately
-    window.location.reload();
   }},
 ];
 
