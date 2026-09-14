@@ -233,7 +233,7 @@ export async function runAutoSync(
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
-      items = await discoverLatest(source.site_url, limit * 2);
+      items = await discoverLatest(source.site_url, Math.max(limit * 4, 12));
     } catch (e) {
       result.failed += 1;
       result.details.push({
