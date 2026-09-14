@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Bot, ChevronDown, Eye, Play, Plus, Trash2, Upload } from "lucide-react";
+import { Bot, ExternalLink, Eye, Play, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { publishAutoPreview, runAutoImport } from "@/lib/auto-news.functions";
@@ -551,17 +551,39 @@ function AutomationPage() {
         <h2 className="mb-2 font-display text-base font-bold">সাম্প্রতিক অটো আইটেম</h2>
         <div className="space-y-1 text-sm">
           {(items.data ?? []).map((it: Row) => (
-            <div key={String(it["id"])} className="flex gap-2 border-b border-border py-1.5">
+            <div
+              key={String(it["id"])}
+              className="flex min-w-0 items-start gap-2 border-b border-border py-2.5"
+            >
               <span
                 className={
                   String(it["status"]) === "failed"
-                    ? "shrink-0 text-xs text-destructive"
-                    : "shrink-0 text-xs text-muted-foreground"
+                    ? "mt-0.5 shrink-0 text-xs text-destructive"
+                    : "mt-0.5 shrink-0 text-xs text-muted-foreground"
                 }
               >
                 [{String(it["status"])}]
               </span>
-              <span className="truncate">{String(it["source_title"] ?? it["source_url"])}</span>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium leading-5">
+                  {String(it["source_title"] ?? "শিরোনাম পাওয়া যায়নি")}
+                </p>
+                <a
+                  href={String(it["source_url"])}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 flex w-fit max-w-full items-start gap-1 text-xs text-primary underline underline-offset-2"
+                  title={String(it["source_url"])}
+                >
+                  <ExternalLink className="mt-0.5 size-3 shrink-0" aria-hidden="true" />
+                  <span className="break-all">{String(it["source_url"])}</span>
+                </a>
+                {it["message"] ? (
+                  <p className="mt-1 text-xs leading-5 text-destructive">
+                    সমস্যা: {String(it["message"])}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ))}
           {(items.data ?? []).length === 0 && (
