@@ -318,7 +318,13 @@ export async function fetchArticle(url: string): Promise<SourceArticle> {
     if (desc && desc.length > body.length) body = desc;
   }
 
-  return { url, title: title.trim(), body: body.trim(), image: image || undefined };
+  return {
+    url,
+    title: title.trim(),
+    body: body.trim(),
+    image: image || undefined,
+    publishedAt: publishedAt || undefined,
+  };
 }
 
 export { host as sourceHost };
