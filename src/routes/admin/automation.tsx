@@ -154,7 +154,12 @@ function AutomationPage() {
     try {
       const dataBase64 = await toBase64(file);
       const res = await uploadMedia({
-        data: { name: file.name, contentType: file.type || "image/png", dataBase64 },
+        data: {
+          name: file.name,
+          contentType: file.type || "image/png",
+          dataBase64,
+          skipWatermark: true,
+        },
       });
       await saveSetting("watermark_logo_url", res.url);
       toast.success("লোগো সেট হয়েছে");
