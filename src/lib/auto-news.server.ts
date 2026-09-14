@@ -193,7 +193,7 @@ async function rewrite(
 
 /** এক রাউন্ড অটো-সিঙ্ক চালায়। dryRun হলে কিছুই সেভ হয় না, শুধু প্রিভিউ ফেরত আসে। */
 export async function runAutoSync(
-  options: { sourceId?: string; limit?: number; dryRun?: boolean } = {},
+  options: { sourceId?: string; limit?: number; dryRun?: boolean; force?: boolean } = {},
 ) {
   const cfg = await settings();
   const dryRun = options.dryRun === true;
@@ -205,7 +205,7 @@ export async function runAutoSync(
     ...(dryRun ? { dryRun: true, previews: [] as AutoPreview[] } : {}),
   };
 
-  if (cfg["auto_enabled"] === "false" && !options.sourceId) {
+  if (cfg["auto_enabled"] === "false" && !options.sourceId && !options.force) {
     return { ...result, details: [{ title: "অটোমেশন", status: "disabled" }] };
   }
 

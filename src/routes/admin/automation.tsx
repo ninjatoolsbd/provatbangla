@@ -114,12 +114,15 @@ function AutomationPage() {
     if (dryRun) setPreviews([]);
     try {
       const res = await runAutoImport({
-        data: { ...(sourceId ? { sourceId } : {}), ...(dryRun ? { dryRun: true } : {}) },
+        // ম্যানুয়াল রান সবসময় চলবে, অটোমেশন টগল বন্ধ থাকলেও
+        data: { ...(sourceId ? { sourceId } : {}), ...(dryRun ? { dryRun: true } : {}), force: true },
       });
       setLastRun(res.details);
       if (dryRun) {
         setPreviews((res.previews ?? []) as Preview[]);
         toast.success(`${res.created}টি প্রিভিউ তৈরি হয়েছে — কিছুই সেভ হয়নি`);
+      } else if (res.created === 0 && res.skipped === 0 && res.failed === 0) {
+        toast.warning("কোনো নতুন খবর পাওয়া যায়নি — সোর্সগুলোতে সাম্প্রতিক (৪৮ ঘণ্টার) খবর নেই বা লিংক খোলা যায়নি");
       } else {
         toast.success(`${res.created} নতুন, ${res.skipped} আগেই ছিল, ${res.failed} ব্যর্থ`);
       }
