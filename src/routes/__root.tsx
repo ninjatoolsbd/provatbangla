@@ -205,18 +205,25 @@ function RootComponent() {
       );
     };
 
-    if (translateWindow.google?.translate?.TranslateElement) {
-      translateWindow.googleTranslateElementInit();
-      return;
-    }
+    const loadTranslate = () => {
+      if (translateWindow.google?.translate?.TranslateElement) {
+        translateWindow.googleTranslateElementInit?.();
+        return;
+      }
 
-    if (!document.querySelector('script[data-google-translate="true"]')) {
-      const script = document.createElement("script");
-      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      script.async = true;
-      script.dataset["googleTranslate"] = "true";
-      document.body.appendChild(script);
-    }
+      if (!document.querySelector('script[data-google-translate="true"]')) {
+        const script = document.createElement("script");
+        script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+        script.async = true;
+        script.dataset["googleTranslate"] = "true";
+        document.body.appendChild(script);
+      }
+    };
+
+    // Root effects can run while nested streamed routes are still hydrating.
+    // Give React time to finish before the third-party widget mutates the header.
+    const timer = window.setTimeout(loadTranslate, 1500);
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (
