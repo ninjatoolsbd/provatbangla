@@ -5,6 +5,8 @@ const schema = z.object({
   name: z.string().min(1),
   contentType: z.string().min(1),
   dataBase64: z.string().min(1),
+  // লোগো/গ্রাফিক আপলোডে ওয়াটারমার্ক বসানো যাবে না
+  skipWatermark: z.boolean().optional(),
 });
 
 export const uploadMedia = createServerFn({ method: "POST" })
@@ -17,7 +19,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
     let contentType = data.contentType;
 
     // ছবি হলে আপলোডের আগেই লোগো ওয়াটারমার্ক বসানো হয় (পেজে আলাদা ওভারলে নেই)
-    if (contentType.startsWith("image/")) {
+    if (contentType.startsWith("image/") && !data.skipWatermark) {
       try {
         const { fetchSettings } = await import("@/lib/cms");
         const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
@@ -38,7 +40,11 @@ export const uploadMedia = createServerFn({ method: "POST" })
       }
     }
 
-    const safe = data.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    let safe = data.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    // ওয়াটারমার্কের পর ফরম্যাট বদলালে এক্সটেনশনও মিলিয়ে দেওয়া হয়
+    if (contentType !== data.contentType && contentType === "image/jpeg") {
+      safe = safe.replace(/\.[a-zA-Z0-9]+$/, "") + ".jpg";
+    }
     const key = `media/${Date.now()}-${safe}`;
     const url = await uploadToR2(key, bytes, contentType);
     if (!url) throw new Error("R2 আপলোড ব্যর্থ হয়েছে");

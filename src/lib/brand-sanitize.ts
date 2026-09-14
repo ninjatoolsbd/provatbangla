@@ -40,8 +40,12 @@ export function sanitizeBrand(input: string, extraNames: string[] = []): string 
 
   const names = [...OUTLETS, ...extraNames.filter((n) => n && n.trim().length > 2)];
   for (const name of names) {
-    const re = new RegExp(escapeRe(name.trim()), "gi");
-    out = out.replace(re, SITE_NAME);
+    const trimmed = name.trim();
+    const escaped = escapeRe(trimmed);
+    // ASCII নামের ক্ষেত্রে শব্দ-সীমা দরকার, নইলে "options"/"companies" ভেঙে যায়।
+    const isAscii = /^[\x20-\x7E]+$/.test(trimmed);
+    const pattern = isAscii ? `(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])` : escaped;
+    out = out.replace(new RegExp(pattern, "gi"), SITE_NAME);
   }
 
   // ডোমেইন উল্লেখ থাকলে প্রভাত বাংলা
