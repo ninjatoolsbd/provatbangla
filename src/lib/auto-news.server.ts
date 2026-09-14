@@ -216,6 +216,7 @@ export async function runAutoSync(
   const publishStatus = cfg["auto_mode"] === "publish" ? "published" : "draft";
   const aiImage = cfg["auto_image_ai"] !== "false";
   const logoUrl = cfg["watermark_logo_url"] || "/logo.jpg";
+  const maxAgeHours = Number(cfg["auto_max_age_hours"] || "48") || 48;
   const allSourceNames = ((sources ?? []) as { name: string; site_url: string }[]).flatMap((s) => [
     s.name,
     sourceHost(s.site_url),
