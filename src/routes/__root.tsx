@@ -214,7 +214,7 @@ function RootComponent() {
       const script = document.createElement("script");
       script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       script.async = true;
-      script.dataset.googleTranslate = "true";
+      script.dataset["googleTranslate"] = "true";
       document.body.appendChild(script);
     }
   }, []);
