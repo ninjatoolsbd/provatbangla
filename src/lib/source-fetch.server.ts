@@ -275,8 +275,12 @@ function extractImage(html: string, pageUrl: string): string {
     for (const attr of ["data-src", "data-original", "data-lazy-src", "data-srcset", "srcset", "src"]) {
       const value = tag.match(new RegExp(`${attr}=["']([^"']+)["']`, "i"))?.[1];
       if (!value) continue;
-      const first = value.split(",").pop()?.trim().split(/\s+/)[0];
-      push(first ?? value);
+      // srcset-এ কমা থাকতে পারে URL-এর ভেতরেও — শুধু নতুন URL শুরুর আগে ভাঙা হয়
+      const parts = value.split(/,\s*(?=https?:\/\/|\/)/);
+      for (const part of parts) {
+        const candidate = part.trim().split(/\s+/)[0];
+        if (candidate) push(candidate);
+      }
     }
   }
 
