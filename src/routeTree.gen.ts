@@ -43,6 +43,7 @@ import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as LiveTvIndexRouteImport } from './routes/live-tv/index'
 import { Route as NewsIdRouteImport } from './routes/news.$id'
 import { Route as PostSlugRouteImport } from './routes/post.$slug'
+import { Route as RssXmlRouteImport } from './routes/rss.xml'
 import { Route as ApiPublicCronSyncRouteImport } from './routes/api/public/cron-sync'
 import { Route as ApiPublicRelatedPostsRouteImport } from './routes/api/public/related-posts'
 import { Route as ApiPublicNewsImageSplatRouteImport } from './routes/api/public/news-image.$'
@@ -218,6 +219,11 @@ const PostSlugRoute = PostSlugRouteImport.update({
   path: '/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RssXmlRoute = RssXmlRouteImport.update({
+  id: '/rss/xml',
+  path: '/rss/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronSyncRoute = ApiPublicCronSyncRouteImport.update({
   id: '/api/public/cron-sync',
   path: '/api/public/cron-sync',
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/rss/xml': typeof RssXmlRoute
   '/admin/': typeof AdminIndexRoute
   '/live-tv/': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/rss/xml': typeof RssXmlRoute
   '/admin': typeof AdminIndexRoute
   '/live-tv': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
@@ -352,6 +360,7 @@ export interface FileRoutesById {
   '/category/$slug': typeof CategorySlugRoute
   '/news/$id': typeof NewsIdRoute
   '/post/$slug': typeof PostSlugRoute
+  '/rss/xml': typeof RssXmlRoute
   '/admin/': typeof AdminIndexRoute
   '/live-tv/': typeof LiveTvIndexRoute
   '/api/public/cron-sync': typeof ApiPublicCronSyncRoute
@@ -394,6 +403,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/rss/xml'
     | '/admin/'
     | '/live-tv/'
     | '/api/public/cron-sync'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/rss/xml'
     | '/admin'
     | '/live-tv'
     | '/api/public/cron-sync'
@@ -473,6 +484,7 @@ export interface FileRouteTypes {
     | '/category/$slug'
     | '/news/$id'
     | '/post/$slug'
+    | '/rss/xml'
     | '/admin/'
     | '/live-tv/'
     | '/api/public/cron-sync'
@@ -497,6 +509,7 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   NewsIdRoute: typeof NewsIdRoute
   PostSlugRoute: typeof PostSlugRoute
+  RssXmlRoute: typeof RssXmlRoute
   LiveTvIndexRoute: typeof LiveTvIndexRoute
   ApiPublicCronSyncRoute: typeof ApiPublicCronSyncRoute
   ApiPublicRelatedPostsRoute: typeof ApiPublicRelatedPostsRoute
@@ -744,6 +757,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rss/xml': {
+      id: '/rss/xml'
+      path: '/rss/xml'
+      fullPath: '/rss/xml'
+      preLoaderRoute: typeof RssXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron-sync': {
       id: '/api/public/cron-sync'
       path: '/api/public/cron-sync'
@@ -835,6 +855,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   NewsIdRoute: NewsIdRoute,
   PostSlugRoute: PostSlugRoute,
+  RssXmlRoute: RssXmlRoute,
   LiveTvIndexRoute: LiveTvIndexRoute,
   ApiPublicCronSyncRoute: ApiPublicCronSyncRoute,
   ApiPublicRelatedPostsRoute: ApiPublicRelatedPostsRoute,

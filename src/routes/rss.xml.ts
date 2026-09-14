@@ -14,7 +14,7 @@ function stripHtml(html: string) {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export const Route = createFileRoute("/rss.xml")({
+export const Route = createFileRoute("/rss/xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
