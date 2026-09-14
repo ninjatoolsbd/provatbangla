@@ -195,8 +195,6 @@ function RootComponent() {
     });
     return () => {
       unsubscribe();
-      window.removeEventListener("load", pinToTop);
-      window.clearInterval(pinInterval);
     };
   }, [router]);
 
