@@ -19,7 +19,7 @@ export const uploadMedia = createServerFn({ method: "POST" })
     let contentType = data.contentType;
 
     // ছবি হলে আপলোডের আগেই লোগো ওয়াটারমার্ক বসানো হয় (পেজে আলাদা ওভারলে নেই)
-    if (contentType.startsWith("image/")) {
+    if (contentType.startsWith("image/") && !data.skipWatermark) {
       try {
         const { fetchSettings } = await import("@/lib/cms");
         const settings = (await fetchSettings().catch(() => ({}))) as Record<string, string>;
