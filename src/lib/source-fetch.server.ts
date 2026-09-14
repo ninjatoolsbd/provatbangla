@@ -231,9 +231,19 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 function usableImage(src: string) {
   if (!src || src.startsWith("data:")) return false;
   if (/\.svg(\?|$)/i.test(src)) return false;
-  return !/(logo|icon|favicon|sprite|placeholder|avatar|default[-_]?img|blank|1x1|spacer|pixel)/i.test(
-    src,
-  );
+  if (
+    /(logo|icon|favicon|sprite|placeholder|avatar|default[-_]?img|blank|1x1|spacer|pixel)/i.test(src)
+  ) {
+    return false;
+  }
+  // পূর্ণ ছবির লিংক হতে হবে — ভাঙা srcset টুকরো নয়
+  let path = "";
+  try {
+    path = new URL(src).pathname;
+  } catch {
+    return false;
+  }
+  return /\.(jpe?g|png|webp|avif)$/i.test(path) || /\/(image|images|media|photo|uploads?)\//i.test(path) || src.includes("?image=");
 }
 
 /** পেজ থেকে সম্ভাব্য সব জায়গা দেখে মূল ছবিটি বের করে। */
