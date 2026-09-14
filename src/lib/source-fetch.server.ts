@@ -73,19 +73,27 @@ async function fromRss(siteUrl: string, limit: number): Promise<SourceItem[]> {
     try {
       const xml = await getText(base + path);
       if (!/<(item|entry)[\s>]/i.test(xml)) continue;
-      const items: SourceItem[] = [];
+      const dated: { item: SourceItem; time: number }[] = [];
       // Split by item or entry tag
       const blocks = xml.split(/<(item|entry)[\s>]/i).slice(1);
       for (const block of blocks) {
         const link = block.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]?.trim() || 
                      block.match(/<link[^>]+href=["']([^"']+)["']/i)?.[1]?.trim();
         const title = stripTags(block.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-        
+        const dateRaw =
+          block.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i)?.[1] ??
+          block.match(/<updated[^>]*>([\s\S]*?)<\/updated>/i)?.[1] ??
+          block.match(/<published[^>]*>([\s\S]*?)<\/published>/i)?.[1] ??
+          "";
+        const time = dateRaw ? new Date(dateRaw.trim()).getTime() : Number.NaN;
+
         if (link && title) {
-          items.push({ url: link, title });
+          dated.push({ item: { url: link, title }, time: Number.isNaN(time) ? 0 : time });
         }
-        if (items.length >= limit) break;
       }
+      // নতুন খবর আগে
+      if (dated.some((d) => d.time > 0)) dated.sort((a, b) => b.time - a.time);
+      const items = dated.slice(0, limit).map((d) => d.item);
       if (items.length) return items;
     } catch {
       /* try next */
