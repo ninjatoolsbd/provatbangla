@@ -175,57 +175,6 @@ function RootComponent() {
     };
   }, [router]);
 
-  // Google Translate mutates the page DOM as soon as its script runs. Loading
-  // it after React hydrates prevents those mutations from corrupting hydration.
-  useEffect(() => {
-    const translateWindow = window as typeof window & {
-      google?: {
-        translate?: {
-          TranslateElement?: new (
-            options: Record<string, unknown>,
-            elementId: string,
-          ) => unknown;
-        };
-      };
-      googleTranslateElementInit?: () => void;
-    };
-
-    translateWindow.googleTranslateElementInit = () => {
-      const TranslateElement = translateWindow.google?.translate?.TranslateElement;
-      const container = document.getElementById("google_translate_element");
-      if (!TranslateElement || !container || container.childElementCount > 0) return;
-
-      new TranslateElement(
-        {
-          pageLanguage: "bn",
-          includedLanguages: "en,bn",
-          autoDisplay: false,
-        },
-        "google_translate_element",
-      );
-    };
-
-    const loadTranslate = () => {
-      if (translateWindow.google?.translate?.TranslateElement) {
-        translateWindow.googleTranslateElementInit?.();
-        return;
-      }
-
-      if (!document.querySelector('script[data-google-translate="true"]')) {
-        const script = document.createElement("script");
-        script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        script.async = true;
-        script.dataset["googleTranslate"] = "true";
-        document.body.appendChild(script);
-      }
-    };
-
-    // Root effects can run while nested streamed routes are still hydrating.
-    // Give React time to finish before the third-party widget mutates the header.
-    const timer = window.setTimeout(loadTranslate, 1500);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

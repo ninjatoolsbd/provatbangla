@@ -6,6 +6,44 @@ import { getCurrentBanglaDate } from "@/lib/posts";
 import { categories } from "@/lib/news-data";
 import logoAsset from "@/lib/logo";
 
+type TranslateWindow = typeof window & {
+  google?: {
+    translate?: {
+      TranslateElement?: new (
+        options: Record<string, unknown>,
+        elementId: string,
+      ) => unknown;
+    };
+  };
+  googleTranslateElementInit?: () => void;
+};
+
+function loadGoogleTranslate() {
+  const translateWindow = window as TranslateWindow;
+  const initialize = () => {
+    const TranslateElement = translateWindow.google?.translate?.TranslateElement;
+    const container = document.getElementById("google_translate_element");
+    if (!TranslateElement || !container || container.childElementCount > 0) return;
+    new TranslateElement(
+      { pageLanguage: "bn", includedLanguages: "en,bn", autoDisplay: false },
+      "google_translate_element",
+    );
+  };
+
+  translateWindow.googleTranslateElementInit = initialize;
+  if (translateWindow.google?.translate?.TranslateElement) {
+    initialize();
+    return;
+  }
+  if (document.querySelector('script[data-google-translate="true"]')) return;
+
+  const script = document.createElement("script");
+  script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  script.async = true;
+  script.dataset["googleTranslate"] = "true";
+  document.body.appendChild(script);
+}
+
 const utility = [
   { icon: BookOpen, label: "ই-পেপার", to: "/epaper" },
   { icon: Newspaper, label: "ম্যাগাজিন", to: "/magazine" },
@@ -13,6 +51,7 @@ const utility = [
   { icon: Share2, label: "সোশ্যাল মিডিয়া", to: "/social", mega: true },
   { icon: Bell, label: "আর্কাইভ", to: "/archive" },
   { icon: Languages, label: "English", onClick: () => {
+    loadGoogleTranslate();
     const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     
     // Toggle logic
