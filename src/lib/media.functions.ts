@@ -5,6 +5,8 @@ const schema = z.object({
   name: z.string().min(1),
   contentType: z.string().min(1),
   dataBase64: z.string().min(1),
+  // লোগো/গ্রাফিক আপলোডে ওয়াটারমার্ক বসানো যাবে না
+  skipWatermark: z.boolean().optional(),
 });
 
 export const uploadMedia = createServerFn({ method: "POST" })
