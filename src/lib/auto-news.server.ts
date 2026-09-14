@@ -156,12 +156,8 @@ async function rewriteOnce(
   }
   if (!parsed.title) parsed.title = article.title;
 
-  const allowed = CATEGORIES as readonly string[];
-  const aiCategory = allowed.includes(parsed.category ?? "") ? (parsed.category as string) : "";
-  const forced =
-    fallbackCategory && fallbackCategory !== "auto" && allowed.includes(fallbackCategory)
-      ? fallbackCategory
-      : "";
+  const aiCategory = normalizeCategory(parsed.category ?? "");
+  const forced = fallbackCategory && fallbackCategory !== "auto" ? normalizeCategory(fallbackCategory) : "";
   const clean = (value: string) => sanitizeBrand(value, extraNames);
 
   return {
