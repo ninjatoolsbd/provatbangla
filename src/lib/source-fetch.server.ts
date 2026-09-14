@@ -215,29 +215,87 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 
 /* ---------------- extraction ---------------- */
 
+/** ছবিটি আসল নিউজ ছবি কিনা (লোগো/আইকন/প্লেসহোল্ডার নয়)। */
+function usableImage(src: string) {
+  if (!src || src.startsWith("data:")) return false;
+  if (/\.svg(\?|$)/i.test(src)) return false;
+  return !/(logo|icon|favicon|sprite|placeholder|avatar|default[-_]?img|blank|1x1|spacer|pixel)/i.test(
+    src,
+  );
+}
+
+/** পেজ থেকে সম্ভাব্য সব জায়গা দেখে মূল ছবিটি বের করে। */
+function extractImage(html: string, pageUrl: string): string {
+  const candidates: string[] = [];
+  const push = (value?: string | null) => {
+    if (value) candidates.push(value.trim().replace(/&amp;/g, "&"));
+  };
+
+  push(meta(html, "og:image"));
+  push(meta(html, "og:image:secure_url"));
+  push(meta(html, "twitter:image"));
+  push(meta(html, "twitter:image:src"));
+  push(meta(html, "image"));
+
+  // JSON-LD (NewsArticle) থেকে ছবি
+  for (const block of html.matchAll(
+    /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
+  )) {
+    const raw = block[1] ?? "";
+    for (const m of raw.matchAll(/"(?:url|contentUrl)"\s*:\s*"([^"]+\.(?:jpe?g|png|webp)[^"]*)"/gi)) {
+      push(m[1]);
+    }
+  }
+
+  // <picture>/<img> — lazy-load অ্যাট্রিবিউটসহ
+  const imgTags = [...html.matchAll(/<(?:img|source)\b[^>]*>/gi)].map((m) => m[0]);
+  for (const tag of imgTags) {
+    for (const attr of ["data-src", "data-original", "data-lazy-src", "data-srcset", "srcset", "src"]) {
+      const value = tag.match(new RegExp(`${attr}=["']([^"']+)["']`, "i"))?.[1];
+      if (!value) continue;
+      const first = value.split(",").pop()?.trim().split(/\s+/)[0];
+      push(first ?? value);
+    }
+  }
+
+  for (const candidate of candidates) {
+    let full = candidate;
+    if (!/^https?:\/\//i.test(full)) {
+      if (full.startsWith("//")) full = `https:${full}`;
+      else {
+        try {
+          full = new URL(full, pageUrl).href;
+        } catch {
+          continue;
+        }
+      }
+    }
+    if (usableImage(full)) return full;
+  }
+  return "";
+}
+
+/** প্রকাশের সময় (ISO) বের করে, না পেলে খালি। */
+function extractPublishedAt(html: string): string {
+  const raw =
+    meta(html, "article:published_time") ||
+    meta(html, "article:modified_time") ||
+    meta(html, "publish-date") ||
+    meta(html, "pubdate") ||
+    html.match(/"datePublished"\s*:\s*"([^"]+)"/i)?.[1] ||
+    html.match(/<time[^>]+datetime=["']([^"']+)["']/i)?.[1] ||
+    "";
+  const date = raw ? new Date(raw) : null;
+  return date && !Number.isNaN(date.getTime()) ? date.toISOString() : "";
+}
+
 export async function fetchArticle(url: string): Promise<SourceArticle> {
   const html = await getText(url);
   const title = meta(html, "og:title") || stripTags(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-  
-  // Scrape images more aggressively
-  let image = meta(html, "og:image") || meta(html, "twitter:image") || "";
-  
-  if (!image) {
-    // Look for article main image pattern
-    const imgMatch = html.match(/<article[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) || 
-                   html.match(/<div[^>]+class=["'][^"']*featured[^"']*["'][^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) ||
-                   html.match(/<img[^>]+class=["'][^"']*main-image[^"']*["'][^>]*src=["']([^"']+)["']/i);
-    image = imgMatch?.[1] || "";
-  }
 
-  // Handle relative image URLs
-  if (image && !image.startsWith("http")) {
-    try {
-      image = new URL(image, url).href;
-    } catch {
-      image = "";
-    }
-  }
+  const image = extractImage(html, url);
+  const publishedAt = extractPublishedAt(html);
+
 
   const paragraphs = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((m) => stripTags(m[1] ?? ""))
