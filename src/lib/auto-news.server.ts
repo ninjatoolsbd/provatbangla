@@ -11,10 +11,29 @@ import { discoverLatest, fetchArticle, sourceHost } from "@/lib/source-fetch.ser
 
 /** সাইটে ব্যবহৃত বৈধ ক্যাটাগরি স্লাগ। */
 const CATEGORIES = [
-  "opradh", "antorjatik", "bangladesh", "shikkha", "chakri", "projukti", "khela", "binodon",
-  "shilpo-sahitto", "jibonjapon", "cholonbil", "video", "health", "probas", "orthoniti",
-  "ain-adalat", "motamot", "bishesh-protibedon", "photo-gallery", "onnanno",
+  "bangladesh", "politics", "antorjatik", "orthoniti", "khela", "binodon", "shikkha", "chakri",
+  "prajukti", "health", "apradh", "ain-adalat", "motamot", "probas", "jibonjapon",
+  "shilpo-sahitto", "cholonbil", "bishesh-protibedon", "video", "photo-gallery", "onnanno",
 ] as const;
+
+/** AI বা সোর্স থেকে আসা ভিন্ন বানানের ক্যাটাগরি সাইটের স্লাগে মেলানো হয়। */
+const CATEGORY_ALIASES: Record<string, string> = {
+  opradh: "apradh", oporadh: "apradh", crime: "apradh",
+  projukti: "prajukti", technology: "prajukti",
+  arthonity: "orthoniti", orthonity: "orthoniti", economy: "orthoniti", business: "orthoniti",
+  sasthyo: "health", sastho: "health",
+  jatiyo: "bangladesh", national: "bangladesh", sarabangla: "bangladesh", desh: "bangladesh",
+  rajniti: "politics", politics_bd: "politics",
+  international: "antorjatik", world: "antorjatik",
+  sports: "khela", entertainment: "binodon", education: "shikkha", job: "chakri", jobs: "chakri",
+  opinion: "motamot", probashi: "probas", lifestyle: "jibonjapon",
+};
+
+function normalizeCategory(value: string): string {
+  const slug = (value || "").trim().toLowerCase();
+  const mapped = CATEGORY_ALIASES[slug] ?? slug;
+  return (CATEGORIES as readonly string[]).includes(mapped) ? mapped : "";
+}
 
 /** ইংরেজি সোর্স কিনা লেখা দেখে বুঝে নেয় (auto_sources-এ lang কলাম নেই)। */
 function detectLang(text: string): "bn" | "en" {
