@@ -40,7 +40,11 @@ export const uploadMedia = createServerFn({ method: "POST" })
       }
     }
 
-    const safe = data.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    let safe = data.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    // ওয়াটারমার্কের পর ফরম্যাট বদলালে এক্সটেনশনও মিলিয়ে দেওয়া হয়
+    if (contentType !== data.contentType && contentType === "image/jpeg") {
+      safe = safe.replace(/\.[a-zA-Z0-9]+$/, "") + ".jpg";
+    }
     const key = `media/${Date.now()}-${safe}`;
     const url = await uploadToR2(key, bytes, contentType);
     if (!url) throw new Error("R2 আপলোড ব্যর্থ হয়েছে");
