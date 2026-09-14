@@ -199,13 +199,17 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       } catch { continue; }
       const slugLike = lastSegment.length >= 10 && (/-/.test(lastSegment) || /\d{4,}/.test(lastSegment));
       if (!slugLike) continue;
-      
-      
+
+      const segments = new URL(fullUrl).pathname.split("/").filter(Boolean);
+      // সেকশন পেজ (যেমন /world/united-kingdom) বাদ: অন্তত ৩ অংশ লাগবে
+      if (segments.length < 3) continue;
+
       // Prothom Alo specific pattern: /bangladesh/politics/v1a2b3c
       // Daily Star specific pattern: /news/bangladesh/politics/slug-12345
-      const isArticle = /\/(bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery|details|news|article|world|views)\//.test(fullUrl) || 
-                        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) ||
-                        (fullUrl.split('/').length > 4 && fullUrl.length > 35);
+      const isArticle =
+        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) ||
+        /\d{4,}/.test(lastSegment) ||
+        (lastSegment.match(/-/g)?.length ?? 0) >= 3;
 
       if (isArticle) {
         items.push({ url: fullUrl, title: "" });
