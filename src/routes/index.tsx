@@ -140,6 +140,11 @@ function Home() {
           </Suspense>
         ))}
 
+        {/* চাকরি সেকশন — ভিডিও সেকশনের ঠিক আগে */}
+        <Suspense fallback={<SectionSkeleton />}>
+          <HomeSection title="চাকরি" slug="chakri" layout="politics" />
+        </Suspense>
+
         {/* Video Strip removed and merged into Photo Gallery below */}
 
         <BottomWidgets />
