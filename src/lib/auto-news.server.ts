@@ -294,7 +294,8 @@ export async function runAutoSync(
         const media = sourceImage
           ? await processSourceImageDetailed({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
           : { url: null, watermarked: false };
-        const imageUrl = media.url;
+        // ওয়াটারমার্ক/আপলোড ব্যর্থ হলেও সোর্সের মূল ছবিটিই ব্যবহার হবে, ছবি ছাড়া খবর নয়
+        const imageUrl = media.url ?? sourceImage;
         if (sourceImage && !media.watermarked) {
           result.details.push({
             title: news.title,
