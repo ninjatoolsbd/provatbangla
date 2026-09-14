@@ -11,10 +11,29 @@ import { discoverLatest, fetchArticle, sourceHost } from "@/lib/source-fetch.ser
 
 /** সাইটে ব্যবহৃত বৈধ ক্যাটাগরি স্লাগ। */
 const CATEGORIES = [
-  "opradh", "antorjatik", "bangladesh", "shikkha", "chakri", "projukti", "khela", "binodon",
-  "shilpo-sahitto", "jibonjapon", "cholonbil", "video", "health", "probas", "orthoniti",
-  "ain-adalat", "motamot", "bishesh-protibedon", "photo-gallery", "onnanno",
+  "bangladesh", "politics", "antorjatik", "orthoniti", "khela", "binodon", "shikkha", "chakri",
+  "prajukti", "health", "apradh", "ain-adalat", "motamot", "probas", "jibonjapon",
+  "shilpo-sahitto", "cholonbil", "bishesh-protibedon", "video", "photo-gallery", "onnanno",
 ] as const;
+
+/** AI বা সোর্স থেকে আসা ভিন্ন বানানের ক্যাটাগরি সাইটের স্লাগে মেলানো হয়। */
+const CATEGORY_ALIASES: Record<string, string> = {
+  opradh: "apradh", oporadh: "apradh", crime: "apradh",
+  projukti: "prajukti", technology: "prajukti",
+  arthonity: "orthoniti", orthonity: "orthoniti", economy: "orthoniti", business: "orthoniti",
+  sasthyo: "health", sastho: "health",
+  jatiyo: "bangladesh", national: "bangladesh", sarabangla: "bangladesh", desh: "bangladesh",
+  rajniti: "politics", politics_bd: "politics",
+  international: "antorjatik", world: "antorjatik",
+  sports: "khela", entertainment: "binodon", education: "shikkha", job: "chakri", jobs: "chakri",
+  opinion: "motamot", probashi: "probas", lifestyle: "jibonjapon",
+};
+
+function normalizeCategory(value: string): string {
+  const slug = (value || "").trim().toLowerCase();
+  const mapped = CATEGORY_ALIASES[slug] ?? slug;
+  return (CATEGORIES as readonly string[]).includes(mapped) ? mapped : "";
+}
 
 /** ইংরেজি সোর্স কিনা লেখা দেখে বুঝে নেয় (auto_sources-এ lang কলাম নেই)। */
 function detectLang(text: string): "bn" | "en" {
@@ -97,7 +116,7 @@ async function rewriteOnce(
     "- 'সূত্র:', 'নিজস্ব প্রতিবেদক', 'স্টাফ রিপোর্টার' জাতীয় কোনো বাইলাইন বা ক্রেডিট লাইন থাকবে না।",
     "- অনুচ্ছেদগুলো আসল ফাঁকা লাইন দিয়ে আলাদা করো। কমপক্ষে ৪-৫টি অনুচ্ছেদ থাকবে।",
     "- seo_title সর্বোচ্চ ৬০ অক্ষর, seo_description সর্বোচ্চ ১৫৫ অক্ষর।",
-    "- category হবে এর একটি: opradh, antorjatik, bangladesh, shikkha, chakri, projukti, khela, binodon, shilpo-sahitto, jibonjapon, cholonbil, video, health, probas, orthoniti, ain-adalat, motamot, bishesh-protibedon, photo-gallery, onnanno।",
+    `- category হবে ঠিক এই তালিকার একটি: ${CATEGORIES.join(", ")}। খবরের বিষয়বস্তু অনুযায়ী সবচেয়ে মানানসই ক্যাটাগরি বাছবে।`,
     "",
     "নিচের মার্কারগুলো হুবহু রেখে উত্তর দাও। JSON বা Markdown ব্যবহার করবে না:",
     "[TITLE]শিরোনাম[/TITLE]",
@@ -137,12 +156,8 @@ async function rewriteOnce(
   }
   if (!parsed.title) parsed.title = article.title;
 
-  const allowed = CATEGORIES as readonly string[];
-  const aiCategory = allowed.includes(parsed.category ?? "") ? (parsed.category as string) : "";
-  const forced =
-    fallbackCategory && fallbackCategory !== "auto" && allowed.includes(fallbackCategory)
-      ? fallbackCategory
-      : "";
+  const aiCategory = normalizeCategory(parsed.category ?? "");
+  const forced = fallbackCategory && fallbackCategory !== "auto" ? normalizeCategory(fallbackCategory) : "";
   const clean = (value: string) => sanitizeBrand(value, extraNames);
 
   return {
@@ -201,6 +216,7 @@ export async function runAutoSync(
   const publishStatus = cfg["auto_mode"] === "publish" ? "published" : "draft";
   const aiImage = cfg["auto_image_ai"] !== "false";
   const logoUrl = cfg["watermark_logo_url"] || "/logo.jpg";
+  const maxAgeHours = Number(cfg["auto_max_age_hours"] || "48") || 48;
   const allSourceNames = ((sources ?? []) as { name: string; site_url: string }[]).flatMap((s) => [
     s.name,
     sourceHost(s.site_url),
@@ -217,7 +233,7 @@ export async function runAutoSync(
     const limit = options.limit ?? source.per_run ?? 5;
     let items: { url: string; title: string; image?: string | undefined }[] = [];
     try {
-      items = await discoverLatest(source.site_url, limit * 2);
+      items = await discoverLatest(source.site_url, Math.max(limit * 4, 12));
     } catch (e) {
       result.failed += 1;
       result.details.push({
@@ -256,6 +272,15 @@ export async function runAutoSync(
           );
         if (!title || looksLikeSection || body.length < 700) continue;
 
+        // পুরনো খবর বাদ — শুধু সাম্প্রতিকগুলোই আসবে
+        if (article.publishedAt) {
+          const ageHours = (Date.now() - new Date(article.publishedAt).getTime()) / 3_600_000;
+          if (ageHours > maxAgeHours) {
+            result.skipped += 1;
+            continue;
+          }
+        }
+
         processed += 1;
 
         const sourceLang = detectLang(`${title} ${body.slice(0, 1000)}`);
@@ -270,7 +295,8 @@ export async function runAutoSync(
         const media = sourceImage
           ? await processSourceImageDetailed({ imageUrl: sourceImage, logoUrl, aiModify: aiImage })
           : { url: null, watermarked: false };
-        const imageUrl = media.url;
+        // ওয়াটারমার্ক/আপলোড ব্যর্থ হলেও সোর্সের মূল ছবিটিই ব্যবহার হবে, ছবি ছাড়া খবর নয়
+        const imageUrl = media.url ?? sourceImage;
         if (sourceImage && !media.watermarked) {
           result.details.push({
             title: news.title,

@@ -16,6 +16,7 @@ export type SourceArticle = {
   title: string;
   body: string;
   image?: string | undefined;
+  publishedAt?: string | undefined;
 };
 
 async function getText(url: string) {
@@ -72,19 +73,27 @@ async function fromRss(siteUrl: string, limit: number): Promise<SourceItem[]> {
     try {
       const xml = await getText(base + path);
       if (!/<(item|entry)[\s>]/i.test(xml)) continue;
-      const items: SourceItem[] = [];
+      const dated: { item: SourceItem; time: number }[] = [];
       // Split by item or entry tag
       const blocks = xml.split(/<(item|entry)[\s>]/i).slice(1);
       for (const block of blocks) {
         const link = block.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]?.trim() || 
                      block.match(/<link[^>]+href=["']([^"']+)["']/i)?.[1]?.trim();
         const title = stripTags(block.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-        
+        const dateRaw =
+          block.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i)?.[1] ??
+          block.match(/<updated[^>]*>([\s\S]*?)<\/updated>/i)?.[1] ??
+          block.match(/<published[^>]*>([\s\S]*?)<\/published>/i)?.[1] ??
+          "";
+        const time = dateRaw ? new Date(dateRaw.trim()).getTime() : Number.NaN;
+
         if (link && title) {
-          items.push({ url: link, title });
+          dated.push({ item: { url: link, title }, time: Number.isNaN(time) ? 0 : time });
         }
-        if (items.length >= limit) break;
       }
+      // নতুন খবর আগে
+      if (dated.some((d) => d.time > 0)) dated.sort((a, b) => b.time - a.time);
+      const items = dated.slice(0, limit).map((d) => d.item);
       if (items.length) return items;
     } catch {
       /* try next */
@@ -190,13 +199,17 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
       } catch { continue; }
       const slugLike = lastSegment.length >= 10 && (/-/.test(lastSegment) || /\d{4,}/.test(lastSegment));
       if (!slugLike) continue;
-      
-      
+
+      const segments = new URL(fullUrl).pathname.split("/").filter(Boolean);
+      // সেকশন পেজ (যেমন /world/united-kingdom) বাদ: অন্তত ৩ অংশ লাগবে
+      if (segments.length < 3) continue;
+
       // Prothom Alo specific pattern: /bangladesh/politics/v1a2b3c
       // Daily Star specific pattern: /news/bangladesh/politics/slug-12345
-      const isArticle = /\/(bangladesh|international|politics|education|video|technology|jobs|sports|entertainment|lifestyle|economics|law|opinion|special-reports|photo-gallery|chakri|probash|orthoniti|shikkha|antorjatik|binodon|khela|prajukti|apradh|durprobas|video-gallery|details|news|article|world|views)\//.test(fullUrl) || 
-                        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) ||
-                        (fullUrl.split('/').length > 4 && fullUrl.length > 35);
+      const isArticle =
+        /\/\d{4}\/\d{2}\/\d{2}\//.test(fullUrl) ||
+        /\d{4,}/.test(lastSegment) ||
+        (lastSegment.match(/-/g)?.length ?? 0) >= 3;
 
       if (isArticle) {
         items.push({ url: fullUrl, title: "" });
@@ -214,29 +227,101 @@ export async function discoverLatest(siteUrl: string, limit: number): Promise<So
 
 /* ---------------- extraction ---------------- */
 
+/** ছবিটি আসল নিউজ ছবি কিনা (লোগো/আইকন/প্লেসহোল্ডার নয়)। */
+function usableImage(src: string) {
+  if (!src || src.startsWith("data:")) return false;
+  if (/\.svg(\?|$)/i.test(src)) return false;
+  if (
+    /(logo|icon|favicon|sprite|placeholder|avatar|default[-_]?img|blank|1x1|spacer|pixel)/i.test(src)
+  ) {
+    return false;
+  }
+  // পূর্ণ ছবির লিংক হতে হবে — ভাঙা srcset টুকরো নয়
+  let path = "";
+  try {
+    path = new URL(src).pathname;
+  } catch {
+    return false;
+  }
+  return /\.(jpe?g|png|webp|avif)$/i.test(path) || /\/(image|images|media|photo|uploads?)\//i.test(path) || src.includes("?image=");
+}
+
+/** পেজ থেকে সম্ভাব্য সব জায়গা দেখে মূল ছবিটি বের করে। */
+function extractImage(html: string, pageUrl: string): string {
+  const candidates: string[] = [];
+  const push = (value?: string | null) => {
+    if (value) candidates.push(value.trim().replace(/&amp;/g, "&"));
+  };
+
+  push(meta(html, "og:image"));
+  push(meta(html, "og:image:secure_url"));
+  push(meta(html, "twitter:image"));
+  push(meta(html, "twitter:image:src"));
+  push(meta(html, "image"));
+
+  // JSON-LD (NewsArticle) থেকে ছবি
+  for (const block of html.matchAll(
+    /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
+  )) {
+    const raw = block[1] ?? "";
+    for (const m of raw.matchAll(/"(?:url|contentUrl)"\s*:\s*"([^"]+\.(?:jpe?g|png|webp)[^"]*)"/gi)) {
+      push(m[1]);
+    }
+  }
+
+  // <picture>/<img> — lazy-load অ্যাট্রিবিউটসহ
+  const imgTags = [...html.matchAll(/<(?:img|source)\b[^>]*>/gi)].map((m) => m[0]);
+  for (const tag of imgTags) {
+    for (const attr of ["data-src", "data-original", "data-lazy-src", "data-srcset", "srcset", "src"]) {
+      const value = tag.match(new RegExp(`${attr}=["']([^"']+)["']`, "i"))?.[1];
+      if (!value) continue;
+      // srcset-এ কমা থাকতে পারে URL-এর ভেতরেও — শুধু নতুন URL শুরুর আগে ভাঙা হয়
+      const parts = value.split(/,\s*(?=https?:\/\/|\/)/);
+      for (const part of parts) {
+        const candidate = part.trim().split(/\s+/)[0];
+        if (candidate) push(candidate);
+      }
+    }
+  }
+
+  for (const candidate of candidates) {
+    let full = candidate;
+    if (!/^https?:\/\//i.test(full)) {
+      if (full.startsWith("//")) full = `https:${full}`;
+      else {
+        try {
+          full = new URL(full, pageUrl).href;
+        } catch {
+          continue;
+        }
+      }
+    }
+    if (usableImage(full)) return full;
+  }
+  return "";
+}
+
+/** প্রকাশের সময় (ISO) বের করে, না পেলে খালি। */
+function extractPublishedAt(html: string): string {
+  const raw =
+    meta(html, "article:published_time") ||
+    meta(html, "article:modified_time") ||
+    meta(html, "publish-date") ||
+    meta(html, "pubdate") ||
+    html.match(/"datePublished"\s*:\s*"([^"]+)"/i)?.[1] ||
+    html.match(/<time[^>]+datetime=["']([^"']+)["']/i)?.[1] ||
+    "";
+  const date = raw ? new Date(raw) : null;
+  return date && !Number.isNaN(date.getTime()) ? date.toISOString() : "";
+}
+
 export async function fetchArticle(url: string): Promise<SourceArticle> {
   const html = await getText(url);
   const title = meta(html, "og:title") || stripTags(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] ?? "");
-  
-  // Scrape images more aggressively
-  let image = meta(html, "og:image") || meta(html, "twitter:image") || "";
-  
-  if (!image) {
-    // Look for article main image pattern
-    const imgMatch = html.match(/<article[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) || 
-                   html.match(/<div[^>]+class=["'][^"']*featured[^"']*["'][^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i) ||
-                   html.match(/<img[^>]+class=["'][^"']*main-image[^"']*["'][^>]*src=["']([^"']+)["']/i);
-    image = imgMatch?.[1] || "";
-  }
 
-  // Handle relative image URLs
-  if (image && !image.startsWith("http")) {
-    try {
-      image = new URL(image, url).href;
-    } catch {
-      image = "";
-    }
-  }
+  const image = extractImage(html, url);
+  const publishedAt = extractPublishedAt(html);
+
 
   const paragraphs = [...html.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)]
     .map((m) => stripTags(m[1] ?? ""))
@@ -259,7 +344,13 @@ export async function fetchArticle(url: string): Promise<SourceArticle> {
     if (desc && desc.length > body.length) body = desc;
   }
 
-  return { url, title: title.trim(), body: body.trim(), image: image || undefined };
+  return {
+    url,
+    title: title.trim(),
+    body: body.trim(),
+    image: image || undefined,
+    publishedAt: publishedAt || undefined,
+  };
 }
 
 export { host as sourceHost };
