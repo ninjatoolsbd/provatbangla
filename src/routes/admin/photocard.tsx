@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { fetchSettings } from "@/lib/cms";
 import logoAsset from "@/lib/logo";
 
 const meta = (t: string, d: string) => ({
@@ -82,6 +84,8 @@ export const Route = createFileRoute("/admin/photocard")({
 
 function PhotocardGenerator() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const settings = useQuery({ queryKey: ["cms", "settings"], queryFn: fetchSettings });
+  const watermarkLogoUrl = settings.data?.["watermark_logo_url"] || logoAsset.url;
   const [template, setTemplate] = useState<TemplateId>("classic");
   const [title, setTitle] = useState("সন্ধ্যার সংবাদ");
   const [subtitle, setSubtitle] = useState("আজকের গুরুত্বপূর্ণ সব খবর, এক নজরে দেখে নিন।");
@@ -109,7 +113,8 @@ function PhotocardGenerator() {
       });
 
     const photo = imgSrc ? await loadImg(imgSrc) : null;
-    const logo = await loadImg(logoAsset.url);
+    // অটো নিউজ সেটিংসে নির্বাচিত সর্বশেষ ওয়াটারমার্ক লোগোটিই ব্যবহার হবে
+    const logo = await loadImg(watermarkLogoUrl);
 
     ctx.clearRect(0, 0, SIZE, SIZE);
     ctx.fillStyle = "#ffffff";
@@ -228,15 +233,17 @@ function PhotocardGenerator() {
     }
 
     if (logo) {
-      const lw = 230;
+      const lw = 170;
       const lh = (logo.height / logo.width) * lw;
+      const logoX = template === "classic" ? (SIZE - lw) / 2 : SIZE - lw - 38;
+      const logoY = SIZE - lh - 20;
       ctx.save();
       ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.fillRect(44, 44, lw + 24, lh + 16);
-      ctx.drawImage(logo, 56, 52, lw, lh);
+      ctx.fillRect(logoX - 10, logoY - 8, lw + 20, lh + 16);
+      ctx.drawImage(logo, logoX, logoY, lw, lh);
       ctx.restore();
     }
-  }, [template, title, subtitle, dateText, domain, facebook, accent, imgSrc]);
+  }, [template, title, subtitle, dateText, domain, facebook, accent, imgSrc, watermarkLogoUrl]);
 
   useEffect(() => {
     void draw();
