@@ -235,7 +235,7 @@ function PhotocardGenerator() {
     if (logo) {
       const lw = 170;
       const lh = (logo.height / logo.width) * lw;
-      const logoX = (SIZE - lw) / 2;
+      const logoX = template === "classic" ? (SIZE - lw) / 2 : SIZE - lw - 38;
       const logoY = SIZE - lh - 20;
       ctx.save();
       ctx.fillStyle = "rgba(255,255,255,0.92)";
