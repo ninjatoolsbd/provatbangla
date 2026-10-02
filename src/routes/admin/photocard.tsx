@@ -249,9 +249,9 @@ function PhotocardGenerator() {
           const d = octx.getImageData(0, 0, off.width, off.height);
           const p = d.data;
           for (let i = 0; i < p.length; i += 4) {
-            const m = Math.min(p[i], p[i + 1], p[i + 2]);
+            const m = Math.min(p[i] ?? 0, p[i + 1] ?? 0, p[i + 2] ?? 0);
             if (m > 235) p[i + 3] = 0;
-            else if (m > 200) p[i + 3] = Math.round(p[i + 3] * ((235 - m) / 35));
+            else if (m > 200) p[i + 3] = Math.round((p[i + 3] ?? 255) * ((235 - m) / 35));
           }
           octx.putImageData(d, 0, 0);
           src = off;
