@@ -376,8 +376,8 @@ function PhotocardGenerator() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
-      <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+    <div className="grid gap-4 pb-20 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-6 lg:pb-0">
+      <div className="order-2 min-w-0 space-y-4 rounded-xl border border-border bg-card p-4 sm:p-5 lg:order-1">
         <div>
           <h1 className="font-display text-xl font-bold text-primary">ফটোকার্ড জেনারেটর</h1>
           <p className="text-sm text-muted-foreground">
@@ -418,7 +418,7 @@ function PhotocardGenerator() {
           <Textarea value={subtitle} onChange={(e) => setSubtitle(e.target.value)} rows={2} />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
           <div className="space-y-2">
             <Label>তারিখ</Label>
             <Input value={dateText} onChange={(e) => setDateText(e.target.value)} />
@@ -429,7 +429,7 @@ function PhotocardGenerator() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
           <div className="space-y-2">
             <Label>ওয়েবসাইট</Label>
             <Input value={domain} onChange={(e) => setDomain(e.target.value)} />
@@ -440,8 +440,8 @@ function PhotocardGenerator() {
           </div>
         </div>
 
-        <div className="flex gap-3 pt-2">
-          <Button onClick={download} className="flex-1">
+        <div className="fixed inset-x-0 bottom-0 z-20 flex gap-3 border-t border-border bg-background p-3 lg:static lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2">
+          <Button onClick={download} className="h-11 flex-1 lg:h-10">
             ডাউনলোড করুন
           </Button>
           <Button
@@ -457,15 +457,15 @@ function PhotocardGenerator() {
         </div>
       </div>
 
-      <div className="flex items-start justify-center rounded-xl border border-border bg-muted/40 p-6">
-        <div className="w-full max-w-[560px]">
+      <div className="sticky top-12 z-10 order-1 flex min-w-0 items-start justify-center rounded-xl border border-border bg-muted p-2 sm:p-4 lg:static lg:order-2 lg:bg-muted/40 lg:p-6">
+        <div className="w-full max-w-[260px] sm:max-w-[360px] lg:max-w-[560px]">
           <canvas
             ref={canvasRef}
             width={SIZE}
             height={SIZE}
             className="w-full rounded-lg border border-border bg-white shadow-sm"
           />
-          <p className="mt-3 text-center text-xs text-muted-foreground">
+          <p className="mt-2 hidden text-center text-xs text-muted-foreground sm:block">
             প্রিভিউ ছোট করে দেখানো হচ্ছে — ডাউনলোড হবে ১০৮০×১০৮০ পিক্সেল।
           </p>
         </div>
