@@ -5,9 +5,44 @@
  */
 
 import jpeg from "jpeg-js";
+import { decode as decodePng } from "fast-png";
 import { PNG } from "pngjs";
 
 type Rgba = { width: number; height: number; data: Uint8Array };
+
+/** যেকোনো PNG (প্যালেট/গ্রে/RGB/RGBA, ৮/১৬ বিট) → ৮-বিট RGBA */
+function decodePngPure(bytes: Uint8Array): Rgba {
+  const img = decodePng(bytes);
+  const { width, height, channels, depth } = img;
+  const src = img.data as ArrayLike<number>;
+  const palette = img.palette as number[][] | undefined;
+  const out = new Uint8Array(width * height * 4);
+  const scale = depth === 16 ? 257 : 1;
+  for (let i = 0; i < width * height; i += 1) {
+    const o = i * 4;
+    if (palette) {
+      const p = palette[src[i] ?? 0] ?? [0, 0, 0, 255];
+      out[o] = p[0] ?? 0;
+      out[o + 1] = p[1] ?? 0;
+      out[o + 2] = p[2] ?? 0;
+      out[o + 3] = p[3] ?? 255;
+      continue;
+    }
+    const s = i * channels;
+    const v = (k: number) => Math.round((src[s + k] ?? 0) / scale);
+    if (channels <= 2) {
+      out[o] = out[o + 1] = out[o + 2] = v(0);
+      out[o + 3] = channels === 2 ? v(1) : 255;
+    } else {
+      out[o] = v(0);
+      out[o + 1] = v(1);
+      out[o + 2] = v(2);
+      out[o + 3] = channels === 4 ? v(3) : 255;
+    }
+  }
+  return { width, height, data: out };
+}
+
 
 function decodeImage(bytes: Uint8Array): Rgba | null {
   try {
@@ -19,8 +54,13 @@ function decodeImage(bytes: Uint8Array): Rgba | null {
     }
     // PNG: 89 50 4E 47
     if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
-      const png = PNG.sync.read(Buffer.from(bytes));
-      return { width: png.width, height: png.height, data: new Uint8Array(png.data) };
+      // লাইভ সার্ভারে Node zlib নেই, তাই খাঁটি-JS fast-png দিয়ে ডিকোড
+      try {
+        return decodePngPure(bytes);
+      } catch {
+        const png = PNG.sync.read(Buffer.from(bytes));
+        return { width: png.width, height: png.height, data: new Uint8Array(png.data) };
+      }
     }
     return null;
   } catch {
