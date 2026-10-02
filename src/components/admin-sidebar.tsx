@@ -33,7 +33,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const contentItems = [
@@ -67,6 +69,11 @@ const systemItems = [
 export function AdminSidebar({ email, isAdmin = true }: { email: string | null; isAdmin?: boolean }) {
   const navigate = useNavigate();
   const path = useRouterState({ select: (r) => r.location.pathname });
+  const { setOpenMobile } = useSidebar();
+  // মোবাইলে পেজ বদলালে মেনু নিজে থেকে বন্ধ হবে
+  useEffect(() => {
+    setOpenMobile(false);
+  }, [path, setOpenMobile]);
 
   return (
     <Sidebar collapsible="icon">

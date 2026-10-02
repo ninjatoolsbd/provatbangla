@@ -69,11 +69,11 @@ function AdminLayout() {
       <div className="flex min-h-screen w-full bg-muted/30">
         <AdminSidebar email={email} isAdmin={isAdmin} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-20 flex h-12 items-center gap-2 border-b border-border bg-background px-3">
-            <SidebarTrigger />
+          <header className="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-border bg-background px-3">
+            <SidebarTrigger className="size-9" />
             <span className="font-display text-sm font-bold text-primary">অ্যাডমিন ড্যাশবোর্ড</span>
           </header>
-          <main className="min-w-0 flex-1 p-4">
+          <main className="admin-main min-w-0 flex-1 overflow-x-hidden p-3 sm:p-4">
             <Outlet />
           </main>
         </div>

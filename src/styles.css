@@ -351,3 +351,12 @@ body {
   }
 }
 
+
+/* অ্যাডমিন প্যানেল — মোবাইল ফ্রেন্ডলি */
+@media (max-width: 640px) {
+  .admin-main .justify-between { flex-wrap: wrap; }
+  .admin-main h1 { font-size: 1.25rem; line-height: 1.4; }
+  .admin-main input, .admin-main select, .admin-main textarea { font-size: 16px; }
+  .admin-main table { min-width: 100%; }
+  .admin-main .overflow-hidden:has(> table), .admin-main div:has(> table) { overflow-x: auto; }
+}

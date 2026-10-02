@@ -372,12 +372,12 @@ function PostsPage() {
           <div className="flex-1 min-w-0">টাইটেল</div>
           <div className="hidden w-24 text-center sm:block shrink-0">স্ট্যাটাস</div>
           <div className="hidden w-40 text-center sm:block shrink-0 text-nowrap">তারিখ</div>
-          <div className="w-56 text-right shrink-0">অ্যাকশন</div>
+          <div className="text-right shrink-0 sm:w-56">অ্যাকশন</div>
         </div>
 
         <div className="divide-y divide-border">
           {rows.map((p) => (
-            <div key={p.id} className="flex items-center gap-4 px-4 py-4 hover:bg-muted/30">
+            <div key={p.id} className="flex items-center gap-2 px-3 py-3 hover:bg-muted/30 sm:gap-4 sm:px-4 sm:py-4">
               <button onClick={() => toggleSelection(p.id)} className="shrink-0 w-6">
                 {selectedIds.includes(p.id) ? (
                   <CheckSquare className="size-4 text-primary" />
@@ -387,7 +387,7 @@ function PostsPage() {
               </button>
               
               <div className="flex-1 min-w-0">
-                <p className="truncate font-display text-sm font-semibold text-foreground">{p.title}</p>
+                <p className="line-clamp-2 font-display text-sm font-semibold text-foreground sm:truncate">{p.title}</p>
                 <p className="text-xs text-muted-foreground">
                   {categories.find((c) => c.slug === p.category)?.name ?? p.category}
                 </p>
@@ -410,7 +410,7 @@ function PostsPage() {
                 {banglaDateTime(p.published_at ?? p.created_at)}
               </div>
 
-              <div className="flex w-56 items-center justify-end gap-3 shrink-0">
+              <div className="flex items-center justify-end gap-2 shrink-0 sm:w-56 sm:gap-3">
                 <a
                   href={p.status === "published" ? `/post/${p.slug}` : `/post/${p.slug}?preview=true`}
                   target="_blank"
