@@ -237,7 +237,7 @@ function PhotocardGenerator() {
       // উপরে লাল, নিচে কালো — লোগোর রঙে
       ctx.fillStyle = "#ED1C24";
       ctx.fillRect(0, 0, SIZE, 380);
-      ctx.fillStyle = "#0a0a0a";
+      ctx.fillStyle = "#0B5D2A";
       ctx.fillRect(0, 380, SIZE, SIZE - 380);
 
       ctx.fillStyle = "#ffffff";
@@ -256,7 +256,7 @@ function PhotocardGenerator() {
       ctx.fill();
       const g = ctx.createLinearGradient(fx, 0, fx + fw, 0);
       g.addColorStop(0, "#ED1C24");
-      g.addColorStop(1, "#1a1a1a");
+      g.addColorStop(1, "#0B5D2A");
       ctx.fillStyle = g;
       rr(fx + 8, fy + 8, fw - 16, fh - 16, 16);
       ctx.fill();
@@ -301,10 +301,10 @@ function PhotocardGenerator() {
       const pill = subtitle || "বিস্তারিত কমেন্টে...";
       const tw = Math.min(ctx.measureText(pill).width + 60, SIZE - 160);
       const pyy = Math.min(y - 10, SIZE - 170);
-      ctx.fillStyle = "#FFE500";
+      ctx.fillStyle = "#F7941D";
       rr((SIZE - tw) / 2, pyy, tw, 62, 12);
       ctx.fill();
-      ctx.fillStyle = "#0a0a0a";
+      ctx.fillStyle = "#ffffff";
       ctx.fillText(pill, SIZE / 2, pyy + 42, tw - 30);
 
       // লাল ফুটার বার
