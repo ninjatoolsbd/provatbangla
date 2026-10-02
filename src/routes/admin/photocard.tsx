@@ -237,10 +237,32 @@ function PhotocardGenerator() {
       const lh = (logo.height / logo.width) * lw;
       const logoX = template === "classic" ? (SIZE - lw) / 2 : SIZE - lw - 38;
       const logoY = SIZE - lh - 20;
+      // লোগোর সাদা ব্যাকগ্রাউন্ড স্বচ্ছ করে আঁকা হচ্ছে (কোনো বক্স নয়)
+      const off = document.createElement("canvas");
+      off.width = Math.round(lw * 2);
+      off.height = Math.round(lh * 2);
+      const octx = off.getContext("2d");
+      let src: CanvasImageSource = logo;
+      if (octx) {
+        octx.drawImage(logo, 0, 0, off.width, off.height);
+        try {
+          const d = octx.getImageData(0, 0, off.width, off.height);
+          const p = d.data;
+          for (let i = 0; i < p.length; i += 4) {
+            const m = Math.min(p[i] ?? 0, p[i + 1] ?? 0, p[i + 2] ?? 0);
+            if (m > 235) p[i + 3] = 0;
+            else if (m > 200) p[i + 3] = Math.round((p[i + 3] ?? 255) * ((235 - m) / 35));
+          }
+          octx.putImageData(d, 0, 0);
+          src = off;
+        } catch {
+          // CORS হলে আসল লোগোই বসবে
+        }
+      }
       ctx.save();
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.fillRect(logoX - 10, logoY - 8, lw + 20, lh + 16);
-      ctx.drawImage(logo, logoX, logoY, lw, lh);
+      ctx.shadowColor = "rgba(0,0,0,0.35)";
+      ctx.shadowBlur = 6;
+      ctx.drawImage(src, logoX, logoY, lw, lh);
       ctx.restore();
     }
   }, [template, title, subtitle, dateText, domain, facebook, accent, imgSrc, watermarkLogoUrl]);
