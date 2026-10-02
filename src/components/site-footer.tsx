@@ -32,7 +32,7 @@ export function SiteFooter() {
             <div className="md:col-span-4">
               <Link to="/" className="inline-block transition-transform duration-300 hover:scale-[1.03] mb-6">
                 <img 
-                  src={logoAsset.url} 
+                  src="/logo-transparent.png" 
                   alt="প্রভাতবাংলা" 
                   className="h-16 w-auto max-w-full object-contain" 
                 />
