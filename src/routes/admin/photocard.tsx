@@ -22,12 +22,13 @@ const meta = (t: string, d: string) => ({
   ],
 });
 
-type TemplateId = "classic" | "bottombar" | "overlay";
+type TemplateId = "classic" | "bottombar" | "overlay" | "split";
 
 const TEMPLATES: { id: TemplateId; name: string; hint: string }[] = [
   { id: "classic", name: "ক্লাসিক (ছবি + নিচে লাল প্যানেল)", hint: "স্ক্রিনশটের মতো ডিজাইন" },
   { id: "bottombar", name: "ফুল ছবি + নিচে কালো বার", hint: "বড় ছবির উপর শিরোনাম" },
   { id: "overlay", name: "গ্রেডিয়েন্ট ওভারলে", hint: "ছবির উপরে গাঢ় শেড ও শিরোনাম" },
+  { id: "split", name: "লাল-কালো ফ্রেম (লোগো মাঝে)", hint: "উপরে তারিখ, ফ্রেমে ছবি, নিচে শিরোনাম ও হলুদ বাটন" },
 ];
 
 const SIZE = 1080;
@@ -232,7 +233,89 @@ function PhotocardGenerator() {
       ctx.fillText(`${domain}  •  ${dateText}`, 60, SIZE - 50);
     }
 
-    if (logo) {
+    if (template === "split") {
+      // উপরে লাল, নিচে কালো — লোগোর রঙে
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(0, 0, SIZE, 380);
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillRect(0, 380, SIZE, SIZE - 380);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.font = font(30, "600");
+      ctx.fillText(dateText, SIZE / 2, 58);
+
+      // সাদা ফ্রেম + লাল-কালো গ্রেডিয়েন্ট ভেতরের বর্ডার
+      const fx = 40, fy = 86, fw = SIZE - 80, fh = 490;
+      const rr = (x: number, y: number, w: number, h: number, r: number) => {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, r);
+      };
+      ctx.fillStyle = "#ffffff";
+      rr(fx, fy, fw, fh, 22);
+      ctx.fill();
+      const g = ctx.createLinearGradient(fx, 0, fx + fw, 0);
+      g.addColorStop(0, "#ED1C24");
+      g.addColorStop(1, "#1a1a1a");
+      ctx.fillStyle = g;
+      rr(fx + 8, fy + 8, fw - 16, fh - 16, 16);
+      ctx.fill();
+      const px = fx + 18, py = fy + 18, pw = fw - 36, ph = fh - 36;
+      ctx.save();
+      rr(px, py, pw, ph, 10);
+      ctx.clip();
+      if (photo) drawCover(ctx, photo, px, py, pw, ph);
+      else {
+        ctx.fillStyle = "#e5e7eb";
+        ctx.fillRect(px, py, pw, ph);
+      }
+      ctx.restore();
+
+      // লোগো সাদা বক্সে, ফ্রেমের নিচে মাঝখানে
+      const bw = 340, bh = 130;
+      const bx = (SIZE - bw) / 2, by = fy + fh - 60;
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.4)";
+      ctx.shadowBlur = 14;
+      ctx.fillStyle = "#ffffff";
+      rr(bx, by, bw, bh, 12);
+      ctx.fill();
+      ctx.restore();
+      if (logo) {
+        const s = Math.min((bw - 30) / logo.width, (bh - 20) / logo.height);
+        const lw2 = logo.width * s, lh2 = logo.height * s;
+        ctx.drawImage(logo, bx + (bw - lw2) / 2, by + (bh - lh2) / 2, lw2, lh2);
+      }
+
+      // শিরোনাম
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(54);
+      let y = by + bh + 80;
+      for (const line of wrapLines(ctx, title, SIZE - 120, 2)) {
+        ctx.fillText(line, SIZE / 2, y);
+        y += 68;
+      }
+
+      // হলুদ পিল
+      ctx.font = font(30, "600");
+      const pill = subtitle || "বিস্তারিত কমেন্টে...";
+      const tw = Math.min(ctx.measureText(pill).width + 60, SIZE - 160);
+      const pyy = Math.min(y - 10, SIZE - 170);
+      ctx.fillStyle = "#FFE500";
+      rr((SIZE - tw) / 2, pyy, tw, 62, 12);
+      ctx.fill();
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillText(pill, SIZE / 2, pyy + 42, tw - 30);
+
+      // লাল ফুটার বার
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(40, SIZE - 88, SIZE - 80, 62);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(28, "500");
+      ctx.fillText(domain, SIZE / 2, SIZE - 47);
+    }
+
+    if (logo && template !== "split") {
       const lw = 170;
       const lh = (logo.height / logo.width) * lw;
       const logoX = template === "classic" ? (SIZE - lw) / 2 : SIZE - lw - 38;
