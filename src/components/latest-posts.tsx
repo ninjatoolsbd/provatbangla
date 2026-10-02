@@ -257,64 +257,6 @@ export function LatestPosts({ category }: { category?: string }) {
         </div>
       )}
 
-      {/* Bottom: Infinite-style Slider */}
-      {sliderPosts.length > 0 && (
-        <div className="mt-16 overflow-hidden bg-slate-900 px-6 py-12 rounded-3xl shadow-2xl lg:px-12">
-          <div className="mb-8 flex items-center justify-between">
-            <h3 className="font-display text-2xl font-black text-white">আরও খবর</h3>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => scroll("left")}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-primary hover:scale-110 active:scale-95"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button 
-                onClick={() => scroll("right")}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition-all hover:bg-primary hover:scale-110 active:scale-95"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
-
-          <div 
-            ref={scrollRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4"
-          >
-            {sliderPosts.map((p, i) => (
-              <Reveal key={p.id} delay={i * 50}>
-                <article className="group w-[320px] shrink-0 snap-start">
-                  {p.image_url && (
-                    <Link
-                      to="/post/$slug"
-                      params={{ slug: p.slug ?? "" }}
-                      className="relative mb-4 block aspect-[16/10] overflow-hidden rounded-xl"
-                    >
-                      <NewsImage
-                        src={p.image_url}
-                        alt={p.title}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        width="320"
-                        height="200"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    </Link>
-                  )}
-                  <Link to="/post/$slug" params={{ slug: p.slug ?? "" }}>
-                    <h4 className="line-clamp-2 font-display text-lg font-bold leading-snug text-white transition-colors group-hover:text-primary-foreground">
-                      {p.title}
-                    </h4>
-                  </Link>
-                  <div className="mt-2 text-sm text-slate-400">
-                    {banglaDateTime(p.published_at)}
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   );
 }
