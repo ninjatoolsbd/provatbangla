@@ -171,6 +171,8 @@ function WritePage() {
   }
 
   function resetForm() {
+    categoryTouched.current = false;
+    setCategoryAuto(false);
     setEditingId(null);
     setTitle("");
     
