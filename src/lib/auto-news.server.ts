@@ -2,7 +2,7 @@
  * অটো নিউজ পাইপলাইন: সোর্স ক্রল → ডুপ্লিকেট চেক → AI রিরাইট → ইমেজ প্রসেস → পোস্ট।
  */
 
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { adminCloud as supabaseAdmin } from "@/lib/admin-cloud-client.server";
 import { generateTextWithFallback } from "@/lib/ai-providers.server";
 import { SITE_NAME, sanitizeBrand, similarityRatio } from "@/lib/brand-sanitize";
 import { processSourceImageDetailed } from "@/lib/news-media.server";

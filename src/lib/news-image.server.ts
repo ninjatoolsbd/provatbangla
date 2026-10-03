@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { adminCloud as supabaseAdmin } from "@/lib/admin-cloud-client.server";
 
 const BUCKET = "news-images";
 

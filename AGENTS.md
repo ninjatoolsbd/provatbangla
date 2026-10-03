@@ -8,3 +8,4 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+- Server code that needs privileged DB access uses `adminCloud`/`getAdminCloudClient` from `src/lib/admin-cloud-client.server.ts`, not `supabaseAdmin` — the self-hosted Cloudflare Worker has no SUPABASE_SERVICE_ROLE_KEY env, so `supabaseAdmin` throws there.
