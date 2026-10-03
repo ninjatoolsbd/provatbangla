@@ -271,45 +271,48 @@ function WritePage() {
     }
   };
 
-  const handleAutoMetadata = async () => {
-    if (!title || content.length < 100) return;
-    
+  const plainLen = (html: string) =>
+    html.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim().length;
+  const lastAutoKey = useRef("");
+
+  const handleAutoMetadata = async (opts?: { silent?: boolean; force?: boolean }) => {
+    if (plainLen(content) < 80) {
+      if (!opts?.silent) toast.error("আগে খবরের মূল লেখা দিন (কমপক্ষে কয়েক লাইন)");
+      return;
+    }
     try {
       setIsGeneratingMetadata(true);
       const { generateMetadata } = await import("@/lib/news-metadata.functions");
-      const result = await generateMetadata({
-        data: { title, content }
-      });
-      
-      // Only fill if current field is empty (to avoid overwriting user edits)
-      
-      if (!seoTitle) setSeoTitle(result.seo_title);
-      if (!seoDesc) setSeoDesc(result.seo_description);
-      
-      // Auto select category if it's still default or empty
-      if (category === "bangladesh" || !category) {
-        setCategory(result.category);
-      }
-      
-      toast.success("মেটাডেটা ও ক্যাটাগরি অটো-জেনারেট হয়েছে");
-    } catch (error: any) {
+      const result = await generateMetadata({ data: { title, content } });
+      const force = !!opts?.force;
+      if (!title.trim() && result.title) setTitle(result.title);
+      if (force || !seoTitle) setSeoTitle(result.seo_title);
+      if (force || !seoDesc) setSeoDesc(result.seo_description);
+      if (category === "bangladesh" || !category) setCategory(result.category);
+      toast.success("শিরোনাম, মেটা ও ক্যাটাগরি অটো-জেনারেট হয়েছে");
+    } catch (error) {
       console.error("Metadata generation failed:", error);
+      if (!opts?.silent) toast.error("অটো-জেনারেট করা যায়নি, আবার চেষ্টা করুন");
     } finally {
       setIsGeneratingMetadata(false);
     }
   };
 
-  // Debounced effect for auto-generation when title and content are typed
+  // লেখা দেওয়ার পর শিরোনাম/মেটা ফাঁকা থাকলে নিজে থেকেই তৈরি হবে
   useEffect(() => {
-    if (editingId || autoGenAttempted || !title || content.length < 300) return;
-    
+    if (isGeneratingMetadata) return;
+    if (title.trim() && seoTitle && seoDesc) return;
+    if (plainLen(content) < 150) return;
+    const key = content.slice(0, 400);
+    if (lastAutoKey.current === key) return;
     const timer = setTimeout(() => {
-      handleAutoMetadata();
-      setAutoGenAttempted(true); // Only auto-attempt once per new post session
+      lastAutoKey.current = key;
+      setAutoGenAttempted(true);
+      void handleAutoMetadata({ silent: true });
     }, 2000);
-    
     return () => clearTimeout(timer);
-  }, [title, content, editingId, autoGenAttempted]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, content, seoTitle, seoDesc, isGeneratingMetadata]);
 
   const stripHtml = (html: string) => {
     return html
@@ -450,8 +453,8 @@ function WritePage() {
                     variant="ghost" 
                     size="icon" 
                     className="h-5 w-5 text-primary hover:text-primary"
-                    onClick={handleAutoMetadata}
-                    disabled={isGeneratingMetadata || !title || content.length < 100}
+                    onClick={() => handleAutoMetadata({ force: true })}
+                    disabled={isGeneratingMetadata}
                     title="AI দিয়ে অটো-জেনারেট করুন"
                   >
                     {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
@@ -467,8 +470,8 @@ function WritePage() {
                     variant="ghost" 
                     size="icon" 
                     className="h-5 w-5 text-primary hover:text-primary"
-                    onClick={handleAutoMetadata}
-                    disabled={isGeneratingMetadata || !title || content.length < 100}
+                    onClick={() => handleAutoMetadata({ force: true })}
+                    disabled={isGeneratingMetadata}
                     title="AI দিয়ে অটো-জেনারেট করুন"
                   >
                     {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
@@ -539,8 +542,8 @@ function WritePage() {
                 variant="ghost" 
                 size="icon" 
                 className="h-5 w-5 text-primary hover:text-primary"
-                onClick={handleAutoMetadata}
-                disabled={isGeneratingMetadata || !title || content.length < 100}
+                onClick={() => handleAutoMetadata({ force: true })}
+                disabled={isGeneratingMetadata}
                 title="AI দিয়ে ক্যাটাগরি ডিটেক্ট করুন"
               >
                 {isGeneratingMetadata ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
