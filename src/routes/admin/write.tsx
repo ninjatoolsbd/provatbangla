@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2 } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { categories } from "@/lib/news-data";
 import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
 import { RichTextEditor } from "@/components/rich-text-editor";
+import { fetchSettings } from "@/lib/cms";
+import logoAsset from "@/lib/logo";
+import { generateAndDownloadPhotocard } from "@/lib/photocard-render";
 
 export const Route = createFileRoute("/admin/write")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -76,8 +79,10 @@ function WritePage() {
   const [autoGenAttempted, setAutoGenAttempted] = useState(false);
   const [authorId, setAuthorId] = useState<string>("");
   const [authorName, setAuthorName] = useState<string>("");
-  const [shareInfo, setShareInfo] = useState<{ url: string; title: string } | null>(null);
+  const [shareInfo, setShareInfo] = useState<{ url: string; title: string; image: string | null } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [cardBusy, setCardBusy] = useState(false);
+  const siteSettings = useQuery({ queryKey: ["cms", "settings"], queryFn: fetchSettings });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const authorsQuery = useQuery({
@@ -189,7 +194,7 @@ function WritePage() {
       
       if (status === "published") {
         const origin = typeof window !== "undefined" ? window.location.origin : "";
-        setShareInfo({ url: `${origin}/post/${res.slug}`, title: res.title });
+        setShareInfo({ url: `${origin}/post/${res.slug}`, title: res.title, image: imageUrl || null });
         resetForm();
       } else {
         // If it was a draft save and we weren't editing, set the ID so we don't insert a duplicate next time
@@ -654,6 +659,30 @@ function WritePage() {
               {copied ? "কপি হয়েছে" : "কপি"}
             </Button>
           </div>
+
+          <Button
+            className="w-full"
+            disabled={cardBusy}
+            onClick={async () => {
+              if (!shareInfo) return;
+              setCardBusy(true);
+              try {
+                await generateAndDownloadPhotocard({
+                  title: shareInfo.title,
+                  imageUrl: shareInfo.image,
+                  watermarkLogoUrl: siteSettings.data?.["watermark_logo_url"] || logoAsset.url,
+                });
+                toast.success("ফটোকার্ড ডাউনলোড হয়েছে");
+              } catch {
+                toast.error("ফটোকার্ড তৈরি করা যায়নি");
+              } finally {
+                setCardBusy(false);
+              }
+            }}
+          >
+            {cardBusy ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Download className="mr-2 size-4" />}
+            ফটোকার্ড জেনারেট করুন
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

@@ -512,3 +512,63 @@ export async function renderPhotocard(canvas: HTMLCanvasElement, opts: Photocard
       ctx.restore();
     }
 }
+
+/** ছবিকে data URL বানায়, যাতে ক্যানভাস "tainted" না হয় ও ডাউনলোড চলে। */
+async function toDataUrl(url: string): Promise<string | null> {
+  const tryFetch = async (u: string) => {
+    try {
+      const res = await fetch(u, { mode: "cors" });
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      if (!blob.type.startsWith("image/")) return null;
+      return await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = reject;
+        r.readAsDataURL(blob);
+      });
+    } catch {
+      return null;
+    }
+  };
+  const direct = await tryFetch(url);
+  if (direct) return direct;
+  // R2 ছবি হলে নিজের সাইটের প্রক্সি দিয়ে চেষ্টা
+  try {
+    const path = new URL(url, window.location.origin).pathname.replace(/^\/+/, "");
+    return await tryFetch(`/api/public/r2/${path}`);
+  } catch {
+    return null;
+  }
+}
+
+/** ডিফল্ট টেমপ্লেটে একটি নিউজের ফটোকার্ড তৈরি করে সাথে সাথে ডাউনলোড করে। */
+export async function generateAndDownloadPhotocard(input: {
+  title: string;
+  imageUrl?: string | null;
+  watermarkLogoUrl: string;
+}) {
+  const imgSrc = input.imageUrl ? await toDataUrl(input.imageUrl) : null;
+  const canvas = document.createElement("canvas");
+  await renderPhotocard(canvas, {
+    template: DEFAULT_TEMPLATE,
+    title: input.title,
+    subtitle: "বিস্তারিত কমেন্টে...",
+    dateText: new Date().toLocaleDateString("bn-BD", { day: "numeric", month: "long", year: "numeric" }),
+    domain: "www.provatbanglanews.com",
+    facebook: "provatbangla",
+    accent: "#9B0E13",
+    imgSrc,
+    watermarkLogoUrl: input.watermarkLogoUrl,
+  });
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+  if (!blob) throw new Error("ফটোকার্ড তৈরি করা যায়নি");
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `photocard-${Date.now()}.png`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
