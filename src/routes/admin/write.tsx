@@ -68,6 +68,8 @@ function WritePage() {
   const [title, setTitle] = useState("");
   
   const [category, setCategory] = useState("bangladesh");
+  const categoryTouched = useRef(false);
+  const [categoryAuto, setCategoryAuto] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   
   const [content, setContent] = useState("");
@@ -140,6 +142,7 @@ function WritePage() {
     setTitle(p.title);
     
     setCategory(p.category);
+    categoryTouched.current = true;
     setImageUrl(p.image_url ?? "");
     
     setContent(p.content);
@@ -288,7 +291,10 @@ function WritePage() {
       if (!title.trim() && result.title) setTitle(result.title);
       if (force || !seoTitle) setSeoTitle(result.seo_title);
       if (force || !seoDesc) setSeoDesc(result.seo_description);
-      if (category === "bangladesh" || !category) setCategory(result.category);
+      if (result.category && (force || !categoryTouched.current)) {
+        setCategory(result.category);
+        setCategoryAuto(true);
+      }
       toast.success("শিরোনাম, মেটা ও ক্যাটাগরি অটো-জেনারেট হয়েছে");
     } catch (error) {
       console.error("Metadata generation failed:", error);
@@ -301,7 +307,7 @@ function WritePage() {
   // লেখা দেওয়ার পর শিরোনাম/মেটা ফাঁকা থাকলে নিজে থেকেই তৈরি হবে
   useEffect(() => {
     if (isGeneratingMetadata) return;
-    if (title.trim() && seoTitle && seoDesc) return;
+    if (title.trim() && seoTitle && seoDesc && (categoryAuto || categoryTouched.current)) return;
     if (plainLen(content) < 150) return;
     const key = content.slice(0, 400);
     if (lastAutoKey.current === key) return;
@@ -312,7 +318,7 @@ function WritePage() {
     }, 2000);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, content, seoTitle, seoDesc, isGeneratingMetadata]);
+  }, [title, content, seoTitle, seoDesc, categoryAuto, isGeneratingMetadata]);
 
   const stripHtml = (html: string) => {
     return html
@@ -550,7 +556,7 @@ function WritePage() {
               </Button>
             </div>
             <div className="p-4">
-              <Select value={category} onValueChange={setCategory}>
+              <Select value={category} onValueChange={(v) => { categoryTouched.current = true; setCategory(v); }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
