@@ -50,8 +50,6 @@ function PhotocardGenerator() {
   const draw = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
 
     await renderPhotocard(canvas, { template, title, subtitle, dateText, domain, facebook, accent, imgSrc, watermarkLogoUrl });
   }, [template, title, subtitle, dateText, domain, facebook, accent, imgSrc, watermarkLogoUrl]);
