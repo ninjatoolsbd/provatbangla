@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2, Download } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Copy, CheckCircle2, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -81,7 +81,8 @@ function WritePage() {
   const [authorName, setAuthorName] = useState<string>("");
   const [shareInfo, setShareInfo] = useState<{ url: string; title: string; image: string | null } | null>(null);
   const [copied, setCopied] = useState(false);
-  const [cardBusy, setCardBusy] = useState(false);
+  const [cardBlob, setCardBlob] = useState<Blob | null>(null);
+  const [cardPreview, setCardPreview] = useState<string | null>(null);
   const siteSettings = useQuery({ queryKey: ["cms", "settings"], queryFn: fetchSettings });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -99,6 +100,34 @@ function WritePage() {
 
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
+
+  // একক নিউজ প্রকাশের পর স্বয়ংক্রিয়ভাবে ফটোকার্ড তৈরি (বাল্ক পাবলিশে নয়)
+  useEffect(() => {
+    if (!shareInfo) return;
+    let cancelled = false;
+    let objectUrl: string | null = null;
+    setCardBlob(null);
+    setCardPreview(null);
+    createPhotocardBlob({
+      title: shareInfo.title,
+      imageUrl: shareInfo.image,
+      watermarkLogoUrl: siteSettings.data?.["watermark_logo_url"] || logoAsset.url,
+    })
+      .then((blob) => {
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        setCardBlob(blob);
+        setCardPreview(objectUrl);
+      })
+      .catch(() => {
+        if (!cancelled) toast.error("ফটোকার্ড তৈরি করা যায়নি");
+      });
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shareInfo]);
 
   useEffect(() => {
     if (!id || !postsQuery.data) return;
