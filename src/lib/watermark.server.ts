@@ -6,7 +6,6 @@
 
 import jpeg from "jpeg-js";
 import { decode as decodePng } from "fast-png";
-import { PNG } from "pngjs";
 
 type Rgba = { width: number; height: number; data: Uint8Array };
 
@@ -54,13 +53,8 @@ function decodeImage(bytes: Uint8Array): Rgba | null {
     }
     // PNG: 89 50 4E 47
     if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
-      // লাইভ সার্ভারে Node zlib নেই, তাই খাঁটি-JS fast-png দিয়ে ডিকোড
-      try {
-        return decodePngPure(bytes);
-      } catch {
-        const png = PNG.sync.read(Buffer.from(bytes));
-        return { width: png.width, height: png.height, data: new Uint8Array(png.data) };
-      }
+      // লাইভ সার্ভারে Node stream/zlib নেই, তাই শুধু খাঁটি-JS fast-png
+      return decodePngPure(bytes);
     }
     return null;
   } catch {
