@@ -358,5 +358,12 @@ body {
   .admin-main h1 { font-size: 1.25rem; line-height: 1.4; }
   .admin-main input, .admin-main select, .admin-main textarea { font-size: 16px; }
   .admin-main table { min-width: 100%; }
-  .admin-main .overflow-hidden:has(> table), .admin-main div:has(> table) { overflow-x: auto; }
+  .admin-main .overflow-hidden:has(> table), .admin-main div:has(> table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-main .flex > *, .admin-main .grid > * { min-width: 0; }
+  .admin-main img, .admin-main video, .admin-main iframe { max-width: 100%; height: auto; }
+  .admin-main a, .admin-main p, .admin-main td, .admin-main span { overflow-wrap: anywhere; }
+  .admin-main button, .admin-main [role="button"], .admin-main a.inline-flex { min-height: 36px; }
+  .admin-main [class*="min-w-["]:not(table) { min-width: 0 !important; }
+  .admin-main .p-6 { padding: 1rem; }
+  [role="dialog"] { max-width: calc(100vw - 1rem) !important; max-height: 92vh; overflow-y: auto; }
 }

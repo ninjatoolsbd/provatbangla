@@ -182,7 +182,7 @@ function MediaPage() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8">
+      <div className="grid grid-cols-2 gap-3 min-[400px]:grid-cols-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8">
         {rows.map((m: Row) => {
           const id = String(m["id"]);
           const isSelected = selected.has(id);
