@@ -14,7 +14,7 @@ export const Route = createFileRoute("/api/public/cron-sync")({
         const dryRun = ["1", "true", "yes"].includes(
           (url.searchParams.get("dry") ?? url.searchParams.get("dryRun") ?? "").toLowerCase(),
         );
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { adminCloud: supabaseAdmin } = await import("@/lib/admin-cloud-client.server");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const admin = supabaseAdmin as any;
 

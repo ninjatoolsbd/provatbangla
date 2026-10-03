@@ -39,3 +39,16 @@ export function getAdminCloudClient() {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
   });
 }
+let _cached: ReturnType<typeof getAdminCloudClient> | undefined;
+
+/**
+ * লাইভ Worker (provatbanglanews.com) ও Lovable — দুই জায়গাতেই চলে এমন অ্যাডমিন ক্লায়েন্ট।
+ * প্রথম ব্যবহারে তৈরি হয় (lazy), তাই মডিউল লোডে কিছু ভাঙে না।
+ */
+export const adminCloud = new Proxy({} as ReturnType<typeof getAdminCloudClient>, {
+  get(_, prop) {
+    if (!_cached) _cached = getAdminCloudClient();
+    const value = Reflect.get(_cached, prop, _cached);
+    return typeof value === "function" ? value.bind(_cached) : value;
+  },
+});
