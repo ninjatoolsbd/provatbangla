@@ -22,13 +22,19 @@ const meta = (t: string, d: string) => ({
   ],
 });
 
-type TemplateId = "classic" | "bottombar" | "overlay" | "split";
+type TemplateId =
+  | "classic" | "bottombar" | "overlay" | "split"
+  | "prothomalo" | "rtv" | "breaking" | "quote";
 
 const TEMPLATES: { id: TemplateId; name: string; hint: string }[] = [
   { id: "classic", name: "ক্লাসিক (ছবি + নিচে লাল প্যানেল)", hint: "স্ক্রিনশটের মতো ডিজাইন" },
   { id: "bottombar", name: "ফুল ছবি + নিচে কালো বার", hint: "বড় ছবির উপর শিরোনাম" },
   { id: "overlay", name: "গ্রেডিয়েন্ট ওভারলে", hint: "ছবির উপরে গাঢ় শেড ও শিরোনাম" },
   { id: "split", name: "লাল-সবুজ ফ্রেম (লোগো মাঝে)", hint: "উপরে তারিখ, ফ্রেমে ছবি, নিচে শিরোনাম ও কমলা বাটন" },
+  { id: "prothomalo", name: "প্রথম আলো স্টাইল (সাদা কার্ড)", hint: "উপরে ছবি, লাল তারিখ ট্যাগ, সাদা জমিনে গাঢ় শিরোনাম" },
+  { id: "rtv", name: "টিভি চ্যানেল স্টাইল (RTV-এর মতো)", hint: "ফুল ছবি, লাল লেবেল, সাদা শিরোনাম বক্স, লাল ফুটার" },
+  { id: "breaking", name: "ব্রেকিং নিউজ (হলুদ-লাল)", hint: "উপরে ব্রেকিং ব্যানার, মাঝে ছবি, কালো জমিনে শিরোনাম" },
+  { id: "quote", name: "উদ্ধৃতি কার্ড (বক্তব্য)", hint: "শিরোনামে বক্তব্য, উপশিরোনামে বক্তার নাম; গোল ছবি" },
 ];
 
 const SIZE = 1080;
@@ -313,6 +319,192 @@ function PhotocardGenerator() {
       ctx.fillStyle = "#ffffff";
       ctx.font = font(28, "500");
       ctx.fillText(domain, SIZE / 2, SIZE - 47);
+    }
+
+    const rrect = (x: number, y: number, w: number, h: number, r: number) => {
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+    };
+    const photoOrBlank = (x: number, y: number, w: number, h: number) => {
+      if (photo) drawCover(ctx, photo, x, y, w, h);
+      else {
+        ctx.fillStyle = "#d9dde2";
+        ctx.fillRect(x, y, w, h);
+      }
+    };
+
+    // প্রথম আলো স্টাইল — সাদা কার্ড, উপরে ছবি, গাঢ় শিরোনাম, লাল উদ্ধৃতি-চিহ্ন
+    if (template === "prothomalo") {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      const imgH = 600;
+      photoOrBlank(0, 0, SIZE, imgH);
+      // ছবির নিচে পাতলা লাল লাইন
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(0, imgH, SIZE, 8);
+      // ক্যাটাগরি/তারিখ ট্যাগ
+      ctx.font = font(26, "700");
+      const tag = dateText;
+      const tagW = ctx.measureText(tag).width + 44;
+      ctx.fillStyle = "#ED1C24";
+      rrect(60, imgH - 26, tagW, 52, 6);
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "left";
+      ctx.fillText(tag, 82, imgH + 9);
+      // শিরোনাম
+      ctx.fillStyle = "#111111";
+      ctx.font = font(60, "700");
+      let y = imgH + 115;
+      for (const line of wrapLines(ctx, title, SIZE - 120, 3)) {
+        ctx.fillText(line, 60, y);
+        y += 74;
+      }
+      ctx.font = font(30, "400");
+      ctx.fillStyle = "#4b5563";
+      for (const line of wrapLines(ctx, subtitle, SIZE - 120, 1)) {
+        ctx.fillText(line, 60, Math.min(y + 4, SIZE - 120));
+      }
+      // ফুটার
+      ctx.fillStyle = "#e5e7eb";
+      ctx.fillRect(60, SIZE - 96, SIZE - 120, 2);
+      ctx.fillStyle = "#6b7280";
+      ctx.font = font(26, "500");
+      ctx.fillText(domain, 60, SIZE - 44);
+    }
+
+    // আরটিভি স্টাইল — ফুল ছবি, লাল বাঁকা ব্যান্ড, সাদা শিরোনাম বক্স
+    if (template === "rtv") {
+      photoOrBlank(0, 0, SIZE, SIZE);
+      const shade = ctx.createLinearGradient(0, SIZE * 0.45, 0, SIZE);
+      shade.addColorStop(0, "rgba(0,0,0,0)");
+      shade.addColorStop(1, "rgba(0,0,0,0.75)");
+      ctx.fillStyle = shade;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      // উপরে বাঁ কোণে লাল লেবেল
+      ctx.fillStyle = "#ED1C24";
+      ctx.beginPath();
+      ctx.moveTo(0, 50);
+      ctx.lineTo(360, 50);
+      ctx.lineTo(320, 122);
+      ctx.lineTo(0, 122);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(36, "700");
+      ctx.textAlign = "left";
+      ctx.fillText("সর্বশেষ সংবাদ", 40, 100);
+      // সাদা শিরোনাম বক্স, বাঁ পাশে লাল স্ট্রাইপ
+      ctx.font = font(52, "700");
+      const lines = wrapLines(ctx, title, SIZE - 200, 3);
+      const boxH = lines.length * 66 + 70;
+      const boxY = SIZE - 150 - boxH;
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.35)";
+      ctx.shadowBlur = 24;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(50, boxY, SIZE - 100, boxH);
+      ctx.restore();
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(50, boxY, 14, boxH);
+      ctx.fillStyle = "#111111";
+      let y = boxY + 80;
+      for (const line of lines) {
+        ctx.fillText(line, 96, y);
+        y += 66;
+      }
+      // নিচে লাল বার
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(0, SIZE - 110, SIZE, 110);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(28, "600");
+      ctx.fillText(`${dateText}  |  ${domain}`, 50, SIZE - 45);
+    }
+
+    // ব্রেকিং নিউজ — হলুদ-লাল ব্যানার
+    if (template === "breaking") {
+      ctx.fillStyle = "#0a0a0a";
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      photoOrBlank(0, 140, SIZE, 520);
+      // উপরের ব্যানার
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(0, 0, SIZE, 140);
+      ctx.fillStyle = "#FFD400";
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(430, 0);
+      ctx.lineTo(380, 140);
+      ctx.lineTo(0, 140);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#111111";
+      ctx.font = font(58, "700");
+      ctx.textAlign = "left";
+      ctx.fillText("ব্রেকিং", 50, 92);
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(48, "700");
+      ctx.fillText("নিউজ", 420, 92);
+      ctx.font = font(26, "500");
+      ctx.textAlign = "right";
+      ctx.fillText(dateText, SIZE - 40, 88);
+      // হলুদ রেখা
+      ctx.fillStyle = "#FFD400";
+      ctx.fillRect(0, 660, SIZE, 10);
+      // শিরোনাম
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(56, "700");
+      let y = 760;
+      for (const line of wrapLines(ctx, title, SIZE - 120, 3)) {
+        ctx.fillText(line, 60, y);
+        y += 70;
+      }
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      ctx.font = font(26, "500");
+      ctx.fillText(domain, 60, SIZE - 40);
+    }
+
+    // উদ্ধৃতি কার্ড — বক্তব্য/মন্তব্যের জন্য
+    if (template === "quote") {
+      const bg = ctx.createLinearGradient(0, 0, SIZE, SIZE);
+      bg.addColorStop(0, "#111111");
+      bg.addColorStop(1, "#3a0507");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      // ডানে গোল ছবি
+      const cx = SIZE - 250, cy = 260, r = 190;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.clip();
+      photoOrBlank(cx - r, cy - r, r * 2, r * 2);
+      ctx.restore();
+      ctx.strokeStyle = "#ED1C24";
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 8, 0, Math.PI * 2);
+      ctx.stroke();
+      // বড় উদ্ধৃতি চিহ্ন
+      ctx.fillStyle = "#ED1C24";
+      ctx.font = `700 260px Georgia, serif`;
+      ctx.textAlign = "left";
+      ctx.fillText("“", 50, 300);
+      // উদ্ধৃতি
+      ctx.fillStyle = "#ffffff";
+      ctx.font = font(58, "700");
+      let y = 540;
+      for (const line of wrapLines(ctx, title, SIZE - 140, 4)) {
+        ctx.fillText(line, 70, y);
+        y += 76;
+      }
+      ctx.fillStyle = "#ED1C24";
+      ctx.fillRect(70, y - 20, 90, 6);
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.font = font(32, "600");
+      ctx.fillText(`— ${subtitle}`, 70, y + 36, SIZE - 140);
+      ctx.fillStyle = "rgba(255,255,255,0.6)";
+      ctx.font = font(26, "500");
+      ctx.fillText(`${dateText}  •  ${domain}`, 70, SIZE - 50);
     }
 
     if (logo && template !== "split") {
