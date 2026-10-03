@@ -386,7 +386,7 @@ function AutomationPage() {
             placeholder="নিউজ সাইটের মূল লিংক (যেমন: https://prothomalo.com)"
             value={newSource.site_url}
             onChange={(e) => setNewSource({ ...newSource, site_url: e.target.value })}
-            className="min-w-[240px] flex-1 border border-border bg-background px-3 py-2 text-sm"
+            className="w-full min-w-0 flex-1 sm:min-w-[240px] border border-border bg-background px-3 py-2 text-sm"
           />
           <select
             value={newSource.category}
