@@ -6,8 +6,8 @@ export const generateMetadata = createServerFn({ method: "POST" })
   .middleware([requireCloudAuth])
   .inputValidator((data: unknown) => 
     z.object({ 
-      title: z.string().min(1), 
-      content: z.string().min(100) 
+      title: z.string().default(""), 
+      content: z.string().min(50) 
     }).parse(data)
   )
   .handler(async ({ data }) => {
