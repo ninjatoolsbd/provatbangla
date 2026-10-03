@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Facebook, Twitter, Instagram, Copy, CheckCircle2, Download } from "lucide-react";
+import { Eye, Loader2, Sparkles, Upload, X, Wand2, Image as ImageIcon, Copy, CheckCircle2, Download } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ import { fetchAllPostsForAdmin, slugify } from "@/lib/posts";
 import { RichTextEditor } from "@/components/rich-text-editor";
 import { fetchSettings } from "@/lib/cms";
 import logoAsset from "@/lib/logo";
-import { generateAndDownloadPhotocard } from "@/lib/photocard-render";
+import { createPhotocardBlob, downloadPhotocardBlob } from "@/lib/photocard-render";
 
 export const Route = createFileRoute("/admin/write")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -81,7 +81,8 @@ function WritePage() {
   const [authorName, setAuthorName] = useState<string>("");
   const [shareInfo, setShareInfo] = useState<{ url: string; title: string; image: string | null } | null>(null);
   const [copied, setCopied] = useState(false);
-  const [cardBusy, setCardBusy] = useState(false);
+  const [cardBlob, setCardBlob] = useState<Blob | null>(null);
+  const [cardPreview, setCardPreview] = useState<string | null>(null);
   const siteSettings = useQuery({ queryKey: ["cms", "settings"], queryFn: fetchSettings });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -99,6 +100,34 @@ function WritePage() {
 
 
   const postsQuery = useQuery({ queryKey: ["admin-posts"], queryFn: fetchAllPostsForAdmin });
+
+  // একক নিউজ প্রকাশের পর স্বয়ংক্রিয়ভাবে ফটোকার্ড তৈরি (বাল্ক পাবলিশে নয়)
+  useEffect(() => {
+    if (!shareInfo) return;
+    let cancelled = false;
+    let objectUrl: string | null = null;
+    setCardBlob(null);
+    setCardPreview(null);
+    createPhotocardBlob({
+      title: shareInfo.title,
+      imageUrl: shareInfo.image,
+      watermarkLogoUrl: siteSettings.data?.["watermark_logo_url"] || logoAsset.url,
+    })
+      .then((blob) => {
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        setCardBlob(blob);
+        setCardPreview(objectUrl);
+      })
+      .catch(() => {
+        if (!cancelled) toast.error("ফটোকার্ড তৈরি করা যায়নি");
+      });
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shareInfo]);
 
   useEffect(() => {
     if (!id || !postsQuery.data) return;
@@ -590,54 +619,17 @@ function WritePage() {
               <CheckCircle2 className="size-5 text-primary" />
               নিউজ সফলভাবে প্রকাশিত হয়েছে
             </DialogTitle>
-            <DialogDescription>সোশ্যাল মিডিয়ায় শেয়ার করুন</DialogDescription>
+            <DialogDescription>এই নিউজের ফটোকার্ড তৈরি হয়েছে — ডাউনলোড করে পোস্ট করুন</DialogDescription>
           </DialogHeader>
 
-          <div className="flex items-center justify-center gap-3 py-2">
-            <button
-              type="button"
-              onClick={() =>
-                window.open(
-                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareInfo?.url ?? "")}`,
-                  "_blank",
-                  "noopener,noreferrer",
-                )
-              }
-              aria-label="ফেসবুকে শেয়ার"
-              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <Facebook className="size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                window.open(
-                  `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareInfo?.url ?? "")}&text=${encodeURIComponent(shareInfo?.title ?? "")}`,
-                  "_blank",
-                  "noopener,noreferrer",
-                )
-              }
-              aria-label="টুইটারে শেয়ার"
-              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <Twitter className="size-5" />
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(shareInfo?.url ?? "");
-                  toast.success("লিঙ্ক কপি হয়েছে — ইনস্টাগ্রামে পেস্ট করুন");
-                } catch {
-                  toast.error("কপি করা যায়নি");
-                }
-                window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
-              }}
-              aria-label="ইনস্টাগ্রামে শেয়ার"
-              className="grid size-11 place-items-center rounded-full bg-secondary transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <Instagram className="size-5" />
-            </button>
+          <div className="mx-auto w-full max-w-[320px] overflow-hidden rounded-md border border-border bg-muted">
+            {cardPreview ? (
+              <img src={cardPreview} alt="ফটোকার্ড প্রিভিউ" className="block aspect-square w-full" />
+            ) : (
+              <div className="grid aspect-square w-full place-items-center text-xs text-muted-foreground">
+                <Loader2 className="size-6 animate-spin text-primary" />
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -662,26 +654,15 @@ function WritePage() {
 
           <Button
             className="w-full"
-            disabled={cardBusy}
-            onClick={async () => {
-              if (!shareInfo) return;
-              setCardBusy(true);
-              try {
-                await generateAndDownloadPhotocard({
-                  title: shareInfo.title,
-                  imageUrl: shareInfo.image,
-                  watermarkLogoUrl: siteSettings.data?.["watermark_logo_url"] || logoAsset.url,
-                });
-                toast.success("ফটোকার্ড ডাউনলোড হয়েছে");
-              } catch {
-                toast.error("ফটোকার্ড তৈরি করা যায়নি");
-              } finally {
-                setCardBusy(false);
-              }
+            disabled={!cardBlob}
+            onClick={() => {
+              if (!cardBlob) return;
+              downloadPhotocardBlob(cardBlob);
+              toast.success("ফটোকার্ড ডাউনলোড হয়েছে");
             }}
           >
-            {cardBusy ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Download className="mr-2 size-4" />}
-            ফটোকার্ড জেনারেট করুন
+            {cardBlob ? <Download className="mr-2 size-4" /> : <Loader2 className="mr-2 size-4 animate-spin" />}
+            ফটোকার্ড ডাউনলোড করুন
           </Button>
         </DialogContent>
       </Dialog>

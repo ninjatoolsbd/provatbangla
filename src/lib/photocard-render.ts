@@ -543,11 +543,11 @@ async function toDataUrl(url: string): Promise<string | null> {
 }
 
 /** ডিফল্ট টেমপ্লেটে একটি নিউজের ফটোকার্ড তৈরি করে সাথে সাথে ডাউনলোড করে। */
-export async function generateAndDownloadPhotocard(input: {
+export async function createPhotocardBlob(input: {
   title: string;
   imageUrl?: string | null;
   watermarkLogoUrl: string;
-}) {
+}): Promise<Blob> {
   const imgSrc = input.imageUrl ? await toDataUrl(input.imageUrl) : null;
   const canvas = document.createElement("canvas");
   await renderPhotocard(canvas, {
@@ -563,6 +563,10 @@ export async function generateAndDownloadPhotocard(input: {
   });
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("ফটোকার্ড তৈরি করা যায়নি");
+  return blob;
+}
+
+export function downloadPhotocardBlob(blob: Blob) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -571,4 +575,12 @@ export async function generateAndDownloadPhotocard(input: {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+export async function generateAndDownloadPhotocard(input: {
+  title: string;
+  imageUrl?: string | null;
+  watermarkLogoUrl: string;
+}) {
+  downloadPhotocardBlob(await createPhotocardBlob(input));
 }
