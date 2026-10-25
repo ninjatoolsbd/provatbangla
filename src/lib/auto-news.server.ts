@@ -42,6 +42,18 @@ function detectLang(text: string): "bn" | "en" {
   return bangla > latin * 0.2 ? "bn" : "en";
 }
 
+/** শর্তাবলি, সাইটম্যাপ, যোগাযোগ ইত্যাদি পাতা — এগুলো খবর নয়। */
+export function isNonArticleUrl(url: string): boolean {
+  try {
+    const path = new URL(url).pathname.toLowerCase();
+    return /\/(page|pages)\/|terms|privacy|policy|sitemap|contact|about|advertis|career|subscribe|login|register|faq|disclaimer|archive|\/tag\/|\/author\//.test(
+      path,
+    );
+  } catch {
+    return true;
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const admin = supabaseAdmin as any;
 
@@ -244,15 +256,26 @@ export async function runAutoSync(
       continue;
     }
 
+    // খবর নয় এমন পাতা (শর্তাবলি, সাইটম্যাপ, যোগাযোগ ইত্যাদি) বাদ
+    items = items.filter((it) => !isNonArticleUrl(it.url));
+
+    // একবারেই সব লিংকের ডুপ্লিকেট চেক — Cloudflare Worker-এর সাবরিকোয়েস্ট সীমা বাঁচাতে
+    const existingMap = new Map<string, { id: string; status: string }>();
+    if (items.length) {
+      const { data: existingRows } = await admin
+        .from("auto_items")
+        .select("id,status,source_url")
+        .in("source_url", items.map((it) => it.url));
+      for (const r of (existingRows ?? []) as { id: string; status: string; source_url: string }[]) {
+        existingMap.set(r.source_url, r);
+      }
+    }
+
     let processed = 0;
     for (const item of items) {
       if (processed >= limit) break;
 
-      const { data: existing } = await admin
-        .from("auto_items")
-        .select("id,status")
-        .eq("source_url", item.url)
-        .maybeSingle();
+      const existing = existingMap.get(item.url);
       if (existing && existing.status !== "failed") {
         result.skipped += 1;
         continue;
