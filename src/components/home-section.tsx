@@ -17,7 +17,15 @@ export function HomeSection({ title, slug, layout = "grid" }: HomeSectionProps) 
   
   const { data: posts } = useSuspenseQuery({
     queryKey: ["home-section", slug],
-    queryFn: () => fetchPosts({ data: { category: slug, limit: layout === "grid" ? 4 : 8 } }),
+    queryFn: async () => {
+      try {
+        const res = await fetchPosts({ data: { category: slug, limit: layout === "grid" ? 4 : 8 } });
+        return res ?? [];
+      } catch (e) {
+        console.error("home-section fetch failed", slug, e);
+        return [];
+      }
+    },
   });
 
   if (!posts || (posts as any[]).length === 0) return null;
