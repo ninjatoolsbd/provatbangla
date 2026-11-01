@@ -3,4 +3,5 @@
 - [x] Document permission restrictions, framework-only functions, connection placeholders, and verification limits.
 - [x] Validate the collection and deliver the files without credentials or production mutations.
 - [x] Inspect daily auto-news schedules and recent collection results.
-- [ ] Ensure daily calls use the current published site and verify a bounded source run.
+- [x] Point daily calls at the stable published project URL and honor the automation-enabled setting before dispatch.
+- [ ] Verify a successful bounded source collection after publishing the current code; blocked by the published version still processing all sources and hitting request limits.
