@@ -13,7 +13,7 @@ const VISIBLE = 10;
 export function BreakingTicker() {
   const { data: pool = [] } = useQuery({
     queryKey: ["breaking-news"],
-    queryFn: () => fetchPublishedPosts(20),
+    queryFn: async () => (await fetchPublishedPosts(20)) ?? [],
   });
   const [items, setItems] = useState<any[]>([]);
 
