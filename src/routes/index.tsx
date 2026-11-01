@@ -60,7 +60,13 @@ function SectionSkeleton() {
 function Home() {
   const { data: photoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-photo-gallery"],
-    queryFn: () => getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } }),
+    queryFn: async () => {
+      try {
+        return (await getHomeSectionPosts({ data: { category: "photo-gallery", limit: 12 } })) ?? [];
+      } catch {
+        return [];
+      }
+    },
   });
 
   const { data: videoPosts = [] } = useSuspenseQuery({
