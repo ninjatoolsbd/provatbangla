@@ -66,7 +66,7 @@ function EpaperGenerator() {
       .order("view_count", { ascending: false })
       .limit(300);
     setLoading(false);
-    if (error) return toast.error("খবর আনা যায়নি: " + error.message);
+    if (error) { toast.error("খবর আনা যায়নি: " + error.message); return; }
     const list = (data as EpaperPost[]) ?? [];
     setPosts(list);
     // auto-pick: top 7 overall + up to 6 per category, max 40
@@ -97,7 +97,7 @@ function EpaperGenerator() {
     });
 
   const publish = async () => {
-    if (!chosen.length) return toast.error("অন্তত একটি খবর বাছাই করুন।");
+    if (!chosen.length) { toast.error("অন্তত একটি খবর বাছাই করুন।"); return; }
     setSaving(true);
     const { error } = await supabase.from("epaper_editions").insert({
       title: `প্রভাতবাংলা সাপ্তাহিক ই-পেপার`,
@@ -109,7 +109,7 @@ function EpaperGenerator() {
       is_published: true,
     });
     setSaving(false);
-    if (error) return toast.error("সংরক্ষণ হয়নি: " + error.message);
+    if (error) { toast.error("সংরক্ষণ হয়নি: " + error.message); return; }
     toast.success("ই-পেপার প্রকাশিত হয়েছে!");
     loadEditions();
   };
@@ -117,7 +117,7 @@ function EpaperGenerator() {
   const remove = async (id: string) => {
     if (!confirm("এই সংখ্যাটি মুছে ফেলবেন?")) return;
     const { error } = await supabase.from("epaper_editions").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     loadEditions();
   };
 

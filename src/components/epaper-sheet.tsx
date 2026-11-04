@@ -29,7 +29,7 @@ export const EPAPER_CATEGORIES: Record<string, string> = {
 };
 
 export const bnNum = (n: number | string) =>
-  String(n).replace(/\d/g, (d) => "০১২৩৪৫৬৭৮৯"[Number(d)]);
+  String(n).replace(/\d/g, (d) => "০১২৩৪৫৬৭৮৯"[Number(d)] ?? d);
 
 export const bnDate = (d: string | Date) =>
   new Date(d).toLocaleDateString("bn-BD", { year: "numeric", month: "long", day: "numeric" });
@@ -69,7 +69,8 @@ export function buildEpaperPages(posts: EpaperPost[]): EpaperPageData[] {
   for (let i = 0; i < leftovers.length; i += 6) {
     pages.push({ no: pages.length + 1, label: "বিবিধ", posts: leftovers.slice(i, i + 6) });
   }
-  if (pages.length > 1) pages[pages.length - 1].label = `শেষ পাতা · ${pages[pages.length - 1].label}`;
+  const last = pages[pages.length - 1];
+  if (pages.length > 1 && last) last.label = `শেষ পাতা · ${last.label}`;
   return pages;
 }
 

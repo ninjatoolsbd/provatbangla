@@ -12,7 +12,7 @@ export function EpaperSection() {
   const pages = data ? buildEpaperPages(data.posts) : [];
   if (!edition || !pages.length) return null;
   const label = editionLabel(edition, bnDate);
-  const [lead, ...rest] = pages[0].posts;
+  const [lead, ...rest] = pages[0]?.posts ?? [];
 
   return (
     <section className="mt-8 border-y border-border bg-secondary/50 py-6">
