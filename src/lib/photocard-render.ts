@@ -1,6 +1,8 @@
 /**
  * ফটোকার্ড আঁকার শেয়ার্ড লজিক — ফটোকার্ড পাতা ও নিউজ প্রকাশের পপআপ দুটোই এটি ব্যবহার করে।
  */
+import { removeLogoBackground } from "./watermark-alpha";
+
 export type TemplateId =
   | "classic" | "bottombar" | "overlay" | "split"
   | "prothomalo" | "rtv" | "breaking" | "quote";
@@ -92,7 +94,21 @@ export async function renderPhotocard(canvas: HTMLCanvasElement, opts: Photocard
 
     const photo = imgSrc ? await loadImg(imgSrc) : null;
     // অটো নিউজ সেটিংসে নির্বাচিত সর্বশেষ ওয়াটারমার্ক লোগোটিই ব্যবহার হবে
-    const logo = await loadImg(watermarkLogoUrl);
+    const logoImage = await loadImg(await toDataUrl(watermarkLogoUrl) || "/logo-transparent.png");
+    let logo: HTMLCanvasElement | null = null;
+    if (logoImage) {
+      const transparentLogo = document.createElement("canvas");
+      transparentLogo.width = logoImage.naturalWidth;
+      transparentLogo.height = logoImage.naturalHeight;
+      const logoCtx = transparentLogo.getContext("2d");
+      if (logoCtx) {
+        logoCtx.drawImage(logoImage, 0, 0);
+        const pixels = logoCtx.getImageData(0, 0, transparentLogo.width, transparentLogo.height);
+        removeLogoBackground(pixels.data);
+        logoCtx.putImageData(pixels, 0, 0);
+        logo = transparentLogo;
+      }
+    }
 
     ctx.clearRect(0, 0, SIZE, SIZE);
     ctx.fillStyle = "#ffffff";
@@ -248,16 +264,9 @@ export async function renderPhotocard(canvas: HTMLCanvasElement, opts: Photocard
       }
       ctx.restore();
 
-      // লোগো সাদা বক্সে, ফ্রেমের নিচে মাঝখানে
+      // স্বচ্ছ লোগো, কোনো ব্যাকগ্রাউন্ড বক্স নয়
       const bw = 340, bh = 130;
       const bx = (SIZE - bw) / 2, by = fy + fh - 60;
-      ctx.save();
-      ctx.shadowColor = "rgba(0,0,0,0.4)";
-      ctx.shadowBlur = 14;
-      ctx.fillStyle = "#ffffff";
-      rr(bx, by, bw, bh, 12);
-      ctx.fill();
-      ctx.restore();
       if (logo) {
         const s = Math.min((bw - 30) / logo.width, (bh - 20) / logo.height);
         const lw2 = logo.width * s, lh2 = logo.height * s;
@@ -483,32 +492,10 @@ export async function renderPhotocard(canvas: HTMLCanvasElement, opts: Photocard
       const lh = (logo.height / logo.width) * lw;
       const logoX = template === "classic" ? (SIZE - lw) / 2 : SIZE - lw - 38;
       const logoY = SIZE - lh - 20;
-      // লোগোর সাদা ব্যাকগ্রাউন্ড স্বচ্ছ করে আঁকা হচ্ছে (কোনো বক্স নয়)
-      const off = document.createElement("canvas");
-      off.width = Math.round(lw * 2);
-      off.height = Math.round(lh * 2);
-      const octx = off.getContext("2d");
-      let src: CanvasImageSource = logo;
-      if (octx) {
-        octx.drawImage(logo, 0, 0, off.width, off.height);
-        try {
-          const d = octx.getImageData(0, 0, off.width, off.height);
-          const p = d.data;
-          for (let i = 0; i < p.length; i += 4) {
-            const m = Math.min(p[i] ?? 0, p[i + 1] ?? 0, p[i + 2] ?? 0);
-            if (m > 235) p[i + 3] = 0;
-            else if (m > 200) p[i + 3] = Math.round((p[i + 3] ?? 255) * ((235 - m) / 35));
-          }
-          octx.putImageData(d, 0, 0);
-          src = off;
-        } catch {
-          // CORS হলে আসল লোগোই বসবে
-        }
-      }
       ctx.save();
       ctx.shadowColor = "rgba(0,0,0,0.35)";
       ctx.shadowBlur = 6;
-      ctx.drawImage(src, logoX, logoY, lw, lh);
+      ctx.drawImage(logo, logoX, logoY, lw, lh);
       ctx.restore();
     }
 }

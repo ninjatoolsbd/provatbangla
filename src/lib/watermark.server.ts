@@ -6,6 +6,7 @@
 
 import jpeg from "jpeg-js";
 import { decode as decodePng } from "fast-png";
+import { removeLogoBackground } from "./watermark-alpha";
 
 type Rgba = { width: number; height: number; data: Uint8Array };
 
@@ -122,6 +123,7 @@ export async function stampWatermark(
     const base = decodeImage(baseBytes);
     const logoRaw = decodeImage(logoBytes);
     if (!base || !logoRaw || base.width < 64 || base.height < 64) return null;
+    removeLogoBackground(logoRaw.data);
 
     // লোগোর প্রস্থ ছবির ~১৬%
     const targetW = Math.max(48, Math.round(base.width * 0.16));
