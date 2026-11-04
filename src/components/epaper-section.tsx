@@ -1,26 +1,18 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Newspaper } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Newspaper } from "lucide-react";
 
-import { EpaperPage } from "@/components/epaper-page";
-
-
-const bn = (n: number | string) =>
-  String(n)
-    .split("")
-    .map((d) => ("০১২৩৪৫৬৭৮৯"[Number(d)] ?? d))
-    .join("");
-
-export const epaperPages = [
-  { no: 1, label: "প্রথম পাতা" },
-  { no: 2, label: "দ্বিতীয় পাতা" },
-  { no: 3, label: "সারাদেশ" },
-  { no: 4, label: "খেলা" },
-  { no: 5, label: "বিনোদন" },
-  { no: 6, label: "শেষ পাতা" },
-];
+import { bnDate, bnNum, buildEpaperPages, snippet } from "@/components/epaper-sheet";
+import { editionLabel, loadEpaper } from "@/lib/epaper-data";
+import logoAsset from "@/lib/logo";
 
 export function EpaperSection() {
-  const today = "২ আগস্ট ২০২৬, রোববার";
+  const { data } = useQuery({ queryKey: ["epaper-latest"], queryFn: () => loadEpaper() });
+  const edition = data?.edition;
+  const pages = data ? buildEpaperPages(data.posts) : [];
+  if (!edition || !pages.length) return null;
+  const label = editionLabel(edition, bnDate);
+  const [lead, ...rest] = pages[0].posts;
 
   return (
     <section className="mt-8 border-y border-border bg-secondary/50 py-6">
@@ -29,64 +21,35 @@ export function EpaperSection() {
           <div className="flex items-center gap-2">
             <Newspaper className="size-5 text-primary" />
             <h2 className="font-display text-xl font-extrabold">প্রভাতবাংলা ই-পেপার</h2>
-            <span className="text-xs text-muted-foreground">{today}</span>
+            <span className="text-xs text-muted-foreground">{label}</span>
           </div>
-          <Link
-            to="/epaper"
-            className="bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            সব পাতা দেখুন
+          <Link to="/epaper" className="bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:opacity-90">
+            ই-পেপার পড়ুন
           </Link>
         </div>
-
         <div className="grid gap-5 lg:grid-cols-12">
-          {/* today's front page */}
-          <div className="min-w-0 lg:col-span-4">
-            <Link to="/epaper" className="group block border border-border bg-card p-2">
-              <div className="relative overflow-hidden">
-                <div className="transition-transform duration-500 group-hover:scale-[1.03]">
-                  <EpaperPage pageNo={1} label="প্রথম পাতা" date={today} />
-                </div>
-                <span className="absolute left-0 top-0 bg-primary px-2 py-1 text-[11px] font-bold text-primary-foreground">
-                  আজকের প্রথম পাতা
-                </span>
-              </div>
-            </Link>
-          </div>
-
-          {/* page thumbs */}
-          <div className="min-w-0 lg:col-span-8">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="font-display text-sm font-bold">আজকের সংখ্যার পাতাসমূহ</span>
-              <div className="flex gap-1">
-                <button
-                  aria-label="আগের"
-                  className="border border-border p-1 transition-colors hover:bg-primary hover:text-primary-foreground"
-                >
-                  <ChevronLeft className="size-4" />
-                </button>
-                <button
-                  aria-label="পরের"
-                  className="border border-border p-1 transition-colors hover:bg-primary hover:text-primary-foreground"
-                >
-                  <ChevronRight className="size-4" />
-                </button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {epaperPages.map((p) => (
-                <Link
-                  key={p.no}
-                  to="/epaper"
-                  className="group border border-border bg-card p-1.5 transition-shadow hover:shadow-md"
-                >
-                  <EpaperPage pageNo={p.no} label={p.label} date={today} />
-                  <span className="mt-1.5 block text-center text-[11px] font-semibold group-hover:text-primary">
-                    পৃষ্ঠা {bn(p.no)} · {p.label}
-                  </span>
-                </Link>
-              ))}
-            </div>
+          <Link to="/epaper" className="group block border border-border bg-card p-4 lg:col-span-5">
+            <img src={logoAsset.url} alt="প্রভাতবাংলা" className="mx-auto h-10 w-auto" />
+            <div className="my-2 border-y border-foreground/40 py-0.5 text-center text-[10px] font-semibold">{label}</div>
+            {lead && (
+              <>
+                <h3 className="font-display text-xl font-extrabold leading-tight group-hover:text-primary">{lead.title}</h3>
+                {lead.image_url && <img src={lead.image_url} alt={lead.title} loading="lazy" className="my-2 aspect-video w-full object-cover" />}
+                <p className="text-xs text-muted-foreground">{snippet(lead, 160)}</p>
+              </>
+            )}
+          </Link>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:col-span-7">
+            {pages.slice(0, 6).map((pg) => (
+              <Link key={pg.no} to="/epaper" className="border border-border bg-card p-2 hover:shadow-md">
+                <span className="text-[11px] font-bold text-primary">পৃষ্ঠা {bnNum(pg.no)} · {pg.label}</span>
+                <ul className="mt-1 space-y-1">
+                  {(pg.no === 1 ? rest : pg.posts).slice(0, 3).map((p) => (
+                    <li key={p.id} className="line-clamp-2 text-xs font-semibold">{p.title}</li>
+                  ))}
+                </ul>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
