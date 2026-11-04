@@ -1,5 +1,5 @@
 # Requested deliverables
-- [ ] Disable all app-side Lovable AI credit fallback while preserving external AI; verify blocked calls and explain Cloud availability costs.
+- [x] Disable all app-side Lovable AI credit fallback while preserving external AI; four tests verify blocked fallback/adapter and external-provider behavior. Cloud remains running because pausing disables news data and login; no pause authorized.
 - [x] Copy Cloud backup (news, accounts, roles, settings) into personal Supabase — done, non-destructive merge.
 - [ ] Switch the site connection to personal Supabase and recreate the daily 10am auto-news schedule there; waiting on user go-ahead.
 - [x] Assess personal-Supabase migration readiness without changing the current connection; verify current backend, public endpoints, schedules, and code dependencies, and report destination verification limits.

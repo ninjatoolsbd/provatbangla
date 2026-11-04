@@ -33,7 +33,7 @@ describe("Lovable-credit AI is disabled", () => {
     vi.stubGlobal("fetch", fetchMock);
     await expect(generateTextWithFallback({ system: "test", prompt: "test" })).rejects.toThrow("সব AI প্রোভাইডার ব্যর্থ");
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0][0]).toBe("https://api.groq.com/openai/v1/chat/completions");
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.groq.com/openai/v1/chat/completions");
   });
 
   it("keeps external AI generation working", async () => {
