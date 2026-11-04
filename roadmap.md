@@ -1,5 +1,5 @@
 # Requested deliverables
-- [ ] Remove Leonardo and Ideogram options, API handlers and stored credentials; preserve other AI providers.
+- [x] Remove Leonardo and Ideogram options, API handlers and stored credentials; both project secrets deleted, zero matching stored settings remain, and six AI regression tests pass. Publish required for live code removal.
 - [x] Disable all app-side Lovable AI credit fallback while preserving external AI; four tests verify blocked fallback/adapter and external-provider behavior. Cloud remains running because pausing disables news data and login; no pause authorized.
 - [x] Copy Cloud backup (news, accounts, roles, settings) into personal Supabase — done, non-destructive merge.
 - [ ] Switch the site connection to personal Supabase and recreate the daily 10am auto-news schedule there; waiting on user go-ahead.
