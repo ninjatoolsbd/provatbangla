@@ -143,7 +143,7 @@ async function rewriteOnce(
     `মূল সংবাদ (বিস্তারিত লিখুন):\n${article.body.slice(0, 8000)}`,
   ].join("\n");
 
-  const { text } = await generateTextWithFallback({ system, prompt, json: false });
+  const { text } = await generateTextWithFallback({ system, prompt, json: false, preferred: "groq" });
   const field = (name: string) => {
     const match = text.match(new RegExp(`\\[${name}\\]([\\s\\S]*?)\\[\\/${name}\\]`, "i"));
     return match?.[1]?.trim() ?? "";
