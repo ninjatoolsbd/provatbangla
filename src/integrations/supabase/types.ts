@@ -263,7 +263,10 @@ export type Database = {
           id: string
           is_published: boolean
           pdf_url: string | null
+          post_ids: string[]
           title: string
+          week_end: string | null
+          week_start: string | null
         }
         Insert: {
           cover_url?: string | null
@@ -272,7 +275,10 @@ export type Database = {
           id?: string
           is_published?: boolean
           pdf_url?: string | null
+          post_ids?: string[]
           title?: string
+          week_end?: string | null
+          week_start?: string | null
         }
         Update: {
           cover_url?: string | null
@@ -281,7 +287,10 @@ export type Database = {
           id?: string
           is_published?: boolean
           pdf_url?: string | null
+          post_ids?: string[]
           title?: string
+          week_end?: string | null
+          week_start?: string | null
         }
         Relationships: []
       }
