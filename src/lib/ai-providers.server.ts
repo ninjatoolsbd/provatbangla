@@ -349,69 +349,6 @@ export async function testImageAiKey(provider: string, key: string, extra?: stri
       return { success: true, message: "সংযুক্ত হয়েছে: Pollinations Flux OK" };
     }
 
-    if (provider === "leonardo") {
-      const res = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
-        method: "POST",
-        headers: { 
-          "accept": "application/json",
-          "content-type": "application/json",
-          "authorization": `Bearer ${key}`
-        },
-        body: JSON.stringify({ 
-          prompt: testPrompt, 
-          modelId: "7b592283-e8a7-4c5a-9ba6-d18c31f258b9", 
-          width: 512, 
-          height: 512, 
-          num_images: 1,
-          alchemy: false,
-          ultra: false
-        }),
-      });
-      if (!res.ok) {
-        const errorText = await res.text();
-        let detail = "";
-        try {
-          const parsed = JSON.parse(errorText);
-          detail = parsed.error || parsed.message || errorText;
-        } catch {
-          detail = errorText;
-        }
-        throw new Error(`Leonardo Error: ${res.status} ${detail.slice(0, 200)}`);
-      }
-      return { success: true, message: "সংযুক্ত হয়েছে: Leonardo API OK" };
-    }
-
-    if (provider === "ideogram") {
-      const res = await fetch("https://api.ideogram.ai/generate", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Api-Key": key 
-        },
-        body: JSON.stringify({ 
-          image_request: { 
-            prompt: testPrompt, 
-            aspect_ratio: "ASPECT_1_1", 
-            model: "V_2",
-            magic_prompt_option: "OFF"
-          } 
-        }),
-      });
-      if (!res.ok) {
-        const errorText = await res.text();
-        let detail = "";
-        try {
-          const parsed = JSON.parse(errorText);
-          detail = parsed.error || parsed.message || errorText;
-          if (typeof detail === 'object') detail = JSON.stringify(detail);
-        } catch {
-          detail = errorText;
-        }
-        throw new Error(`Ideogram Error: ${res.status} ${detail.slice(0, 200)}`);
-      }
-      return { success: true, message: "সংযুক্ত হয়েছে: Ideogram API OK" };
-    }
-
     return { success: false, message: "অজানা ইমেজ প্রোভাইডার" };
   } catch (e) {
     return { success: false, message: `ব্যর্থ হয়েছে: ${e instanceof Error ? e.message : String(e)}` };
