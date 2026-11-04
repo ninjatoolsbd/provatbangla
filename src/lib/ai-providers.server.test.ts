@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("./cms", () => ({ fetchSettings: async () => ({}) }));
 
-import { generateTextWithFallback } from "./ai-providers.server";
+import { generateTextWithFallback, testImageAiKey } from "./ai-providers.server";
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 
 function configureExternalKeys(groq = "") {
@@ -46,6 +46,15 @@ describe("Lovable-credit AI is disabled", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     expect(() => createLovableAiGatewayProvider("test-only-unused-key")).toThrow("Lovable AI বন্ধ");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("removed image providers", () => {
+  it.each(["leonardo", "ideogram"])("rejects %s without making an API request", async (provider) => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(testImageAiKey(provider, "test-unused-key")).resolves.toEqual({ success: false, message: "অজানা ইমেজ প্রোভাইডার" });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
