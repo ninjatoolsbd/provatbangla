@@ -166,27 +166,6 @@ async function groqApi(opts: { key: string; system: string; prompt: string }) {
   return text;
 }
 
-/**
- * Lovable AI Gateway Implementation
- */
-async function lovableApi(opts: { system: string; prompt: string }) {
-  const key = process.env["LOVABLE_API_KEY"];
-  if (!key) throw new Error("Lovable AI key is unavailable");
-
-  const [{ generateText }, { createLovableAiGatewayProvider }] = await Promise.all([
-    import("ai"),
-    import("./ai-gateway.server"),
-  ]);
-  const gateway = createLovableAiGatewayProvider(key);
-  const result = await generateText({
-    model: gateway("google/gemini-3.6-flash"),
-    system: opts.system,
-    prompt: opts.prompt,
-  });
-  if (!result.text.trim()) throw new Error("Lovable AI returned empty response");
-  return result.text;
-}
-
 export async function generateTextWithFallback(args: {
   system: string;
   prompt: string;
@@ -237,11 +216,6 @@ export async function generateTextWithFallback(args: {
       name: "groq" as ProviderName,
       keys: groqKey ? [groqKey] : [],
       run: (key: string) => groqApi({ key, system: args.system, prompt: args.prompt }),
-    },
-    {
-      name: "lovable" as ProviderName,
-      keys: ["lovable-internal"], // Placeholder key to trigger the run
-      run: () => lovableApi({ system: args.system, prompt: args.prompt }),
     },
   ];
 

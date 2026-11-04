@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 - Server code that needs privileged DB access uses `adminCloud`/`getAdminCloudClient` from `src/lib/admin-cloud-client.server.ts`, not `supabaseAdmin` — the self-hosted Cloudflare Worker has no SUPABASE_SERVICE_ROLE_KEY env, so `supabaseAdmin` throws there.
 - Daily auto-news schedules call the stable published project URL with one source and one article per request, and check the persisted automation-enabled setting before dispatch; this avoids domain drift and limits per-invocation work.
+- Text generation uses only external-provider queues, and the legacy Lovable gateway adapter fails closed; this enforces the no-Lovable-AI-credit policy across manual and scheduled callers.
