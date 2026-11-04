@@ -8,6 +8,13 @@
       "when": 1792901574421,
       "tag": "0000_auto_news_per_source_cron",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793810945465,
+      "tag": "0001_epaper_generated_editions",
+      "breakpoints": true
     }
   ]
 }

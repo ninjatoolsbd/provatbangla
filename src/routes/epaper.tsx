@@ -1,139 +1,84 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Printer, Newspaper } from "lucide-react";
+import { z } from "zod";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { NewsImage } from "@/components/news-cards";
-import { Calendar, Eye, Download, Share2, Newspaper } from "lucide-react";
-import { useState } from 'react';
+import { EpaperSheet, bnDate, buildEpaperPages } from "@/components/epaper-sheet";
+import { editionLabel, loadEpaper } from "@/lib/epaper-data";
 
-export const Route = createFileRoute('/epaper')({
-  component: EPaperPage,
-  loader: async () => {
-    // In a real app, you might have a dedicated 'epaper' table
-    // For now, let's fetch recent posts from a specific 'epaper' category if it exists,
-    // or just show a beautiful placeholder layout for the e-paper experience.
-    const { data: issues } = await supabase
-      .from('posts')
-      .select('id, title, created_at, image_url')
-      .eq('status', 'published')
-      .ilike('category', '%epaper%')
-      .order('created_at', { ascending: false })
-      .limit(6);
-      
-    return { issues: issues || [] };
-  },
+export const Route = createFileRoute("/epaper")({
+  validateSearch: z.object({ id: z.string().optional() }),
+  loaderDeps: ({ search }) => ({ id: search.id }),
+  loader: ({ deps }) => loadEpaper(deps.id),
   head: () => ({
     meta: [
       { title: "ই-পেপার — প্রভাতবাংলা" },
-      { name: "description", content: "প্রভাতবাংলা ই-পেপার - আজকের সংবাদপত্র অনলাইনে পড়ুন।" }
-    ]
-  })
+      { name: "description", content: "প্রভাতবাংলা সাপ্তাহিক ই-পেপার — সপ্তাহের সেরা খবর সংবাদপত্রের মতো করে পড়ুন ও PDF নামান।" },
+      { property: "og:title", content: "ই-পেপার — প্রভাতবাংলা" },
+      { property: "og:description", content: "প্রভাতবাংলা সাপ্তাহিক ই-পেপার — সপ্তাহের সেরা খবর।" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: EPaperPage,
 });
 
-const DEMO_ISSUES = [
-  {
-    id: 'demo-1',
-    title: 'আজকের প্রভাতবাংলা - ১৬ আগস্ট ২০২৬',
-    created_at: new Date().toISOString(),
-    image_url: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: 'demo-2',
-    title: 'প্রভাতবাংলা - ১৫ আগস্ট ২০২৬',
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    image_url: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?q=80&w=1974&auto=format&fit=crop'
-  },
-  {
-    id: 'demo-3',
-    title: 'প্রভাতবাংলা - ১৪ আগস্ট ২০২৬',
-    created_at: new Date(Date.now() - 172800000).toISOString(),
-    image_url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=2070&auto=format&fit=crop'
-  }
-];
-
 function EPaperPage() {
-  const { issues: fetchedIssues } = Route.useLoaderData();
-  const issues = fetchedIssues.length > 0 ? fetchedIssues : DEMO_ISSUES;
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const toBanglaDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('bn-BD', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+  const { editions, edition, posts } = Route.useLoaderData();
+  const pages = buildEpaperPages(posts);
+  const label = edition ? editionLabel(edition, bnDate) : "";
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex flex-col">
-      <SiteHeader />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 border-b border-slate-200 pb-8">
-            <div>
-              <h1 className="text-4xl font-bold font-display text-slate-900 mb-2">ই-পেপার</h1>
-              <p className="text-slate-500 font-medium">প্রভাতবাংলা ডিজিটাল সংস্করণ - সংবাদপত্র এখন আপনার হাতের মুঠোয়</p>
-            </div>
-            
-            <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-              <span className="text-sm font-bold text-slate-600 whitespace-nowrap">পুরানো সংখ্যা দেখুন:</span>
-              <input 
-                type="date" 
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
+    <div className="flex min-h-screen flex-col bg-muted">
+      <div className="print:hidden"><SiteHeader /></div>
+      <main className="mx-auto w-full max-w-[1240px] flex-1 px-4 py-8">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b-2 border-primary pb-3 print:hidden">
+          <div>
+            <h1 className="flex items-center gap-2 font-display text-3xl font-extrabold">
+              <Newspaper className="size-7 text-primary" /> ই-পেপার
+            </h1>
+            {edition && <p className="text-sm text-muted-foreground">সংখ্যা: {label}</p>}
           </div>
-
-          {issues.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {issues.map((issue) => (
-                <div key={issue.id} className="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300">
-                  <div className="aspect-[3/4] overflow-hidden relative">
-                    <NewsImage 
-                      src={issue.image_url} 
-                      alt={issue.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                      <button className="size-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-primary hover:text-white transition-colors">
-                        <Eye className="size-6" />
-                      </button>
-                      <button className="size-12 rounded-full bg-white text-slate-700 flex items-center justify-center shadow-lg hover:bg-slate-100 transition-colors">
-                        <Download className="size-6" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
-                      <Calendar className="size-3" />
-                      {toBanglaDate(issue.created_at)}
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors leading-tight">
-                      {issue.title}
-                    </h3>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl shadow-sm border border-dashed border-slate-300 p-20 text-center">
-              <div className="size-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                < Newspaper className="size-10 text-slate-300" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-800 mb-2">আজকের ই-পেপার পাওয়া যায়নি</h3>
-              <p className="text-slate-500 mb-8 max-w-md mx-auto">দুঃখিত, বর্তমানে ই-পেপারের কোনো সংখ্যা আপলোড করা নেই। অনুগ্রহ করে পরে আবার চেষ্টা করুন।</p>
-              <button className="bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-primary/90 transition-colors">
-                আর্কাইভ দেখুন
+          <div className="flex flex-wrap items-center gap-2">
+            {editions.length > 1 && (
+              <select
+                value={edition?.id}
+                onChange={(e) => (window.location.href = `/epaper?id=${e.target.value}`)}
+                className="rounded border border-input bg-background px-2 py-2 text-sm"
+                aria-label="পুরোনো সংখ্যা"
+              >
+                {editions.map((e) => (
+                  <option key={e.id} value={e.id}>{editionLabel(e, bnDate)}</option>
+                ))}
+              </select>
+            )}
+            {edition && (
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-1 bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+              >
+                <Printer className="size-4" /> PDF ডাউনলোড / প্রিন্ট
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </main>
 
-      <SiteFooter />
+        {!edition || !pages.length ? (
+          <div className="py-20 text-center text-muted-foreground">
+            এখনো কোনো ই-পেপার প্রকাশিত হয়নি। <Link to="/" className="text-primary underline">হোমে ফিরুন</Link>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {pages.map((pg) => (
+              <div key={pg.no} className="break-after-page">
+                <EpaperSheet page={pg} date={label} total={pages.length} />
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+      <div className="print:hidden"><SiteFooter /></div>
     </div>
   );
 }
