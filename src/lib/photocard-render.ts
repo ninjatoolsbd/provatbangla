@@ -223,7 +223,7 @@ export async function renderPhotocard(canvas: HTMLCanvasElement, opts: Photocard
       ctx.fillText(dateText, SIZE / 2, 58);
 
       // সাদা ফ্রেম + লাল-কালো গ্রেডিয়েন্ট ভেতরের বর্ডার
-      const fx = 40, fy = 86, fw = SIZE - 80, fh = 490;
+      const fx = 40, fy = 86, fw = SIZE - 80, fh = 570;
       const rr = (x: number, y: number, w: number, h: number, r: number) => {
         ctx.beginPath();
         ctx.roundRect(x, y, w, h, r);
