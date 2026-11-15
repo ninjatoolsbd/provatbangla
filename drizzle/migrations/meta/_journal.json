@@ -15,6 +15,20 @@
       "when": 1793810945465,
       "tag": "0001_epaper_generated_editions",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794717097041,
+      "tag": "0002_tighten_public_insert_policies",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794717126125,
+      "tag": "0003_tighten_comment_insert_policy",
+      "breakpoints": true
     }
   ]
 }
