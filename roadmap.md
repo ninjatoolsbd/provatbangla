@@ -1,4 +1,5 @@
 # Requested deliverables
+- [x] Prevent error 1016 in optional homepage news reads from blanking the page; three regression tests pass and real published news remains visible during a simulated video RPC failure. Backend access is currently healthy; no connection settings changed.
 - [x] Remove Leonardo and Ideogram options, API handlers and stored credentials; both project secrets deleted, zero matching stored settings remain, and six AI regression tests pass. Publish required for live code removal.
 - [x] Disable all app-side Lovable AI credit fallback while preserving external AI; four tests verify blocked fallback/adapter and external-provider behavior. Cloud remains running because pausing disables news data and login; no pause authorized.
 - [x] Copy Cloud backup (news, accounts, roles, settings) into personal Supabase — done, non-destructive merge.

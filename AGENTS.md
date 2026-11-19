@@ -12,3 +12,4 @@
 - Daily auto-news schedules call the stable published project URL with one source and one article per request, and check the persisted automation-enabled setting before dispatch; this avoids domain drift and limits per-invocation work.
 - Text generation uses only external-provider queues, and the legacy Lovable gateway adapter fails closed; this enforces the no-Lovable-AI-credit policy across manual and scheduled callers.
 - Photocard and server watermark renderers share logo alpha cleanup before resizing/compositing so legacy opaque logos cannot add white backing.
+- Public homepage news lists return an empty section on backend failure, and gallery callers catch RPC transport failures; an optional section must never blank the entire homepage.

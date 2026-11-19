@@ -72,6 +72,7 @@ function Home() {
   const { data: videoPosts = [] } = useSuspenseQuery({
     queryKey: ["home-video-gallery"],
     queryFn: async () => {
+      try {
       const posts = await getHomeSectionPosts({ data: { category: "video", limit: 24 } });
       if (posts.length === 0) {
         const { articles } = await import("@/lib/news-data");
@@ -85,6 +86,10 @@ function Home() {
         }));
       }
       return posts;
+      } catch {
+        // Also tolerate transport failures before the server handler can run.
+        return [];
+      }
     },
   });
 
